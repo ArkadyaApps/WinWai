@@ -111,63 +111,78 @@ user_problem_statement: |
 backend:
   - task: "Add profile update endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added PUT /api/users/me/profile endpoint to allow users to update name, email, and phone"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Profile update endpoint working correctly. Successfully updated user profile with name, email, and phone fields. Proper authentication required and data persistence verified."
   
   - task: "Add phone field to User model"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added optional phone field to User model"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Phone field successfully added to User model and working in profile update endpoint. Optional field handling works correctly."
   
   - task: "Admin Partner CRUD endpoints"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added GET/POST/PUT/DELETE /api/admin/partners endpoints for full CRUD operations"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All partner CRUD operations working perfectly. GET (list 15 partners), POST (create new partner), PUT (update partner), DELETE (remove partner) all successful. Admin authentication properly enforced with 403 for non-admin users."
   
   - task: "Admin User management endpoints"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added PUT/DELETE /api/admin/users/{user_id} endpoints with role and ticket management"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: User management endpoints working correctly. GET /admin/users lists all users, PUT /admin/users/{id} updates user tickets/role successfully, DELETE protection prevents admin from deleting self (returns 400 as expected). Admin authentication properly enforced."
   
   - task: "Admin Raffle management endpoints"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "Added GET/PUT/DELETE /api/admin/raffles endpoints for raffle management"
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Raffle management endpoints working correctly. GET /admin/raffles retrieves 15 raffles, PUT /admin/raffles/{id} successfully updates raffle data including description changes. Admin authentication properly enforced with 403 for non-admin users."
 
 frontend:
   - task: "Edit profile functionality"
