@@ -99,19 +99,49 @@ async def populate_data():
     
     await db.raffles.insert_many(raffles)
     
-    # Create admin user
-    print("Creating admin user...")
-    admin_user = {
-        "id": str(uuid.uuid4()),
-        "email": "admin@winwai.com",
-        "name": "WinWai Admin",
-        "tickets": 1000,
-        "role": "admin",
-        "dailyStreak": 10,
-        "lastLogin": datetime.now(timezone.utc),
-        "createdAt": datetime.now(timezone.utc)
-    }
-    await db.users.insert_one(admin_user)
+    # Create admin users
+    print("Creating admin users...")
+    admin_users = [
+        {
+            "id": str(uuid.uuid4()),
+            "email": "artteabnc@gmail.com",
+            "name": "Art Tea Admin",
+            "password": "winwanadmin",  # In production, this should be hashed
+            "tickets": 1000,
+            "role": "admin",
+            "dailyStreak": 10,
+            "lastLogin": datetime.now(timezone.utc),
+            "createdAt": datetime.now(timezone.utc),
+            "permissions": ["manage_raffles", "draw_winners", "manage_users", "view_analytics", "manage_partners"]
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "email": "netcorez13@gmail.com",
+            "name": "Netcore Admin",
+            "password": "winwanadmin",
+            "tickets": 1000,
+            "role": "admin",
+            "dailyStreak": 10,
+            "lastLogin": datetime.now(timezone.utc),
+            "createdAt": datetime.now(timezone.utc),
+            "permissions": ["manage_raffles", "draw_winners", "manage_users", "view_analytics", "manage_partners"]
+        },
+        {
+            "id": str(uuid.uuid4()),
+            "email": "arkadyaproperties@gmail.com",
+            "name": "Arkadya Admin",
+            "password": "winwanadmin",
+            "tickets": 1000,
+            "role": "admin",
+            "dailyStreak": 10,
+            "lastLogin": datetime.now(timezone.utc),
+            "createdAt": datetime.now(timezone.utc),
+            "permissions": ["manage_raffles", "draw_winners", "manage_users", "view_analytics", "manage_partners"]
+        }
+    ]
+    
+    for admin in admin_users:
+        await db.users.insert_one(admin)
     
     print(f"\nMock data populated successfully!")
     print(f"- {len(partners)} partners")
