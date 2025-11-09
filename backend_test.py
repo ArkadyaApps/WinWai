@@ -10,7 +10,7 @@ import sys
 from datetime import datetime, timezone, timedelta
 
 # Configuration
-BASE_URL = "https://winwai-raffle.preview.emergentagent.com/api"
+BASE_URL = "https://winwai-app.preview.emergentagent.com/api"
 ADMIN_EMAIL = "artteabnc@gmail.com"
 ADMIN_PASSWORD = "winwanadmin"
 
