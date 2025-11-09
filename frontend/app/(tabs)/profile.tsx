@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import {
   View,
   Text,
@@ -9,6 +9,10 @@ import {
   Alert,
   Switch,
   Platform,
+  TextInput,
+  Modal,
+  KeyboardAvoidingView,
+  ActivityIndicator,
 } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useAdminStore } from '../../src/store/adminStore';
@@ -17,16 +21,35 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import BannerAdComponent from '../../src/components/BannerAd';
 import { LinearGradient } from 'expo-linear-gradient';
+import api from '../../src/utils/api';
 
 export default function ProfileScreen() {
-  const { user } = useUserStore();
+  const { user, setUser } = useUserStore();
   const { adminMode, setAdminMode, initializeAdminMode } = useAdminStore();
   const { signOut } = useAuth();
   const router = useRouter();
 
+  const [editModalVisible, setEditModalVisible] = useState(false);
+  const [saving, setSaving] = useState(false);
+  const [formData, setFormData] = useState({
+    name: '',
+    email: '',
+    phone: '',
+  });
+
   useEffect(() => {
     initializeAdminMode();
   }, []);
+
+  useEffect(() => {
+    if (user) {
+      setFormData({
+        name: user.name,
+        email: user.email,
+        phone: user.phone || '',
+      });
+    }
+  }, [user]);
 
   const isAdmin = user?.role === 'admin';
 
