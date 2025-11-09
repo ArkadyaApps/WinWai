@@ -235,13 +235,19 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitleGray}>Account</Text>
           
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => Alert.alert('Notifications', 'Notification settings coming soon!')}
+          >
             <Ionicons name="notifications-outline" size={24} color="#2C3E50" />
             <Text style={styles.menuText}>Notifications</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => Alert.alert('Language', 'Language settings coming soon!')}
+          >
             <Ionicons name="language-outline" size={24} color="#2C3E50" />
             <Text style={styles.menuText}>Language</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
@@ -252,19 +258,28 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitleGray}>Support</Text>
           
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => Alert.alert('Help Center', 'Need help? Contact support at support@winwai.com')}
+          >
             <Ionicons name="help-circle-outline" size={24} color="#2C3E50" />
             <Text style={styles.menuText}>Help Center</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => Alert.alert('Terms & Conditions', 'View our terms at www.winwai.com/terms')}
+          >
             <Ionicons name="document-text-outline" size={24} color="#2C3E50" />
             <Text style={styles.menuText}>Terms & Conditions</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
 
-          <TouchableOpacity style={styles.menuItem}>
+          <TouchableOpacity 
+            style={styles.menuItem}
+            onPress={() => Alert.alert('Privacy Policy', 'View our privacy policy at www.winwai.com/privacy')}
+          >
             <Ionicons name="shield-checkmark-outline" size={24} color="#2C3E50" />
             <Text style={styles.menuText}>Privacy Policy</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
