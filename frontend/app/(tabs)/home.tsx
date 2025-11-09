@@ -7,7 +7,7 @@ import {
   RefreshControl,
   ActivityIndicator,
   Dimensions,
-  Image,
+  TouchableOpacity,
   Platform,
 } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
@@ -15,8 +15,10 @@ import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
-import { LinearGradient } from 'expo-linear-gradient';
+import SearchFilterMenu from '../../src/components/SearchFilterMenu';
 import { Ionicons } from '@expo/vector-icons';
+import { getUserLocation } from '../../src/utils/locationService';
+import { useRouter } from 'expo-router';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
@@ -24,17 +26,38 @@ const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
 
 export default function HomeScreen() {
   const { user } = useUserStore();
+  const router = useRouter();
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
+  const [selectedCategory, setSelectedCategory] = useState('all');
+  const [selectedLocation, setSelectedLocation] = useState('all');
+  const [userCity, setUserCity] = useState<string | null>(null);
 
   useEffect(() => {
+    detectLocation();
     loadRaffles();
   }, []);
 
+  useEffect(() => {
+    loadRaffles();
+  }, [selectedCategory, selectedLocation]);
+
+  const detectLocation = async () => {
+    const location = await getUserLocation();
+    if (location) {
+      setUserCity(location.city);
+    }
+  };
+
   const loadRaffles = async () => {
     try {
-      const response = await api.get('/api/raffles');
+      const params: any = {};
+      if (selectedCategory !== 'all') params.category = selectedCategory;
+      if (selectedLocation !== 'all') params.location = selectedLocation;
+      
+      const response = await api.get('/api/raffles', { params });
       setRaffles(response.data);
     } catch (error) {
       console.error('Failed to load raffles:', error);
@@ -59,6 +82,22 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
+      {/* Top Bar with Tickets and Filter */}
+      <View style={styles.topBar}>
+        <View style={styles.ticketBadge}>
+          <Ionicons name="ticket" size={20} color="#FFD700" />
+          <Text style={styles.ticketText}>{user?.tickets || 0}</Text>
+        </View>
+        
+        <TouchableOpacity 
+          style={styles.filterButton}
+          onPress={() => setFilterVisible(true)}
+        >
+          <Ionicons name="options" size={24} color="#000" />
+          <Text style={styles.filterText}>Filter</Text>
+        </TouchableOpacity>
+      </View>
+
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
@@ -67,86 +106,28 @@ export default function HomeScreen() {
         }
         showsVerticalScrollIndicator={false}
       >
-        {/* Hero Header with Logo */}
-        <LinearGradient
-          colors={['#FFD700', '#FFC200', '#FFB800']}
-          style={styles.heroHeader}
-          start={{ x: 0, y: 0 }}
-          end={{ x: 1, y: 1 }}
-        >
-          <View style={styles.logoContainer}>
-            <Image
-              source={{ uri: 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg' }}
-              style={styles.logo}
-              resizeMode="contain"
-            />
-            <Text style={styles.brandName}>WinWai</Text>
+        {/* Location Banner */}
+        {userCity && (
+          <View style={styles.locationBanner}>
+            <Ionicons name="location" size={18} color="#4ECDC4" />
+            <Text style={styles.locationText}>Nearby in {userCity}</Text>
           </View>
-          
-          <View style={styles.headerContent}>
-            <View>
-              <Text style={styles.greeting}>Hello, {user?.name || 'Guest'}!</Text>
-              <Text style={styles.subGreeting}>Ready to win amazing prizes?</Text>
-            </View>
-            
-            <View style={styles.ticketBadge}>
-              <Ionicons name="ticket" size={22} color="#FFB800" />
-              <View>
-                <Text style={styles.ticketLabel}>Tickets</Text>
-                <Text style={styles.ticketCount}>{user?.tickets || 0}</Text>
-              </View>
-            </View>
-          </View>
-        </LinearGradient>
+        )}
 
-        {/* Quick Stats */}
-        <View style={styles.statsContainer}>
-          <View style={styles.statCard}>
-            <LinearGradient
-              colors={['#FF6B6B', '#FF8E53']}
-              style={styles.statGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
+        {/* Results Header */}
+        <View style={styles.resultsHeader}>
+          <Text style={styles.resultsCount}>{raffles.length} Raffles</Text>
+          {(selectedCategory !== 'all' || selectedLocation !== 'all') && (
+            <TouchableOpacity 
+              onPress={() => {
+                setSelectedCategory('all');
+                setSelectedLocation('all');
+              }}
+              style={styles.clearButton}
             >
-              <Ionicons name="gift-outline" size={24} color="#fff" />
-              <Text style={styles.statNumber}>{raffles.length}</Text>
-              <Text style={styles.statLabel}>Active</Text>
-            </LinearGradient>
-          </View>
-          
-          <View style={styles.statCard}>
-            <LinearGradient
-              colors={['#4ECDC4', '#44A08D']}
-              style={styles.statGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Ionicons name="trophy-outline" size={24} color="#fff" />
-              <Text style={styles.statNumber}>{raffles.reduce((sum, r) => sum + r.prizesAvailable, 0)}</Text>
-              <Text style={styles.statLabel}>Prizes</Text>
-            </LinearGradient>
-          </View>
-          
-          <View style={styles.statCard}>
-            <LinearGradient
-              colors={['#A8E6CF', '#88D8B0']}
-              style={styles.statGradient}
-              start={{ x: 0, y: 0 }}
-              end={{ x: 1, y: 1 }}
-            >
-              <Ionicons name="people-outline" size={24} color="#fff" />
-              <Text style={styles.statNumber}>{raffles.reduce((sum, r) => sum + r.totalEntries, 0)}</Text>
-              <Text style={styles.statLabel}>Entries</Text>
-            </LinearGradient>
-          </View>
-        </View>
-
-        {/* Section Header */}
-        <View style={styles.sectionHeader}>
-          <View>
-            <Text style={styles.sectionTitle}>Live Raffles</Text>
-            <Text style={styles.sectionSubtitle}>Enter now to win!</Text>
-          </View>
+              <Text style={styles.clearText}>Clear Filters</Text>
+            </TouchableOpacity>
+          )}
         </View>
 
         {/* Raffle Grid */}
@@ -155,7 +136,7 @@ export default function HomeScreen() {
             <View key={raffle.id} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
               <RaffleGridCard
                 raffle={raffle}
-                onPress={() => {/* Navigate to raffle details */}}
+                onPress={() => router.push(`/raffle/${raffle.id}`)}
               />
             </View>
           ))}
@@ -163,9 +144,9 @@ export default function HomeScreen() {
         
         {raffles.length === 0 && (
           <View style={styles.emptyState}>
-            <Ionicons name="gift-outline" size={80} color="#E0E0E0" />
-            <Text style={styles.emptyText}>No active raffles</Text>
-            <Text style={styles.emptySubtext}>Check back soon for new prizes!</Text>
+            <Ionicons name="search" size={80} color="#E0E0E0" />
+            <Text style={styles.emptyText}>No raffles found</Text>
+            <Text style={styles.emptySubtext}>Try adjusting your filters</Text>
           </View>
         )}
 
@@ -173,6 +154,16 @@ export default function HomeScreen() {
       </ScrollView>
       
       <BannerAdComponent position="bottom" />
+      
+      <SearchFilterMenu
+        visible={filterVisible}
+        onClose={() => setFilterVisible(false)}
+        selectedCategory={selectedCategory}
+        selectedLocation={selectedLocation}
+        onCategoryChange={setSelectedCategory}
+        onLocationChange={setSelectedLocation}
+        userCity={userCity || undefined}
+      />
     </View>
   );
 }
@@ -194,144 +185,91 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 80,
   },
-  heroHeader: {
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 24,
-    paddingHorizontal: 20,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.2,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
-  },
-  logoContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 20,
-    gap: 12,
-  },
-  logo: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
-    backgroundColor: '#fff',
-  },
-  brandName: {
-    fontSize: 26,
-    fontWeight: '900',
-    color: '#000',
-    letterSpacing: 1,
-  },
-  headerContent: {
+  topBar: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-  },
-  greeting: {
-    fontSize: 22,
-    fontWeight: '800',
-    color: '#000',
-    marginBottom: 2,
-  },
-  subGreeting: {
-    fontSize: 13,
-    color: '#333',
-    fontWeight: '500',
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    paddingTop: Platform.OS === 'ios' ? 50 : 12,
+    backgroundColor: '#FFD700',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   ticketBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    backgroundColor: '#ffffff',
+    backgroundColor: '#fff',
     paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingVertical: 8,
     borderRadius: 20,
-    gap: 10,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 6,
-      },
-    }),
+    gap: 6,
   },
-  ticketLabel: {
-    fontSize: 10,
-    color: '#666',
-    fontWeight: '600',
-  },
-  ticketCount: {
-    fontSize: 18,
-    fontWeight: '900',
+  ticketText: {
+    fontSize: 16,
+    fontWeight: '800',
     color: '#000',
   },
-  statsContainer: {
+  filterButton: {
     flexDirection: 'row',
-    paddingHorizontal: 16,
-    paddingVertical: 20,
-    gap: 12,
-  },
-  statCard: {
-    flex: 1,
-    borderRadius: 16,
-    overflow: 'hidden',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 4 },
-        shadowOpacity: 0.15,
-        shadowRadius: 8,
-      },
-      android: {
-        elevation: 5,
-      },
-    }),
-  },
-  statGradient: {
-    padding: 16,
     alignItems: 'center',
-    justifyContent: 'center',
+    backgroundColor: '#fff',
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    gap: 6,
   },
-  statNumber: {
-    fontSize: 24,
-    fontWeight: '900',
-    color: '#ffffff',
-    marginTop: 8,
-    marginBottom: 2,
-  },
-  statLabel: {
-    fontSize: 11,
-    color: '#ffffff',
+  filterText: {
+    fontSize: 14,
     fontWeight: '700',
-    textTransform: 'uppercase',
-    letterSpacing: 0.5,
+    color: '#000',
   },
-  sectionHeader: {
+  locationBanner: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#E8F8F5',
+    marginHorizontal: 16,
+    marginTop: 16,
+    padding: 12,
+    borderRadius: 12,
+    gap: 8,
+  },
+  locationText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#2C3E50',
+  },
+  resultsHeader: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
     paddingHorizontal: 20,
-    marginBottom: 16,
+    paddingVertical: 16,
   },
-  sectionTitle: {
-    fontSize: 24,
-    fontWeight: '900',
+  resultsCount: {
+    fontSize: 20,
+    fontWeight: '800',
     color: '#2C3E50',
-    marginBottom: 2,
   },
-  sectionSubtitle: {
-    fontSize: 13,
-    color: '#7F8C8D',
-    fontWeight: '600',
+  clearButton: {
+    paddingHorizontal: 12,
+    paddingVertical: 6,
+    backgroundColor: '#FFE6E6',
+    borderRadius: 12,
+  },
+  clearText: {
+    fontSize: 12,
+    fontWeight: '700',
+    color: '#FF6B6B',
   },
   gridContainer: {
     flexDirection: 'row',
