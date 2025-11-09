@@ -136,9 +136,10 @@ async def process_session(request: Request):
         raise HTTPException(status_code=400, detail="session_id required")
     
     # Call Emergent Auth to get session data
+    auth_api_url = os.getenv('AUTH_API_URL', 'https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data')
     try:
         response = requests.get(
-            "https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data",
+            auth_api_url,
             headers={"X-Session-ID": session_id}
         )
         response.raise_for_status()
