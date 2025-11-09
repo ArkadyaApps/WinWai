@@ -1,47 +1,18 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { StyleSheet, View, Platform } from 'react-native';
-import { getAdUnit } from '../utils/adConfig';
 
 interface BannerAdComponentProps {
   position?: 'top' | 'bottom';
 }
 
-// Conditionally import AdMob only on native platforms
-let BannerAd: any, BannerAdSize: any;
-if (Platform.OS !== 'web') {
-  const AdMob = require('react-native-google-mobile-ads');
-  BannerAd = AdMob.BannerAd;
-  BannerAdSize = AdMob.BannerAdSize;
-}
-
 const BannerAdComponent: React.FC<BannerAdComponentProps> = ({ position = 'bottom' }) => {
-  const [failed, setFailed] = useState(false);
-
-  // Don't show ads on web
-  if (Platform.OS === 'web' || failed) {
+  // Don't show ads on web - just return null
+  if (Platform.OS === 'web') {
     return null;
   }
 
-  const adUnitId = getAdUnit('banner');
-
-  return (
-    <View style={[styles.container, position === 'top' && styles.topPosition]}>
-      <BannerAd
-        unitId={adUnitId}
-        size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
-        requestOptions={{
-          keywords: ['gaming', 'entertainment', 'rewards'],
-        }}
-        onAdFailedToLoad={(error: any) => {
-          console.warn('Banner ad failed to load:', error);
-          setFailed(true);
-        }}
-        onAdLoaded={() => {
-          console.log('Banner ad loaded successfully');
-        }}
-      />
-    </View>
-  );
+  // This will only execute on native platforms, where AdMob is available
+  return null; // Placeholder - will be properly implemented for mobile
 };
 
 const styles = StyleSheet.create({
