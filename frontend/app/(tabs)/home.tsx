@@ -13,7 +13,6 @@ import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
-import { LinearGradient } from 'expo-linear-gradient';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
