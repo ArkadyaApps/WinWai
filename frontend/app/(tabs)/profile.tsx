@@ -846,4 +846,35 @@ const styles = StyleSheet.create({
     fontWeight: '700',
     color: '#fff',
   },
+  currentLanguage: {
+    fontSize: 13,
+    color: '#7F8C8D',
+    marginLeft: 8,
+  },
+  languageList: {
+    padding: 20,
+  },
+  languageOption: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    backgroundColor: '#F5F5F5',
+    borderRadius: 12,
+    marginBottom: 12,
+    gap: 12,
+  },
+  languageOptionActive: {
+    backgroundColor: '#E8F8F7',
+    borderWidth: 2,
+    borderColor: '#4ECDC4',
+  },
+  languageFlag: {
+    fontSize: 32,
+  },
+  languageText: {
+    flex: 1,
+    fontSize: 16,
+    fontWeight: '600',
+    color: '#2C3E50',
+  },
 });
