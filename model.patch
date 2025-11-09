@@ -1,40 +1,45 @@
-diff --git a/frontend/app/_layout.tsx b/frontend/app/_layout.tsx
-index c9d77e1..863ce2c 100644
---- a/frontend/app/_layout.tsx
-+++ b/frontend/app/_layout.tsx
-@@ -1,21 +1,25 @@
- import React, { useEffect } from 'react';
- import { Stack } from 'expo-router';
--import mobileAds from 'react-native-google-mobile-ads';
-+import { Platform } from 'react-native';
- import { AuthProvider } from '../src/contexts/AuthContext';
- import { GestureHandlerRootView } from 'react-native-gesture-handler';
- 
- export default function RootLayout() {
-   useEffect(() => {
--    const initializeAds = async () => {
--      try {
--        await mobileAds().initialize();
--        console.log('Mobile Ads initialized');
--      } catch (error) {
--        console.error('Failed to initialize Mobile Ads', error);
--      }
--    };
-+    // Only initialize AdMob on native platforms
-+    if (Platform.OS !== 'web') {
-+      const initializeAds = async () => {
-+        try {
-+          const mobileAds = require('react-native-google-mobile-ads').default;
-+          await mobileAds().initialize();
-+          console.log('Mobile Ads initialized');
-+        } catch (error) {
-+          console.error('Failed to initialize Mobile Ads', error);
-+        }
-+      };
- 
--    initializeAds();
-+      initializeAds();
-+    }
-   }, []);
- 
-   return (
+diff --git a/model.patch b/model.patch
+index e693012..e69de29 100644
+--- a/model.patch
++++ b/model.patch
+@@ -1,40 +0,0 @@
+-diff --git a/frontend/app/_layout.tsx b/frontend/app/_layout.tsx
+-index c9d77e1..863ce2c 100644
+---- a/frontend/app/_layout.tsx
+-+++ b/frontend/app/_layout.tsx
+-@@ -1,21 +1,25 @@
+- import React, { useEffect } from 'react';
+- import { Stack } from 'expo-router';
+--import mobileAds from 'react-native-google-mobile-ads';
+-+import { Platform } from 'react-native';
+- import { AuthProvider } from '../src/contexts/AuthContext';
+- import { GestureHandlerRootView } from 'react-native-gesture-handler';
+- 
+- export default function RootLayout() {
+-   useEffect(() => {
+--    const initializeAds = async () => {
+--      try {
+--        await mobileAds().initialize();
+--        console.log('Mobile Ads initialized');
+--      } catch (error) {
+--        console.error('Failed to initialize Mobile Ads', error);
+--      }
+--    };
+-+    // Only initialize AdMob on native platforms
+-+    if (Platform.OS !== 'web') {
+-+      const initializeAds = async () => {
+-+        try {
+-+          const mobileAds = require('react-native-google-mobile-ads').default;
+-+          await mobileAds().initialize();
+-+          console.log('Mobile Ads initialized');
+-+        } catch (error) {
+-+          console.error('Failed to initialize Mobile Ads', error);
+-+        }
+-+      };
+- 
+--    initializeAds();
+-+      initializeAds();
+-+    }
+-   }, []);
+- 
+-   return (
