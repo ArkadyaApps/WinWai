@@ -114,6 +114,30 @@ export default function ProfileScreen() {
     }
   };
 
+  const handleLanguageChange = async (lang: 'en' | 'th' | 'fr') => {
+    await setLanguage(lang);
+    setLanguageModalVisible(false);
+    Alert.alert('Language Changed', `App language changed to ${getLanguageName(lang)}`);
+  };
+
+  const getLanguageName = (lang: string) => {
+    switch(lang) {
+      case 'en': return 'English';
+      case 'th': return 'ภาษาไทย (Thai)';
+      case 'fr': return 'Français (French)';
+      default: return 'English';
+    }
+  };
+
+  const getLanguageFlag = (lang: string) => {
+    switch(lang) {
+      case 'en': return '🇺🇸';
+      case 'th': return '🇹🇭';
+      case 'fr': return '🇫🇷';
+      default: return '🌐';
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
