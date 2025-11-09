@@ -532,13 +532,22 @@ async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[s
     }
 
 @api_router.get("/admin/users")
-async def get_all_users(authorization: Optional[str] = Header(None), page: int = 1, limit: int = 20):
+async def get_all_users(authorization: Optional[str] = Header(None), page: int = 1, limit: int = 20, q: Optional[str] = None, role: Optional[str] = None):
     user = await get_current_user(authorization=authorization)
     if not user or user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
     skip = max(0, (page - 1) * limit)
-    cursor = db.users.find().sort("createdAt", -1).skip(skip).limit(limit)
+    query: Dict = {}
+    if q:
+        query["$or"] = [
+            {"name": {"$regex": q, "$options": "i"}},
+            {"email": {"$regex": q, "$options": "i"}},
+        ]
+    if role and role in ["user", "admin"]:
+        query["role"] = role
+
+    cursor = db.users.find(query).sort("createdAt", -1).skip(skip).limit(limit)
     users = await cursor.to_list(length=limit)
     return [User(**u) for u in users]
 
