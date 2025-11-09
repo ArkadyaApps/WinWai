@@ -554,12 +554,14 @@ async def create_raffle(raffle: Raffle, authorization: Optional[str] = Header(No
 
 # Admin Partner Management
 @api_router.get("/admin/partners", response_model=List[Partner])
-async def get_all_partners(authorization: Optional[str] = Header(None)):
+async def get_all_partners(authorization: Optional[str] = Header(None), page: int = 1, limit: int = 20):
     user = await get_current_user(authorization=authorization)
     if not user or user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    partners = await db.partners.find().to_list(1000)
+    skip = max(0, (page - 1) * limit)
+    cursor = db.partners.find().sort("createdAt", -1).skip(skip).limit(limit)
+    partners = await cursor.to_list(length=limit)
     return [Partner(**p) for p in partners]
 
 @api_router.post("/admin/partners", response_model=Partner)
