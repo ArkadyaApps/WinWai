@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import {
   View,
   Text,
@@ -46,6 +46,7 @@ export default function AdminRafflesScreen() {
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
+  const minDate = useMemo(() => new Date(Date.now() + 60 * 60 * 1000), []); // +1 hour
 
   useEffect(() => {
     fetchAll();
@@ -56,7 +57,7 @@ export default function AdminRafflesScreen() {
       setLoading(true);
       const [rafflesRes, partnersRes] = await Promise.all([
         api.get('/api/admin/raffles'),
-        api.get('/api/admin/partners'),
+        api.get('/api/admin/partners', { params: { page: 1, limit: 100 } }),
       ]);
       setRaffles(rafflesRes.data);
       setPartners(partnersRes.data);
@@ -117,6 +118,13 @@ export default function AdminRafflesScreen() {
       Alert.alert('Error', 'Please fill in all required fields');
       return;
     }
+
+    const now = new Date();
+    if (formData.drawDate instanceof Date && formData.drawDate <= now) {
+      Alert.alert('Invalid Date', 'Draw date/time must be in the future.');
+      return;
+    }
+
     try {
       setSaving(true);
       const drawDateISO = formData.drawDate instanceof Date ? formData.drawDate.toISOString() : String(formData.drawDate);
@@ -431,17 +439,25 @@ export default function AdminRafflesScreen() {
 
               <Text style={styles.label}>Draw Date *</Text>
               <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
-                <Text style={{ color: '#2C3E50', fontSize: 16 }}>{formatDate(formData.drawDate)}</Text>
+                <Text style={{ color: '#2C3E50', fontSize: 16 }}>{formatDate(formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate))}</Text>
               </TouchableOpacity>
+              <Text style={styles.helperText}>Must be at least 1 hour in the future.</Text>
 
               {showDatePicker && (
                 <DateTimePicker
                   value={formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate)}
                   mode="datetime"
+                  minimumDate={minDate}
                   display={Platform.OS === 'ios' ? 'inline' : 'default'}
                   onChange={(_, selectedDate) => {
                     setShowDatePicker(false);
-                    if (selectedDate) setFormData({ ...formData, drawDate: selectedDate });
+                    if (selectedDate) {
+                      if (selectedDate > new Date()) {
+                        setFormData({ ...formData, drawDate: selectedDate });
+                      } else {
+                        Alert.alert('Invalid Date', 'Please choose a future date/time.');
+                      }
+                    }
                   }}
                 />
               )}
@@ -665,6 +681,11 @@ const styles = StyleSheet.create({
     padding: 12,
     fontSize: 16,
     color: '#2C3E50',
+  },
+  helperText: {
+    fontSize: 12,
+    color: '#7F8C8D',
+    marginTop: 6,
   },
   textArea: {
     height: 80,
