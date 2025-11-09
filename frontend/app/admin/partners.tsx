@@ -11,6 +11,7 @@ import {
   Modal,
   Platform,
   KeyboardAvoidingView,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,7 +25,10 @@ export default function AdminPartnersScreen() {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingPartner, setEditingPartner] = useState<Partner | null>(null);
-  
+  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -34,18 +38,41 @@ export default function AdminPartnersScreen() {
   });
 
   useEffect(() => {
-    fetchPartners();
+    fetchPartners(true);
   }, []);
 
-  const fetchPartners = async () => {
+  const fetchPartners = async (reset = false) => {
     try {
-      setLoading(true);
-      const response = await api.get('/api/admin/partners');
-      setPartners(response.data);
+      if (reset) {
+        setLoading(true);
+        setPage(1);
+      }
+      const currentPage = reset ? 1 : page;
+      const response = await api.get(`/api/admin/partners`, { params: { page: currentPage, limit: 20 } });
+      const data: Partner[] = response.data;
+      if (reset) {
+        setPartners(data);
+      } else {
+        setPartners((prev) => [...prev, ...data]);
+      }
+      setHasMore(data.length === 20);
+      setPage(currentPage + 1);
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.detail || 'Failed to fetch partners');
     } finally {
       setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchPartners(true);
+  };
+
+  const onEndReached = () => {
+    if (!loading && hasMore) {
+      fetchPartners();
     }
   };
 
@@ -77,7 +104,6 @@ export default function AdminPartnersScreen() {
       Alert.alert('Error', 'Please fill in all required fields');
       return;
     }
-
     try {
       if (editingPartner) {
         await api.put(`/api/admin/partners/${editingPartner.id}`, {
@@ -90,7 +116,7 @@ export default function AdminPartnersScreen() {
         Alert.alert('Success', 'Partner created successfully');
       }
       setModalVisible(false);
-      fetchPartners();
+      fetchPartners(true);
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.detail || 'Failed to save partner');
     }
@@ -109,7 +135,7 @@ export default function AdminPartnersScreen() {
             try {
               await api.delete(`/api/admin/partners/${partner.id}`);
               Alert.alert('Success', 'Partner deleted successfully');
-              fetchPartners();
+              fetchPartners(true);
             } catch (error: any) {
               Alert.alert('Error', error.response?.data?.detail || 'Failed to delete partner');
             }
@@ -128,7 +154,7 @@ export default function AdminPartnersScreen() {
     }
   };
 
-  if (loading) {
+  if (loading && partners.length === 0) {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color="#FFD700" />
@@ -138,7 +164,6 @@ export default function AdminPartnersScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Header */}
       <LinearGradient colors={['#FFD700', '#FFC200']} style={styles.header}>
         <TouchableOpacity onPress={() => router.back()} style={styles.backButton}>
           <Ionicons name="arrow-back" size={24} color="#000" />
@@ -149,7 +174,16 @@ export default function AdminPartnersScreen() {
         </TouchableOpacity>
       </LinearGradient>
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        onScroll={({ nativeEvent }) => {
+          const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+          const distanceFromBottom = contentSize.height - (layoutMeasurement.height + contentOffset.y);
+          if (distanceFromBottom < 200) onEndReached();
+        }}
+        scrollEventThrottle={200}
+      >
         {partners.length === 0 ? (
           <View style={styles.emptyContainer}>
             <Ionicons name="business-outline" size={64} color="#999" />
@@ -195,6 +229,11 @@ export default function AdminPartnersScreen() {
               </View>
             </View>
           ))
+        )}
+        {loading && partners.length > 0 && (
+          <View style={{ padding: 16 }}>
+            <ActivityIndicator color="#FFD700" />
+          </View>
         )}
         <View style={{ height: 80 }} />
       </ScrollView>
