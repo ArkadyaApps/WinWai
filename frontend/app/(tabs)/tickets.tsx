@@ -185,35 +185,68 @@ const styles = StyleSheet.create({
     color: '#2C3E50',
     marginBottom: 16,
   },
-  watchAdButton: {
-    backgroundColor: '#4CAF50',
-    padding: 20,
-    borderRadius: 12,
+  playButton: {
+    backgroundColor: '#FF4081',
+    padding: 24,
+    borderRadius: 16,
+    marginBottom: 16,
+    shadowColor: '#FF4081',
+    shadowOffset: { width: 0, height: 4 },
+    shadowOpacity: 0.3,
+    shadowRadius: 8,
+    elevation: 8,
+  },
+  playButtonDisabled: {
+    backgroundColor: '#B0B0B0',
+    shadowColor: '#000',
+    shadowOpacity: 0.1,
+  },
+  playButtonContent: {
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 12,
-    marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    gap: 16,
   },
-  watchAdButtonDisabled: {
-    backgroundColor: '#B0B0B0',
+  playIconContainer: {
+    width: 60,
+    height: 60,
+    borderRadius: 30,
+    backgroundColor: 'rgba(255, 255, 255, 0.3)',
+    justifyContent: 'center',
+    alignItems: 'center',
   },
-  watchAdIcon: {
-    fontSize: 32,
+  playIcon: {
+    fontSize: 28,
+    color: '#ffffff',
+    marginLeft: 4,
   },
-  watchAdText: {
+  playButtonTextContainer: {
+    flex: 1,
+  },
+  playButtonTitle: {
+    fontSize: 20,
+    fontWeight: '800',
+    color: '#ffffff',
+    marginBottom: 4,
+  },
+  playButtonSubtitle: {
+    fontSize: 14,
+    color: 'rgba(255, 255, 255, 0.9)',
+    fontWeight: '600',
+  },
+  playButtonTextLoading: {
     fontSize: 18,
     fontWeight: '700',
     color: '#ffffff',
+    marginTop: 8,
   },
-  watchAdSubtext: {
+  adStatusText: {
     fontSize: 13,
-    color: '#e0ffe0',
+    color: '#7F8C8D',
+    textAlign: 'center',
+    marginBottom: 16,
+    paddingHorizontal: 16,
+    lineHeight: 18,
   },
   infoCard: {
     backgroundColor: '#ffffff',
