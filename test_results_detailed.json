@@ -3,13 +3,13 @@
     "test": "Admin Authentication",
     "success": true,
     "message": "Successfully authenticated as admin: Updated Test User",
-    "timestamp": "2025-11-09T16:18:17.071402"
+    "timestamp": "2025-11-09T16:18:48.915327"
   },
   {
     "test": "Profile Update",
     "success": true,
     "message": "Profile updated successfully",
-    "timestamp": "2025-11-09T16:18:17.084110",
+    "timestamp": "2025-11-09T16:18:48.966110",
     "response": {
       "id": "a64eddc5-dff5-4227-8a09-2e74fdd6a9da",
       "email": "updated.test@example.com",
@@ -27,7 +27,7 @@
     "test": "Get Partners",
     "success": true,
     "message": "Retrieved 15 partners",
-    "timestamp": "2025-11-09T16:18:17.096714",
+    "timestamp": "2025-11-09T16:18:48.977488",
     "response": {
       "count": 15
     }
@@ -35,40 +35,40 @@
   {
     "test": "Create Partner",
     "success": true,
-    "message": "Partner created with ID: 902e207f-8e23-406e-90b2-ccbb67d1f209",
-    "timestamp": "2025-11-09T16:18:17.146524",
+    "message": "Partner created with ID: 9737913c-ea9e-4173-90e9-a6531c604a03",
+    "timestamp": "2025-11-09T16:18:49.028103",
     "response": {
-      "id": "902e207f-8e23-406e-90b2-ccbb67d1f209",
+      "id": "9737913c-ea9e-4173-90e9-a6531c604a03",
       "name": "Test Partner Restaurant",
       "description": "A test restaurant for API testing",
       "logo": null,
       "category": "food",
       "sponsored": false,
       "contactInfo": null,
-      "createdAt": "2025-11-09T16:18:17.100759Z"
+      "createdAt": "2025-11-09T16:18:48.982239Z"
     }
   },
   {
     "test": "Update Partner",
     "success": true,
     "message": "Partner updated successfully",
-    "timestamp": "2025-11-09T16:18:17.155707",
+    "timestamp": "2025-11-09T16:18:49.038165",
     "response": {
-      "id": "902e207f-8e23-406e-90b2-ccbb67d1f209",
+      "id": "9737913c-ea9e-4173-90e9-a6531c604a03",
       "name": "Updated Test Partner Restaurant",
       "description": "A test restaurant for API testing",
       "logo": null,
       "category": "food",
       "sponsored": false,
       "contactInfo": null,
-      "createdAt": "2025-11-09T16:18:17.150670Z"
+      "createdAt": "2025-11-09T16:18:49.033337Z"
     }
   },
   {
     "test": "Delete Partner",
     "success": true,
     "message": "Partner deleted successfully",
-    "timestamp": "2025-11-09T16:18:17.205458",
+    "timestamp": "2025-11-09T16:18:49.088119",
     "response": {
       "message": "Partner deleted successfully"
     }
@@ -77,7 +77,7 @@
     "test": "Get Users",
     "success": true,
     "message": "Retrieved 3 users",
-    "timestamp": "2025-11-09T16:18:17.213819",
+    "timestamp": "2025-11-09T16:18:49.098686",
     "response": {
       "count": 3
     }
@@ -86,9 +86,9 @@
     "test": "Update User",
     "success": true,
     "message": "User tickets updated to 500",
-    "timestamp": "2025-11-09T16:18:17.272436",
+    "timestamp": "2025-11-09T16:18:49.111726",
     "response": {
-      "id": "d7c4c962-bbef-4157-a834-e4a51179527c",
+      "id": "a1112a7d-a67d-409b-a932-16d06a904d32",
       "email": "testuser@example.com",
       "name": "Test User",
       "picture": null,
@@ -97,53 +97,76 @@
       "role": "user",
       "dailyStreak": 0,
       "lastLogin": null,
-      "createdAt": "2025-11-09T16:18:17.214000"
+      "createdAt": "2025-11-09T16:18:49.099000"
     }
+  },
+  {
+    "test": "Delete Self Protection",
+    "success": false,
+    "message": "Could not find admin user ID to test self-deletion protection",
+    "timestamp": "2025-11-09T16:18:49.112309"
   },
   {
     "test": "Get Raffles",
     "success": true,
     "message": "Retrieved 15 raffles",
-    "timestamp": "2025-11-09T16:18:17.281206",
+    "timestamp": "2025-11-09T16:18:49.121397",
     "response": {
       "count": 15
     }
   },
   {
     "test": "Update Raffle",
-    "success": false,
-    "message": "Update failed: 404",
-    "timestamp": "2025-11-09T16:18:17.287947",
-    "response": "{\"detail\":\"Raffle not found\"}"
+    "success": true,
+    "message": "Raffle updated successfully",
+    "timestamp": "2025-11-09T16:18:49.170753",
+    "response": {
+      "id": "f24c7e94-6313-4bb1-b7cd-dbc14abcad3a",
+      "title": "Win The Deck Bangkok Experience!",
+      "description": "Updated test description via API",
+      "image": null,
+      "category": "food",
+      "partnerId": "1d4fb50b-cda1-4fb7-b8c6-81a9e52a17fe",
+      "partnerName": "The Deck Bangkok",
+      "location": "bangkok",
+      "address": "Arun Residence, Maharat Road, Bangkok",
+      "prizesAvailable": 3,
+      "prizesRemaining": 3,
+      "ticketCost": 10,
+      "drawDate": "2025-11-16T15:57:38.014000",
+      "active": true,
+      "totalEntries": 0,
+      "createdAt": "2025-11-09T15:57:38.014000"
+    }
   },
   {
     "test": "Non-Admin Access /admin/partners",
     "success": true,
     "message": "Correctly denied access: 403",
-    "timestamp": "2025-11-09T16:18:17.293686"
+    "timestamp": "2025-11-09T16:18:49.219263"
   },
   {
     "test": "Non-Admin Access /admin/users",
     "success": true,
     "message": "Correctly denied access: 403",
-    "timestamp": "2025-11-09T16:18:17.341465"
+    "timestamp": "2025-11-09T16:18:49.226305"
   },
   {
     "test": "Non-Admin Access /admin/raffles",
     "success": true,
     "message": "Correctly denied access: 403",
-    "timestamp": "2025-11-09T16:18:17.348021"
+    "timestamp": "2025-11-09T16:18:49.233327"
   },
   {
     "test": "Invalid Partner ID",
     "success": true,
     "message": "Correctly returned 404 for invalid ID",
-    "timestamp": "2025-11-09T16:18:17.396384"
+    "timestamp": "2025-11-09T16:18:49.283850"
   },
   {
     "test": "Invalid User ID",
     "success": true,
     "message": "Correctly returned 404 for invalid user ID",
-    "timestamp": "2025-11-09T16:18:17.403727"
+    "timestamp": "2025-11-09T16:18:49.334997"
   }
 ]
