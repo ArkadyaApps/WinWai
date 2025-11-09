@@ -36,23 +36,23 @@ spa_images = [
 ]
 
 partners = [
-    {"id": str(uuid.uuid4()), "name": "The Deck Bangkok", "description": "Riverside fine dining", "category": "food", "sponsored": True, "image": food_images[0]},
-    {"id": str(uuid.uuid4()), "name": "Blue Elephant", "description": "Royal Thai cuisine", "category": "food", "sponsored": False, "image": food_images[1]},
-    {"id": str(uuid.uuid4()), "name": "Gaggan Anand", "description": "Progressive Indian", "category": "food", "sponsored": True, "image": food_images[2]},
-    {"id": str(uuid.uuid4()), "name": "Sra Bua", "description": "Modern Thai cuisine", "category": "food", "sponsored": False, "image": food_images[3]},
-    {"id": str(uuid.uuid4()), "name": "Le Du", "description": "Contemporary Thai", "category": "food", "sponsored": False, "image": food_images[4]},
+    {"id": str(uuid.uuid4()), "name": "The Deck Bangkok", "description": "Riverside fine dining", "category": "food", "sponsored": True, "image": food_images[0], "location": "bangkok", "address": "Arun Residence, Maharat Road, Bangkok"},
+    {"id": str(uuid.uuid4()), "name": "Blue Elephant", "description": "Royal Thai cuisine", "category": "food", "sponsored": False, "image": food_images[1], "location": "bangkok", "address": "233 South Sathorn Road, Bangkok"},
+    {"id": str(uuid.uuid4()), "name": "Gaggan Anand", "description": "Progressive Indian", "category": "food", "sponsored": True, "image": food_images[2], "location": "bangkok", "address": "68/1 Soi Langsuan, Bangkok"},
+    {"id": str(uuid.uuid4()), "name": "Khao Soi House", "description": "Northern Thai specialties", "category": "food", "sponsored": False, "image": food_images[3], "location": "chiang-mai", "address": "Old City, Chiang Mai"},
+    {"id": str(uuid.uuid4()), "name": "Patong Seafood", "description": "Fresh beach dining", "category": "food", "sponsored": False, "image": food_images[4], "location": "phuket", "address": "Patong Beach Road, Phuket"},
     
-    {"id": str(uuid.uuid4()), "name": "Mandarin Oriental", "description": "Luxury riverside hotel", "category": "hotel", "sponsored": True, "image": hotel_images[0]},
-    {"id": str(uuid.uuid4()), "name": "Chiang Mai Resort", "description": "Mountain retreat", "category": "hotel", "sponsored": False, "image": hotel_images[1]},
-    {"id": str(uuid.uuid4()), "name": "Phuket Beach Villa", "description": "Beachfront paradise", "category": "hotel", "sponsored": True, "image": hotel_images[2]},
-    {"id": str(uuid.uuid4()), "name": "Bangkok Boutique", "description": "City center comfort", "category": "hotel", "sponsored": False, "image": hotel_images[3]},
-    {"id": str(uuid.uuid4()), "name": "Krabi Cliff Resort", "description": "Cliffside views", "category": "hotel", "sponsored": False, "image": hotel_images[4]},
+    {"id": str(uuid.uuid4()), "name": "Mandarin Oriental", "description": "Luxury riverside hotel", "category": "hotel", "sponsored": True, "image": hotel_images[0], "location": "bangkok", "address": "48 Oriental Avenue, Bangkok"},
+    {"id": str(uuid.uuid4()), "name": "137 Pillars House", "description": "Colonial-style boutique hotel", "category": "hotel", "sponsored": False, "image": hotel_images[1], "location": "chiang-mai", "address": "2 Soi 1 Nawatgate Road, Chiang Mai"},
+    {"id": str(uuid.uuid4()), "name": "The Naka Island", "description": "Private island resort", "category": "hotel", "sponsored": True, "image": hotel_images[2], "location": "phuket", "address": "32 Moo 5 Tambol Paklok, Phuket"},
+    {"id": str(uuid.uuid4()), "name": "Hilton Pattaya", "description": "Beachfront luxury tower", "category": "hotel", "sponsored": False, "image": hotel_images[3], "location": "pattaya", "address": "333/101 Moo 9, Pattaya"},
+    {"id": str(uuid.uuid4()), "name": "Rayavadee Resort", "description": "Secluded beach paradise", "category": "hotel", "sponsored": False, "image": hotel_images[4], "location": "krabi", "address": "214 Moo 2 Tambon Ao-Nang, Krabi"},
     
-    {"id": str(uuid.uuid4()), "name": "Oasis Spa Bangkok", "description": "Traditional Thai massage", "category": "spa", "sponsored": True, "image": spa_images[0]},
-    {"id": str(uuid.uuid4()), "name": "Divana Virtue Spa", "description": "Holistic wellness", "category": "spa", "sponsored": False, "image": spa_images[1]},
-    {"id": str(uuid.uuid4()), "name": "Asia Herb Association", "description": "Herbal therapy spa", "category": "spa", "sponsored": True, "image": spa_images[2]},
-    {"id": str(uuid.uuid4()), "name": "Let's Relax Spa", "description": "Affordable luxury", "category": "spa", "sponsored": False, "image": spa_images[3]},
-    {"id": str(uuid.uuid4()), "name": "CHI Spa", "description": "Asian healing traditions", "category": "spa", "sponsored": False, "image": spa_images[4]},
+    {"id": str(uuid.uuid4()), "name": "Oasis Spa Bangkok", "description": "Traditional Thai massage", "category": "spa", "sponsored": True, "image": spa_images[0], "location": "bangkok", "address": "88 Soi Sukhumvit 31, Bangkok"},
+    {"id": str(uuid.uuid4()), "name": "Oasis Spa Chiang Mai", "description": "Lanna-style wellness", "category": "spa", "sponsored": False, "image": spa_images[1], "location": "chiang-mai", "address": "4 Samlan Road Soi 6, Chiang Mai"},
+    {"id": str(uuid.uuid4()), "name": "Let's Relax Phuket", "description": "Beachside spa treatments", "category": "spa", "sponsored": True, "image": spa_images[2], "location": "phuket", "address": "Patong Beach, Phuket"},
+    {"id": str(uuid.uuid4()), "name": "The Pattaya Spa", "description": "Ocean view wellness", "category": "spa", "sponsored": False, "image": spa_images[3], "location": "pattaya", "address": "Beach Road, Pattaya"},
+    {"id": str(uuid.uuid4()), "name": "Krabi Spa Village", "description": "Nature-inspired healing", "category": "spa", "sponsored": False, "image": spa_images[4], "location": "krabi", "address": "Ao Nang Beach, Krabi"},
 ]
 
 async def populate_data():
