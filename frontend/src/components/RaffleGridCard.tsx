@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Pressable } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, Platform } from 'react-native';
 import { Raffle } from '../types';
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
+import { LinearGradient } from 'expo-linear-gradient';
 
 interface RaffleGridCardProps {
   raffle: Raffle;
@@ -10,12 +11,12 @@ interface RaffleGridCardProps {
 }
 
 const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
-  const getCategoryColor = (category: string) => {
+  const getCategoryGradient = (category: string): [string, string] => {
     switch (category) {
-      case 'food': return '#FF6B6B';
-      case 'hotel': return '#4ECDC4';
-      case 'spa': return '#A8E6CF';
-      default: return '#FFD700';
+      case 'food': return ['#FF6B6B', '#FF8E53'];
+      case 'hotel': return ['#4ECDC4', '#44A08D'];
+      case 'spa': return ['#A8E6CF', '#88D8B0'];
+      default: return ['#FFD700', '#FFC200'];
     }
   };
 
@@ -28,6 +29,8 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
     }
   };
 
+  const gradientColors = getCategoryGradient(raffle.category);
+
   return (
     <Pressable 
       style={({ pressed }) => [
@@ -36,36 +39,62 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
       ]}
       onPress={onPress}
     >
+      {/* Image Container with Gradient Overlay */}
       <View style={styles.imageContainer}>
         {raffle.image ? (
-          <Image source={{ uri: raffle.image }} style={styles.image} />
+          <>
+            <Image source={{ uri: raffle.image }} style={styles.image} />
+            <LinearGradient
+              colors={['transparent', 'rgba(0,0,0,0.3)']}
+              style={styles.imageGradient}
+            />
+          </>
         ) : (
-          <View style={[styles.imagePlaceholder, { backgroundColor: getCategoryColor(raffle.category) }]}>
-            <Ionicons name={getCategoryIcon(raffle.category) as any} size={40} color="#fff" />
-          </View>
+          <LinearGradient
+            colors={gradientColors}
+            style={styles.imagePlaceholder}
+          >
+            <Ionicons name={getCategoryIcon(raffle.category) as any} size={45} color="#fff" />
+          </LinearGradient>
         )}
-        <View style={[styles.categoryBadge, { backgroundColor: getCategoryColor(raffle.category) }]}>
+        
+        {/* Category Badge */}
+        <LinearGradient
+          colors={gradientColors}
+          style={styles.categoryBadge}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
           <Text style={styles.categoryText}>{raffle.category.toUpperCase()}</Text>
-        </View>
+        </LinearGradient>
       </View>
       
+      {/* Content */}
       <View style={styles.content}>
         <Text style={styles.title} numberOfLines={2}>{raffle.title}</Text>
         
-        <View style={styles.prizeInfo}>
-          <View style={styles.prizeRow}>
-            <Ionicons name="gift-outline" size={14} color="#666" />
-            <Text style={styles.prizeText}>{raffle.prizesRemaining} left</Text>
+        <View style={styles.infoContainer}>
+          {/* Prize Count */}
+          <View style={styles.infoRow}>
+            <View style={[styles.iconBadge, { backgroundColor: '#FFF0F0' }]}>
+              <Ionicons name="gift" size={12} color="#FF6B6B" />
+            </View>
+            <Text style={styles.infoText}>{raffle.prizesRemaining}</Text>
           </View>
-          <View style={styles.ticketRow}>
-            <Ionicons name="ticket-outline" size={14} color="#FFD700" />
+          
+          {/* Ticket Cost */}
+          <View style={styles.ticketBadge}>
+            <Ionicons name="ticket" size={12} color="#FFB800" />
             <Text style={styles.ticketText}>{raffle.ticketCost}</Text>
           </View>
         </View>
         
-        <Text style={styles.drawDate}>
-          Draw: {format(new Date(raffle.drawDate), 'MMM dd')}
-        </Text>
+        <View style={styles.dateRow}>
+          <Ionicons name="calendar-outline" size={11} color="#95A5A6" />
+          <Text style={styles.drawDate}>
+            {format(new Date(raffle.drawDate), 'MMM dd, yyyy')}
+          </Text>
+        </View>
       </View>
     </Pressable>
   );
@@ -74,28 +103,44 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#ffffff',
-    borderRadius: 16,
+    borderRadius: 20,
     marginBottom: 16,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.08,
-    shadowRadius: 8,
-    elevation: 3,
     overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 6 },
+        shadowOpacity: 0.15,
+        shadowRadius: 12,
+      },
+      android: {
+        elevation: 8,
+      },
+      web: {
+        boxShadow: '0 6px 20px rgba(0,0,0,0.1)',
+      },
+    }),
   },
   cardPressed: {
-    opacity: 0.8,
-    transform: [{ scale: 0.98 }],
+    opacity: 0.9,
+    transform: [{ scale: 0.97 }],
   },
   imageContainer: {
     width: '100%',
-    height: 120,
+    height: 130,
     position: 'relative',
   },
   image: {
     width: '100%',
     height: '100%',
     resizeMode: 'cover',
+  },
+  imageGradient: {
+    position: 'absolute',
+    bottom: 0,
+    left: 0,
+    right: 0,
+    height: '50%',
   },
   imagePlaceholder: {
     width: '100%',
@@ -105,62 +150,87 @@ const styles = StyleSheet.create({
   },
   categoryBadge: {
     position: 'absolute',
-    top: 8,
-    right: 8,
-    paddingHorizontal: 10,
-    paddingVertical: 4,
-    borderRadius: 12,
+    top: 10,
+    right: 10,
+    paddingHorizontal: 12,
+    paddingVertical: 5,
+    borderRadius: 16,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.25,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
   },
   categoryText: {
     color: '#ffffff',
     fontSize: 9,
-    fontWeight: '700',
-    letterSpacing: 0.5,
+    fontWeight: '800',
+    letterSpacing: 0.8,
   },
   content: {
-    padding: 12,
+    padding: 14,
   },
   title: {
-    fontSize: 14,
+    fontSize: 13,
     fontWeight: '700',
     color: '#2C3E50',
-    marginBottom: 8,
-    lineHeight: 18,
+    marginBottom: 10,
+    lineHeight: 17,
   },
-  prizeInfo: {
+  infoContainer: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    marginBottom: 6,
+    marginBottom: 8,
   },
-  prizeRow: {
+  infoRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
+  iconBadge: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    justifyContent: 'center',
+    alignItems: 'center',
+  },
+  infoText: {
+    fontSize: 13,
+    color: '#2C3E50',
+    fontWeight: '700',
+  },
+  ticketBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    backgroundColor: '#FFF9E6',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#FFE6A0',
+  },
+  ticketText: {
+    fontSize: 12,
+    fontWeight: '800',
+    color: '#FFB800',
+  },
+  dateRow: {
     flexDirection: 'row',
     alignItems: 'center',
     gap: 4,
   },
-  prizeText: {
-    fontSize: 12,
-    color: '#666',
-    fontWeight: '600',
-  },
-  ticketRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 3,
-    backgroundColor: '#FFF9E6',
-    paddingHorizontal: 8,
-    paddingVertical: 3,
-    borderRadius: 8,
-  },
-  ticketText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#FFB800',
-  },
   drawDate: {
-    fontSize: 11,
+    fontSize: 10,
     color: '#95A5A6',
-    fontWeight: '500',
+    fontWeight: '600',
   },
 });
 

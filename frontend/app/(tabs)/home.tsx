@@ -7,12 +7,16 @@ import {
   RefreshControl,
   ActivityIndicator,
   Dimensions,
+  Image,
+  Platform,
 } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
+import { LinearGradient } from 'expo-linear-gradient';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
@@ -63,40 +67,86 @@ export default function HomeScreen() {
         }
         showsVerticalScrollIndicator={false}
       >
-        {/* Header Card */}
-        <View style={styles.headerCard}>
-          <View style={styles.headerTop}>
+        {/* Hero Header with Logo */}
+        <LinearGradient
+          colors={['#FFD700', '#FFC200', '#FFB800']}
+          style={styles.heroHeader}
+          start={{ x: 0, y: 0 }}
+          end={{ x: 1, y: 1 }}
+        >
+          <View style={styles.logoContainer}>
+            <Image
+              source={{ uri: 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg' }}
+              style={styles.logo}
+              resizeMode="contain"
+            />
+            <Text style={styles.brandName}>WinWai</Text>
+          </View>
+          
+          <View style={styles.headerContent}>
             <View>
               <Text style={styles.greeting}>Hello, {user?.name || 'Guest'}!</Text>
-              <Text style={styles.subGreeting}>Win amazing prizes today</Text>
+              <Text style={styles.subGreeting}>Ready to win amazing prizes?</Text>
             </View>
+            
             <View style={styles.ticketBadge}>
-              <Text style={styles.ticketIcon}>🎟️</Text>
-              <Text style={styles.ticketText}>{user?.tickets || 0}</Text>
+              <Ionicons name="ticket" size={22} color="#FFB800" />
+              <View>
+                <Text style={styles.ticketLabel}>Tickets</Text>
+                <Text style={styles.ticketCount}>{user?.tickets || 0}</Text>
+              </View>
             </View>
           </View>
-        </View>
+        </LinearGradient>
 
-        {/* Stats Cards */}
+        {/* Quick Stats */}
         <View style={styles.statsContainer}>
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{raffles.length}</Text>
-            <Text style={styles.statLabel}>Active Raffles</Text>
+            <LinearGradient
+              colors={['#FF6B6B', '#FF8E53']}
+              style={styles.statGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <Ionicons name="gift-outline" size={24} color="#fff" />
+              <Text style={styles.statNumber}>{raffles.length}</Text>
+              <Text style={styles.statLabel}>Active</Text>
+            </LinearGradient>
           </View>
+          
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{user?.tickets || 0}</Text>
-            <Text style={styles.statLabel}>Your Tickets</Text>
+            <LinearGradient
+              colors={['#4ECDC4', '#44A08D']}
+              style={styles.statGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <Ionicons name="trophy-outline" size={24} color="#fff" />
+              <Text style={styles.statNumber}>{raffles.reduce((sum, r) => sum + r.prizesAvailable, 0)}</Text>
+              <Text style={styles.statLabel}>Prizes</Text>
+            </LinearGradient>
           </View>
+          
           <View style={styles.statCard}>
-            <Text style={styles.statNumber}>{raffles.reduce((sum, r) => sum + r.prizesAvailable, 0)}</Text>
-            <Text style={styles.statLabel}>Total Prizes</Text>
+            <LinearGradient
+              colors={['#A8E6CF', '#88D8B0']}
+              style={styles.statGradient}
+              start={{ x: 0, y: 0 }}
+              end={{ x: 1, y: 1 }}
+            >
+              <Ionicons name="people-outline" size={24} color="#fff" />
+              <Text style={styles.statNumber}>{raffles.reduce((sum, r) => sum + r.totalEntries, 0)}</Text>
+              <Text style={styles.statLabel}>Entries</Text>
+            </LinearGradient>
           </View>
         </View>
 
-        {/* Section Title */}
+        {/* Section Header */}
         <View style={styles.sectionHeader}>
-          <Text style={styles.sectionTitle}>Live Raffles</Text>
-          <Text style={styles.sectionSubtitle}>Enter now to win!</Text>
+          <View>
+            <Text style={styles.sectionTitle}>Live Raffles</Text>
+            <Text style={styles.sectionSubtitle}>Enter now to win!</Text>
+          </View>
         </View>
 
         {/* Raffle Grid */}
@@ -113,8 +163,8 @@ export default function HomeScreen() {
         
         {raffles.length === 0 && (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>🎁</Text>
-            <Text style={styles.emptyText}>No active raffles at the moment</Text>
+            <Ionicons name="gift-outline" size={80} color="#E0E0E0" />
+            <Text style={styles.emptyText}>No active raffles</Text>
             <Text style={styles.emptySubtext}>Check back soon for new prizes!</Text>
           </View>
         )}
@@ -144,25 +194,53 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 80,
   },
-  headerCard: {
-    backgroundColor: '#FFD700',
-    padding: 20,
-    paddingTop: 16,
+  heroHeader: {
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
     paddingBottom: 24,
+    paddingHorizontal: 20,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.2,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
-  headerTop: {
+  logoContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    marginBottom: 20,
+    gap: 12,
+  },
+  logo: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    backgroundColor: '#fff',
+  },
+  brandName: {
+    fontSize: 26,
+    fontWeight: '900',
+    color: '#000',
+    letterSpacing: 1,
+  },
+  headerContent: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
   },
   greeting: {
-    fontSize: 24,
+    fontSize: 22,
     fontWeight: '800',
     color: '#000',
     marginBottom: 2,
   },
   subGreeting: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#333',
     fontWeight: '500',
   },
@@ -171,21 +249,29 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     backgroundColor: '#ffffff',
     paddingHorizontal: 16,
-    paddingVertical: 10,
-    borderRadius: 24,
-    gap: 6,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    paddingVertical: 12,
+    borderRadius: 20,
+    gap: 10,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
   },
-  ticketIcon: {
-    fontSize: 20,
+  ticketLabel: {
+    fontSize: 10,
+    color: '#666',
+    fontWeight: '600',
   },
-  ticketText: {
+  ticketCount: {
     fontSize: 18,
-    fontWeight: '800',
+    fontWeight: '900',
     color: '#000',
   },
   statsContainer: {
@@ -196,42 +282,56 @@ const styles = StyleSheet.create({
   },
   statCard: {
     flex: 1,
-    backgroundColor: '#ffffff',
-    padding: 16,
     borderRadius: 16,
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.15,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 5,
+      },
+    }),
+  },
+  statGradient: {
+    padding: 16,
     alignItems: 'center',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 4,
-    elevation: 2,
+    justifyContent: 'center',
   },
   statNumber: {
     fontSize: 24,
-    fontWeight: '800',
-    color: '#2C3E50',
-    marginBottom: 4,
+    fontWeight: '900',
+    color: '#ffffff',
+    marginTop: 8,
+    marginBottom: 2,
   },
   statLabel: {
     fontSize: 11,
-    color: '#7F8C8D',
-    fontWeight: '600',
-    textAlign: 'center',
+    color: '#ffffff',
+    fontWeight: '700',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
   },
   sectionHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
     paddingHorizontal: 20,
     marginBottom: 16,
   },
   sectionTitle: {
-    fontSize: 22,
-    fontWeight: '800',
+    fontSize: 24,
+    fontWeight: '900',
     color: '#2C3E50',
     marginBottom: 2,
   },
   sectionSubtitle: {
-    fontSize: 14,
+    fontSize: 13,
     color: '#7F8C8D',
-    fontWeight: '500',
+    fontWeight: '600',
   },
   gridContainer: {
     flexDirection: 'row',
@@ -242,14 +342,11 @@ const styles = StyleSheet.create({
     padding: 48,
     alignItems: 'center',
   },
-  emptyIcon: {
-    fontSize: 64,
-    marginBottom: 16,
-  },
   emptyText: {
     fontSize: 18,
     fontWeight: '700',
     color: '#2C3E50',
+    marginTop: 16,
     marginBottom: 8,
   },
   emptySubtext: {
