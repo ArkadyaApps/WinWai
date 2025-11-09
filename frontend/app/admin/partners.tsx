@@ -29,6 +29,10 @@ export default function AdminPartnersScreen() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+  // Filters
+  const [query, setQuery] = useState('');
+  const [categoryFilter, setCategoryFilter] = useState<'all' | 'food' | 'hotel' | 'spa'>('all');
+
   const [formData, setFormData] = useState({
     name: '',
     description: '',
@@ -41,6 +45,12 @@ export default function AdminPartnersScreen() {
     fetchPartners(true);
   }, []);
 
+  // Debounced search/filter
+  useEffect(() => {
+    const t = setTimeout(() => fetchPartners(true), 400);
+    return () => clearTimeout(t);
+  }, [query, categoryFilter]);
+
   const fetchPartners = async (reset = false) => {
     try {
       if (reset) {
@@ -48,7 +58,14 @@ export default function AdminPartnersScreen() {
         setPage(1);
       }
       const currentPage = reset ? 1 : page;
-      const response = await api.get(`/api/admin/partners`, { params: { page: currentPage, limit: 20 } });
+      const response = await api.get(`/api/admin/partners`, {
+        params: {
+          page: currentPage,
+          limit: 20,
+          q: query || undefined,
+          category: categoryFilter === 'all' ? undefined : categoryFilter,
+        },
+      });
       const data: Partner[] = response.data;
       if (reset) {
         setPartners(data);
@@ -174,6 +191,40 @@ export default function AdminPartnersScreen() {
         </TouchableOpacity>
       </LinearGradient>
 
+      {/* Search + Filters */}
+      <View style={styles.filterBar}>
+        <View style={styles.searchBox}>
+          <Ionicons name="search" size={18} color="#7F8C8D" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search partners"
+            placeholderTextColor="#9AA0A6"
+            value={query}
+            onChangeText={setQuery}
+            autoCapitalize="none"
+            returnKeyType="search"
+          />
+          {query.length > 0 && (
+            <TouchableOpacity onPress={() => setQuery('')} style={styles.clearBtn}>
+              <Ionicons name="close-circle" size={18} color="#999" />
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.pillsRow}>
+          {(['all', 'food', 'hotel', 'spa'] as const).map((c) => (
+            <TouchableOpacity
+              key={c}
+              style={[styles.pill, categoryFilter === c && styles.pillActive]}
+              onPress={() => setCategoryFilter(c)}
+            >
+              <Text style={[styles.pillText, categoryFilter === c && styles.pillTextActive]}>
+                {c === 'all' ? 'All' : c.charAt(0).toUpperCase() + c.slice(1)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
+
       <ScrollView
         contentContainerStyle={styles.content}
         refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
@@ -280,7 +331,7 @@ export default function AdminPartnersScreen() {
                 numberOfLines={3}
               />
 
-              <Text style={styles.label}>Category *</Text>
+              <Text style={styles.label}>Category *</nText>
               <View style={styles.categoryButtons}>
                 {['food', 'hotel', 'spa'].map((cat) => (
                   <TouchableOpacity
@@ -338,247 +389,56 @@ export default function AdminPartnersScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F9FA',
-  },
-  centerContainer: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F8F9FA',
-  },
-  header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
-    paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 16,
-  },
-  backButton: {
-    padding: 8,
-  },
-  headerTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#000',
-  },
-  addButton: {
-    padding: 8,
-  },
-  content: {
-    padding: 16,
-  },
-  emptyContainer: {
-    alignItems: 'center',
-    justifyContent: 'center',
-    paddingVertical: 80,
-  },
-  emptyText: {
-    fontSize: 16,
-    color: '#999',
-    marginTop: 16,
-    marginBottom: 24,
-  },
-  createButton: {
-    backgroundColor: '#FFD700',
-    paddingHorizontal: 24,
-    paddingVertical: 12,
-    borderRadius: 8,
-  },
-  createButtonText: {
-    fontSize: 16,
-    fontWeight: '600',
-    color: '#000',
-  },
-  partnerCard: {
-    backgroundColor: '#ffffff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 16,
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 3,
-      },
-    }),
-  },
-  partnerHeader: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    marginBottom: 12,
-  },
-  categoryIcon: {
-    fontSize: 32,
-    marginRight: 12,
-  },
-  partnerInfo: {
-    flex: 1,
-  },
-  partnerName: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#2C3E50',
-  },
-  partnerCategory: {
-    fontSize: 14,
-    color: '#7F8C8D',
-    textTransform: 'capitalize',
-  },
-  sponsoredBadge: {
-    backgroundColor: '#FFD700',
-    paddingHorizontal: 8,
-    paddingVertical: 4,
-    borderRadius: 4,
-  },
-  sponsoredText: {
-    fontSize: 10,
-    fontWeight: '700',
-    color: '#000',
-  },
-  partnerDescription: {
-    fontSize: 14,
-    color: '#5A6C7D',
-    lineHeight: 20,
-    marginBottom: 8,
-  },
-  contactInfo: {
-    fontSize: 13,
-    color: '#7F8C8D',
-    marginBottom: 12,
-  },
-  actionButtons: {
-    flexDirection: 'row',
-    gap: 12,
-  },
-  editButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    backgroundColor: '#E8F8F7',
-    padding: 12,
-    borderRadius: 8,
-  },
-  editButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#4ECDC4',
-  },
-  deleteButton: {
-    flex: 1,
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: 6,
-    backgroundColor: '#FFEAEA',
-    padding: 12,
-    borderRadius: 8,
-  },
-  deleteButtonText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#FF3B30',
-  },
-  modalOverlay: {
-    flex: 1,
-    backgroundColor: 'rgba(0, 0, 0, 0.5)',
-    justifyContent: 'flex-end',
-  },
-  modalContent: {
-    backgroundColor: '#fff',
-    borderTopLeftRadius: 24,
-    borderTopRightRadius: 24,
-    maxHeight: '90%',
-    paddingBottom: Platform.OS === 'ios' ? 40 : 20,
-  },
-  modalHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    padding: 20,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E0E0E0',
-  },
-  modalTitle: {
-    fontSize: 20,
-    fontWeight: '700',
-    color: '#2C3E50',
-  },
-  formContainer: {
-    padding: 20,
-  },
-  label: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2C3E50',
-    marginBottom: 8,
-    marginTop: 12,
-  },
-  input: {
-    backgroundColor: '#F5F5F5',
-    borderRadius: 8,
-    padding: 12,
-    fontSize: 16,
-    color: '#2C3E50',
-  },
-  textArea: {
-    height: 80,
-    textAlignVertical: 'top',
-  },
-  categoryButtons: {
-    flexDirection: 'row',
-    gap: 8,
-  },
-  categoryButton: {
-    flex: 1,
-    backgroundColor: '#F5F5F5',
-    padding: 12,
-    borderRadius: 8,
-    alignItems: 'center',
-  },
-  categoryButtonActive: {
-    backgroundColor: '#FFD700',
-  },
-  categoryButtonText: {
-    fontSize: 14,
-    color: '#7F8C8D',
-    textTransform: 'capitalize',
-  },
-  categoryButtonTextActive: {
-    color: '#000',
-    fontWeight: '600',
-  },
-  sponsoredToggle: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    backgroundColor: '#F5F5F5',
-    padding: 12,
-    borderRadius: 8,
-    marginTop: 12,
-  },
-  sponsoredToggleText: {
-    fontSize: 16,
-    color: '#2C3E50',
-  },
-  saveButton: {
-    backgroundColor: '#4ECDC4',
-    padding: 16,
-    borderRadius: 8,
-    alignItems: 'center',
-    marginTop: 24,
-  },
-  saveButtonText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#fff',
-  },
+  container: { flex: 1, backgroundColor: '#F8F9FA' },
+  centerContainer: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: '#F8F9FA' },
+  header: { flexDirection: 'row', alignItems: 'center', justifyContent: 'space-between', paddingHorizontal: 16, paddingTop: Platform.OS === 'ios' ? 60 : 40, paddingBottom: 16 },
+  backButton: { padding: 8 },
+  headerTitle: { fontSize: 20, fontWeight: '700', color: '#000' },
+  addButton: { padding: 8 },
+  filterBar: { paddingHorizontal: 16, paddingTop: 12, paddingBottom: 4, backgroundColor: '#F8F9FA' },
+  searchBox: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', borderRadius: 12, paddingHorizontal: 12, paddingVertical: 10, borderWidth: 1, borderColor: '#E5E7EB' },
+  searchInput: { flex: 1, marginLeft: 8, fontSize: 16, color: '#2C3E50' },
+  clearBtn: { padding: 4 },
+  pillsRow: { flexDirection: 'row', gap: 8, marginTop: 10 },
+  pill: { paddingHorizontal: 12, paddingVertical: 8, borderRadius: 20, backgroundColor: '#ECEFF1' },
+  pillActive: { backgroundColor: '#FFD700' },
+  pillText: { color: '#2C3E50', fontWeight: '600' },
+  pillTextActive: { color: '#000' },
+  content: { padding: 16 },
+  emptyContainer: { alignItems: 'center', justifyContent: 'center', paddingVertical: 80 },
+  emptyText: { fontSize: 16, color: '#999', marginTop: 16, marginBottom: 24 },
+  createButton: { backgroundColor: '#FFD700', paddingHorizontal: 24, paddingVertical: 12, borderRadius: 8 },
+  createButtonText: { fontSize: 16, fontWeight: '600', color: '#000' },
+  partnerCard: { backgroundColor: '#ffffff', borderRadius: 12, padding: 16, marginBottom: 16, ...Platform.select({ ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 }, android: { elevation: 3 } }) },
+  partnerHeader: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+  categoryIcon: { fontSize: 32, marginRight: 12 },
+  partnerInfo: { flex: 1 },
+  partnerName: { fontSize: 18, fontWeight: '700', color: '#2C3E50' },
+  partnerCategory: { fontSize: 14, color: '#7F8C8D', textTransform: 'capitalize' },
+  sponsoredBadge: { backgroundColor: '#FFD700', paddingHorizontal: 8, paddingVertical: 4, borderRadius: 4 },
+  sponsoredText: { fontSize: 10, fontWeight: '700', color: '#000' },
+  partnerDescription: { fontSize: 14, color: '#5A6C7D', lineHeight: 20, marginBottom: 8 },
+  contactInfo: { fontSize: 13, color: '#7F8C8D', marginBottom: 12 },
+  actionButtons: { flexDirection: 'row', gap: 12 },
+  editButton: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: '#E8F8F7', padding: 12, borderRadius: 8 },
+  editButtonText: { fontSize: 14, fontWeight: '600', color: '#4ECDC4' },
+  deleteButton: { flex: 1, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 6, backgroundColor: '#FFEAEA', padding: 12, borderRadius: 8 },
+  deleteButtonText: { fontSize: 14, fontWeight: '600', color: '#FF3B30' },
+  modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'flex-end' },
+  modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: '90%', paddingBottom: Platform.OS === 'ios' ? 40 : 20 },
+  modalHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', padding: 20, borderBottomWidth: 1, borderBottomColor: '#E0E0E0' },
+  modalTitle: { fontSize: 20, fontWeight: '700', color: '#2C3E50' },
+  formContainer: { padding: 20 },
+  label: { fontSize: 14, fontWeight: '600', color: '#2C3E50', marginBottom: 8, marginTop: 12 },
+  input: { backgroundColor: '#F5F5F5', borderRadius: 8, padding: 12, fontSize: 16, color: '#2C3E50' },
+  textArea: { height: 80, textAlignVertical: 'top' },
+  categoryButtons: { flexDirection: 'row', gap: 8 },
+  categoryButton: { flex: 1, backgroundColor: '#F5F5F5', padding: 12, borderRadius: 8, alignItems: 'center' },
+  categoryButtonActive: { backgroundColor: '#FFD700' },
+  categoryButtonText: { fontSize: 14, color: '#7F8C8D', textTransform: 'capitalize' },
+  categoryButtonTextActive: { color: '#000', fontWeight: '600' },
+  sponsoredToggle: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', backgroundColor: '#F5F5F5', padding: 12, borderRadius: 8, marginTop: 12 },
+  sponsoredToggleText: { fontSize: 16, color: '#2C3E50' },
+  saveButton: { backgroundColor: '#4ECDC4', padding: 16, borderRadius: 8, alignItems: 'center', marginTop: 24 },
+  saveButtonText: { fontSize: 16, fontWeight: '700', color: '#fff' },
 });

@@ -29,6 +29,10 @@ export default function AdminUsersScreen() {
   const [page, setPage] = useState(1);
   const [hasMore, setHasMore] = useState(true);
 
+  // Filters
+  const [query, setQuery] = useState('');
+  const [roleFilter, setRoleFilter] = useState<'all' | 'user' | 'admin'>('all');
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -41,6 +45,12 @@ export default function AdminUsersScreen() {
     fetchUsers(true);
   }, []);
 
+  // Debounced search/filter
+  useEffect(() => {
+    const t = setTimeout(() => fetchUsers(true), 400);
+    return () => clearTimeout(t);
+  }, [query, roleFilter]);
+
   const fetchUsers = async (reset = false) => {
     try {
       if (reset) {
@@ -48,7 +58,14 @@ export default function AdminUsersScreen() {
         setPage(1);
       }
       const currentPage = reset ? 1 : page;
-      const response = await api.get('/api/admin/users', { params: { page: currentPage, limit: 20 } });
+      const response = await api.get('/api/admin/users', {
+        params: {
+          page: currentPage,
+          limit: 20,
+          q: query || undefined,
+          role: roleFilter === 'all' ? undefined : roleFilter,
+        },
+      });
       const data: User[] = response.data;
       if (reset) {
         setUsers(data);
@@ -144,6 +161,40 @@ export default function AdminUsersScreen() {
         <Text style={styles.headerTitle}>Manage Users</Text>
         <View style={{ width: 40 }} />
       </LinearGradient>
+
+      {/* Search + Filters */}
+      <View style={styles.filterBar}>
+        <View style={styles.searchBox}>
+          <Ionicons name="search" size={18} color="#7F8C8D" />
+          <TextInput
+            style={styles.searchInput}
+            placeholder="Search name or email"
+            placeholderTextColor="#9AA0A6"
+            value={query}
+            onChangeText={setQuery}
+            autoCapitalize="none"
+            returnKeyType="search"
+          />
+          {query.length > 0 && (
+            <TouchableOpacity onPress={() => setQuery('')} style={styles.clearBtn}>
+              <Ionicons name="close-circle" size={18} color="#999" />
+            </TouchableOpacity>
+          )}
+        </View>
+        <View style={styles.pillsRow}>
+          {(['all', 'user', 'admin'] as const).map((r) => (
+            <TouchableOpacity
+              key={r}
+              style={[styles.pill, roleFilter === r && styles.pillActive]}
+              onPress={() => setRoleFilter(r)}
+            >
+              <Text style={[styles.pillText, roleFilter === r && styles.pillTextActive]}>
+                {r === 'all' ? 'All' : r.charAt(0).toUpperCase() + r.slice(1)}
+              </Text>
+            </TouchableOpacity>
+          ))}
+        </View>
+      </View>
 
       <ScrollView
         contentContainerStyle={styles.content}
@@ -318,6 +369,50 @@ const styles = StyleSheet.create({
   headerTitle: {
     fontSize: 20,
     fontWeight: '700',
+    color: '#fff',
+  },
+  filterBar: {
+    paddingHorizontal: 16,
+    paddingTop: 12,
+    paddingBottom: 4,
+    backgroundColor: '#F8F9FA',
+  },
+  searchBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 10,
+    borderWidth: 1,
+    borderColor: '#E5E7EB',
+  },
+  searchInput: {
+    flex: 1,
+    marginLeft: 8,
+    fontSize: 16,
+    color: '#2C3E50',
+  },
+  clearBtn: { padding: 4 },
+  pillsRow: {
+    flexDirection: 'row',
+    gap: 8,
+    marginTop: 10,
+  },
+  pill: {
+    paddingHorizontal: 12,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#ECEFF1',
+  },
+  pillActive: {
+    backgroundColor: '#4ECDC4',
+  },
+  pillText: {
+    color: '#2C3E50',
+    fontWeight: '600',
+  },
+  pillTextActive: {
     color: '#fff',
   },
   content: {
