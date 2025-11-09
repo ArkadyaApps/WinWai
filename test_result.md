@@ -101,3 +101,181 @@
 #====================================================================================================
 # Testing Data - Main Agent and testing sub agent both should log testing data below this section
 #====================================================================================================
+
+user_problem_statement: |
+  Implement admin role toggle switch on the user profile page and display the corresponding admin management menu.
+  - Add a toggle switch in the Admin user Panel to allow users to switch between Admin and User roles.
+  - Display the Admin menu (Add/manage Partners, Users, Products) when in Admin role.
+  - Fix the User Page functionality to allow users to make changes to their profile.
+
+backend:
+  - task: "Add profile update endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added PUT /api/users/me/profile endpoint to allow users to update name, email, and phone"
+  
+  - task: "Add phone field to User model"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added optional phone field to User model"
+  
+  - task: "Admin Partner CRUD endpoints"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added GET/POST/PUT/DELETE /api/admin/partners endpoints for full CRUD operations"
+  
+  - task: "Admin User management endpoints"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added PUT/DELETE /api/admin/users/{user_id} endpoints with role and ticket management"
+  
+  - task: "Admin Raffle management endpoints"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added GET/PUT/DELETE /api/admin/raffles endpoints for raffle management"
+
+frontend:
+  - task: "Edit profile functionality"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/(tabs)/profile.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added Edit Profile button and modal with form to update name, email, and phone"
+  
+  - task: "Admin Partners management screen"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/admin/partners.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created full CRUD UI for partner management with create/edit modal"
+  
+  - task: "Admin Users management screen"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/admin/users.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created user management UI with edit modal and delete functionality"
+  
+  - task: "Admin Raffles management screen"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/app/admin/raffles.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Created raffle management UI with draw winner and delete functionality"
+  
+  - task: "Update types for phone and Partner"
+    implemented: true
+    working: "NA"
+    file: "/app/frontend/src/types/index.ts"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added phone field to User type and created Partner interface"
+
+metadata:
+  created_by: "main_agent"
+  version: "1.0"
+  test_sequence: 0
+  run_ui: false
+
+test_plan:
+  current_focus:
+    - "Add profile update endpoint"
+    - "Admin Partner CRUD endpoints"
+    - "Admin User management endpoints"
+    - "Admin Raffle management endpoints"
+    - "Edit profile functionality"
+    - "Admin Partners management screen"
+    - "Admin Users management screen"
+    - "Admin Raffles management screen"
+  stuck_tasks: []
+  test_all: true
+  test_priority: "high_first"
+
+agent_communication:
+  - agent: "main"
+    message: |
+      Implementation complete for admin role toggle and profile editing features:
+      
+      BACKEND:
+      - Added PUT /api/users/me/profile endpoint for profile updates
+      - Added phone field to User model
+      - Implemented full admin CRUD endpoints:
+        * Partners: GET/POST/PUT/DELETE /api/admin/partners
+        * Users: PUT/DELETE /api/admin/users/{user_id}
+        * Raffles: GET/PUT/DELETE /api/admin/raffles
+      
+      FRONTEND:
+      - Enhanced profile page with Edit Profile button and modal
+      - Created /app/admin/partners.tsx with full CRUD UI
+      - Created /app/admin/users.tsx with edit/delete UI
+      - Created /app/admin/raffles.tsx with draw winner/delete UI
+      - Admin toggle switch already exists and persists
+      - Admin menu already displays when adminMode is true
+      
+      Ready for backend testing first. All endpoints should be tested for:
+      - Profile update (name, email, phone)
+      - Partner CRUD operations
+      - User update/delete operations
+      - Raffle update/delete and draw winner
+      
+      Test with admin users: artteabnc@gmail.com, netcorez13@gmail.com, arkadyaproperties@gmail.com
+      Password: winwanadmin
