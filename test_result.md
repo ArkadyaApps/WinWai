@@ -247,23 +247,27 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.0"
-  test_sequence: 0
+  version: "1.1"
+  test_sequence: 1
   run_ui: false
+  backend_testing_complete: true
+  backend_test_success_rate: "100%"
 
 test_plan:
   current_focus:
-    - "Add profile update endpoint"
-    - "Admin Partner CRUD endpoints"
-    - "Admin User management endpoints"
-    - "Admin Raffle management endpoints"
     - "Edit profile functionality"
     - "Admin Partners management screen"
     - "Admin Users management screen"
     - "Admin Raffles management screen"
+  completed_backend_tasks:
+    - "Add profile update endpoint"
+    - "Admin Partner CRUD endpoints"
+    - "Admin User management endpoints"
+    - "Admin Raffle management endpoints"
+    - "Add phone field to User model"
   stuck_tasks: []
-  test_all: true
-  test_priority: "high_first"
+  test_all: false
+  test_priority: "frontend_only"
 
 agent_communication:
   - agent: "main"
