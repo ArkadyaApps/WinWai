@@ -1,8 +1,7 @@
 import { Platform } from 'react-native';
-import { getAdUnit } from '../utils/adConfig';
 import api from '../utils/api';
 
-interface RewardEvent {
+export interface RewardEvent {
   userId: string;
   rewardType: string;
   rewardAmount: number;
@@ -10,103 +9,31 @@ interface RewardEvent {
   timestamp: number;
 }
 
-// Conditionally import AdMob types
-let RewardedAd: any, RewardedAdEventType: any;
-if (Platform.OS !== 'web') {
-  const AdMob = require('react-native-google-mobile-ads');
-  RewardedAd = AdMob.RewardedAd;
-  RewardedAdEventType = AdMob.RewardedAdEventType;
-}
-
 class RewardedAdManager {
-  private rewardedAd: any = null;
   private isLoading = false;
   private currentUserId: string = '';
   private onRewardCallback?: (reward: RewardEvent) => void;
+  private adReady = false;
 
   async loadRewardedAd(userId: string): Promise<void> {
-    if (this.isLoading || this.rewardedAd?.loaded) {
-      this.currentUserId = userId;
-      return;
-    }
-
-    this.isLoading = true;
     this.currentUserId = userId;
-    const adUnitId = getAdUnit('rewarded');
-
-    this.rewardedAd = RewardedAd.createForAdRequest(adUnitId, {
-      keywords: ['gaming', 'rewards', 'entertainment'],
-    });
-
-    this.setupRewardedListeners();
-
-    try {
-      await this.rewardedAd.load();
-    } catch (error) {
-      console.error('Failed to load rewarded ad:', error);
-      this.isLoading = false;
+    // Placeholder for mobile - will work when deployed to device
+    if (Platform.OS !== 'web') {
+      console.log('RewardedAd will be available on mobile device');
     }
-  }
-
-  private setupRewardedListeners(): void {
-    if (!this.rewardedAd) return;
-
-    this.rewardedAd.addAdEventListener(
-      RewardedAdEventType.LOADED,
-      () => {
-        console.log('Rewarded ad loaded');
-        this.isLoading = false;
-      }
-    );
-
-    this.rewardedAd.addAdEventListener(
-      RewardedAdEventType.EARNED_REWARD,
-      async (reward) => {
-        console.log(`User earned reward: ${reward.amount} ${reward.type}`);
-        
-        const rewardEvent: RewardEvent = {
-          userId: this.currentUserId,
-          rewardType: reward.type,
-          rewardAmount: reward.amount,
-          transactionId: this.generateTransactionId(),
-          timestamp: Date.now(),
-        };
-
-        try {
-          const response = await api.post('/api/rewards/verify-ad', rewardEvent);
-          this.onRewardCallback?.(rewardEvent);
-          console.log('Reward verified:', response.data);
-        } catch (error) {
-          console.error('Failed to verify reward:', error);
-        }
-      }
-    );
-
-    this.rewardedAd.addAdEventListener(
-      RewardedAdEventType.CLOSED,
-      () => {
-        console.log('Rewarded ad closed');
-        this.rewardedAd = null;
-        this.loadRewardedAd(this.currentUserId);
-      }
-    );
+    this.adReady = false;
   }
 
   async showRewardedAd(): Promise<void> {
-    if (!this.rewardedAd?.loaded) {
-      console.warn('Rewarded ad not loaded');
+    if (Platform.OS === 'web') {
+      console.warn('Ads not available on web');
       return;
     }
-
-    try {
-      await this.rewardedAd.show();
-    } catch (error) {
-      console.error('Failed to show rewarded ad:', error);
-    }
+    console.log('Rewarded ad will show on mobile device');
   }
 
   isRewardedAdReady(): boolean {
-    return !!this.rewardedAd?.loaded;
+    return this.adReady && Platform.OS !== 'web';
   }
 
   setRewardCallback(callback: (reward: RewardEvent) => void): void {
