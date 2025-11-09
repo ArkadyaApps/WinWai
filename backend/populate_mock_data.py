@@ -71,9 +71,6 @@ async def populate_data():
         partner['createdAt'] = datetime.now(timezone.utc)
         await db.partners.insert_one(partner)
     
-    # Location data for Thai cities
-    locations = ['bangkok', 'chiang-mai', 'phuket', 'pattaya', 'krabi']
-    
     # Create raffles
     print("Inserting raffles...")
     raffles = []
@@ -81,12 +78,13 @@ async def populate_data():
         raffle = {
             "id": str(uuid.uuid4()),
             "title": f"Win {partner['name']} Experience!",
-            "description": f"Win an amazing {partner['description']} experience at {partner['name']}. Perfect for foodies and travelers!",
+            "description": f"Win an amazing {partner['description']} experience at {partner['name']}. Located at {partner.get('address', 'Thailand')}. Perfect for foodies and travelers!",
             "image": partner.get("image"),
             "category": partner["category"],
             "partnerId": partner["id"],
             "partnerName": partner["name"],
-            "location": locations[i % len(locations)],
+            "location": partner.get("location", "bangkok"),
+            "address": partner.get("address", ""),
             "prizesAvailable": 3,
             "prizesRemaining": 3,
             "ticketCost": 10,
