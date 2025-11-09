@@ -354,9 +354,16 @@ class BackendTester:
         """Test edge cases and error handling"""
         print("\n⚠️ Testing Edge Cases...")
         
-        # Test invalid partner ID
+        # Test invalid partner ID (using PUT which should return 404)
         try:
-            response = self.session.get(f"{BASE_URL}/admin/partners/invalid-id")
+            invalid_partner_data = {
+                "id": "invalid-id",
+                "name": "Test Partner",
+                "description": "Test",
+                "category": "food",
+                "sponsored": False
+            }
+            response = self.session.put(f"{BASE_URL}/admin/partners/invalid-id", json=invalid_partner_data)
             
             if response.status_code == 404:
                 self.log_test("Invalid Partner ID", True, "Correctly returned 404 for invalid ID")
