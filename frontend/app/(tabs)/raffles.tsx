@@ -7,17 +7,22 @@ import {
   TouchableOpacity,
   RefreshControl,
   ActivityIndicator,
+  Dimensions,
 } from 'react-native';
 import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
-import RaffleCard from '../../src/components/RaffleCard';
+import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 
+const { width } = Dimensions.get('window');
+const CARD_MARGIN = 8;
+const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
+
 const categories = [
-  { id: 'all', name: 'All', icon: '🎉' },
-  { id: 'food', name: 'Food', icon: '🍽️' },
-  { id: 'hotel', name: 'Hotels', icon: '🏨' },
-  { id: 'spa', name: 'Spa', icon: '💆' },
+  { id: 'all', name: 'All', emoji: '🎉' },
+  { id: 'food', name: 'Food', emoji: '🍽️' },
+  { id: 'hotel', name: 'Hotels', emoji: '🏨' },
+  { id: 'spa', name: 'Spa', emoji: '💆' },
 ];
 
 export default function RafflesScreen() {
@@ -50,8 +55,13 @@ export default function RafflesScreen() {
 
   return (
     <View style={styles.container}>
-      <View style={styles.categoryFilter}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false}>
+      {/* Category Filter */}
+      <View style={styles.categoryContainer}>
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false}
+          contentContainerStyle={styles.categoryScroll}
+        >
           {categories.map((cat) => (
             <TouchableOpacity
               key={cat.id}
@@ -61,7 +71,7 @@ export default function RafflesScreen() {
               ]}
               onPress={() => setSelectedCategory(cat.id)}
             >
-              <Text style={styles.categoryIcon}>{cat.icon}</Text>
+              <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
               <Text
                 style={[
                   styles.categoryText,
@@ -84,23 +94,38 @@ export default function RafflesScreen() {
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
           refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
+            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#FFD700']} />
           }
+          showsVerticalScrollIndicator={false}
         >
-          {raffles.map((raffle) => (
-            <RaffleCard
-              key={raffle.id}
-              raffle={raffle}
-              onPress={() => {/* Navigate to raffle details */}}
-            />
-          ))}
+          {/* Results Header */}
+          <View style={styles.resultsHeader}>
+            <Text style={styles.resultsText}>
+              {raffles.length} {raffles.length === 1 ? 'Raffle' : 'Raffles'} Available
+            </Text>
+          </View>
+
+          {/* Raffle Grid */}
+          <View style={styles.gridContainer}>
+            {raffles.map((raffle) => (
+              <View key={raffle.id} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
+                <RaffleGridCard
+                  raffle={raffle}
+                  onPress={() => {/* Navigate to raffle details */}}
+                />
+              </View>
+            ))}
+          </View>
           
           {raffles.length === 0 && (
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon}>🎁</Text>
               <Text style={styles.emptyText}>No raffles in this category</Text>
+              <Text style={styles.emptySubtext}>Try selecting a different category</Text>
             </View>
           )}
+
+          <View style={{ height: 100 }} />
         </ScrollView>
       )}
       
@@ -112,38 +137,46 @@ export default function RafflesScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F8F9FA',
   },
-  categoryFilter: {
+  categoryContainer: {
     backgroundColor: '#ffffff',
-    paddingVertical: 12,
-    paddingHorizontal: 8,
+    paddingVertical: 16,
     borderBottomWidth: 1,
-    borderBottomColor: '#e0e0e0',
+    borderBottomColor: '#E8E8E8',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 1 },
+    shadowOpacity: 0.05,
+    shadowRadius: 2,
+    elevation: 2,
+  },
+  categoryScroll: {
+    paddingHorizontal: 16,
+    gap: 10,
   },
   categoryButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    marginHorizontal: 4,
-    borderRadius: 20,
-    backgroundColor: '#f8f8f8',
-    gap: 6,
+    paddingHorizontal: 20,
+    paddingVertical: 10,
+    borderRadius: 24,
+    backgroundColor: '#F5F5F5',
+    gap: 8,
   },
   categoryButtonActive: {
     backgroundColor: '#FFD700',
   },
-  categoryIcon: {
+  categoryEmoji: {
     fontSize: 18,
   },
   categoryText: {
-    fontSize: 14,
+    fontSize: 15,
     fontWeight: '600',
     color: '#666',
   },
   categoryTextActive: {
     color: '#000',
+    fontWeight: '700',
   },
   centered: {
     flex: 1,
@@ -154,19 +187,39 @@ const styles = StyleSheet.create({
     flex: 1,
   },
   scrollContent: {
-    paddingTop: 8,
     paddingBottom: 80,
+  },
+  resultsHeader: {
+    paddingHorizontal: 20,
+    paddingVertical: 16,
+  },
+  resultsText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#2C3E50',
+  },
+  gridContainer: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    paddingHorizontal: CARD_MARGIN / 2,
   },
   emptyState: {
     padding: 48,
     alignItems: 'center',
   },
   emptyIcon: {
-    fontSize: 64,
+    fontSize: 72,
     marginBottom: 16,
   },
   emptyText: {
-    fontSize: 16,
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2C3E50',
+    marginBottom: 8,
+  },
+  emptySubtext: {
+    fontSize: 14,
     color: '#95A5A6',
+    textAlign: 'center',
   },
 });
