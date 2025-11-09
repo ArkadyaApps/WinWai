@@ -40,13 +40,6 @@
           "backgroundColor": "#FFD700"
         }
       ],
-      [
-        "react-native-google-mobile-ads",
-        {
-          "androidAppId": "ca-app-pub-3486145054830108~1319311942",
-          "iosAppId": "ca-app-pub-3486145054830108~3969526019"
-        }
-      ],
       "expo-web-browser"
     ],
     "experiments": {
