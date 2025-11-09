@@ -79,6 +79,7 @@ async def populate_data():
             "id": str(uuid.uuid4()),
             "title": f"Win {partner['name']} Experience!",
             "description": f"Win an amazing {partner['description']} experience at {partner['name']}. Perfect for foodies and travelers!",
+            "image": partner.get("image"),
             "category": partner["category"],
             "partnerId": partner["id"],
             "partnerName": partner["name"],
