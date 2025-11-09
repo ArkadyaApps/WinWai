@@ -6,20 +6,10 @@ import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 export default function RootLayout() {
   useEffect(() => {
-    // Only initialize AdMob on native platforms
-    if (Platform.OS !== 'web') {
-      const initializeAds = async () => {
-        try {
-          const mobileAds = require('react-native-google-mobile-ads').default;
-          await mobileAds().initialize();
-          console.log('Mobile Ads initialized');
-        } catch (error) {
-          console.error('Failed to initialize Mobile Ads', error);
-        }
-      };
-
-      initializeAds();
-    }
+    // Note: AdMob ads are only available on native iOS/Android devices
+    // They will not show in web preview or Expo Go web version
+    // The app is fully functional without ads for testing purposes
+    console.log('WinWai app initialized on', Platform.OS);
   }, []);
 
   return (
