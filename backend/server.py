@@ -550,6 +550,148 @@ async def create_raffle(raffle: Raffle, authorization: Optional[str] = Header(No
     await db.raffles.insert_one(raffle.dict())
     return raffle
 
+# Admin Partner Management
+@api_router.get("/admin/partners", response_model=List[Partner])
+async def get_all_partners(authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    partners = await db.partners.find().to_list(1000)
+    return [Partner(**p) for p in partners]
+
+@api_router.post("/admin/partners", response_model=Partner)
+async def create_partner(partner: Partner, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    await db.partners.insert_one(partner.dict())
+    return partner
+
+@api_router.put("/admin/partners/{partner_id}", response_model=Partner)
+async def update_partner(partner_id: str, partner: Partner, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.partners.update_one(
+        {"id": partner_id},
+        {"$set": partner.dict(exclude={"id"})}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Partner not found")
+    
+    return partner
+
+@api_router.delete("/admin/partners/{partner_id}")
+async def delete_partner(partner_id: str, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.partners.delete_one({"id": partner_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Partner not found")
+    
+    return {"message": "Partner deleted successfully"}
+
+# Admin User Management
+class UpdateUserRequest(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+    tickets: Optional[int] = None
+    role: Optional[str] = None
+
+@api_router.put("/admin/users/{user_id}")
+async def update_user(user_id: str, user_update: UpdateUserRequest, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    update_data = {}
+    if user_update.name:
+        update_data["name"] = user_update.name
+    if user_update.email:
+        update_data["email"] = user_update.email
+    if user_update.phone is not None:
+        update_data["phone"] = user_update.phone
+    if user_update.tickets is not None:
+        update_data["tickets"] = user_update.tickets
+    if user_update.role:
+        update_data["role"] = user_update.role
+    
+    if update_data:
+        result = await db.users.update_one(
+            {"id": user_id},
+            {"$set": update_data}
+        )
+        
+        if result.modified_count == 0:
+            raise HTTPException(status_code=404, detail="User not found")
+    
+    updated_user = await db.users.find_one({"id": user_id})
+    return User(**updated_user)
+
+@api_router.delete("/admin/users/{user_id}")
+async def delete_user(user_id: str, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Prevent deleting yourself
+    if user_id == user.id:
+        raise HTTPException(status_code=400, detail="Cannot delete your own account")
+    
+    result = await db.users.delete_one({"id": user_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    return {"message": "User deleted successfully"}
+
+# Admin Raffle Management
+@api_router.get("/admin/raffles", response_model=List[Raffle])
+async def get_all_raffles_admin(authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    raffles = await db.raffles.find().sort("createdAt", -1).to_list(1000)
+    return [Raffle(**r) for r in raffles]
+
+@api_router.put("/admin/raffles/{raffle_id}", response_model=Raffle)
+async def update_raffle(raffle_id: str, raffle: Raffle, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.raffles.update_one(
+        {"id": raffle_id},
+        {"$set": raffle.dict(exclude={"id"})}
+    )
+    
+    if result.modified_count == 0:
+        raise HTTPException(status_code=404, detail="Raffle not found")
+    
+    return raffle
+
+@api_router.delete("/admin/raffles/{raffle_id}")
+async def delete_raffle(raffle_id: str, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    result = await db.raffles.delete_one({"id": raffle_id})
+    
+    if result.deleted_count == 0:
+        raise HTTPException(status_code=404, detail="Raffle not found")
+    
+    return {"message": "Raffle deleted successfully"}
+
 app.include_router(api_router)
 
 app.add_middleware(
