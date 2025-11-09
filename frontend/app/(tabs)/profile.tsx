@@ -281,6 +281,72 @@ export default function ProfileScreen() {
         <View style={{ height: 80 }} />
       </ScrollView>
 
+      {/* Edit Profile Modal */}
+      <Modal
+        visible={editModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setEditModalVisible(false)}
+      >
+        <KeyboardAvoidingView
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+          style={styles.modalOverlay}
+        >
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Edit Profile</Text>
+              <TouchableOpacity onPress={() => setEditModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#000" />
+              </TouchableOpacity>
+            </View>
+
+            <ScrollView style={styles.formContainer}>
+              <Text style={styles.label}>Name *</Text>
+              <TextInput
+                style={styles.input}
+                value={formData.name}
+                onChangeText={(text) => setFormData({ ...formData, name: text })}
+                placeholder="Your name"
+                placeholderTextColor="#999"
+              />
+
+              <Text style={styles.label}>Email *</Text>
+              <TextInput
+                style={styles.input}
+                value={formData.email}
+                onChangeText={(text) => setFormData({ ...formData, email: text })}
+                placeholder="Email address"
+                placeholderTextColor="#999"
+                keyboardType="email-address"
+                autoCapitalize="none"
+              />
+
+              <Text style={styles.label}>Phone</Text>
+              <TextInput
+                style={styles.input}
+                value={formData.phone}
+                onChangeText={(text) => setFormData({ ...formData, phone: text })}
+                placeholder="Phone number"
+                placeholderTextColor="#999"
+                keyboardType="phone-pad"
+              />
+
+              <TouchableOpacity 
+                style={styles.saveButton} 
+                onPress={handleSaveProfile}
+                disabled={saving}
+              >
+                {saving ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <Text style={styles.saveButtonText}>Save Changes</Text>
+                )}
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
+
       <BannerAdComponent position="bottom" />
     </View>
   );
