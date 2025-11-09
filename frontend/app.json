@@ -33,7 +33,9 @@
           "resizeMode": "contain",
           "backgroundColor": "#000"
         }
-      ]
+      ],
+      "react-native-google-mobile-ads",
+      "expo-web-browser"
     ],
     "experiments": {
       "typedRoutes": true
