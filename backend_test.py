@@ -41,42 +41,52 @@ class BackendTester:
         """Authenticate as admin user using session-based auth"""
         print("\n🔐 Authenticating as admin user...")
         
-        # For this test, we'll create a mock session since we don't have the actual OAuth flow
-        # In a real scenario, this would go through the OAuth process
         try:
-            # Try to create a test session directly (this is a simplified approach)
-            # In production, this would require proper OAuth flow
+            # Create a session directly in the database for testing
+            # This simulates what would happen after OAuth authentication
+            import uuid
+            from datetime import datetime, timezone, timedelta
             
-            # First, let's try to get existing users to see if our admin exists
-            response = self.session.get(f"{BASE_URL}/admin/users")
+            # Generate a test session token
+            session_token = str(uuid.uuid4())
+            admin_user_id = "a64eddc5-dff5-4227-8a09-2e74fdd6a9da"  # From database query
+            expires_at = datetime.now(timezone.utc) + timedelta(days=1)
             
-            if response.status_code == 401:
-                # We need to authenticate first
-                # For testing purposes, we'll create a mock session token
-                # This simulates what would happen after OAuth authentication
-                
-                # Create a test session payload
-                session_data = {
-                    "session_id": "test_admin_session_123"
-                }
-                
-                response = self.session.post(f"{BASE_URL}/auth/session", json=session_data)
-                
-                if response.status_code == 200:
-                    data = response.json()
-                    self.admin_token = data.get("session_token")
-                    self.session.headers.update({"Authorization": f"Bearer {self.admin_token}"})
-                    self.log_test("Admin Authentication", True, "Successfully authenticated as admin")
+            # Insert session directly into MongoDB for testing
+            import pymongo
+            from pymongo import MongoClient
+            
+            client = MongoClient("mongodb://localhost:27017")
+            db = client["test_database"]
+            
+            # Insert test session
+            session_doc = {
+                "userId": admin_user_id,
+                "sessionToken": session_token,
+                "expiresAt": expires_at,
+                "createdAt": datetime.now(timezone.utc)
+            }
+            
+            db.user_sessions.insert_one(session_doc)
+            
+            # Set the authorization header
+            self.admin_token = session_token
+            self.session.headers.update({"Authorization": f"Bearer {self.admin_token}"})
+            
+            # Test if authentication works
+            response = self.session.get(f"{BASE_URL}/auth/me")
+            
+            if response.status_code == 200:
+                user_data = response.json()
+                if user_data.get("role") == "admin":
+                    self.log_test("Admin Authentication", True, f"Successfully authenticated as admin: {user_data.get('name')}")
                     return True
                 else:
-                    # If session endpoint doesn't work, we'll try a different approach
-                    # Let's check if we can access admin endpoints directly
-                    self.log_test("Admin Authentication", False, f"Session auth failed: {response.status_code} - {response.text}")
+                    self.log_test("Admin Authentication", False, f"User is not admin: {user_data.get('role')}")
                     return False
             else:
-                # If we can access admin endpoints without auth, there might be no auth required
-                self.log_test("Admin Authentication", True, "Admin endpoints accessible (no auth required)")
-                return True
+                self.log_test("Admin Authentication", False, f"Auth verification failed: {response.status_code} - {response.text}")
+                return False
                 
         except Exception as e:
             self.log_test("Admin Authentication", False, f"Authentication error: {str(e)}")
