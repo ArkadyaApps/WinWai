@@ -280,10 +280,13 @@ export default function ProfileScreen() {
 
           <TouchableOpacity 
             style={styles.menuItem}
-            onPress={() => Alert.alert('Language', 'Language settings coming soon!')}
+            onPress={() => setLanguageModalVisible(true)}
           >
             <Ionicons name="language-outline" size={24} color="#2C3E50" />
-            <Text style={styles.menuText}>Language</Text>
+            <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
+              <Text style={styles.menuText}>Language</Text>
+              <Text style={styles.currentLanguage}>{getLanguageFlag(language)} {getLanguageName(language)}</Text>
+            </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
         </View>
