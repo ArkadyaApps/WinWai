@@ -29,6 +29,7 @@ class User(BaseModel):
     email: str
     name: str
     picture: Optional[str] = None
+    phone: Optional[str] = None
     tickets: int = Field(default=50)  # Starting bonus
     role: str = Field(default="user")  # user or admin
     dailyStreak: int = Field(default=0)
