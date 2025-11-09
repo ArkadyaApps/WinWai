@@ -39,7 +39,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async () => {
-    const redirectUrl = process.env.EXPO_PUBLIC_REDIRECT_URL || 'https://raffleprize.preview.emergentagent.com';
+    const redirectUrl = process.env.EXPO_PUBLIC_REDIRECT_URL || 'https://winwai-raffle.preview.emergentagent.com';
     const authUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
     
     try {
