@@ -27,10 +27,12 @@ import api from '../../src/utils/api';
 export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
   const { adminMode, setAdminMode, initializeAdminMode } = useAdminStore();
+  const { language, setLanguage, initializeLanguage } = useLanguageStore();
   const { signOut } = useAuth();
   const router = useRouter();
 
   const [editModalVisible, setEditModalVisible] = useState(false);
+  const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({
     name: '',
@@ -40,6 +42,7 @@ export default function ProfileScreen() {
 
   useEffect(() => {
     initializeAdminMode();
+    initializeLanguage();
   }, []);
 
   useEffect(() => {
