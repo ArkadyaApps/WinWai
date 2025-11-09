@@ -359,6 +359,86 @@ async def claim_reward(claim_request: ClaimRewardRequest, authorization: Optiona
     
     return {"message": "Claim submitted successfully"}
 
+# AdMob Server-Side Verification (SSV) Callback
+@api_router.get("/admob/ssv-callback")
+@api_router.post("/admob/ssv-callback")
+async def admob_ssv_callback(request: Request):
+    """
+    AdMob Server-Side Verification callback endpoint.
+    This endpoint receives notifications from AdMob when users complete rewarded ads.
+    
+    Query parameters from AdMob:
+    - ad_network: The ad network (e.g., "5450213213286189855")
+    - ad_unit: The ad unit ID
+    - reward_amount: Amount of reward
+    - reward_item: Type of reward
+    - timestamp: Unix timestamp
+    - transaction_id: Unique transaction ID
+    - user_id: Custom user ID we provided
+    - signature: HMAC-SHA256 signature for verification
+    - key_id: Key ID for signature verification
+    """
+    
+    # Get all query parameters
+    params = dict(request.query_params)
+    
+    logger.info(f"AdMob SSV Callback received: {params}")
+    
+    # Extract important parameters
+    user_id = params.get('user_id')
+    transaction_id = params.get('transaction_id')
+    reward_amount = params.get('reward_amount', '10')
+    reward_item = params.get('reward_item', 'tickets')
+    timestamp = params.get('timestamp')
+    
+    # Basic validation
+    if not user_id or not transaction_id:
+        logger.warning(f"Invalid SSV callback - missing user_id or transaction_id: {params}")
+        return Response(status_code=400, content="Missing required parameters")
+    
+    try:
+        # Check for duplicate transaction
+        existing = await db.ad_rewards.find_one({"transactionId": transaction_id})
+        if existing:
+            logger.warning(f"Duplicate transaction ID: {transaction_id}")
+            return Response(status_code=200, content="OK")  # Return 200 to avoid retries
+        
+        # Award tickets to user
+        tickets_to_award = int(reward_amount)
+        
+        result = await db.users.update_one(
+            {"id": user_id},
+            {"$inc": {"tickets": tickets_to_award}}
+        )
+        
+        if result.modified_count == 0:
+            logger.error(f"User not found: {user_id}")
+            # Still return 200 to avoid AdMob retries
+            return Response(status_code=200, content="OK")
+        
+        # Record the reward
+        await db.ad_rewards.insert_one({
+            "userId": user_id,
+            "transactionId": transaction_id,
+            "tickets": tickets_to_award,
+            "rewardItem": reward_item,
+            "timestamp": datetime.now(timezone.utc),
+            "adNetwork": params.get('ad_network'),
+            "adUnit": params.get('ad_unit'),
+            "verified": True,
+            "rawParams": params
+        })
+        
+        logger.info(f"SSV: Awarded {tickets_to_award} tickets to user {user_id}, transaction {transaction_id}")
+        
+        # AdMob expects 200 OK response
+        return Response(status_code=200, content="OK")
+        
+    except Exception as e:
+        logger.error(f"Error processing SSV callback: {str(e)}")
+        # Return 200 to prevent AdMob retries on server errors
+        return Response(status_code=200, content="OK")
+
 # Admin Endpoints
 @api_router.post("/admin/draw-winner")
 async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[str] = Header(None)):
