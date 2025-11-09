@@ -1,4 +1,4 @@
-import { RewardedAd, RewardedAdEventType } from 'react-native-google-mobile-ads';
+import { Platform } from 'react-native';
 import { getAdUnit } from '../utils/adConfig';
 import api from '../utils/api';
 
@@ -10,8 +10,16 @@ interface RewardEvent {
   timestamp: number;
 }
 
+// Conditionally import AdMob types
+let RewardedAd: any, RewardedAdEventType: any;
+if (Platform.OS !== 'web') {
+  const AdMob = require('react-native-google-mobile-ads');
+  RewardedAd = AdMob.RewardedAd;
+  RewardedAdEventType = AdMob.RewardedAdEventType;
+}
+
 class RewardedAdManager {
-  private rewardedAd: RewardedAd | null = null;
+  private rewardedAd: any = null;
   private isLoading = false;
   private currentUserId: string = '';
   private onRewardCallback?: (reward: RewardEvent) => void;
