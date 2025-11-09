@@ -563,13 +563,22 @@ async def create_raffle(raffle: Raffle, authorization: Optional[str] = Header(No
 
 # Admin Partner Management
 @api_router.get("/admin/partners", response_model=List[Partner])
-async def get_all_partners(authorization: Optional[str] = Header(None), page: int = 1, limit: int = 20):
+async def get_all_partners(authorization: Optional[str] = Header(None), page: int = 1, limit: int = 20, q: Optional[str] = None, category: Optional[str] = None):
     user = await get_current_user(authorization=authorization)
     if not user or user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
     skip = max(0, (page - 1) * limit)
-    cursor = db.partners.find().sort("createdAt", -1).skip(skip).limit(limit)
+    query: Dict = {}
+    if q:
+        query["$or"] = [
+            {"name": {"$regex": q, "$options": "i"}},
+            {"description": {"$regex": q, "$options": "i"}},
+        ]
+    if category and category in ["food", "hotel", "spa"]:
+        query["category"] = category
+
+    cursor = db.partners.find(query).sort("createdAt", -1).skip(skip).limit(limit)
     partners = await cursor.to_list(length=limit)
     return [Partner(**p) for p in partners]
 
