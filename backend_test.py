@@ -271,6 +271,8 @@ class BackendTester:
                         self.log_test("Delete Self Protection", True, "Correctly prevented admin from deleting self", response.json())
                     else:
                         self.log_test("Delete Self Protection", False, f"Should prevent self-deletion: {response.status_code}", response.text)
+                else:
+                    self.log_test("Delete Self Protection", False, "Could not find admin user ID to test self-deletion protection")
                         
             elif response.status_code == 403:
                 self.log_test("Get Users", False, "Admin access denied", response.text)
