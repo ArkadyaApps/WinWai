@@ -68,9 +68,13 @@ export default function ProfileScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
+              console.log('Starting sign out...');
               await signOut();
-              // Force navigation to login screen
-              router.replace('/');
+              console.log('Sign out completed, navigating to login...');
+              // Use push then replace to force navigation
+              setTimeout(() => {
+                router.push('/');
+              }, 100);
             } catch (error) {
               console.error('Sign out error:', error);
               Alert.alert('Error', 'Failed to sign out. Please try again.');
