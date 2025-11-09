@@ -9,16 +9,20 @@ import {
   Dimensions,
   TouchableOpacity,
   Platform,
+  Image,
 } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
+import { useLanguageStore } from '../../src/store/languageStore';
 import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import SearchFilterMenu from '../../src/components/SearchFilterMenu';
+import LanguageSelector from '../../src/components/LanguageSelector';
 import { Ionicons } from '@expo/vector-icons';
 import { getUserLocation } from '../../src/utils/locationService';
 import { useRouter } from 'expo-router';
+import { translations, getLanguageFromCountry } from '../../src/utils/translations';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
@@ -26,6 +30,7 @@ const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
 
 export default function HomeScreen() {
   const { user } = useUserStore();
+  const { language, setLanguage, initializeLanguage } = useLanguageStore();
   const router = useRouter();
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [loading, setLoading] = useState(true);
@@ -35,19 +40,33 @@ export default function HomeScreen() {
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [userCity, setUserCity] = useState<string | null>(null);
 
+  const t = translations[language];
+
   useEffect(() => {
-    detectLocation();
-    loadRaffles();
+    initialize();
   }, []);
 
   useEffect(() => {
     loadRaffles();
   }, [selectedCategory, selectedLocation]);
 
+  const initialize = async () => {
+    await initializeLanguage();
+    await detectLocation();
+    loadRaffles();
+  };
+
   const detectLocation = async () => {
     const location = await getUserLocation();
     if (location) {
       setUserCity(location.city);
+      
+      // Auto-set language based on country if not already set
+      const savedLang = await require('@react-native-async-storage/async-storage').default.getItem('app_language');
+      if (!savedLang) {
+        const detectedLang = getLanguageFromCountry(location.country);
+        await setLanguage(detectedLang);
+      }
     }
   };
 
@@ -82,20 +101,32 @@ export default function HomeScreen() {
 
   return (
     <View style={styles.container}>
-      {/* Top Bar with Tickets and Filter */}
-      <View style={styles.topBar}>
-        <View style={styles.ticketBadge}>
-          <Ionicons name="ticket" size={20} color="#FFD700" />
-          <Text style={styles.ticketText}>{user?.tickets || 0}</Text>
+      {/* Header with Logo, Tickets and Language */}
+      <View style={styles.header}>
+        <View style={styles.headerLeft}>
+          <Image
+            source={{ uri: 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg' }}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+          <Text style={styles.brandName}>WinWai</Text>
         </View>
         
-        <TouchableOpacity 
-          style={styles.filterButton}
-          onPress={() => setFilterVisible(true)}
-        >
-          <Ionicons name="options" size={24} color="#000" />
-          <Text style={styles.filterText}>Filter</Text>
-        </TouchableOpacity>
+        <View style={styles.headerRight}>
+          <View style={styles.ticketBadge}>
+            <Ionicons name="ticket" size={18} color="#FFD700" />
+            <Text style={styles.ticketText}>{user?.tickets || 0}</Text>
+          </View>
+          
+          <LanguageSelector />
+          
+          <TouchableOpacity 
+            style={styles.filterButton}
+            onPress={() => setFilterVisible(true)}
+          >
+            <Ionicons name="options" size={20} color="#000" />
+          </TouchableOpacity>
+        </View>
       </View>
 
       <ScrollView 
@@ -110,13 +141,13 @@ export default function HomeScreen() {
         {userCity && (
           <View style={styles.locationBanner}>
             <Ionicons name="location" size={18} color="#4ECDC4" />
-            <Text style={styles.locationText}>Nearby in {userCity}</Text>
+            <Text style={styles.locationText}>{t.nearbyIn} {userCity}</Text>
           </View>
         )}
 
         {/* Results Header */}
         <View style={styles.resultsHeader}>
-          <Text style={styles.resultsCount}>{raffles.length} Raffles</Text>
+          <Text style={styles.resultsCount}>{raffles.length} {t.raffles}</Text>
           {(selectedCategory !== 'all' || selectedLocation !== 'all') && (
             <TouchableOpacity 
               onPress={() => {
@@ -125,7 +156,7 @@ export default function HomeScreen() {
               }}
               style={styles.clearButton}
             >
-              <Text style={styles.clearText}>Clear Filters</Text>
+              <Text style={styles.clearText}>{t.clearFilters}</Text>
             </TouchableOpacity>
           )}
         </View>
@@ -145,8 +176,8 @@ export default function HomeScreen() {
         {raffles.length === 0 && (
           <View style={styles.emptyState}>
             <Ionicons name="search" size={80} color="#E0E0E0" />
-            <Text style={styles.emptyText}>No raffles found</Text>
-            <Text style={styles.emptySubtext}>Try adjusting your filters</Text>
+            <Text style={styles.emptyText}>{t.noRafflesFound}</Text>
+            <Text style={styles.emptySubtext}>{t.tryAdjustingFilters}</Text>
           </View>
         )}
 
@@ -185,12 +216,12 @@ const styles = StyleSheet.create({
   scrollContent: {
     paddingBottom: 80,
   },
-  topBar: {
+  header: {
     flexDirection: 'row',
     justifyContent: 'space-between',
     alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 12,
+    paddingHorizontal: 12,
+    paddingVertical: 8,
     paddingTop: Platform.OS === 'ios' ? 50 : 12,
     backgroundColor: '#FFD700',
     ...Platform.select({
@@ -205,33 +236,49 @@ const styles = StyleSheet.create({
       },
     }),
   },
+  headerLeft: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
+  logo: {
+    width: 32,
+    height: 32,
+    borderRadius: 16,
+    backgroundColor: '#fff',
+  },
+  brandName: {
+    fontSize: 18,
+    fontWeight: '900',
+    color: '#000',
+    letterSpacing: 0.5,
+  },
+  headerRight: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 8,
+  },
   ticketBadge: {
     flexDirection: 'row',
     alignItems: 'center',
     backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    gap: 6,
+    paddingHorizontal: 10,
+    paddingVertical: 6,
+    borderRadius: 16,
+    gap: 4,
   },
   ticketText: {
-    fontSize: 16,
+    fontSize: 14,
     fontWeight: '800',
     color: '#000',
   },
   filterButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
     backgroundColor: '#fff',
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    gap: 6,
-  },
-  filterText: {
-    fontSize: 14,
-    fontWeight: '700',
-    color: '#000',
+    width: 36,
+    height: 36,
+    borderRadius: 18,
+    justifyContent: 'center',
+    alignItems: 'center',
   },
   locationBanner: {
     flexDirection: 'row',
