@@ -11,6 +11,7 @@ import {
   Modal,
   Platform,
   KeyboardAvoidingView,
+  RefreshControl,
 } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -24,7 +25,10 @@ export default function AdminUsersScreen() {
   const [loading, setLoading] = useState(true);
   const [modalVisible, setModalVisible] = useState(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
-  
+  const [refreshing, setRefreshing] = useState(false);
+  const [page, setPage] = useState(1);
+  const [hasMore, setHasMore] = useState(true);
+
   const [formData, setFormData] = useState({
     name: '',
     email: '',
@@ -34,18 +38,41 @@ export default function AdminUsersScreen() {
   });
 
   useEffect(() => {
-    fetchUsers();
+    fetchUsers(true);
   }, []);
 
-  const fetchUsers = async () => {
+  const fetchUsers = async (reset = false) => {
     try {
-      setLoading(true);
-      const response = await api.get('/api/admin/users');
-      setUsers(response.data);
+      if (reset) {
+        setLoading(true);
+        setPage(1);
+      }
+      const currentPage = reset ? 1 : page;
+      const response = await api.get('/api/admin/users', { params: { page: currentPage, limit: 20 } });
+      const data: User[] = response.data;
+      if (reset) {
+        setUsers(data);
+      } else {
+        setUsers((prev) => [...prev, ...data]);
+      }
+      setHasMore(data.length === 20);
+      setPage(currentPage + 1);
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.detail || 'Failed to fetch users');
     } finally {
       setLoading(false);
+      setRefreshing(false);
+    }
+  };
+
+  const onRefresh = () => {
+    setRefreshing(true);
+    fetchUsers(true);
+  };
+
+  const onEndReached = () => {
+    if (!loading && hasMore) {
+      fetchUsers();
     }
   };
 
@@ -71,7 +98,7 @@ export default function AdminUsersScreen() {
       await api.put(`/api/admin/users/${editingUser?.id}`, formData);
       Alert.alert('Success', 'User updated successfully');
       setModalVisible(false);
-      fetchUsers();
+      fetchUsers(true);
     } catch (error: any) {
       Alert.alert('Error', error.response?.data?.detail || 'Failed to save user');
     }
@@ -90,7 +117,7 @@ export default function AdminUsersScreen() {
             try {
               await api.delete(`/api/admin/users/${user.id}`);
               Alert.alert('Success', 'User deleted successfully');
-              fetchUsers();
+              fetchUsers(true);
             } catch (error: any) {
               Alert.alert('Error', error.response?.data?.detail || 'Failed to delete user');
             }
@@ -100,7 +127,7 @@ export default function AdminUsersScreen() {
     );
   };
 
-  if (loading) {
+  if (loading && users.length === 0) {
     return (
       <View style={styles.centerContainer}>
         <ActivityIndicator size="large" color="#FFD700" />
@@ -118,7 +145,16 @@ export default function AdminUsersScreen() {
         <View style={{ width: 40 }} />
       </LinearGradient>
 
-      <ScrollView contentContainerStyle={styles.content}>
+      <ScrollView
+        contentContainerStyle={styles.content}
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+        onScroll={({ nativeEvent }) => {
+          const { layoutMeasurement, contentOffset, contentSize } = nativeEvent;
+          const distanceFromBottom = contentSize.height - (layoutMeasurement.height + contentOffset.y);
+          if (distanceFromBottom < 200) onEndReached();
+        }}
+        scrollEventThrottle={200}
+      >
         {users.map((user) => (
           <View key={user.id} style={styles.userCard}>
             <View style={styles.userHeader}>
@@ -158,6 +194,11 @@ export default function AdminUsersScreen() {
             </View>
           </View>
         ))}
+        {loading && users.length > 0 && (
+          <View style={{ padding: 16 }}>
+            <ActivityIndicator color="#FFD700" />
+          </View>
+        )}
         <View style={{ height: 80 }} />
       </ScrollView>
 
@@ -214,7 +255,7 @@ export default function AdminUsersScreen() {
               <Text style={styles.label}>Tickets</Text>
               <TextInput
                 style={styles.input}
-                value={formData.tickets.toString()}
+                value={String(formData.tickets)}
                 onChangeText={(text) => setFormData({ ...formData, tickets: parseInt(text) || 0 })}
                 placeholder="Number of tickets"
                 placeholderTextColor="#999"
