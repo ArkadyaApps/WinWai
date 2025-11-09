@@ -293,6 +293,38 @@ async def get_my_entries(authorization: Optional[str] = Header(None)):
     entries = await db.entries.find({"userId": user.id}).sort("timestamp", -1).to_list(100)
     return [Entry(**entry) for entry in entries]
 
+class UpdateProfileRequest(BaseModel):
+    name: Optional[str] = None
+    email: Optional[str] = None
+    phone: Optional[str] = None
+
+@api_router.put("/users/me/profile")
+async def update_profile(profile_update: UpdateProfileRequest, authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    update_data = {}
+    if profile_update.name:
+        update_data["name"] = profile_update.name
+    if profile_update.email:
+        # Check if email is already taken by another user
+        existing_user = await db.users.find_one({"email": profile_update.email, "id": {"$ne": user.id}})
+        if existing_user:
+            raise HTTPException(status_code=400, detail="Email already in use")
+        update_data["email"] = profile_update.email
+    if profile_update.phone is not None:
+        update_data["phone"] = profile_update.phone
+    
+    if update_data:
+        await db.users.update_one(
+            {"id": user.id},
+            {"$set": update_data}
+        )
+    
+    updated_user = await db.users.find_one({"id": user.id})
+    return User(**updated_user)
+
 # Rewards Endpoints
 @api_router.post("/rewards/verify-ad")
 async def verify_ad_reward(reward_request: AdRewardRequest):
