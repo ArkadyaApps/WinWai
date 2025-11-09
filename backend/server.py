@@ -532,12 +532,14 @@ async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[s
     }
 
 @api_router.get("/admin/users")
-async def get_all_users(authorization: Optional[str] = Header(None)):
+async def get_all_users(authorization: Optional[str] = Header(None), page: int = 1, limit: int = 20):
     user = await get_current_user(authorization=authorization)
     if not user or user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
-    users = await db.users.find().to_list(1000)
+    skip = max(0, (page - 1) * limit)
+    cursor = db.users.find().sort("createdAt", -1).skip(skip).limit(limit)
+    users = await cursor.to_list(length=limit)
     return [User(**u) for u in users]
 
 @api_router.post("/admin/raffles")
