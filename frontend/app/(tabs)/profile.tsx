@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,17 +7,28 @@ import {
   TouchableOpacity,
   Image,
   Alert,
+  Switch,
+  Platform,
 } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
+import { useAdminStore } from '../../src/store/adminStore';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import BannerAdComponent from '../../src/components/BannerAd';
+import { LinearGradient } from 'expo-linear-gradient';
 
 export default function ProfileScreen() {
   const { user } = useUserStore();
+  const { adminMode, setAdminMode, initializeAdminMode } = useAdminStore();
   const { signOut } = useAuth();
   const router = useRouter();
+
+  useEffect(() => {
+    initializeAdminMode();
+  }, []);
+
+  const isAdmin = user?.role === 'admin';
 
   const handleSignOut = () => {
     Alert.alert(
@@ -37,10 +48,24 @@ export default function ProfileScreen() {
     );
   };
 
+  const handleAdminToggle = async (value: boolean) => {
+    await setAdminMode(value);
+    Alert.alert(
+      value ? 'Admin Mode Enabled' : 'Admin Mode Disabled',
+      value 
+        ? 'You now have access to admin management features.'
+        : 'Admin features are now hidden.'
+    );
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.profileHeader}>
+        {/* Profile Header */}
+        <LinearGradient
+          colors={['#FFD700', '#FFC200']}
+          style={styles.profileHeader}
+        >
           {user?.picture ? (
             <Image source={{ uri: user.picture }} style={styles.avatar} />
           ) : (
@@ -51,13 +76,15 @@ export default function ProfileScreen() {
           <Text style={styles.name}>{user?.name || 'Guest'}</Text>
           <Text style={styles.email}>{user?.email || ''}</Text>
           
-          {user?.role === 'admin' && (
+          {isAdmin && (
             <View style={styles.adminBadge}>
+              <Ionicons name="shield-checkmark" size={16} color="#FFD700" />
               <Text style={styles.adminText}>ADMIN</Text>
             </View>
           )}
-        </View>
+        </LinearGradient>
 
+        {/* Stats Card */}
         <View style={styles.statsCard}>
           <View style={styles.statItem}>
             <Text style={styles.statValue}>{user?.tickets || 0}</Text>
@@ -70,15 +97,92 @@ export default function ProfileScreen() {
           </View>
         </View>
 
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Account</Text>
-          
-          <TouchableOpacity style={styles.menuItem}>
-            <Ionicons name="person-outline" size={24} color="#2C3E50" />
-            <Text style={styles.menuText}>Edit Profile</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
-          </TouchableOpacity>
+        {/* Admin Mode Toggle */}
+        {isAdmin && (
+          <View style={styles.adminToggleCard}>
+            <View style={styles.adminToggleHeader}>
+              <View style={styles.adminToggleInfo}>
+                <Text style={styles.adminToggleTitle}>Admin Mode</Text>
+                <Text style={styles.adminToggleSubtitle}>
+                  {adminMode ? 'Management features visible' : 'Hidden from view'}
+                </Text>
+              </View>
+              <Switch
+                value={adminMode}
+                onValueChange={handleAdminToggle}
+                trackColor={{ false: '#D1D5DB', true: '#FFD700' }}
+                thumbColor={adminMode ? '#000' : '#f4f3f4'}
+                ios_backgroundColor="#D1D5DB"
+              />
+            </View>
+          </View>
+        )}
 
+        {/* Admin Panel */}
+        {isAdmin && adminMode && (
+          <View style={styles.section}>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="shield-checkmark" size={24} color="#FFD700" />
+              <Text style={styles.sectionTitle}>Admin Panel</Text>
+            </View>
+            
+            <TouchableOpacity 
+              style={styles.adminMenuItem}
+              onPress={() => router.push('/admin/partners')}
+            >
+              <LinearGradient
+                colors={['#FF6B6B', '#FF8E53']}
+                style={styles.adminMenuGradient}
+              >
+                <Ionicons name="business" size={24} color="#fff" />
+                <View style={styles.adminMenuText}>
+                  <Text style={styles.adminMenuTitle}>Manage Partners</Text>
+                  <Text style={styles.adminMenuSubtitle}>Add, edit, remove partners</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#fff" />
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.adminMenuItem}
+              onPress={() => router.push('/admin/users')}
+            >
+              <LinearGradient
+                colors={['#4ECDC4', '#44A08D']}
+                style={styles.adminMenuGradient}
+              >
+                <Ionicons name="people" size={24} color="#fff" />
+                <View style={styles.adminMenuText}>
+                  <Text style={styles.adminMenuTitle}>Manage Users</Text>
+                  <Text style={styles.adminMenuSubtitle}>View and manage all users</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#fff" />
+              </LinearGradient>
+            </TouchableOpacity>
+
+            <TouchableOpacity 
+              style={styles.adminMenuItem}
+              onPress={() => router.push('/admin/raffles')}
+            >
+              <LinearGradient
+                colors={['#A8E6CF', '#88D8B0']}
+                style={styles.adminMenuGradient}
+              >
+                <Ionicons name="gift" size={24} color="#fff" />
+                <View style={styles.adminMenuText}>
+                  <Text style={styles.adminMenuTitle}>Manage Raffles</Text>
+                  <Text style={styles.adminMenuSubtitle}>Create, edit, draw winners</Text>
+                </View>
+                <Ionicons name="chevron-forward" size={20} color="#fff" />
+              </LinearGradient>
+            </TouchableOpacity>
+          </View>
+        )}
+
+        {/* Account Section */}
+        <View style={styles.section}>
+          <Text style={styles.sectionTitleGray}>Account</Text>
+          
           <TouchableOpacity style={styles.menuItem}>
             <Ionicons name="notifications-outline" size={24} color="#2C3E50" />
             <Text style={styles.menuText}>Notifications</Text>
@@ -92,32 +196,9 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
-        {user?.role === 'admin' && (
-          <View style={styles.section}>
-            <Text style={styles.sectionTitle}>Admin Panel</Text>
-            
-            <TouchableOpacity style={styles.menuItem}>
-              <Ionicons name="gift-outline" size={24} color="#FFD700" />
-              <Text style={styles.menuText}>Manage Raffles</Text>
-              <Ionicons name="chevron-forward" size={20} color="#999" />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.menuItem}>
-              <Ionicons name="trophy-outline" size={24} color="#FFD700" />
-              <Text style={styles.menuText}>Draw Winners</Text>
-              <Ionicons name="chevron-forward" size={20} color="#999" />
-            </TouchableOpacity>
-
-            <TouchableOpacity style={styles.menuItem}>
-              <Ionicons name="people-outline" size={24} color="#FFD700" />
-              <Text style={styles.menuText}>View Users</Text>
-              <Ionicons name="chevron-forward" size={20} color="#999" />
-            </TouchableOpacity>
-          </View>
-        )}
-
+        {/* Support Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Support</Text>
+          <Text style={styles.sectionTitleGray}>Support</Text>
           
           <TouchableOpacity style={styles.menuItem}>
             <Ionicons name="help-circle-outline" size={24} color="#2C3E50" />
@@ -138,12 +219,14 @@ export default function ProfileScreen() {
           </TouchableOpacity>
         </View>
 
+        {/* Sign Out Button */}
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
           <Ionicons name="log-out-outline" size={24} color="#FF3B30" />
           <Text style={styles.signOutText}>Sign Out</Text>
         </TouchableOpacity>
 
         <Text style={styles.version}>WinWai v1.0.0</Text>
+        <View style={{ height: 80 }} />
       </ScrollView>
 
       <BannerAdComponent position="bottom" />
@@ -154,14 +237,14 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#F5F5F5',
+    backgroundColor: '#F8F9FA',
   },
   content: {
     paddingBottom: 80,
   },
   profileHeader: {
-    backgroundColor: '#FFD700',
     padding: 32,
+    paddingTop: Platform.OS === 'ios' ? 60 : 40,
     alignItems: 'center',
   },
   avatar: {
@@ -189,17 +272,20 @@ const styles = StyleSheet.create({
   },
   email: {
     fontSize: 14,
-    color: '#666',
+    color: '#333',
   },
   adminBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
     backgroundColor: '#000',
-    paddingHorizontal: 12,
-    paddingVertical: 4,
-    borderRadius: 12,
-    marginTop: 8,
+    paddingHorizontal: 16,
+    paddingVertical: 6,
+    borderRadius: 20,
+    marginTop: 12,
+    gap: 6,
   },
   adminText: {
-    fontSize: 11,
+    fontSize: 12,
     fontWeight: '700',
     color: '#FFD700',
   },
@@ -211,11 +297,17 @@ const styles = StyleSheet.create({
     marginBottom: 16,
     padding: 20,
     borderRadius: 12,
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
-    shadowRadius: 4,
-    elevation: 3,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
   },
   statItem: {
     flex: 1,
@@ -235,11 +327,76 @@ const styles = StyleSheet.create({
     width: 1,
     backgroundColor: '#e0e0e0',
   },
+  adminToggleCard: {
+    backgroundColor: '#ffffff',
+    marginHorizontal: 16,
+    marginBottom: 16,
+    padding: 20,
+    borderRadius: 12,
+    borderWidth: 2,
+    borderColor: '#FFD700',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.1,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 3,
+      },
+    }),
+  },
+  adminToggleHeader: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+  },
+  adminToggleInfo: {
+    flex: 1,
+    marginRight: 16,
+  },
+  adminToggleTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2C3E50',
+    marginBottom: 4,
+  },
+  adminToggleSubtitle: {
+    fontSize: 13,
+    color: '#7F8C8D',
+  },
   section: {
     backgroundColor: '#ffffff',
     marginBottom: 16,
+    marginHorizontal: 16,
+    borderRadius: 12,
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.05,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
+  },
+  sectionHeader: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    paddingBottom: 12,
+    gap: 8,
   },
   sectionTitle: {
+    fontSize: 18,
+    fontWeight: '700',
+    color: '#2C3E50',
+  },
+  sectionTitleGray: {
     fontSize: 13,
     fontWeight: '700',
     color: '#999',
@@ -247,6 +404,42 @@ const styles = StyleSheet.create({
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 8,
+  },
+  adminMenuItem: {
+    marginBottom: 12,
+    marginHorizontal: 16,
+    borderRadius: 12,
+    overflow: 'hidden',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
+      },
+      android: {
+        elevation: 4,
+      },
+    }),
+  },
+  adminMenuGradient: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    padding: 16,
+    gap: 12,
+  },
+  adminMenuText: {
+    flex: 1,
+  },
+  adminMenuTitle: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#ffffff',
+    marginBottom: 2,
+  },
+  adminMenuSubtitle: {
+    fontSize: 12,
+    color: 'rgba(255, 255, 255, 0.8)',
   },
   menuItem: {
     flexDirection: 'row',
@@ -271,6 +464,8 @@ const styles = StyleSheet.create({
     padding: 16,
     borderRadius: 12,
     marginBottom: 16,
+    borderWidth: 2,
+    borderColor: '#FF3B30',
   },
   signOutText: {
     fontSize: 16,
