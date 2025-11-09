@@ -304,6 +304,15 @@ agent_communication:
       🎉 BACKEND TESTING COMPLETE - ALL TESTS PASSED (100% SUCCESS RATE)
 
   - agent: "main"
+
+  - agent: "main"
+    message: |
+      Phase 2 progress: Implemented full CRUD UI for Admin Raffles screen.
+      - Added create/edit modal with fields: title, description, image, category, partner selection, location, address, prizesAvailable, ticketCost, drawDate, active
+      - Wired to backend endpoints: GET/POST/PUT/DELETE /api/admin/raffles and POST /api/admin/draw-winner
+      - Added pull-to-refresh and partner fetching for association
+      Please test admin flows on device/web: navigate Profile → Admin Mode → Manage Raffles.
+
     message: |
       Phase 1 investigation for Expo Go launch issue completed. Verified that the manifest endpoint correctly returns JSON for both Android and iOS and that the Android JS bundle is accessible:
       - Checked https://winwai-app.preview.emergentagent.com/index.exp?platform=android → JSON manifest OK (contains launchAsset url to ngrok)
