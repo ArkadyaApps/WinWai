@@ -47,7 +47,7 @@ export default function AdminRafflesScreen() {
           style: 'destructive',
           onPress: async () => {
             try {
-              await api.delete(`/app/frontend/app/admin/raffles/${raffle.id}`);
+              await api.delete(`/api/admin/raffles/${raffle.id}`);
               Alert.alert('Success', 'Raffle deleted successfully');
               fetchRaffles();
             } catch (error: any) {
