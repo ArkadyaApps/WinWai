@@ -374,7 +374,8 @@ async def admob_ssv_callback(request: Request):
     - reward_item: Type of reward
     - timestamp: Unix timestamp
     - transaction_id: Unique transaction ID
-    - user_id: Custom user ID we provided
+    - user_id: Custom user ID we provided (optional during AdMob verification)
+    - custom_data: Custom JSON data (can contain user_id)
     - signature: HMAC-SHA256 signature for verification
     - key_id: Key ID for signature verification
     """
@@ -385,16 +386,22 @@ async def admob_ssv_callback(request: Request):
     logger.info(f"AdMob SSV Callback received: {params}")
     
     # Extract important parameters
-    user_id = params.get('user_id')
+    user_id = params.get('user_id') or params.get('custom_data')
     transaction_id = params.get('transaction_id')
     reward_amount = params.get('reward_amount', '10')
     reward_item = params.get('reward_item', 'tickets')
     timestamp = params.get('timestamp')
     
-    # Basic validation
-    if not user_id or not transaction_id:
-        logger.warning(f"Invalid SSV callback - missing user_id or transaction_id: {params}")
-        return Response(status_code=400, content="Missing required parameters")
+    # If this is just AdMob's verification test (no user_id), return 200 OK
+    if not user_id:
+        logger.info("AdMob verification test received (no user_id) - returning OK")
+        return Response(status_code=200, content="OK")
+    
+    # Validate transaction_id exists
+    if not transaction_id:
+        logger.warning(f"Missing transaction_id in SSV callback: {params}")
+        # Still return 200 to prevent AdMob retries
+        return Response(status_code=200, content="OK")
     
     try:
         # Check for duplicate transaction
@@ -404,7 +411,7 @@ async def admob_ssv_callback(request: Request):
             return Response(status_code=200, content="OK")  # Return 200 to avoid retries
         
         # Award tickets to user
-        tickets_to_award = int(reward_amount)
+        tickets_to_award = int(reward_amount) if reward_amount else 10
         
         result = await db.users.update_one(
             {"id": user_id},
@@ -412,11 +419,9 @@ async def admob_ssv_callback(request: Request):
         )
         
         if result.modified_count == 0:
-            logger.error(f"User not found: {user_id}")
-            # Still return 200 to avoid AdMob retries
-            return Response(status_code=200, content="OK")
+            logger.warning(f"User not found: {user_id} - recording anyway for audit")
         
-        # Record the reward
+        # Record the reward (even if user not found, for audit trail)
         await db.ad_rewards.insert_one({
             "userId": user_id,
             "transactionId": transaction_id,
@@ -426,6 +431,7 @@ async def admob_ssv_callback(request: Request):
             "adNetwork": params.get('ad_network'),
             "adUnit": params.get('ad_unit'),
             "verified": True,
+            "userFound": result.modified_count > 0,
             "rawParams": params
         })
         
