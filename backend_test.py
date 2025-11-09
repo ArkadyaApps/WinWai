@@ -225,7 +225,43 @@ class BackendTester:
                     else:
                         self.log_test("Update User", False, f"Update failed: {response.status_code}", response.text)
                 else:
-                    self.log_test("Update User", False, "No non-admin user found to test update")
+                    # Create a test user for testing updates
+                    import pymongo
+                    from pymongo import MongoClient
+                    import uuid
+                    from datetime import datetime, timezone
+                    
+                    client = MongoClient("mongodb://localhost:27017")
+                    db = client["test_database"]
+                    
+                    test_user_id = str(uuid.uuid4())
+                    test_user_doc = {
+                        "id": test_user_id,
+                        "email": "testuser@example.com",
+                        "name": "Test User",
+                        "tickets": 100,
+                        "role": "user",
+                        "dailyStreak": 0,
+                        "createdAt": datetime.now(timezone.utc)
+                    }
+                    
+                    db.users.insert_one(test_user_doc)
+                    
+                    # Now test updating this user
+                    update_data = {"tickets": 500}
+                    response = self.session.put(f"{BASE_URL}/admin/users/{test_user_id}", json=update_data)
+                    
+                    if response.status_code == 200:
+                        updated_user = response.json()
+                        if updated_user.get("tickets") == 500:
+                            self.log_test("Update User", True, f"User tickets updated to 500", updated_user)
+                        else:
+                            self.log_test("Update User", False, "User tickets not updated correctly", updated_user)
+                    else:
+                        self.log_test("Update User", False, f"Update failed: {response.status_code}", response.text)
+                    
+                    # Clean up test user
+                    db.users.delete_one({"id": test_user_id})
                 
                 # Test DELETE user protection (trying to delete self)
                 if admin_user_id:
