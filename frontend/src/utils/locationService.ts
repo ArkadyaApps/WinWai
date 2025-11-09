@@ -4,6 +4,7 @@ interface LocationData {
   city: string;
   regionName: string;
   country: string;
+  countryCode: string;
   lat: number;
   lon: number;
 }
@@ -16,6 +17,7 @@ export const getUserLocation = async (): Promise<LocationData | null> => {
         city: response.data.city,
         regionName: response.data.regionName,
         country: response.data.country,
+        countryCode: response.data.countryCode,
         lat: response.data.lat,
         lon: response.data.lon,
       };
