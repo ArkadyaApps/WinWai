@@ -202,10 +202,14 @@ class BackendTester:
                 test_user = None
                 admin_user_id = None
                 
+                # Get current admin user ID from auth/me endpoint
+                me_response = self.session.get(f"{BASE_URL}/auth/me")
+                if me_response.status_code == 200:
+                    current_user = me_response.json()
+                    admin_user_id = current_user.get("id")
+                
                 for user in users:
-                    if user.get("email") == ADMIN_EMAIL:
-                        admin_user_id = user.get("id")
-                    elif user.get("role") != "admin":
+                    if user.get("role") != "admin":
                         test_user = user
                         break
                 
