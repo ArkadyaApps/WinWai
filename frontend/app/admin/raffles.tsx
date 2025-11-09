@@ -18,6 +18,7 @@ import { Ionicons } from '@expo/vector-icons';
 import api from '../../src/utils/api';
 import { Raffle, Partner } from '../../src/types';
 import { LinearGradient } from 'expo-linear-gradient';
+import DateTimePicker from '@react-native-community/datetimepicker';
 
 export default function AdminRafflesScreen() {
   const router = useRouter();
@@ -40,9 +41,11 @@ export default function AdminRafflesScreen() {
     address: '',
     prizesAvailable: 1,
     ticketCost: 10,
-    drawDate: '',
+    drawDate: new Date(),
     active: true,
   });
+
+  const [showDatePicker, setShowDatePicker] = useState(false);
 
   useEffect(() => {
     fetchAll();
@@ -85,7 +88,7 @@ export default function AdminRafflesScreen() {
       address: '',
       prizesAvailable: 1,
       ticketCost: 10,
-      drawDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000).toISOString(),
+      drawDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000),
       active: true,
     });
     setModalVisible(true);
@@ -103,7 +106,7 @@ export default function AdminRafflesScreen() {
       address: raffle.address || '',
       prizesAvailable: raffle.prizesAvailable,
       ticketCost: raffle.ticketCost,
-      drawDate: raffle.drawDate,
+      drawDate: new Date(raffle.drawDate),
       active: raffle.active,
     });
     setModalVisible(true);
@@ -116,6 +119,7 @@ export default function AdminRafflesScreen() {
     }
     try {
       setSaving(true);
+      const drawDateISO = formData.drawDate instanceof Date ? formData.drawDate.toISOString() : String(formData.drawDate);
       if (editingRaffle) {
         const payload: Raffle = {
           id: editingRaffle.id,
@@ -130,7 +134,7 @@ export default function AdminRafflesScreen() {
           prizesAvailable: formData.prizesAvailable,
           prizesRemaining: editingRaffle.prizesRemaining,
           ticketCost: formData.ticketCost,
-          drawDate: formData.drawDate,
+          drawDate: drawDateISO,
           active: formData.active,
           totalEntries: editingRaffle.totalEntries,
           createdAt: editingRaffle.createdAt,
@@ -149,7 +153,7 @@ export default function AdminRafflesScreen() {
           address: formData.address || undefined,
           prizesAvailable: formData.prizesAvailable,
           ticketCost: formData.ticketCost,
-          drawDate: formData.drawDate,
+          drawDate: drawDateISO,
           active: formData.active,
         } as any;
         await api.post('/api/admin/raffles', payload);
@@ -220,9 +224,8 @@ export default function AdminRafflesScreen() {
     }
   };
 
-  const formatDate = (dateString: string) => {
-    const date = new Date(dateString);
-    return date.toLocaleDateString('en-US', { month: 'short', day: 'numeric', year: 'numeric' });
+  const formatDate = (date: Date) => {
+    return date.toLocaleString();
   };
 
   if (loading) {
@@ -288,7 +291,7 @@ export default function AdminRafflesScreen() {
                 </View>
                 <View style={styles.statItem}>
                   <Text style={styles.statLabel}>Draw Date</Text>
-                  <Text style={styles.statValue}>{formatDate(raffle.drawDate)}</Text>
+                  <Text style={styles.statValue}>{formatDate(new Date(raffle.drawDate))}</Text>
                 </View>
               </View>
 
@@ -426,15 +429,22 @@ export default function AdminRafflesScreen() {
                 keyboardType="numeric"
               />
 
-              <Text style={styles.label}>Draw Date (ISO) *</Text>
-              <TextInput
-                style={styles.input}
-                value={formData.drawDate}
-                onChangeText={(text) => setFormData({ ...formData, drawDate: text })}
-                placeholder="YYYY-MM-DD or ISO"
-                placeholderTextColor="#999"
-                autoCapitalize="none"
-              />
+              <Text style={styles.label}>Draw Date *</Text>
+              <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
+                <Text style={{ color: '#2C3E50', fontSize: 16 }}>{formatDate(formData.drawDate)}</Text>
+              </TouchableOpacity>
+
+              {showDatePicker && (
+                <DateTimePicker
+                  value={formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate)}
+                  mode="datetime"
+                  display={Platform.OS === 'ios' ? 'inline' : 'default'}
+                  onChange={(_, selectedDate) => {
+                    setShowDatePicker(false);
+                    if (selectedDate) setFormData({ ...formData, drawDate: selectedDate });
+                  }}
+                />
+              )}
 
               <TouchableOpacity
                 style={styles.saveButton}
