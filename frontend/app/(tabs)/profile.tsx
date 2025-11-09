@@ -81,6 +81,29 @@ export default function ProfileScreen() {
     );
   };
 
+  const handleEditProfile = () => {
+    setEditModalVisible(true);
+  };
+
+  const handleSaveProfile = async () => {
+    if (!formData.name || !formData.email) {
+      Alert.alert('Error', 'Name and email are required');
+      return;
+    }
+
+    try {
+      setSaving(true);
+      const response = await api.put('/api/users/me/profile', formData);
+      setUser(response.data);
+      setEditModalVisible(false);
+      Alert.alert('Success', 'Profile updated successfully');
+    } catch (error: any) {
+      Alert.alert('Error', error.response?.data?.detail || 'Failed to update profile');
+    } finally {
+      setSaving(false);
+    }
+  };
+
   return (
     <View style={styles.container}>
       <ScrollView contentContainerStyle={styles.content}>
