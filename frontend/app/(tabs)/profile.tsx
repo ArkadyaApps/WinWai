@@ -143,6 +143,12 @@ export default function ProfileScreen() {
           </View>
         </View>
 
+        {/* Edit Profile Button */}
+        <TouchableOpacity style={styles.editProfileButton} onPress={handleEditProfile}>
+          <Ionicons name="create-outline" size={20} color="#4ECDC4" />
+          <Text style={styles.editProfileText}>Edit Profile</Text>
+        </TouchableOpacity>
+
         {/* Admin Mode Toggle */}
         {isAdmin && (
           <View style={styles.adminToggleCard}>
