@@ -1,0 +1,68 @@
+[
+  {
+    "test": "Admin Authentication",
+    "success": true,
+    "message": "Admin endpoints accessible (no auth required)",
+    "timestamp": "2025-11-09T16:16:56.780911"
+  },
+  {
+    "test": "Profile Update",
+    "success": false,
+    "message": "Authentication required",
+    "timestamp": "2025-11-09T16:16:56.793492",
+    "response": "{\"detail\":\"Not authenticated\"}"
+  },
+  {
+    "test": "Get Partners",
+    "success": false,
+    "message": "Admin access denied",
+    "timestamp": "2025-11-09T16:16:56.842162",
+    "response": "{\"detail\":\"Admin access required\"}"
+  },
+  {
+    "test": "Get Users",
+    "success": false,
+    "message": "Admin access denied",
+    "timestamp": "2025-11-09T16:16:56.891534",
+    "response": "{\"detail\":\"Admin access required\"}"
+  },
+  {
+    "test": "Get Raffles",
+    "success": false,
+    "message": "Admin access denied",
+    "timestamp": "2025-11-09T16:16:56.899269",
+    "response": "{\"detail\":\"Admin access required\"}"
+  },
+  {
+    "test": "Non-Admin Access /admin/partners",
+    "success": true,
+    "message": "Correctly denied access: 403",
+    "timestamp": "2025-11-09T16:16:56.910934"
+  },
+  {
+    "test": "Non-Admin Access /admin/users",
+    "success": true,
+    "message": "Correctly denied access: 403",
+    "timestamp": "2025-11-09T16:16:56.922692"
+  },
+  {
+    "test": "Non-Admin Access /admin/raffles",
+    "success": true,
+    "message": "Correctly denied access: 403",
+    "timestamp": "2025-11-09T16:16:56.972229"
+  },
+  {
+    "test": "Invalid Partner ID",
+    "success": false,
+    "message": "Expected 404, got: 405",
+    "timestamp": "2025-11-09T16:16:56.985174",
+    "response": "{\"detail\":\"Method Not Allowed\"}"
+  },
+  {
+    "test": "Invalid User ID",
+    "success": false,
+    "message": "Expected 404, got: 403",
+    "timestamp": "2025-11-09T16:16:57.035925",
+    "response": "{\"detail\":\"Admin access required\"}"
+  }
+]
