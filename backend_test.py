@@ -299,15 +299,35 @@ class BackendTester:
                     test_raffle = raffles[0]
                     raffle_id = test_raffle.get("id")
                     
-                    # Update raffle data
-                    update_data = test_raffle.copy()
-                    update_data["description"] = "Updated test description"
+                    # Update raffle data - ensure all required fields are present
+                    from datetime import datetime, timezone, timedelta
+                    
+                    update_data = {
+                        "id": raffle_id,
+                        "title": test_raffle.get("title", "Test Raffle"),
+                        "description": "Updated test description via API",
+                        "category": test_raffle.get("category", "food"),
+                        "partnerId": test_raffle.get("partnerId", "test-partner"),
+                        "partnerName": test_raffle.get("partnerName", "Test Partner"),
+                        "location": test_raffle.get("location", "bangkok"),
+                        "address": test_raffle.get("address", "Test Address"),
+                        "prizesAvailable": test_raffle.get("prizesAvailable", 1),
+                        "prizesRemaining": test_raffle.get("prizesRemaining", 1),
+                        "ticketCost": test_raffle.get("ticketCost", 10),
+                        "drawDate": test_raffle.get("drawDate", (datetime.now(timezone.utc) + timedelta(days=7)).isoformat()),
+                        "active": test_raffle.get("active", True),
+                        "totalEntries": test_raffle.get("totalEntries", 0),
+                        "createdAt": test_raffle.get("createdAt", datetime.now(timezone.utc).isoformat())
+                    }
                     
                     response = self.session.put(f"{BASE_URL}/admin/raffles/{raffle_id}", json=update_data)
                     
                     if response.status_code == 200:
                         updated_raffle = response.json()
-                        self.log_test("Update Raffle", True, "Raffle updated successfully", updated_raffle)
+                        if updated_raffle.get("description") == "Updated test description via API":
+                            self.log_test("Update Raffle", True, "Raffle updated successfully", updated_raffle)
+                        else:
+                            self.log_test("Update Raffle", False, "Raffle description not updated correctly", updated_raffle)
                     else:
                         self.log_test("Update Raffle", False, f"Update failed: {response.status_code}", response.text)
                 else:
