@@ -1,16 +1,24 @@
 import React, { useState } from 'react';
-import { StyleSheet, View } from 'react-native';
-import { BannerAd, BannerAdSize } from 'react-native-google-mobile-ads';
+import { StyleSheet, View, Platform } from 'react-native';
 import { getAdUnit } from '../utils/adConfig';
 
 interface BannerAdComponentProps {
   position?: 'top' | 'bottom';
 }
 
+// Conditionally import AdMob only on native platforms
+let BannerAd: any, BannerAdSize: any;
+if (Platform.OS !== 'web') {
+  const AdMob = require('react-native-google-mobile-ads');
+  BannerAd = AdMob.BannerAd;
+  BannerAdSize = AdMob.BannerAdSize;
+}
+
 const BannerAdComponent: React.FC<BannerAdComponentProps> = ({ position = 'bottom' }) => {
   const [failed, setFailed] = useState(false);
 
-  if (failed) {
+  // Don't show ads on web
+  if (Platform.OS === 'web' || failed) {
     return null;
   }
 
@@ -24,7 +32,7 @@ const BannerAdComponent: React.FC<BannerAdComponentProps> = ({ position = 'botto
         requestOptions={{
           keywords: ['gaming', 'entertainment', 'rewards'],
         }}
-        onAdFailedToLoad={(error) => {
+        onAdFailedToLoad={(error: any) => {
           console.warn('Banner ad failed to load:', error);
           setFailed(true);
         }}
