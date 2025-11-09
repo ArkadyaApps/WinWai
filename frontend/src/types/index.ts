@@ -30,6 +30,8 @@ export interface Raffle {
   category: string;
   partnerId: string;
   partnerName?: string;
+  location?: string;
+  address?: string;
   prizesAvailable: number;
   prizesRemaining: number;
   ticketCost: number;
