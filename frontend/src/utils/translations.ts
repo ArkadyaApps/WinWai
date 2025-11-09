@@ -1,0 +1,176 @@
+export const translations = {
+  en: {
+    // Header
+    filter: 'Filter',
+    tickets: 'Tickets',
+    
+    // Home
+    nearbyIn: 'Nearby in',
+    raffles: 'Raffles',
+    clearFilters: 'Clear Filters',
+    noRafflesFound: 'No raffles found',
+    tryAdjustingFilters: 'Try adjusting your filters',
+    
+    // Filter Menu
+    searchFilter: 'Search & Filter',
+    yourLocation: 'Your location',
+    category: 'Category',
+    location: 'Location',
+    applyFilters: 'Apply Filters',
+    allCategories: 'All Categories',
+    foodDining: 'Food & Dining',
+    hotelsResorts: 'Hotels & Resorts',
+    spaWellness: 'Spa & Wellness',
+    allLocations: 'All Locations',
+    bangkok: 'Bangkok',
+    chiangMai: 'Chiang Mai',
+    phuket: 'Phuket',
+    pattaya: 'Pattaya',
+    krabi: 'Krabi',
+    
+    // Detail Page
+    prizesLeft: 'Prizes Left',
+    totalEntries: 'Total Entries',
+    drawDate: 'Draw Date',
+    aboutThisPrize: 'About This Prize',
+    partner: 'Partner',
+    drawDetails: 'Draw Details',
+    entryCost: 'Entry Cost',
+    totalPrizes: 'Total Prizes',
+    enterRaffle: 'Enter Raffle',
+    
+    // Tabs
+    home: 'Home',
+    allRaffles: 'Raffles',
+    myTickets: 'Tickets',
+    myRewards: 'Rewards',
+    profile: 'Profile',
+    
+    // Common
+    loading: 'Loading...',
+    goBack: 'Go Back',
+    success: 'Success!',
+    error: 'Error',
+  },
+  th: {
+    // Header
+    filter: 'กรอง',
+    tickets: 'ตั๋ว',
+    
+    // Home
+    nearbyIn: 'ใกล้เคียงใน',
+    raffles: 'การจับรางวัล',
+    clearFilters: 'ล้างตัวกรอง',
+    noRafflesFound: 'ไม่พบการจับรางวัล',
+    tryAdjustingFilters: 'ลองปรับตัวกรอง',
+    
+    // Filter Menu
+    searchFilter: 'ค้นหาและกรอง',
+    yourLocation: 'สถานที่ของคุณ',
+    category: 'หมวดหมู่',
+    location: 'สถานที่',
+    applyFilters: 'ใช้ตัวกรอง',
+    allCategories: 'ทุกหมวดหมู่',
+    foodDining: 'อาหารและร้านอาหาร',
+    hotelsResorts: 'โรงแรมและรีสอร์ท',
+    spaWellness: 'สปาและสุขภาพ',
+    allLocations: 'ทุกสถานที่',
+    bangkok: 'กรุงเทพมหานคร',
+    chiangMai: 'เชียงใหม่',
+    phuket: 'ภูเก็ต',
+    pattaya: 'พัทยา',
+    krabi: 'กระบี่',
+    
+    // Detail Page
+    prizesLeft: 'รางวัลเหลืออยู่',
+    totalEntries: 'ผู้เข้าร่วมทั้งหมด',
+    drawDate: 'วันจับรางวัล',
+    aboutThisPrize: 'เกี่ยวกับรางวัลนี้',
+    partner: 'พาร์ทเนอร์',
+    drawDetails: 'รายละเอียดการจับรางวัล',
+    entryCost: 'ค่าเข้าร่วม',
+    totalPrizes: 'รางวัลทั้งหมด',
+    enterRaffle: 'เข้าร่วมจับรางวัล',
+    
+    // Tabs
+    home: 'หน้าแรก',
+    allRaffles: 'การจับรางวัล',
+    myTickets: 'ตั๋วของฉัน',
+    myRewards: 'รางวัลของฉัน',
+    profile: 'โปรไฟล์',
+    
+    // Common
+    loading: 'กำลังโหลด...',
+    goBack: 'กลับ',
+    success: 'สำเร็จ!',
+    error: 'ข้อผิดพลาด',
+  },
+  fr: {
+    // Header
+    filter: 'Filtrer',
+    tickets: 'Billets',
+    
+    // Home
+    nearbyIn: 'À proximité de',
+    raffles: 'Tirages',
+    clearFilters: 'Effacer les filtres',
+    noRafflesFound: 'Aucun tirage trouvé',
+    tryAdjustingFilters: 'Essayez d\'ajuster vos filtres',
+    
+    // Filter Menu
+    searchFilter: 'Recherche et filtre',
+    yourLocation: 'Votre emplacement',
+    category: 'Catégorie',
+    location: 'Emplacement',
+    applyFilters: 'Appliquer les filtres',
+    allCategories: 'Toutes les catégories',
+    foodDining: 'Restaurants',
+    hotelsResorts: 'Hôtels et stations',
+    spaWellness: 'Spa et bien-être',
+    allLocations: 'Tous les emplacements',
+    bangkok: 'Bangkok',
+    chiangMai: 'Chiang Mai',
+    phuket: 'Phuket',
+    pattaya: 'Pattaya',
+    krabi: 'Krabi',
+    
+    // Detail Page
+    prizesLeft: 'Prix restants',
+    totalEntries: 'Participations totales',
+    drawDate: 'Date du tirage',
+    aboutThisPrize: 'À propos de ce prix',
+    partner: 'Partenaire',
+    drawDetails: 'Détails du tirage',
+    entryCost: 'Coût d\'entrée',
+    totalPrizes: 'Prix totaux',
+    enterRaffle: 'Participer au tirage',
+    
+    // Tabs
+    home: 'Accueil',
+    allRaffles: 'Tirages',
+    myTickets: 'Mes billets',
+    myRewards: 'Mes récompenses',
+    profile: 'Profil',
+    
+    // Common
+    loading: 'Chargement...',
+    goBack: 'Retour',
+    success: 'Succès!',
+    error: 'Erreur',
+  },
+};
+
+export type TranslationKey = keyof typeof translations.en;
+
+export const getLanguageFromCountry = (countryCode: string): 'en' | 'th' | 'fr' => {
+  const countryLanguageMap: { [key: string]: 'en' | 'th' | 'fr' } = {
+    TH: 'th', // Thailand
+    FR: 'fr', // France
+    BE: 'fr', // Belgium
+    CH: 'fr', // Switzerland (partially)
+    CA: 'fr', // Canada (partially)
+    // Default to English for other countries
+  };
+  
+  return countryLanguageMap[countryCode] || 'en';
+};
