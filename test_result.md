@@ -302,6 +302,15 @@ agent_communication:
   - agent: "testing"
     message: |
       🎉 BACKEND TESTING COMPLETE - ALL TESTS PASSED (100% SUCCESS RATE)
+
+  - agent: "main"
+    message: |
+      Phase 1 investigation for Expo Go launch issue completed. Verified that the manifest endpoint correctly returns JSON for both Android and iOS and that the Android JS bundle is accessible:
+      - Checked https://winwai-app.preview.emergentagent.com/index.exp?platform=android → JSON manifest OK (contains launchAsset url to ngrok)
+      - Checked https://winwai-app.preview.emergentagent.com/index.exp?platform=ios → JSON manifest OK
+      - Checked https://winwai-app.ngrok.io/node_modules/expo-router/entry.bundle?platform=android → Bundle loads (second attempt succeeded after an initial timeout)
+      Likely previous failures were due to transient ngrok connectivity/caching on device. Recommend: clear Expo Go cache, update Expo Go, ensure same Wi‑Fi, and rescan QR. No app.json or env changes required. Will proceed to CRUD once user confirms native launch works now.
+
       
       COMPREHENSIVE TESTING RESULTS:
       ✅ Authentication: Successfully authenticated as admin user using session-based auth
