@@ -324,11 +324,16 @@ class BackendTester:
                         "createdAt": test_raffle.get("createdAt", datetime.now(timezone.utc).isoformat())
                     }
                     
+                    # Use a unique description for each test run
+                    import time
+                    unique_desc = f"Updated test description via API - {int(time.time())}"
+                    update_data["description"] = unique_desc
+                    
                     response = self.session.put(f"{BASE_URL}/admin/raffles/{raffle_id}", json=update_data)
                     
                     if response.status_code == 200:
                         updated_raffle = response.json()
-                        if updated_raffle.get("description") == "Updated test description via API":
+                        if updated_raffle.get("description") == unique_desc:
                             self.log_test("Update Raffle", True, "Raffle updated successfully", updated_raffle)
                         else:
                             self.log_test("Update Raffle", False, "Raffle description not updated correctly", updated_raffle)
