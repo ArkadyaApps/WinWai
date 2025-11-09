@@ -399,6 +399,69 @@ export default function ProfileScreen() {
         </KeyboardAvoidingView>
       </Modal>
 
+      {/* Language Selection Modal */}
+      <Modal
+        visible={languageModalVisible}
+        animationType="slide"
+        transparent
+        onRequestClose={() => setLanguageModalVisible(false)}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Select Language</Text>
+              <TouchableOpacity onPress={() => setLanguageModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#000" />
+              </TouchableOpacity>
+            </View>
+
+            <View style={styles.languageList}>
+              <TouchableOpacity
+                style={[
+                  styles.languageOption,
+                  language === 'en' && styles.languageOptionActive,
+                ]}
+                onPress={() => handleLanguageChange('en')}
+              >
+                <Text style={styles.languageFlag}>🇺🇸</Text>
+                <Text style={styles.languageText}>English</Text>
+                {language === 'en' && (
+                  <Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.languageOption,
+                  language === 'th' && styles.languageOptionActive,
+                ]}
+                onPress={() => handleLanguageChange('th')}
+              >
+                <Text style={styles.languageFlag}>🇹🇭</Text>
+                <Text style={styles.languageText}>ภาษาไทย (Thai)</Text>
+                {language === 'th' && (
+                  <Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />
+                )}
+              </TouchableOpacity>
+
+              <TouchableOpacity
+                style={[
+                  styles.languageOption,
+                  language === 'fr' && styles.languageOptionActive,
+                ]}
+                onPress={() => handleLanguageChange('fr')}
+              >
+                <Text style={styles.languageFlag}>🇫🇷</Text>
+                <Text style={styles.languageText}>Français (French)</Text>
+                {language === 'fr' && (
+                  <Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />
+                )}
+              </TouchableOpacity>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       <BannerAdComponent position="bottom" />
     </View>
   );
