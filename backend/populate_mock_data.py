@@ -71,6 +71,9 @@ async def populate_data():
         partner['createdAt'] = datetime.now(timezone.utc)
         await db.partners.insert_one(partner)
     
+    # Location data for Thai cities
+    locations = ['bangkok', 'chiang-mai', 'phuket', 'pattaya', 'krabi']
+    
     # Create raffles
     print("Inserting raffles...")
     raffles = []
@@ -83,6 +86,7 @@ async def populate_data():
             "category": partner["category"],
             "partnerId": partner["id"],
             "partnerName": partner["name"],
+            "location": locations[i % len(locations)],
             "prizesAvailable": 3,
             "prizesRemaining": 3,
             "ticketCost": 10,
