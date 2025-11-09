@@ -53,6 +53,7 @@ class Raffle(BaseModel):
     category: str  # food, hotel, spa
     partnerId: str
     partnerName: Optional[str] = None
+    location: Optional[str] = None  # bangkok, chiang-mai, phuket, etc
     prizesAvailable: int
     prizesRemaining: int
     ticketCost: int = Field(default=10)
