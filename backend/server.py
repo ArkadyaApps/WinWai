@@ -201,10 +201,12 @@ async def logout(authorization: Optional[str] = Header(None)):
 
 # Raffle Endpoints
 @api_router.get("/raffles", response_model=List[Raffle])
-async def get_raffles(category: Optional[str] = None, active: bool = True):
+async def get_raffles(category: Optional[str] = None, location: Optional[str] = None, active: bool = True):
     query = {"active": active}
-    if category:
+    if category and category != 'all':
         query["category"] = category
+    if location and location != 'all':
+        query["location"] = location
     
     raffles = await db.raffles.find(query).sort("drawDate", 1).to_list(100)
     return [Raffle(**raffle) for raffle in raffles]
