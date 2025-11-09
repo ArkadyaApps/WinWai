@@ -67,11 +67,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signOut = async () => {
     try {
+      // Call logout endpoint
       await api.post('/api/auth/logout');
+    } catch (error) {
+      console.error('Logout API call failed:', error);
+      // Continue with local logout even if API fails
+    } finally {
+      // Always clear local state regardless of API success
       await AsyncStorage.removeItem('session_token');
       logout();
-    } catch (error) {
-      console.error('Sign out failed:', error);
+      setLoading(false);
     }
   };
 
