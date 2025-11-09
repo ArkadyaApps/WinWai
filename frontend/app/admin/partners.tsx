@@ -331,7 +331,7 @@ export default function AdminPartnersScreen() {
                 numberOfLines={3}
               />
 
-              <Text style={styles.label}>Category *</nText>
+              <Text style={styles.label}>Category *</Text>
               <View style={styles.categoryButtons}>
                 {['food', 'hotel', 'spa'].map((cat) => (
                   <TouchableOpacity
