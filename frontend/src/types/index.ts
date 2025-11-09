@@ -3,10 +3,22 @@ export interface User {
   email: string;
   name: string;
   picture?: string;
+  phone?: string;
   tickets: number;
   role: string;
   dailyStreak: number;
   lastLogin?: string;
+  createdAt: string;
+}
+
+export interface Partner {
+  id: string;
+  name: string;
+  description: string;
+  logo?: string;
+  category: string;
+  sponsored: boolean;
+  contactInfo?: string;
   createdAt: string;
 }
 
