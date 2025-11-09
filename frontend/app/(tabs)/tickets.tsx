@@ -66,26 +66,40 @@ export default function TicketsScreen() {
           
           <TouchableOpacity
             style={[
-              styles.watchAdButton,
-              (!adReady || loading) && styles.watchAdButtonDisabled,
+              styles.playButton,
+              (!adReady || loading) && styles.playButtonDisabled,
             ]}
             onPress={handleWatchAd}
             disabled={!adReady || loading}
+            activeOpacity={0.8}
           >
             {loading ? (
-              <ActivityIndicator color="#ffffff" />
+              <View style={styles.playButtonContent}>
+                <ActivityIndicator color="#ffffff" size="large" />
+                <Text style={styles.playButtonTextLoading}>Loading...</Text>
+              </View>
             ) : (
-              <>
-                <Text style={styles.watchAdIcon}>🎬</Text>
-                <View>
-                  <Text style={styles.watchAdText}>
-                    {adReady ? 'Watch Ad' : 'Loading Ad...'}
-                  </Text>
-                  <Text style={styles.watchAdSubtext}>Earn 10 tickets</Text>
+              <View style={styles.playButtonContent}>
+                <View style={styles.playIconContainer}>
+                  <Text style={styles.playIcon}>▶</Text>
                 </View>
-              </>
+                <View style={styles.playButtonTextContainer}>
+                  <Text style={styles.playButtonTitle}>
+                    {adReady ? '🎬 Play Rewarded Ad' : '⏳ Loading Ad...'}
+                  </Text>
+                  <Text style={styles.playButtonSubtitle}>
+                    Earn +10 tickets instantly
+                  </Text>
+                </View>
+              </View>
             )}
           </TouchableOpacity>
+
+          {!adReady && (
+            <Text style={styles.adStatusText}>
+              📱 Note: Ads only work on mobile devices (iOS/Android). Use Expo Go or production build.
+            </Text>
+          )}
 
           <View style={styles.infoCard}>
             <Text style={styles.infoTitle}>How to Earn Tickets</Text>
