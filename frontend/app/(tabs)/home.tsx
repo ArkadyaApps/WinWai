@@ -17,7 +17,7 @@ import { theme } from '../../src/theme/tokens';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
-const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
+const CARD_WIDTH = (width - (CARD_MARGIN * 5)) / 4;
 const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/qlp006k7_logo.png';
 
 export default function HomeScreen() {
