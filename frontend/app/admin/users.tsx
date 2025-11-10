@@ -142,22 +142,53 @@ export default function AdminUsersScreen() {
       <Modal visible={modalVisible} animationType="slide" transparent onRequestClose={() => setModalVisible(false)}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}><Text style={styles.modalTitle}>Edit User</Text><TouchableOpacity onPress={() => setModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{editingUser ? 'Edit User' : 'Create New User'}</Text>
+              <TouchableOpacity onPress={() => setModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#000" />
+              </TouchableOpacity>
+            </View>
             <ScrollView style={styles.formContainer}>
               <Text style={styles.label}>Name *</Text>
               <TextInput style={styles.input} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} placeholder="User name" placeholderTextColor="#999" />
+              
               <Text style={styles.label}>Email *</Text>
-              <TextInput style={styles.input} value={formData.email} onChangeText={(text) => setFormData({ ...formData, email: text })} placeholder="Email address" placeholderTextColor="#999" keyboardType="email-address" autoCapitalize="none" />
+              <TextInput style={styles.input} value={formData.email} onChangeText={(text) => setFormData({ ...formData, email: text })} placeholder="Email address" placeholderTextColor="#999" keyboardType="email-address" autoCapitalize="none" editable={!editingUser} />
+              
+              {!editingUser && (
+                <>
+                  <Text style={styles.label}>Password *</Text>
+                  <TextInput 
+                    style={styles.input} 
+                    value={formData.password} 
+                    onChangeText={(text) => setFormData({ ...formData, password: text })} 
+                    placeholder="Minimum 6 characters" 
+                    placeholderTextColor="#999" 
+                    secureTextEntry 
+                    autoCapitalize="none" 
+                  />
+                </>
+              )}
+              
               <Text style={styles.label}>Phone</Text>
               <TextInput style={styles.input} value={formData.phone} onChangeText={(text) => setFormData({ ...formData, phone: text })} placeholder="Phone number" placeholderTextColor="#999" keyboardType="phone-pad" />
+              
               <Text style={styles.label}>Tickets</Text>
               <TextInput style={styles.input} value={String(formData.tickets)} onChangeText={(text) => setFormData({ ...formData, tickets: parseInt(text) || 0 })} placeholder="Number of tickets" placeholderTextColor="#999" keyboardType="numeric" />
+              
               <Text style={styles.label}>Role</Text>
               <View style={styles.roleButtons}>
-                <TouchableOpacity style={[styles.roleButton, formData.role === 'user' && styles.roleButtonActive]} onPress={() => setFormData({ ...formData, role: 'user' })}><Text style={[styles.roleButtonText, formData.role === 'user' && styles.roleButtonTextActive]}>User</Text></TouchableOpacity>
-                <TouchableOpacity style={[styles.roleButton, formData.role === 'admin' && styles.roleButtonActive]} onPress={() => setFormData({ ...formData, role: 'admin' })}><Text style={[styles.roleButtonText, formData.role === 'admin' && styles.roleButtonTextActive]}>Admin</Text></TouchableOpacity>
+                <TouchableOpacity style={[styles.roleButton, formData.role === 'user' && styles.roleButtonActive]} onPress={() => setFormData({ ...formData, role: 'user' })}>
+                  <Text style={[styles.roleButtonText, formData.role === 'user' && styles.roleButtonTextActive]}>User</Text>
+                </TouchableOpacity>
+                <TouchableOpacity style={[styles.roleButton, formData.role === 'admin' && styles.roleButtonActive]} onPress={() => setFormData({ ...formData, role: 'admin' })}>
+                  <Text style={[styles.roleButtonText, formData.role === 'admin' && styles.roleButtonTextActive]}>Admin</Text>
+                </TouchableOpacity>
               </View>
-              <TouchableOpacity style={styles.saveButton} onPress={handleSave}><Text style={styles.saveButtonText}>Update User</Text></TouchableOpacity>
+              
+              <TouchableOpacity style={styles.saveButton} onPress={handleSave}>
+                <Text style={styles.saveButtonText}>{editingUser ? 'Update User' : 'Create User'}</Text>
+              </TouchableOpacity>
             </ScrollView>
           </View>
         </KeyboardAvoidingView>
