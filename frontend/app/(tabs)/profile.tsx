@@ -154,6 +154,13 @@ export default function ProfileScreen() {
         {/* Account Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitleGray}>Account</Text>
+          {hasPassword && (
+            <TouchableOpacity style={styles.menuItem} onPress={() => setChangePasswordModalVisible(true)}>
+              <Ionicons name="lock-closed-outline" size={24} color={theme.colors.onyx} />
+              <Text style={styles.menuText}>Change Password</Text>
+              <Ionicons name="chevron-forward" size={20} color="#999" />
+            </TouchableOpacity>
+          )}
           <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Notifications', 'Notification settings coming soon!')}>
             <Ionicons name="notifications-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>Notifications</Text>
