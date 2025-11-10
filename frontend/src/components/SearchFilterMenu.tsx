@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import {
   View,
   Text,
@@ -7,9 +7,12 @@ import {
   Modal,
   ScrollView,
   Platform,
+  ActivityIndicator,
 } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import api from '../utils/api';
+import { getUserLocation } from '../utils/locationService';
 
 interface SearchFilterMenuProps {
   visible: boolean;
@@ -28,15 +31,6 @@ const categories = [
   { id: 'spa', name: 'Spa & Wellness', icon: 'fitness' },
 ];
 
-const locations = [
-  { id: 'all', name: 'All Locations' },
-  { id: 'bangkok', name: 'Bangkok' },
-  { id: 'chiang-mai', name: 'Chiang Mai' },
-  { id: 'phuket', name: 'Phuket' },
-  { id: 'pattaya', name: 'Pattaya' },
-  { id: 'krabi', name: 'Krabi' },
-];
-
 const SearchFilterMenu: React.FC<SearchFilterMenuProps> = ({
   visible,
   onClose,
@@ -46,6 +40,60 @@ const SearchFilterMenu: React.FC<SearchFilterMenuProps> = ({
   onLocationChange,
   userCity,
 }) => {
+  const [locations, setLocations] = useState<string[]>([]);
+  const [loadingLocations, setLoadingLocations] = useState(true);
+  const [detectingLocation, setDetectingLocation] = useState(false);
+  const [detectedLocation, setDetectedLocation] = useState<string | null>(userCity || null);
+
+  useEffect(() => {
+    if (visible) {
+      loadLocations();
+      if (!detectedLocation && !userCity) {
+        detectUserLocation();
+      }
+    }
+  }, [visible]);
+
+  const loadLocations = async () => {
+    try {
+      const response = await api.get('/api/raffles/locations/list');
+      setLocations(response.data.locations || []);
+    } catch (error) {
+      console.error('Failed to load locations:', error);
+    } finally {
+      setLoadingLocations(false);
+    }
+  };
+
+  const detectUserLocation = async () => {
+    try {
+      const location = await getUserLocation();
+      if (location && location.city) {
+        setDetectedLocation(location.city);
+      }
+    } catch (error) {
+      console.error('Failed to detect location:', error);
+    }
+  };
+
+  const handleUseMyLocation = async () => {
+    if (detectedLocation) {
+      onLocationChange(detectedLocation);
+    } else {
+      setDetectingLocation(true);
+      try {
+        const location = await getUserLocation();
+        if (location && location.city) {
+          setDetectedLocation(location.city);
+          onLocationChange(location.city);
+        }
+      } catch (error) {
+        console.error('Failed to detect location:', error);
+      } finally {
+        setDetectingLocation(false);
+      }
+    }
+  };
   return (
     <Modal
       visible={visible}
