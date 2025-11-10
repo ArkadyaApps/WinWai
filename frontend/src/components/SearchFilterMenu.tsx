@@ -383,6 +383,11 @@ const styles = StyleSheet.create({
     color: '#fff',
     textAlign: 'center',
   },
+  loadingContainer: {
+    padding: 24,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   locationList: {
     gap: 8,
   },
@@ -396,6 +401,10 @@ const styles = StyleSheet.create({
     borderWidth: 2,
     borderColor: 'transparent',
   },
+  myLocationItem: {
+    borderColor: '#4ECDC4',
+    borderWidth: 1.5,
+  },
   locationItemSelected: {
     backgroundColor: '#FFF9E6',
     borderColor: '#FFD700',
@@ -404,11 +413,16 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     gap: 12,
+    flex: 1,
   },
   locationItemText: {
     fontSize: 15,
     fontWeight: '600',
     color: '#2C3E50',
+    flex: 1,
+  },
+  myLocationText: {
+    color: '#4ECDC4',
   },
   locationItemTextSelected: {
     color: '#000',
