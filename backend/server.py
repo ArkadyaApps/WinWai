@@ -689,6 +689,54 @@ async def claim_reward(claim_request: ClaimRewardRequest, authorization: Optiona
     
     return {"message": "Claim submitted successfully"}
 
+@api_router.get("/rewards")
+async def get_rewards(authorization: Optional[str] = Header(None)):
+    user = await get_current_user(authorization=authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    rewards = await db.rewards.find({"userId": user.id}).to_list(100)
+    return [Reward(**r) for r in rewards]
+
+@api_router.get("/vouchers", response_model=List[Voucher])
+async def get_user_vouchers(authorization: Optional[str] = Header(None)):
+    """Get all vouchers for the authenticated user"""
+    user = await get_current_user(authorization=authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    vouchers = await db.vouchers.find({"userId": user.id}).sort("issuedAt", -1).to_list(100)
+    return [Voucher(**v) for v in vouchers]
+
+@api_router.post("/vouchers/{voucher_id}/redeem")
+async def redeem_voucher(voucher_id: str, authorization: Optional[str] = Header(None)):
+    """Mark a voucher as redeemed"""
+    user = await get_current_user(authorization=authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    voucher = await db.vouchers.find_one({"id": voucher_id, "userId": user.id})
+    if not voucher:
+        raise HTTPException(status_code=404, detail="Voucher not found")
+    
+    if voucher["isRedeemed"]:
+        raise HTTPException(status_code=400, detail="Voucher already redeemed")
+    
+    # Check if expired
+    if datetime.now(timezone.utc) > voucher["expiresAt"]:
+        raise HTTPException(status_code=400, detail="Voucher has expired")
+    
+    # Mark as redeemed
+    await db.vouchers.update_one(
+        {"id": voucher_id},
+        {"$set": {
+            "isRedeemed": True,
+            "redeemedAt": datetime.now(timezone.utc)
+        }}
+    )
+    
+    return {"message": "Voucher redeemed successfully"}
+
 # AdMob Server-Side Verification (SSV) Callback
 @api_router.get("/admob/ssv-callback")
 @api_router.post("/admob/ssv-callback")
