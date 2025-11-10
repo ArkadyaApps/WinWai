@@ -75,11 +75,8 @@ export default function HomeScreen() {
   return (
     <View style={styles.container}>
       <AppHeader
-        title="WinWai"
         variant="gold"
-        showLogo
         logoUri={LOGO_URI}
-        size="tall"
         showDivider
         right={(
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
