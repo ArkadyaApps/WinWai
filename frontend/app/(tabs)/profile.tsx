@@ -59,26 +59,26 @@ export default function ProfileScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader title="Profile" variant="gold" />
+      <AppHeader variant="gold" logoUri="https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg" showDivider />
       <ScrollView contentContainerStyle={styles.content}>
         {/* Profile Header */}
-        <LinearGradient colors={[theme.colors.primaryGold, theme.colors.primaryGoldDark]} style={styles.profileHeader}>
+        <View style={styles.profileHeader}>
           {user?.picture ? (
             <Image source={{ uri: user.picture }} style={styles.avatar} />
           ) : (
             <View style={styles.avatarPlaceholder}>
-              <Ionicons name="person" size={48} color="#ffffff" />
+              <Ionicons name="person" size={48} color={theme.colors.primaryGold} />
             </View>
           )}
           <Text style={styles.name}>{user?.name || 'Guest'}</Text>
           <Text style={styles.email}>{user?.email || ''}</Text>
           {isAdmin && (
             <View style={styles.adminBadge}>
-              <Ionicons name="shield-checkmark" size={16} color={theme.colors.primaryGold} />
+              <Ionicons name="shield-checkmark" size={16} color="#fff" />
               <Text style={styles.adminText}>ADMIN</Text>
             </View>
           )}
-        </LinearGradient>
+        </View>
 
         {/* Stats Card */}
         <View style={styles.statsCard}>
