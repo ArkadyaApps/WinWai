@@ -339,3 +339,26 @@ agent_communication:
       - Admin Raffle management: ✅ Working correctly
       
       All backend admin functionality is fully operational and ready for production use.
+  
+  - agent: "main"
+    message: |
+      NEW TASK: Email/Password Authentication - Testing backend implementation
+      
+      BACKEND ENDPOINTS ALREADY IMPLEMENTED:
+      - POST /api/auth/email/signup (email, password, name)
+      - POST /api/auth/email/signin (email, password)
+      - POST /api/auth/change-password (currentPassword, newPassword) [requires auth]
+      - POST /api/auth/forgot-password (email)
+      - POST /api/auth/reset-password (email, resetToken, newPassword)
+      
+      HELPER FUNCTIONS IN PLACE:
+      - hash_password() using SHA256
+      - verify_password()
+      - generate_reset_token() using secrets.token_urlsafe(32)
+      
+      USER MODEL EXTENDED:
+      - password_hash field added
+      - resetToken field added
+      - resetTokenExpiry field added
+      
+      Ready to test all email/password authentication endpoints before implementing frontend.
