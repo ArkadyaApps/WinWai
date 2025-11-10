@@ -43,12 +43,11 @@ export default function Index() {
     <View style={styles.container}>
       <View style={styles.content}>
         <Image
-          source={{ uri: 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg' }}
+          source={{ uri: 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png' }}
           style={styles.logo}
           resizeMode="contain"
         />
         
-        <Text style={styles.title}>WinWai</Text>
         <Text style={styles.subtitle}>Win Amazing Prizes in Thailand!</Text>
         
         <View style={styles.features}>
