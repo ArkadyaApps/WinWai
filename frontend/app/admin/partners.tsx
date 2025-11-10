@@ -390,8 +390,33 @@ export default function AdminPartnersScreen() {
               
               <Text style={[styles.label, { marginTop: 20, fontSize: 16, color: theme.colors.primaryGold }]}>📷 Media</Text>
               
-              <Text style={styles.label}>Photo URL</Text>
-              <TextInput style={styles.input} value={formData.photo} onChangeText={(text) => setFormData({ ...formData, photo: text })} placeholder="https://example.com/photo.jpg" placeholderTextColor="#999" autoCapitalize="none" />
+              <Text style={styles.label}>Partner Photo</Text>
+              {selectedImage || formData.photo ? (
+                <View style={styles.photoPreview}>
+                  <Image source={{ uri: selectedImage || formData.photo }} style={styles.previewImage} />
+                  <View style={styles.photoActions}>
+                    <TouchableOpacity style={styles.photoActionButton} onPress={pickImage}>
+                      <Ionicons name="images" size={20} color="#fff" />
+                      <Text style={styles.photoActionText}>Change</Text>
+                    </TouchableOpacity>
+                    <TouchableOpacity style={[styles.photoActionButton, { backgroundColor: '#ff4444' }]} onPress={removeImage}>
+                      <Ionicons name="trash" size={20} color="#fff" />
+                      <Text style={styles.photoActionText}>Remove</Text>
+                    </TouchableOpacity>
+                  </View>
+                </View>
+              ) : (
+                <View style={styles.photoButtons}>
+                  <TouchableOpacity style={styles.photoButton} onPress={pickImage}>
+                    <Ionicons name="images" size={32} color={theme.colors.primaryGold} />
+                    <Text style={styles.photoButtonText}>Choose from Gallery</Text>
+                  </TouchableOpacity>
+                  <TouchableOpacity style={styles.photoButton} onPress={takePhoto}>
+                    <Ionicons name="camera" size={32} color={theme.colors.primaryGold} />
+                    <Text style={styles.photoButtonText}>Take Photo</Text>
+                  </TouchableOpacity>
+                </View>
+              )}
               
               <TouchableOpacity style={styles.sponsoredToggle} onPress={() => setFormData({ ...formData, sponsored: !formData.sponsored })}>
                 <Text style={styles.sponsoredToggleText}>Sponsored Partner</Text>
