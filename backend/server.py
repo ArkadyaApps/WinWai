@@ -113,6 +113,41 @@ class ClaimRewardRequest(BaseModel):
 class DrawWinnerRequest(BaseModel):
     raffleId: str
 
+# Email/Password Auth Models
+class EmailSignUpRequest(BaseModel):
+    email: EmailStr
+    password: str
+    name: str
+
+class EmailSignInRequest(BaseModel):
+    email: EmailStr
+    password: str
+
+class ChangePasswordRequest(BaseModel):
+    currentPassword: str
+    newPassword: str
+
+class ForgotPasswordRequest(BaseModel):
+    email: EmailStr
+
+class ResetPasswordRequest(BaseModel):
+    email: EmailStr
+    resetToken: str
+    newPassword: str
+
+# Password Helper Functions
+def hash_password(password: str) -> str:
+    """Hash password using SHA256"""
+    return hashlib.sha256(password.encode()).hexdigest()
+
+def verify_password(password: str, password_hash: str) -> bool:
+    """Verify password against hash"""
+    return hash_password(password) == password_hash
+
+def generate_reset_token() -> str:
+    """Generate secure reset token"""
+    return secrets.token_urlsafe(32)
+
 # Authentication Helper
 async def get_current_user(authorization: Optional[str] = Header(None), session_token: Optional[str] = None) -> Optional[User]:
     token = None
