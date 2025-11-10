@@ -257,12 +257,98 @@ export default function RaffleDetailScreen() {
           </View>
 
           {/* Partner Info */}
-          {raffle.partnerName && (
+          {partner && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Partner</Text>
-              <View style={styles.partnerCard}>
-                <Ionicons name="business" size={24} color="#FFD700" />
-                <Text style={styles.partnerName}>{raffle.partnerName}</Text>
+              <Text style={styles.sectionTitle}>Partner Information</Text>
+              
+              {/* Partner Header */}
+              <View style={styles.partnerHeader}>
+                {partner.logo || partner.photo ? (
+                  <Image 
+                    source={{ uri: partner.logo || partner.photo }} 
+                    style={styles.partnerLogo} 
+                  />
+                ) : (
+                  <View style={styles.partnerLogoPlaceholder}>
+                    <Ionicons name="business" size={32} color="#FFD700" />
+                  </View>
+                )}
+                <View style={styles.partnerHeaderText}>
+                  <Text style={styles.partnerName}>{partner.name}</Text>
+                  {partner.category && (
+                    <Text style={styles.partnerCategory}>{partner.category.toUpperCase()}</Text>
+                  )}
+                </View>
+              </View>
+
+              {/* Partner Description */}
+              {partner.description && (
+                <Text style={styles.partnerDescription}>{partner.description}</Text>
+              )}
+
+              {/* Contact Methods */}
+              <View style={styles.contactMethodsContainer}>
+                {/* Location/Map */}
+                {(partner.address || (partner.latitude && partner.longitude)) && (
+                  <TouchableOpacity style={styles.contactButton} onPress={openMap}>
+                    <View style={styles.contactButtonContent}>
+                      <Ionicons name="location" size={24} color="#FF6B6B" />
+                      <View style={styles.contactButtonText}>
+                        <Text style={styles.contactButtonLabel}>Location</Text>
+                        {partner.address && (
+                          <Text style={styles.contactButtonValue} numberOfLines={2}>
+                            {partner.address}
+                          </Text>
+                        )}
+                      </View>
+                    </View>
+                    <Ionicons name="chevron-forward" size={20} color="#999" />
+                  </TouchableOpacity>
+                )}
+
+                {/* WhatsApp */}
+                {partner.whatsapp && (
+                  <TouchableOpacity style={styles.contactButton} onPress={openWhatsApp}>
+                    <View style={styles.contactButtonContent}>
+                      <Ionicons name="logo-whatsapp" size={24} color="#25D366" />
+                      <View style={styles.contactButtonText}>
+                        <Text style={styles.contactButtonLabel}>WhatsApp</Text>
+                        <Text style={styles.contactButtonValue}>{partner.whatsapp}</Text>
+                      </View>
+                    </View>
+                    <Ionicons name="chevron-forward" size={20} color="#999" />
+                  </TouchableOpacity>
+                )}
+
+                {/* LINE */}
+                {partner.line && (
+                  <TouchableOpacity style={styles.contactButton} onPress={openLine}>
+                    <View style={styles.contactButtonContent}>
+                      <View style={styles.lineIconContainer}>
+                        <Text style={styles.lineIcon}>L</Text>
+                      </View>
+                      <View style={styles.contactButtonText}>
+                        <Text style={styles.contactButtonLabel}>LINE</Text>
+                        <Text style={styles.contactButtonValue}>@{partner.line}</Text>
+                      </View>
+                    </View>
+                    <Ionicons name="chevron-forward" size={20} color="#999" />
+                  </TouchableOpacity>
+                )}
+
+                {/* Email */}
+                {partner.email && (
+                  <TouchableOpacity style={styles.contactButton} onPress={openEmail}>
+                    <View style={styles.contactButtonContent}>
+                      <Ionicons name="mail" size={24} color="#4ECDC4" />
+                      <View style={styles.contactButtonText}>
+                        <Text style={styles.contactButtonLabel}>Email</Text>
+                        <Text style={styles.contactButtonValue}>{partner.email}</Text>
+                      </View>
+                    </View>
+                    <Ionicons name="chevron-forward" size={20} color="#999" />
+                  </TouchableOpacity>
+                )}
               </View>
             </View>
           )}
