@@ -96,20 +96,20 @@ export default function Index() {
             resizeMode="contain"
           />
           
-          <Text style={styles.subtitle}>Win Amazing Prizes in Thailand!</Text>
+          <Text style={styles.subtitle}>{t('landing.title')}</Text>
           
           <View style={styles.features}>
             <View style={styles.featureItem}>
               <Text style={styles.featureIcon}>🎁</Text>
-              <Text style={styles.featureText}>Free Raffles</Text>
+              <Text style={styles.featureText}>{t('landing.features.raffles')}</Text>
             </View>
             <View style={styles.featureItem}>
               <Text style={styles.featureIcon}>🎟️</Text>
-              <Text style={styles.featureText}>Earn Tickets</Text>
+              <Text style={styles.featureText}>{t('landing.features.tickets')}</Text>
             </View>
             <View style={styles.featureItem}>
               <Text style={styles.featureIcon}>🏆</Text>
-              <Text style={styles.featureText}>Real Rewards</Text>
+              <Text style={styles.featureText}>{t('landing.features.rewards')}</Text>
             </View>
           </View>
 
@@ -120,7 +120,7 @@ export default function Index() {
               onPress={() => setAuthMode('email')}
             >
               <Text style={[styles.toggleText, authMode === 'email' && styles.toggleTextActive]}>
-                Email
+                {t('landing.emailTab')}
               </Text>
             </TouchableOpacity>
             <TouchableOpacity 
@@ -128,7 +128,7 @@ export default function Index() {
               onPress={() => setAuthMode('google')}
             >
               <Text style={[styles.toggleText, authMode === 'google' && styles.toggleTextActive]}>
-                Google
+                {t('landing.googleTab')}
               </Text>
             </TouchableOpacity>
           </View>
@@ -137,7 +137,7 @@ export default function Index() {
             <View style={styles.formContainer}>
               <TextInput
                 style={styles.input}
-                placeholder="Email"
+                placeholder={t('landing.email')}
                 placeholderTextColor="#999"
                 value={email}
                 onChangeText={(text) => {
@@ -152,7 +152,7 @@ export default function Index() {
               <View style={styles.passwordContainer}>
                 <TextInput
                   style={styles.passwordInput}
-                  placeholder="Password"
+                  placeholder={t('landing.password')}
                   placeholderTextColor="#999"
                   value={password}
                   onChangeText={(text) => {
@@ -180,17 +180,17 @@ export default function Index() {
                 {loading ? (
                   <ActivityIndicator color="#000" />
                 ) : (
-                  <Text style={styles.buttonText}>Sign In</Text>
+                  <Text style={styles.buttonText}>{t('landing.signIn')}</Text>
                 )}
               </TouchableOpacity>
 
               <View style={styles.linkContainer}>
                 <TouchableOpacity onPress={() => router.push('/signup')}>
-                  <Text style={styles.link}>Create Account</Text>
+                  <Text style={styles.link}>{t('landing.createAccount')}</Text>
                 </TouchableOpacity>
                 <Text style={styles.linkSeparator}>•</Text>
                 <TouchableOpacity onPress={() => router.push('/forgot-password')}>
-                  <Text style={styles.link}>Forgot Password?</Text>
+                  <Text style={styles.link}>{t('landing.forgotPassword')}</Text>
                 </TouchableOpacity>
               </View>
             </View>
@@ -204,14 +204,14 @@ export default function Index() {
                 {authLoading ? (
                   <ActivityIndicator color="#000" />
                 ) : (
-                  <Text style={styles.buttonText}>Sign in with Google</Text>
+                  <Text style={styles.buttonText}>{t('landing.signInWithGoogle')}</Text>
                 )}
               </TouchableOpacity>
             </View>
           )}
           
           <Text style={styles.disclaimer}>
-            Watch ads to earn free raffle tickets!
+            {t('landing.disclaimer')}
           </Text>
         </View>
       </ScrollView>
