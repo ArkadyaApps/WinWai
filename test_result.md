@@ -126,15 +126,18 @@ backend:
   
   - task: "Email/Password Signin endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/auth/email/signin endpoint already implemented with password verification, OAuth-only user check, and session creation. Returns user object and session_token."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All signin scenarios working perfectly. Correct credentials (200), wrong password rejection (401), non-existent user rejection (401). Password verification working correctly. Session token generation and user object return working properly."
   
   - task: "Change Password endpoint"
     implemented: true
