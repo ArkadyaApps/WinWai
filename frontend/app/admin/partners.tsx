@@ -71,7 +71,7 @@ export default function AdminPartnersScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader variant="gold" logoUri="https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/qlp006k7_logo.png" onBack={() => router.back()} right={<TouchableOpacity onPress={() => handleOpenModal()}><Ionicons name="add" size={24} color="#000" /></TouchableOpacity>} showDivider />
+      <AppHeader variant="gold" logoUri="https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png" onBack={() => router.back()} right={<TouchableOpacity onPress={() => handleOpenModal()}><Ionicons name="add" size={24} color="#000" /></TouchableOpacity>} showDivider />
 
       <View style={styles.filterBar}>
         <View style={styles.searchBox}>
