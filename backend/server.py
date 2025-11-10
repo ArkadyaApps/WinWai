@@ -242,6 +242,206 @@ async def logout(authorization: Optional[str] = Header(None)):
         await db.user_sessions.delete_one({"sessionToken": token})
     return {"message": "Logged out successfully"}
 
+# Email/Password Auth Endpoints
+@api_router.post("/auth/email/signup")
+async def email_signup(signup_request: EmailSignUpRequest):
+    """Sign up with email and password"""
+    # Check if user already exists
+    existing_user = await db.users.find_one({"email": signup_request.email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="Email already registered")
+    
+    # Validate password strength
+    if len(signup_request.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    # Create new user
+    password_hash = hash_password(signup_request.password)
+    new_user = User(
+        email=signup_request.email,
+        name=signup_request.name,
+        password_hash=password_hash,
+        tickets=100,  # Welcome bonus
+        lastLogin=datetime.now(timezone.utc)
+    )
+    
+    await db.users.insert_one(new_user.dict())
+    
+    # Create session
+    session_token = str(uuid.uuid4())
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    
+    user_session = UserSession(
+        userId=new_user.id,
+        sessionToken=session_token,
+        expiresAt=expires_at
+    )
+    
+    await db.user_sessions.insert_one(user_session.dict())
+    
+    # Return user without password_hash
+    user_dict = new_user.dict()
+    user_dict.pop('password_hash', None)
+    user_dict.pop('resetToken', None)
+    user_dict.pop('resetTokenExpiry', None)
+    
+    return {
+        "user": user_dict,
+        "session_token": session_token
+    }
+
+@api_router.post("/auth/email/signin")
+async def email_signin(signin_request: EmailSignInRequest):
+    """Sign in with email and password"""
+    # Find user
+    user = await db.users.find_one({"email": signin_request.email})
+    if not user:
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Check if user has password (might be OAuth-only user)
+    if not user.get('password_hash'):
+        raise HTTPException(status_code=401, detail="Please sign in with Google")
+    
+    # Verify password
+    if not verify_password(signin_request.password, user['password_hash']):
+        raise HTTPException(status_code=401, detail="Invalid email or password")
+    
+    # Update last login
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {"lastLogin": datetime.now(timezone.utc)}}
+    )
+    
+    # Create session
+    session_token = str(uuid.uuid4())
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    
+    user_session = UserSession(
+        userId=user["id"],
+        sessionToken=session_token,
+        expiresAt=expires_at
+    )
+    
+    await db.user_sessions.insert_one(user_session.dict())
+    
+    # Return user without sensitive fields
+    user_dict = dict(user)
+    user_dict.pop('password_hash', None)
+    user_dict.pop('resetToken', None)
+    user_dict.pop('resetTokenExpiry', None)
+    user_dict.pop('_id', None)
+    
+    return {
+        "user": user_dict,
+        "session_token": session_token
+    }
+
+@api_router.post("/auth/change-password")
+async def change_password(
+    password_request: ChangePasswordRequest,
+    authorization: Optional[str] = Header(None)
+):
+    """Change user password (requires authentication)"""
+    user = await get_current_user(authorization=authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    # Get user from database with password_hash
+    user_doc = await db.users.find_one({"id": user.id})
+    if not user_doc:
+        raise HTTPException(status_code=404, detail="User not found")
+    
+    # Check if user has password (might be OAuth-only user)
+    if not user_doc.get('password_hash'):
+        raise HTTPException(status_code=400, detail="Cannot change password for OAuth accounts")
+    
+    # Verify current password
+    if not verify_password(password_request.currentPassword, user_doc['password_hash']):
+        raise HTTPException(status_code=401, detail="Current password is incorrect")
+    
+    # Validate new password
+    if len(password_request.newPassword) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    # Update password
+    new_password_hash = hash_password(password_request.newPassword)
+    await db.users.update_one(
+        {"id": user.id},
+        {"$set": {"password_hash": new_password_hash}}
+    )
+    
+    return {"message": "Password changed successfully"}
+
+@api_router.post("/auth/forgot-password")
+async def forgot_password(request: ForgotPasswordRequest):
+    """Generate password reset token (email will be sent later when email server is configured)"""
+    # Find user
+    user = await db.users.find_one({"email": request.email})
+    if not user:
+        # Don't reveal if email exists
+        return {"message": "If the email exists, a reset link will be sent"}
+    
+    # Check if user has password (might be OAuth-only user)
+    if not user.get('password_hash'):
+        return {"message": "If the email exists, a reset link will be sent"}
+    
+    # Generate reset token
+    reset_token = generate_reset_token()
+    reset_expiry = datetime.now(timezone.utc) + timedelta(hours=1)
+    
+    # Save reset token
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {
+            "resetToken": reset_token,
+            "resetTokenExpiry": reset_expiry
+        }}
+    )
+    
+    # TODO: Send email with reset link when email server is configured
+    # For now, return the token (in production, this should be sent via email only)
+    return {
+        "message": "If the email exists, a reset link will be sent",
+        "resetToken": reset_token,  # Remove this in production
+        "email": request.email  # Remove this in production
+    }
+
+@api_router.post("/auth/reset-password")
+async def reset_password(request: ResetPasswordRequest):
+    """Reset password using reset token"""
+    # Find user with matching email and token
+    user = await db.users.find_one({
+        "email": request.email,
+        "resetToken": request.resetToken
+    })
+    
+    if not user:
+        raise HTTPException(status_code=400, detail="Invalid or expired reset token")
+    
+    # Check if token is expired
+    if user.get('resetTokenExpiry'):
+        expiry = user['resetTokenExpiry']
+        if isinstance(expiry, datetime):
+            if expiry.replace(tzinfo=timezone.utc) < datetime.now(timezone.utc):
+                raise HTTPException(status_code=400, detail="Reset token has expired")
+    
+    # Validate new password
+    if len(request.newPassword) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    # Update password and clear reset token
+    new_password_hash = hash_password(request.newPassword)
+    await db.users.update_one(
+        {"id": user["id"]},
+        {"$set": {
+            "password_hash": new_password_hash,
+            "resetToken": None,
+            "resetTokenExpiry": None
+        }}
+    )
+    
+    return {"message": "Password reset successfully"}
+
 # Raffle Endpoints
 @api_router.get("/raffles", response_model=List[Raffle])
 async def get_raffles(category: Optional[str] = None, location: Optional[str] = None, active: bool = True):
