@@ -67,6 +67,65 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
+  const signInWithEmail = async (email: string, password: string) => {
+    try {
+      const response = await api.post('/api/auth/email/signin', { email, password });
+      const { session_token, user } = response.data;
+      await AsyncStorage.setItem('session_token', session_token);
+      setUser(user);
+    } catch (error: any) {
+      console.error('Email sign in failed:', error);
+      throw new Error(error.response?.data?.detail || 'Sign in failed');
+    }
+  };
+
+  const signUpWithEmail = async (email: string, password: string, name: string) => {
+    try {
+      const response = await api.post('/api/auth/email/signup', { email, password, name });
+      const { session_token, user } = response.data;
+      await AsyncStorage.setItem('session_token', session_token);
+      setUser(user);
+    } catch (error: any) {
+      console.error('Email sign up failed:', error);
+      throw new Error(error.response?.data?.detail || 'Sign up failed');
+    }
+  };
+
+  const forgotPassword = async (email: string): Promise<{ resetToken: string; email: string }> => {
+    try {
+      const response = await api.post('/api/auth/forgot-password', { email });
+      return {
+        resetToken: response.data.resetToken,
+        email: response.data.email
+      };
+    } catch (error: any) {
+      console.error('Forgot password failed:', error);
+      throw new Error(error.response?.data?.detail || 'Failed to send reset link');
+    }
+  };
+
+  const resetPassword = async (email: string, resetToken: string, newPassword: string) => {
+    try {
+      await api.post('/api/auth/reset-password', { email, resetToken, newPassword });
+    } catch (error: any) {
+      console.error('Reset password failed:', error);
+      throw new Error(error.response?.data?.detail || 'Failed to reset password');
+    }
+  };
+
+  const changePassword = async (currentPassword: string, newPassword: string) => {
+    try {
+      const token = await AsyncStorage.getItem('session_token');
+      await api.post('/api/auth/change-password', 
+        { currentPassword, newPassword },
+        { headers: { Authorization: `Bearer ${token}` } }
+      );
+    } catch (error: any) {
+      console.error('Change password failed:', error);
+      throw new Error(error.response?.data?.detail || 'Failed to change password');
+    }
+  };
+
   const signOut = async () => {
     try {
       // Call logout endpoint
@@ -83,7 +142,16 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   return (
-    <AuthContext.Provider value={{ signIn, signOut, isLoading }}>
+    <AuthContext.Provider value={{ 
+      signIn, 
+      signInWithEmail, 
+      signUpWithEmail, 
+      forgotPassword,
+      resetPassword,
+      changePassword,
+      signOut, 
+      isLoading 
+    }}>
       {children}
     </AuthContext.Provider>
   );
