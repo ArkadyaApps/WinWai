@@ -36,11 +36,73 @@ export default function RaffleDetailScreen() {
     try {
       const response = await api.get(`/api/raffles/${id}`);
       setRaffle(response.data);
+      
+      // Load partner details if partnerId exists
+      if (response.data.partnerId) {
+        try {
+          const partnerResponse = await api.get(`/api/partners/${response.data.partnerId}`);
+          setPartner(partnerResponse.data);
+        } catch (partnerError) {
+          console.error('Failed to load partner:', partnerError);
+          // Don't show error - partner details are optional
+        }
+      }
     } catch (error) {
       console.error('Failed to load raffle:', error);
       Alert.alert('Error', 'Failed to load raffle details');
     } finally {
       setLoading(false);
+    }
+  };
+
+  const openMap = () => {
+    if (partner && partner.latitude && partner.longitude) {
+      const url = Platform.select({
+        ios: `maps:0,0?q=${partner.name}@${partner.latitude},${partner.longitude}`,
+        android: `geo:${partner.latitude},${partner.longitude}?q=${partner.name}`,
+      });
+      if (url) {
+        Linking.openURL(url).catch(() => {
+          Alert.alert('Error', 'Could not open maps');
+        });
+      }
+    } else if (partner && partner.address) {
+      const url = Platform.select({
+        ios: `maps:0,0?q=${encodeURIComponent(partner.address)}`,
+        android: `geo:0,0?q=${encodeURIComponent(partner.address)}`,
+      });
+      if (url) {
+        Linking.openURL(url).catch(() => {
+          Alert.alert('Error', 'Could not open maps');
+        });
+      }
+    }
+  };
+
+  const openWhatsApp = () => {
+    if (partner && partner.whatsapp) {
+      const url = `whatsapp://send?phone=${partner.whatsapp}`;
+      Linking.openURL(url).catch(() => {
+        Alert.alert('Error', 'WhatsApp is not installed');
+      });
+    }
+  };
+
+  const openLine = () => {
+    if (partner && partner.line) {
+      const url = `https://line.me/R/ti/p/${partner.line}`;
+      Linking.openURL(url).catch(() => {
+        Alert.alert('Error', 'LINE is not installed');
+      });
+    }
+  };
+
+  const openEmail = () => {
+    if (partner && partner.email) {
+      const url = `mailto:${partner.email}`;
+      Linking.openURL(url).catch(() => {
+        Alert.alert('Error', 'Could not open email');
+      });
     }
   };
 
