@@ -71,7 +71,7 @@ export default function AdminPartnersScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader title="Manage Partners" variant="gold" onBack={() => router.back()} right={<TouchableOpacity onPress={() => handleOpenModal()}><Ionicons name="add" size={24} color="#000" /></TouchableOpacity>} />
+      <AppHeader variant="gold" logoUri="https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg" onBack={() => router.back()} right={<TouchableOpacity onPress={() => handleOpenModal()}><Ionicons name="add" size={24} color="#000" /></TouchableOpacity>} showDivider />
 
       <View style={styles.filterBar}>
         <View style={styles.searchBox}>
