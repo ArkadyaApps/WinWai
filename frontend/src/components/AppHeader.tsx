@@ -10,9 +10,7 @@ interface Props {
   onBack?: () => void;
   right?: React.ReactNode;
   patternUri?: string;
-  showLogo?: boolean;
   logoUri?: string;
-  size?: 'normal' | 'tall';
   showDivider?: boolean;
 }
 
