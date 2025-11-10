@@ -207,7 +207,8 @@ export default function AdminPartnersScreen() {
         latitude: partner.latitude?.toString() || '',
         longitude: partner.longitude?.toString() || '',
         photo: partner.photo || '',
-      }); 
+      });
+      setSelectedImage(partner.photo || null);
     }
     else { 
       setEditingPartner(null); 
@@ -224,8 +225,11 @@ export default function AdminPartnersScreen() {
         latitude: '',
         longitude: '',
         photo: '',
-      }); 
+      });
+      setSelectedImage(null);
     }
+    setPlaceSearchQuery('');
+    setPlaceSuggestions([]);
     setModalVisible(true);
   };
 
