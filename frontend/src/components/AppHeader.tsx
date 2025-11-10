@@ -67,12 +67,9 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'ios' ? 60 : 40,
-    paddingBottom: 16,
+    paddingTop: Platform.OS === 'ios' ? 64 : 48,
+    paddingBottom: 20,
     overflow: 'hidden',
-  },
-  headerTall: {
-    paddingBottom: 24,
   },
   pattern: {
     ...StyleSheet.absoluteFillObject,
@@ -85,46 +82,28 @@ const styles = StyleSheet.create({
   iconPlaceholder: { width: 24, height: 24 },
   center: {
     flex: 1,
-    flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 10,
     paddingHorizontal: 8,
   },
   logo: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: 'rgba(255,255,255,0.75)',
-  },
-  logoTall: {
-    width: 44,
-    height: 44,
-    borderRadius: 22,
-  },
-  logoRing: {
-    borderWidth: 2,
-    borderColor: 'rgba(255,255,255,0.85)',
+    width: 72,
+    height: 72,
+    borderRadius: 36,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    borderWidth: 3,
+    borderColor: 'rgba(255,255,255,0.95)',
     ...Platform.select({
       ios: {
         shadowColor: '#000',
-        shadowOffset: { width: 0, height: 1 },
-        shadowOpacity: 0.12,
-        shadowRadius: 2,
+        shadowOffset: { width: 0, height: 2 },
+        shadowOpacity: 0.15,
+        shadowRadius: 4,
       },
       android: {
-        elevation: 2,
+        elevation: 4,
       },
     }),
-  },
-  title: {
-    fontSize: 20,
-    fontWeight: '800',
-    letterSpacing: 0.3,
-  },
-  titleTall: {
-    fontSize: 24,
-    letterSpacing: 0.4,
   },
   divider: {
     position: 'absolute',
