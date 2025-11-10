@@ -95,8 +95,21 @@ export default function AdminPartnersScreen() {
   const handleSave = async () => {
     if (!formData.name || !formData.description) { Alert.alert('Error', 'Please fill in all required fields'); return; }
     try {
-      if (editingPartner) { await api.put(`/api/admin/partners/${editingPartner.id}`, { ...editingPartner, ...formData }); Alert.alert('Success', 'Partner updated successfully'); }
-      else { await api.post('/api/admin/partners', formData); Alert.alert('Success', 'Partner created successfully'); }
+      // Prepare data with proper types
+      const payload = {
+        ...formData,
+        latitude: formData.latitude ? parseFloat(formData.latitude) : undefined,
+        longitude: formData.longitude ? parseFloat(formData.longitude) : undefined,
+      };
+      
+      if (editingPartner) { 
+        await api.put(`/api/admin/partners/${editingPartner.id}`, { ...editingPartner, ...payload }); 
+        Alert.alert('Success', 'Partner updated successfully'); 
+      }
+      else { 
+        await api.post('/api/admin/partners', payload); 
+        Alert.alert('Success', 'Partner created successfully'); 
+      }
       setModalVisible(false); fetchPartners(true);
     } catch (error: any) { Alert.alert('Error', error.response?.data?.detail || 'Failed to save partner'); }
   };
