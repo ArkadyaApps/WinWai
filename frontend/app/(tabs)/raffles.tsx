@@ -65,15 +65,10 @@ export default function RafflesScreen() {
       </View>
 
       {/* Location Filter */}
-      <View style={styles.locationContainer}>
-        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.locationScroll}>
-          {locations.map((loc) => (
-            <TouchableOpacity key={loc.id} style={[styles.locationPill, selectedLocation === loc.id && styles.locationPillActive]} onPress={() => setSelectedLocation(loc.id)}>
-              <Text style={[styles.locationText, selectedLocation === loc.id && styles.locationTextActive]}>{loc.label}</Text>
-            </TouchableOpacity>
-          ))}
-        </ScrollView>
-      </View>
+      <LocationFilter 
+        selectedLocation={selectedLocation} 
+        onLocationChange={setSelectedLocation} 
+      />
 
       {loading ? (
         <View style={styles.centered}>
