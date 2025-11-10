@@ -452,6 +452,19 @@ async def reset_password(request: ResetPasswordRequest):
     return {"message": "Password reset successfully"}
 
 # Raffle Endpoints
+@api_router.get("/raffles/locations/list")
+async def get_raffle_locations():
+    """Get unique locations from all active raffles"""
+    try:
+        # Get distinct locations from active raffles
+        locations = await db.raffles.distinct("location", {"active": True, "location": {"$exists": True, "$ne": None, "$ne": ""}})
+        # Filter out empty strings and None values, sort alphabetically
+        unique_locations = sorted([loc for loc in locations if loc])
+        return {"locations": unique_locations}
+    except Exception as e:
+        print(f"Error fetching locations: {e}")
+        return {"locations": []}
+
 @api_router.get("/raffles", response_model=List[Raffle])
 async def get_raffles(category: Optional[str] = None, location: Optional[str] = None, active: bool = True):
     query = {"active": active}
