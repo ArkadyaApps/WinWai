@@ -69,7 +69,6 @@ export default function ProfileScreen() {
     }
     try {
       setSaving(true);
-      const { changePassword } = useAuth();
       await changePassword(passwordData.currentPassword, passwordData.newPassword);
       setChangePasswordModalVisible(false);
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
