@@ -76,7 +76,7 @@ export default function AdminRafflesScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader variant="mint" logoUri="https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg" onBack={() => router.back()} right={<TouchableOpacity onPress={openCreateModal}><Ionicons name="add" size={24} color="#fff" /></TouchableOpacity>} showDivider />
+      <AppHeader variant="mint" logoUri="https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/qlp006k7_logo.png" onBack={() => router.back()} right={<TouchableOpacity onPress={openCreateModal}><Ionicons name="add" size={24} color="#fff" /></TouchableOpacity>} showDivider />
 
       <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {raffles.length === 0 ? (
