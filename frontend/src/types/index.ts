@@ -45,9 +45,31 @@ export interface Raffle {
   prizesRemaining: number;
   ticketCost: number;
   drawDate: string;
+  validityMonths: number;
   active: boolean;
   totalEntries: number;
   createdAt: string;
+}
+
+export interface Voucher {
+  id: string;
+  voucherCode: string;
+  userId: string;
+  userName: string;
+  userEmail: string;
+  raffleId: string;
+  raffleTitle: string;
+  prizeDetails: string;
+  partnerId: string;
+  partnerName: string;
+  category: string;
+  issuedAt: string;
+  expiresAt: string;
+  isRedeemed: boolean;
+  redeemedAt?: string;
+  location?: string;
+  address?: string;
+  terms?: string;
 }
 
 export interface Reward {
