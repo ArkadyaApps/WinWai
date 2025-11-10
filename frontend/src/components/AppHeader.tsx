@@ -87,8 +87,8 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
   },
   logo: {
-    width: 120,
-    height: 48,
+    width: 180,
+    height: 72,
   },
   divider: {
     position: 'absolute',
