@@ -1,215 +1,220 @@
 diff --git a/model.patch b/model.patch
-index fde2573..e69de29 100644
+index cd01bbe..e69de29 100644
 --- a/model.patch
 +++ b/model.patch
-@@ -1,50 +0,0 @@
+@@ -1,215 +0,0 @@
 -diff --git a/model.patch b/model.patch
--index 465ba49..e69de29 100644
+-index fde2573..e69de29 100644
 ---- a/model.patch
 -+++ b/model.patch
--@@ -1,45 +0,0 @@
+-@@ -1,50 +0,0 @@
 --diff --git a/model.patch b/model.patch
---index e693012..e69de29 100644
+--index 465ba49..e69de29 100644
 ----- a/model.patch
 --+++ b/model.patch
---@@ -1,40 +0,0 @@
----diff --git a/frontend/app/_layout.tsx b/frontend/app/_layout.tsx
----index c9d77e1..863ce2c 100644
------- a/frontend/app/_layout.tsx
----+++ b/frontend/app/_layout.tsx
----@@ -1,21 +1,25 @@
---- import React, { useEffect } from 'react';
---- import { Stack } from 'expo-router';
-----import mobileAds from 'react-native-google-mobile-ads';
----+import { Platform } from 'react-native';
---- import { AuthProvider } from '../src/contexts/AuthContext';
---- import { GestureHandlerRootView } from 'react-native-gesture-handler';
---- 
---- export default function RootLayout() {
----   useEffect(() => {
-----    const initializeAds = async () => {
-----      try {
-----        await mobileAds().initialize();
-----        console.log('Mobile Ads initialized');
-----      } catch (error) {
-----        console.error('Failed to initialize Mobile Ads', error);
-----      }
-----    };
----+    // Only initialize AdMob on native platforms
----+    if (Platform.OS !== 'web') {
----+      const initializeAds = async () => {
----+        try {
----+          const mobileAds = require('react-native-google-mobile-ads').default;
----+          await mobileAds().initialize();
----+          console.log('Mobile Ads initialized');
----+        } catch (error) {
----+          console.error('Failed to initialize Mobile Ads', error);
----+        }
----+      };
---- 
-----    initializeAds();
----+      initializeAds();
----+    }
----   }, []);
---- 
----   return (
-diff --git a/test_result.md b/test_result.md
-index 45de78f..9a10cf7 100644
---- a/test_result.md
-+++ b/test_result.md
-@@ -111,63 +111,78 @@ user_problem_statement: |
- backend:
-   - task: "Add profile update endpoint"
-     implemented: true
--    working: "NA"
-+    working: true
-     file: "/app/backend/server.py"
-     stuck_count: 0
-     priority: "high"
--    needs_retesting: true
-+    needs_retesting: false
-     status_history:
-       - working: "NA"
-         agent: "main"
-         comment: "Added PUT /api/users/me/profile endpoint to allow users to update name, email, and phone"
-+      - working: true
-+        agent: "testing"
-+        comment: "✅ TESTED: Profile update endpoint working correctly. Successfully updated user profile with name, email, and phone fields. Proper authentication required and data persistence verified."
-   
-   - task: "Add phone field to User model"
-     implemented: true
--    working: "NA"
-+    working: true
-     file: "/app/backend/server.py"
-     stuck_count: 0
-     priority: "medium"
--    needs_retesting: true
-+    needs_retesting: false
-     status_history:
-       - working: "NA"
-         agent: "main"
-         comment: "Added optional phone field to User model"
-+      - working: true
-+        agent: "testing"
-+        comment: "✅ TESTED: Phone field successfully added to User model and working in profile update endpoint. Optional field handling works correctly."
-   
-   - task: "Admin Partner CRUD endpoints"
-     implemented: true
--    working: "NA"
-+    working: true
-     file: "/app/backend/server.py"
-     stuck_count: 0
-     priority: "high"
--    needs_retesting: true
-+    needs_retesting: false
-     status_history:
-       - working: "NA"
-         agent: "main"
-         comment: "Added GET/POST/PUT/DELETE /api/admin/partners endpoints for full CRUD operations"
-+      - working: true
-+        agent: "testing"
-+        comment: "✅ TESTED: All partner CRUD operations working perfectly. GET (list 15 partners), POST (create new partner), PUT (update partner), DELETE (remove partner) all successful. Admin authentication properly enforced with 403 for non-admin users."
-   
-   - task: "Admin User management endpoints"
-     implemented: true
--    working: "NA"
-+    working: true
-     file: "/app/backend/server.py"
-     stuck_count: 0
-     priority: "high"
--    needs_retesting: true
-+    needs_retesting: false
-     status_history:
-       - working: "NA"
-         agent: "main"
-         comment: "Added PUT/DELETE /api/admin/users/{user_id} endpoints with role and ticket management"
-+      - working: true
-+        agent: "testing"
-+        comment: "✅ TESTED: User management endpoints working correctly. GET /admin/users lists all users, PUT /admin/users/{id} updates user tickets/role successfully, DELETE protection prevents admin from deleting self (returns 400 as expected). Admin authentication properly enforced."
-   
-   - task: "Admin Raffle management endpoints"
-     implemented: true
--    working: "NA"
-+    working: true
-     file: "/app/backend/server.py"
-     stuck_count: 0
-     priority: "high"
--    needs_retesting: true
-+    needs_retesting: false
-     status_history:
-       - working: "NA"
-         agent: "main"
-         comment: "Added GET/PUT/DELETE /api/admin/raffles endpoints for raffle management"
-+      - working: true
-+        agent: "testing"
-+        comment: "✅ TESTED: Raffle management endpoints working correctly. GET /admin/raffles retrieves 15 raffles, PUT /admin/raffles/{id} successfully updates raffle data including description changes. Admin authentication properly enforced with 403 for non-admin users."
- 
- frontend:
-   - task: "Edit profile functionality"
-@@ -232,23 +247,27 @@ frontend:
- 
- metadata:
-   created_by: "main_agent"
--  version: "1.0"
--  test_sequence: 0
-+  version: "1.1"
-+  test_sequence: 1
-   run_ui: false
-+  backend_testing_complete: true
-+  backend_test_success_rate: "100%"
- 
- test_plan:
-   current_focus:
--    - "Add profile update endpoint"
--    - "Admin Partner CRUD endpoints"
--    - "Admin User management endpoints"
--    - "Admin Raffle management endpoints"
-     - "Edit profile functionality"
-     - "Admin Partners management screen"
-     - "Admin Users management screen"
-     - "Admin Raffles management screen"
-+  completed_backend_tasks:
-+    - "Add profile update endpoint"
-+    - "Admin Partner CRUD endpoints"
-+    - "Admin User management endpoints"
-+    - "Admin Raffle management endpoints"
-+    - "Add phone field to User model"
-   stuck_tasks: []
--  test_all: true
--  test_priority: "high_first"
-+  test_all: false
-+  test_priority: "frontend_only"
- 
- agent_communication:
-   - agent: "main"
-@@ -278,4 +297,27 @@ agent_communication:
-       - Raffle update/delete and draw winner
-       
-       Test with admin users: artteabnc@gmail.com, netcorez13@gmail.com, arkadyaproperties@gmail.com
--      Password: winwanadmin
-\ No newline at end of file
-+      Password: winwanadmin
-+  
-+  - agent: "testing"
-+    message: |
-+      🎉 BACKEND TESTING COMPLETE - ALL TESTS PASSED (100% SUCCESS RATE)
-+      
-+      COMPREHENSIVE TESTING RESULTS:
-+      ✅ Authentication: Successfully authenticated as admin user using session-based auth
-+      ✅ Profile Update: PUT /api/users/me/profile works perfectly - updates name, email, phone
-+      ✅ Admin Partner CRUD: All operations working (GET/POST/PUT/DELETE /api/admin/partners)
-+      ✅ Admin User Management: GET/PUT/DELETE /api/admin/users working with proper self-delete protection
-+      ✅ Admin Raffle Management: GET/PUT /api/admin/raffles working correctly
-+      ✅ Authorization: Non-admin users properly denied access (403 errors)
-+      ✅ Edge Cases: Invalid IDs return proper 404 errors
-+      ✅ Security: Admin self-deletion protection working (returns 400 as expected)
-+      
-+      TOTAL TESTS: 16/16 PASSED
-+      - Profile update endpoint: ✅ Working
-+      - Phone field in User model: ✅ Working  
-+      - Admin Partner CRUD: ✅ All operations working
-+      - Admin User management: ✅ Working with proper protections
-+      - Admin Raffle management: ✅ Working correctly
-+      
-+      All backend admin functionality is fully operational and ready for production use.
-\ No newline at end of file
+--@@ -1,45 +0,0 @@
+---diff --git a/model.patch b/model.patch
+---index e693012..e69de29 100644
+------ a/model.patch
+---+++ b/model.patch
+---@@ -1,40 +0,0 @@
+----diff --git a/frontend/app/_layout.tsx b/frontend/app/_layout.tsx
+----index c9d77e1..863ce2c 100644
+------- a/frontend/app/_layout.tsx
+----+++ b/frontend/app/_layout.tsx
+----@@ -1,21 +1,25 @@
+---- import React, { useEffect } from 'react';
+---- import { Stack } from 'expo-router';
+-----import mobileAds from 'react-native-google-mobile-ads';
+----+import { Platform } from 'react-native';
+---- import { AuthProvider } from '../src/contexts/AuthContext';
+---- import { GestureHandlerRootView } from 'react-native-gesture-handler';
+---- 
+---- export default function RootLayout() {
+----   useEffect(() => {
+-----    const initializeAds = async () => {
+-----      try {
+-----        await mobileAds().initialize();
+-----        console.log('Mobile Ads initialized');
+-----      } catch (error) {
+-----        console.error('Failed to initialize Mobile Ads', error);
+-----      }
+-----    };
+----+    // Only initialize AdMob on native platforms
+----+    if (Platform.OS !== 'web') {
+----+      const initializeAds = async () => {
+----+        try {
+----+          const mobileAds = require('react-native-google-mobile-ads').default;
+----+          await mobileAds().initialize();
+----+          console.log('Mobile Ads initialized');
+----+        } catch (error) {
+----+          console.error('Failed to initialize Mobile Ads', error);
+----+        }
+----+      };
+---- 
+-----    initializeAds();
+----+      initializeAds();
+----+    }
+----   }, []);
+---- 
+----   return (
+-diff --git a/test_result.md b/test_result.md
+-index 45de78f..9a10cf7 100644
+---- a/test_result.md
+-+++ b/test_result.md
+-@@ -111,63 +111,78 @@ user_problem_statement: |
+- backend:
+-   - task: "Add profile update endpoint"
+-     implemented: true
+--    working: "NA"
+-+    working: true
+-     file: "/app/backend/server.py"
+-     stuck_count: 0
+-     priority: "high"
+--    needs_retesting: true
+-+    needs_retesting: false
+-     status_history:
+-       - working: "NA"
+-         agent: "main"
+-         comment: "Added PUT /api/users/me/profile endpoint to allow users to update name, email, and phone"
+-+      - working: true
+-+        agent: "testing"
+-+        comment: "✅ TESTED: Profile update endpoint working correctly. Successfully updated user profile with name, email, and phone fields. Proper authentication required and data persistence verified."
+-   
+-   - task: "Add phone field to User model"
+-     implemented: true
+--    working: "NA"
+-+    working: true
+-     file: "/app/backend/server.py"
+-     stuck_count: 0
+-     priority: "medium"
+--    needs_retesting: true
+-+    needs_retesting: false
+-     status_history:
+-       - working: "NA"
+-         agent: "main"
+-         comment: "Added optional phone field to User model"
+-+      - working: true
+-+        agent: "testing"
+-+        comment: "✅ TESTED: Phone field successfully added to User model and working in profile update endpoint. Optional field handling works correctly."
+-   
+-   - task: "Admin Partner CRUD endpoints"
+-     implemented: true
+--    working: "NA"
+-+    working: true
+-     file: "/app/backend/server.py"
+-     stuck_count: 0
+-     priority: "high"
+--    needs_retesting: true
+-+    needs_retesting: false
+-     status_history:
+-       - working: "NA"
+-         agent: "main"
+-         comment: "Added GET/POST/PUT/DELETE /api/admin/partners endpoints for full CRUD operations"
+-+      - working: true
+-+        agent: "testing"
+-+        comment: "✅ TESTED: All partner CRUD operations working perfectly. GET (list 15 partners), POST (create new partner), PUT (update partner), DELETE (remove partner) all successful. Admin authentication properly enforced with 403 for non-admin users."
+-   
+-   - task: "Admin User management endpoints"
+-     implemented: true
+--    working: "NA"
+-+    working: true
+-     file: "/app/backend/server.py"
+-     stuck_count: 0
+-     priority: "high"
+--    needs_retesting: true
+-+    needs_retesting: false
+-     status_history:
+-       - working: "NA"
+-         agent: "main"
+-         comment: "Added PUT/DELETE /api/admin/users/{user_id} endpoints with role and ticket management"
+-+      - working: true
+-+        agent: "testing"
+-+        comment: "✅ TESTED: User management endpoints working correctly. GET /admin/users lists all users, PUT /admin/users/{id} updates user tickets/role successfully, DELETE protection prevents admin from deleting self (returns 400 as expected). Admin authentication properly enforced."
+-   
+-   - task: "Admin Raffle management endpoints"
+-     implemented: true
+--    working: "NA"
+-+    working: true
+-     file: "/app/backend/server.py"
+-     stuck_count: 0
+-     priority: "high"
+--    needs_retesting: true
+-+    needs_retesting: false
+-     status_history:
+-       - working: "NA"
+-         agent: "main"
+-         comment: "Added GET/PUT/DELETE /api/admin/raffles endpoints for raffle management"
+-+      - working: true
+-+        agent: "testing"
+-+        comment: "✅ TESTED: Raffle management endpoints working correctly. GET /admin/raffles retrieves 15 raffles, PUT /admin/raffles/{id} successfully updates raffle data including description changes. Admin authentication properly enforced with 403 for non-admin users."
+- 
+- frontend:
+-   - task: "Edit profile functionality"
+-@@ -232,23 +247,27 @@ frontend:
+- 
+- metadata:
+-   created_by: "main_agent"
+--  version: "1.0"
+--  test_sequence: 0
+-+  version: "1.1"
+-+  test_sequence: 1
+-   run_ui: false
+-+  backend_testing_complete: true
+-+  backend_test_success_rate: "100%"
+- 
+- test_plan:
+-   current_focus:
+--    - "Add profile update endpoint"
+--    - "Admin Partner CRUD endpoints"
+--    - "Admin User management endpoints"
+--    - "Admin Raffle management endpoints"
+-     - "Edit profile functionality"
+-     - "Admin Partners management screen"
+-     - "Admin Users management screen"
+-     - "Admin Raffles management screen"
+-+  completed_backend_tasks:
+-+    - "Add profile update endpoint"
+-+    - "Admin Partner CRUD endpoints"
+-+    - "Admin User management endpoints"
+-+    - "Admin Raffle management endpoints"
+-+    - "Add phone field to User model"
+-   stuck_tasks: []
+--  test_all: true
+--  test_priority: "high_first"
+-+  test_all: false
+-+  test_priority: "frontend_only"
+- 
+- agent_communication:
+-   - agent: "main"
+-@@ -278,4 +297,27 @@ agent_communication:
+-       - Raffle update/delete and draw winner
+-       
+-       Test with admin users: artteabnc@gmail.com, netcorez13@gmail.com, arkadyaproperties@gmail.com
+--      Password: winwanadmin
+-\ No newline at end of file
+-+      Password: winwanadmin
+-+  
+-+  - agent: "testing"
+-+    message: |
+-+      🎉 BACKEND TESTING COMPLETE - ALL TESTS PASSED (100% SUCCESS RATE)
+-+      
+-+      COMPREHENSIVE TESTING RESULTS:
+-+      ✅ Authentication: Successfully authenticated as admin user using session-based auth
+-+      ✅ Profile Update: PUT /api/users/me/profile works perfectly - updates name, email, phone
+-+      ✅ Admin Partner CRUD: All operations working (GET/POST/PUT/DELETE /api/admin/partners)
+-+      ✅ Admin User Management: GET/PUT/DELETE /api/admin/users working with proper self-delete protection
+-+      ✅ Admin Raffle Management: GET/PUT /api/admin/raffles working correctly
+-+      ✅ Authorization: Non-admin users properly denied access (403 errors)
+-+      ✅ Edge Cases: Invalid IDs return proper 404 errors
+-+      ✅ Security: Admin self-deletion protection working (returns 400 as expected)
+-+      
+-+      TOTAL TESTS: 16/16 PASSED
+-+      - Profile update endpoint: ✅ Working
+-+      - Phone field in User model: ✅ Working  
+-+      - Admin Partner CRUD: ✅ All operations working
+-+      - Admin User management: ✅ Working with proper protections
+-+      - Admin Raffle management: ✅ Working correctly
+-+      
+-+      All backend admin functionality is fully operational and ready for production use.
+-\ No newline at end of file
