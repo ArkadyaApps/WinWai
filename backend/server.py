@@ -1,7 +1,7 @@
 from fastapi import FastAPI, APIRouter, HTTPException, Request, Header, Response
 from fastapi.middleware.cors import CORSMiddleware
 from motor.motor_asyncio import AsyncIOMotorClient
-from pydantic import BaseModel, Field
+from pydantic import BaseModel, Field, EmailStr
 from typing import List, Optional, Dict
 from datetime import datetime, timedelta, timezone
 from dotenv import load_dotenv
@@ -10,6 +10,8 @@ import logging
 import uuid
 import random
 import requests
+import hashlib
+import secrets
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent
