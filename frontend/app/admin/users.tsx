@@ -110,6 +110,10 @@ export default function AdminUsersScreen() {
               <Text style={[styles.pillText, roleFilter === r && styles.pillTextActive]}>{r === 'all' ? 'All' : r.charAt(0).toUpperCase() + r.slice(1)}</Text>
             </TouchableOpacity>
           ))}
+          <TouchableOpacity style={styles.createButton} onPress={() => handleOpenModal()}>
+            <Ionicons name="add-circle" size={20} color="#fff" />
+            <Text style={styles.createButtonText}>Create</Text>
+          </TouchableOpacity>
         </View>
       </View>
 
