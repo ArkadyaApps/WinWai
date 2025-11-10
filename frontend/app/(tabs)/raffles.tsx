@@ -1,18 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  TouchableOpacity,
-  RefreshControl,
-  ActivityIndicator,
-  Dimensions,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Dimensions } from 'react-native';
 import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
+import AppHeader from '../../src/components/AppHeader';
+import { theme } from '../../src/theme/tokens';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
@@ -31,9 +24,7 @@ export default function RafflesScreen() {
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
 
-  useEffect(() => {
-    loadRaffles();
-  }, [selectedCategory]);
+  useEffect(() => { loadRaffles(); }, [selectedCategory]);
 
   const loadRaffles = async () => {
     try {
@@ -48,36 +39,23 @@ export default function RafflesScreen() {
     }
   };
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    loadRaffles();
-  };
+  const onRefresh = () => { setRefreshing(true); loadRaffles(); };
 
   return (
     <View style={styles.container}>
+      <AppHeader title="Raffles" variant="mint" />
+
       {/* Category Filter */}
       <View style={styles.categoryContainer}>
-        <ScrollView 
-          horizontal 
-          showsHorizontalScrollIndicator={false}
-          contentContainerStyle={styles.categoryScroll}
-        >
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScroll}>
           {categories.map((cat) => (
             <TouchableOpacity
               key={cat.id}
-              style={[
-                styles.categoryButton,
-                selectedCategory === cat.id && styles.categoryButtonActive,
-              ]}
+              style={[styles.categoryButton, selectedCategory === cat.id && styles.categoryButtonActive]}
               onPress={() => setSelectedCategory(cat.id)}
             >
               <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
-              <Text
-                style={[
-                  styles.categoryText,
-                  selectedCategory === cat.id && styles.categoryTextActive,
-                ]}
-              >
+              <Text style={[styles.categoryText, selectedCategory === cat.id && styles.categoryTextActive]}>
                 {cat.name}
               </Text>
             </TouchableOpacity>
@@ -87,36 +65,27 @@ export default function RafflesScreen() {
 
       {loading ? (
         <View style={styles.centered}>
-          <ActivityIndicator size="large" color="#FFD700" />
+          <ActivityIndicator size="large" color={theme.colors.primaryGold} />
         </View>
       ) : (
         <ScrollView
           style={styles.scrollView}
           contentContainerStyle={styles.scrollContent}
-          refreshControl={
-            <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#FFD700']} />
-          }
+          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />}
           showsVerticalScrollIndicator={false}
         >
-          {/* Results Header */}
           <View style={styles.resultsHeader}>
-            <Text style={styles.resultsText}>
-              {raffles.length} {raffles.length === 1 ? 'Raffle' : 'Raffles'} Available
-            </Text>
+            <Text style={styles.resultsText}>{raffles.length} {raffles.length === 1 ? 'Raffle' : 'Raffles'} Available</Text>
           </View>
 
-          {/* Raffle Grid */}
           <View style={styles.gridContainer}>
             {raffles.map((raffle) => (
               <View key={raffle.id} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
-                <RaffleGridCard
-                  raffle={raffle}
-                  onPress={() => {/* Navigate to raffle details */}}
-                />
+                <RaffleGridCard raffle={raffle} onPress={() => { /* navigate */ }} />
               </View>
             ))}
           </View>
-          
+
           {raffles.length === 0 && (
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon}>🎁</Text>
@@ -124,102 +93,32 @@ export default function RafflesScreen() {
               <Text style={styles.emptySubtext}>Try selecting a different category</Text>
             </View>
           )}
-
           <View style={{ height: 100 }} />
         </ScrollView>
       )}
-      
+
       <BannerAdComponent position="bottom" />
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F9FA',
-  },
-  categoryContainer: {
-    backgroundColor: '#ffffff',
-    paddingVertical: 16,
-    borderBottomWidth: 1,
-    borderBottomColor: '#E8E8E8',
-    shadowColor: '#000',
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.05,
-    shadowRadius: 2,
-    elevation: 2,
-  },
-  categoryScroll: {
-    paddingHorizontal: 16,
-    gap: 10,
-  },
-  categoryButton: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 10,
-    borderRadius: 24,
-    backgroundColor: '#F5F5F5',
-    gap: 8,
-  },
-  categoryButtonActive: {
-    backgroundColor: '#FFD700',
-  },
-  categoryEmoji: {
-    fontSize: 18,
-  },
-  categoryText: {
-    fontSize: 15,
-    fontWeight: '600',
-    color: '#666',
-  },
-  categoryTextActive: {
-    color: '#000',
-    fontWeight: '700',
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 80,
-  },
-  resultsHeader: {
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  resultsText: {
-    fontSize: 16,
-    fontWeight: '700',
-    color: '#2C3E50',
-  },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: CARD_MARGIN / 2,
-  },
-  emptyState: {
-    padding: 48,
-    alignItems: 'center',
-  },
-  emptyIcon: {
-    fontSize: 72,
-    marginBottom: 16,
-  },
-  emptyText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#2C3E50',
-    marginBottom: 8,
-  },
-  emptySubtext: {
-    fontSize: 14,
-    color: '#95A5A6',
-    textAlign: 'center',
-  },
+  container: { flex: 1, backgroundColor: theme.colors.cloud },
+  categoryContainer: { backgroundColor: '#ffffff', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: '#E8E8E8', shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 2, elevation: 2 },
+  categoryScroll: { paddingHorizontal: 16, gap: 10 },
+  categoryButton: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 24, backgroundColor: '#F5F5F5', gap: 8 },
+  categoryButtonActive: { backgroundColor: theme.colors.primaryGold },
+  categoryEmoji: { fontSize: 18 },
+  categoryText: { fontSize: 15, fontWeight: '600', color: '#666' },
+  categoryTextActive: { color: '#000', fontWeight: '700' },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  scrollView: { flex: 1 },
+  scrollContent: { paddingBottom: 80 },
+  resultsHeader: { paddingHorizontal: 20, paddingVertical: 16 },
+  resultsText: { fontSize: 16, fontWeight: '700', color: theme.colors.onyx },
+  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: CARD_MARGIN / 2 },
+  emptyState: { padding: 48, alignItems: 'center' },
+  emptyIcon: { fontSize: 72, marginBottom: 16 },
+  emptyText: { fontSize: 18, fontWeight: '700', color: theme.colors.onyx, marginBottom: 8 },
+  emptySubtext: { fontSize: 14, color: '#95A5A6', textAlign: 'center' },
 });

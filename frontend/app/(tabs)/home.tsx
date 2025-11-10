@@ -23,6 +23,8 @@ import { Ionicons } from '@expo/vector-icons';
 import { getUserLocation } from '../../src/utils/locationService';
 import { useRouter } from 'expo-router';
 import { translations, getLanguageFromCountry } from '../../src/utils/translations';
+import AppHeader from '../../src/components/AppHeader';
+import { theme } from '../../src/theme/tokens';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
@@ -60,8 +62,6 @@ export default function HomeScreen() {
     const location = await getUserLocation();
     if (location) {
       setUserCity(location.city);
-      
-      // Auto-set language based on country if not already set
       const savedLang = await require('@react-native-async-storage/async-storage').default.getItem('app_language');
       if (!savedLang) {
         const detectedLang = getLanguageFromCountry(location.country);
@@ -75,7 +75,6 @@ export default function HomeScreen() {
       const params: any = {};
       if (selectedCategory !== 'all') params.category = selectedCategory;
       if (selectedLocation !== 'all') params.location = selectedLocation;
-      
       const response = await api.get('/api/raffles', { params });
       setRaffles(response.data);
     } catch (error) {
@@ -94,66 +93,50 @@ export default function HomeScreen() {
   if (loading) {
     return (
       <View style={styles.centered}>
-        <ActivityIndicator size="large" color="#FFD700" />
+        <ActivityIndicator size="large" color={theme.colors.primaryGold} />
       </View>
     );
   }
 
   return (
     <View style={styles.container}>
-      {/* Header with Logo, Tickets and Language */}
-      <View style={styles.header}>
-        <View style={styles.headerLeft}>
-          <Image
-            source={{ uri: 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg' }}
-            style={styles.logo}
-            resizeMode="contain"
-          />
-          <Text style={styles.brandName}>WinWai</Text>
-        </View>
-        
-        <View style={styles.headerRight}>
-          <View style={styles.ticketBadge}>
-            <Ionicons name="ticket" size={18} color="#FFD700" />
-            <Text style={styles.ticketText}>{user?.tickets || 0}</Text>
+      <AppHeader
+        title="WinWai"
+        variant="gold"
+        right={(
+          <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
+            <View style={styles.ticketBadge}>
+              <Ionicons name="ticket" size={18} color={theme.colors.primaryGold} />
+              <Text style={styles.ticketText}>{user?.tickets || 0}</Text>
+            </View>
+            <LanguageSelector />
+            <TouchableOpacity style={styles.filterButton} onPress={() => setFilterVisible(true)}>
+              <Ionicons name="options" size={20} color="#000" />
+            </TouchableOpacity>
           </View>
-          
-          <LanguageSelector />
-          
-          <TouchableOpacity 
-            style={styles.filterButton}
-            onPress={() => setFilterVisible(true)}
-          >
-            <Ionicons name="options" size={20} color="#000" />
-          </TouchableOpacity>
-        </View>
-      </View>
+        )}
+      />
 
       <ScrollView 
         style={styles.scrollView}
         contentContainerStyle={styles.scrollContent}
         refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={['#FFD700']} />
+          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />
         }
         showsVerticalScrollIndicator={false}
       >
-        {/* Location Banner */}
         {userCity && (
           <View style={styles.locationBanner}>
-            <Ionicons name="location" size={18} color="#4ECDC4" />
+            <Ionicons name="location" size={18} color={theme.colors.emeraldA} />
             <Text style={styles.locationText}>{t.nearbyIn} {userCity}</Text>
           </View>
         )}
 
-        {/* Results Header */}
         <View style={styles.resultsHeader}>
           <Text style={styles.resultsCount}>{raffles.length} {t.raffles}</Text>
           {(selectedCategory !== 'all' || selectedLocation !== 'all') && (
             <TouchableOpacity 
-              onPress={() => {
-                setSelectedCategory('all');
-                setSelectedLocation('all');
-              }}
+              onPress={() => { setSelectedCategory('all'); setSelectedLocation('all'); }}
               style={styles.clearButton}
             >
               <Text style={styles.clearText}>{t.clearFilters}</Text>
@@ -161,7 +144,6 @@ export default function HomeScreen() {
           )}
         </View>
 
-        {/* Raffle Grid */}
         <View style={styles.gridContainer}>
           {raffles.map((raffle) => (
             <View key={raffle.id} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
@@ -172,10 +154,10 @@ export default function HomeScreen() {
             </View>
           ))}
         </View>
-        
+
         {raffles.length === 0 && (
           <View style={styles.emptyState}>
-            <Ionicons name="search" size={80} color="#E0E0E0" />
+            <Ionicons name="search" size={80} color={theme.colors.line} />
             <Text style={styles.emptyText}>{t.noRafflesFound}</Text>
             <Text style={styles.emptySubtext}>{t.tryAdjustingFilters}</Text>
           </View>
@@ -183,9 +165,7 @@ export default function HomeScreen() {
 
         <View style={{ height: 100 }} />
       </ScrollView>
-      
       <BannerAdComponent position="bottom" />
-      
       <SearchFilterMenu
         visible={filterVisible}
         onClose={() => setFilterVisible(false)}
@@ -200,142 +180,23 @@ export default function HomeScreen() {
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#F8F9FA',
-  },
-  centered: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-    backgroundColor: '#F8F9FA',
-  },
-  scrollView: {
-    flex: 1,
-  },
-  scrollContent: {
-    paddingBottom: 80,
-  },
-  header: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 12,
-    paddingVertical: 8,
-    paddingTop: Platform.OS === 'ios' ? 50 : 12,
-    backgroundColor: '#FFD700',
-    ...Platform.select({
-      ios: {
-        shadowColor: '#000',
-        shadowOffset: { width: 0, height: 2 },
-        shadowOpacity: 0.1,
-        shadowRadius: 4,
-      },
-      android: {
-        elevation: 4,
-      },
-    }),
-  },
-  headerLeft: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
-  logo: {
-    width: 32,
-    height: 32,
-    borderRadius: 16,
-    backgroundColor: '#fff',
-  },
-  brandName: {
-    fontSize: 18,
-    fontWeight: '900',
-    color: '#000',
-    letterSpacing: 0.5,
-  },
-  headerRight: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
-  },
+  container: { flex: 1, backgroundColor: theme.colors.cloud },
+  centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.cloud },
+  scrollView: { flex: 1 },
+  scrollContent: { paddingBottom: 80 },
   ticketBadge: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#fff',
-    paddingHorizontal: 10,
-    paddingVertical: 6,
-    borderRadius: 16,
-    gap: 4,
+    flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, gap: 4,
   },
-  ticketText: {
-    fontSize: 14,
-    fontWeight: '800',
-    color: '#000',
-  },
-  filterButton: {
-    backgroundColor: '#fff',
-    width: 36,
-    height: 36,
-    borderRadius: 18,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-  locationBanner: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    backgroundColor: '#E8F8F5',
-    marginHorizontal: 16,
-    marginTop: 16,
-    padding: 12,
-    borderRadius: 12,
-    gap: 8,
-  },
-  locationText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#2C3E50',
-  },
-  resultsHeader: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    paddingHorizontal: 20,
-    paddingVertical: 16,
-  },
-  resultsCount: {
-    fontSize: 20,
-    fontWeight: '800',
-    color: '#2C3E50',
-  },
-  clearButton: {
-    paddingHorizontal: 12,
-    paddingVertical: 6,
-    backgroundColor: '#FFE6E6',
-    borderRadius: 12,
-  },
-  clearText: {
-    fontSize: 12,
-    fontWeight: '700',
-    color: '#FF6B6B',
-  },
-  gridContainer: {
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    paddingHorizontal: CARD_MARGIN / 2,
-  },
-  emptyState: {
-    padding: 48,
-    alignItems: 'center',
-  },
-  emptyText: {
-    fontSize: 18,
-    fontWeight: '700',
-    color: '#2C3E50',
-    marginTop: 16,
-    marginBottom: 8,
-  },
-  emptySubtext: {
-    fontSize: 14,
-    color: '#95A5A6',
-  },
+  ticketText: { fontSize: 14, fontWeight: '800', color: '#000' },
+  filterButton: { backgroundColor: '#fff', width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
+  locationBanner: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#E8F8F5', marginHorizontal: 16, marginTop: 16, padding: 12, borderRadius: 12, gap: 8 },
+  locationText: { fontSize: 14, fontWeight: '600', color: theme.colors.onyx },
+  resultsHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16 },
+  resultsCount: { fontSize: 20, fontWeight: '800', color: theme.colors.onyx },
+  clearButton: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#FFE6E6', borderRadius: 12 },
+  clearText: { fontSize: 12, fontWeight: '700', color: '#FF6B6B' },
+  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: CARD_MARGIN / 2 },
+  emptyState: { padding: 48, alignItems: 'center' },
+  emptyText: { fontSize: 18, fontWeight: '700', color: theme.colors.onyx, marginTop: 16, marginBottom: 8 },
+  emptySubtext: { fontSize: 14, color: '#95A5A6' },
 });
