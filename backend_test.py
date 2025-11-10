@@ -46,6 +46,11 @@ class AuthTester:
         """Make HTTP request with error handling"""
         url = f"{BASE_URL}{endpoint}"
         try:
+            # Set default headers
+            if headers is None:
+                headers = {}
+            headers.setdefault('Content-Type', 'application/json')
+            
             if method.upper() == "POST":
                 response = requests.post(url, json=data, headers=headers, timeout=30)
             elif method.upper() == "GET":
@@ -53,9 +58,10 @@ class AuthTester:
             else:
                 raise ValueError(f"Unsupported method: {method}")
                 
+            print(f"DEBUG: {method} {url} -> {response.status_code}")
             return response
         except requests.exceptions.RequestException as e:
-            print(f"Request failed: {e}")
+            print(f"Request failed for {method} {url}: {e}")
             return None
             
     def test_1_signup_new_user(self):
