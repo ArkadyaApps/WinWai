@@ -1,16 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import {
-  View,
-  Text,
-  StyleSheet,
-  ScrollView,
-  RefreshControl,
-  ActivityIndicator,
-  Dimensions,
-  TouchableOpacity,
-  Platform,
-  Image,
-} from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, Dimensions, TouchableOpacity } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useLanguageStore } from '../../src/store/languageStore';
 import { Raffle } from '../../src/types';
@@ -29,6 +18,7 @@ import { theme } from '../../src/theme/tokens';
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
 const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
+const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg';
 
 export default function HomeScreen() {
   const { user } = useUserStore();
@@ -44,19 +34,10 @@ export default function HomeScreen() {
 
   const t = translations[language];
 
-  useEffect(() => {
-    initialize();
-  }, []);
+  useEffect(() => { initialize(); }, []);
+  useEffect(() => { loadRaffles(); }, [selectedCategory, selectedLocation]);
 
-  useEffect(() => {
-    loadRaffles();
-  }, [selectedCategory, selectedLocation]);
-
-  const initialize = async () => {
-    await initializeLanguage();
-    await detectLocation();
-    loadRaffles();
-  };
+  const initialize = async () => { await initializeLanguage(); await detectLocation(); loadRaffles(); };
 
   const detectLocation = async () => {
     const location = await getUserLocation();
@@ -85,17 +66,10 @@ export default function HomeScreen() {
     }
   };
 
-  const onRefresh = () => {
-    setRefreshing(true);
-    loadRaffles();
-  };
+  const onRefresh = () => { setRefreshing(true); loadRaffles(); };
 
   if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={theme.colors.primaryGold} />
-      </View>
-    );
+    return (<View style={styles.centered}><ActivityIndicator size="large" color={theme.colors.primaryGold} /></View>);
   }
 
   return (
@@ -103,12 +77,12 @@ export default function HomeScreen() {
       <AppHeader
         title="WinWai"
         variant="gold"
+        showLogo
+        logoUri={LOGO_URI}
+        size="tall"
         right={(
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
-            <View style={styles.ticketBadge}>
-              <Ionicons name="ticket" size={18} color={theme.colors.primaryGold} />
-              <Text style={styles.ticketText}>{user?.tickets || 0}</Text>
-            </View>
+            <View style={styles.ticketBadge}><Ionicons name="ticket" size={18} color={theme.colors.primaryGold} /><Text style={styles.ticketText}>{user?.tickets || 0}</Text></View>
             <LanguageSelector />
             <TouchableOpacity style={styles.filterButton} onPress={() => setFilterVisible(true)}>
               <Ionicons name="options" size={20} color="#000" />
@@ -117,28 +91,15 @@ export default function HomeScreen() {
         )}
       />
 
-      <ScrollView 
-        style={styles.scrollView}
-        contentContainerStyle={styles.scrollContent}
-        refreshControl={
-          <RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />
-        }
-        showsVerticalScrollIndicator={false}
-      >
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />} showsVerticalScrollIndicator={false}>
         {userCity && (
-          <View style={styles.locationBanner}>
-            <Ionicons name="location" size={18} color={theme.colors.emeraldA} />
-            <Text style={styles.locationText}>{t.nearbyIn} {userCity}</Text>
-          </View>
+          <View style={styles.locationBanner}><Ionicons name="location" size={18} color={theme.colors.emeraldA} /><Text style={styles.locationText}>{t.nearbyIn} {userCity}</Text></View>
         )}
 
         <View style={styles.resultsHeader}>
           <Text style={styles.resultsCount}>{raffles.length} {t.raffles}</Text>
           {(selectedCategory !== 'all' || selectedLocation !== 'all') && (
-            <TouchableOpacity 
-              onPress={() => { setSelectedCategory('all'); setSelectedLocation('all'); }}
-              style={styles.clearButton}
-            >
+            <TouchableOpacity onPress={() => { setSelectedCategory('all'); setSelectedLocation('all'); }} style={styles.clearButton}>
               <Text style={styles.clearText}>{t.clearFilters}</Text>
             </TouchableOpacity>
           )}
@@ -147,10 +108,7 @@ export default function HomeScreen() {
         <View style={styles.gridContainer}>
           {raffles.map((raffle) => (
             <View key={raffle.id} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
-              <RaffleGridCard
-                raffle={raffle}
-                onPress={() => router.push(`/raffle/${raffle.id}`)}
-              />
+              <RaffleGridCard raffle={raffle} onPress={() => router.push(`/raffle/${raffle.id}`)} />
             </View>
           ))}
         </View>
@@ -166,15 +124,7 @@ export default function HomeScreen() {
         <View style={{ height: 100 }} />
       </ScrollView>
       <BannerAdComponent position="bottom" />
-      <SearchFilterMenu
-        visible={filterVisible}
-        onClose={() => setFilterVisible(false)}
-        selectedCategory={selectedCategory}
-        selectedLocation={selectedLocation}
-        onCategoryChange={setSelectedCategory}
-        onLocationChange={setSelectedLocation}
-        userCity={userCity || undefined}
-      />
+      <SearchFilterMenu visible={filterVisible} onClose={() => setFilterVisible(false)} selectedCategory={selectedCategory} selectedLocation={selectedLocation} onCategoryChange={setSelectedCategory} onLocationChange={setSelectedLocation} userCity={userCity || undefined} />
     </View>
   );
 }
@@ -184,9 +134,7 @@ const styles = StyleSheet.create({
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center', backgroundColor: theme.colors.cloud },
   scrollView: { flex: 1 },
   scrollContent: { paddingBottom: 80 },
-  ticketBadge: {
-    flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, gap: 4,
-  },
+  ticketBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, gap: 4 },
   ticketText: { fontSize: 14, fontWeight: '800', color: '#000' },
   filterButton: { backgroundColor: '#fff', width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
   locationBanner: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#E8F8F5', marginHorizontal: 16, marginTop: 16, padding: 12, borderRadius: 12, gap: 8 },

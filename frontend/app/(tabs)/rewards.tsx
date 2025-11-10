@@ -7,6 +7,8 @@ import { format } from 'date-fns';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 
+const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg';
+
 export default function RewardsScreen() {
   const [rewards, setRewards] = useState<Reward[]>([]);
   const [loading, setLoading] = useState(true);
@@ -15,62 +17,38 @@ export default function RewardsScreen() {
   useEffect(() => { loadRewards(); }, []);
 
   const loadRewards = async () => {
-    try {
-      const response = await api.get('/api/rewards/my-rewards');
-      setRewards(response.data);
-    } catch (error) {
-      console.error('Failed to load rewards:', error);
-    } finally {
-      setLoading(false);
-      setRefreshing(false);
-    }
+    try { const response = await api.get('/api/rewards/my-rewards'); setRewards(response.data); }
+    catch (error) { console.error('Failed to load rewards:', error); }
+    finally { setLoading(false); setRefreshing(false); }
   };
 
   const onRefresh = () => { setRefreshing(true); loadRewards(); };
 
   if (loading) {
-    return (
-      <View style={styles.centered}>
-        <ActivityIndicator size="large" color={theme.colors.primaryGold} />
-      </View>
-    );
+    return (<View style={styles.centered}><ActivityIndicator size="large" color={theme.colors.primaryGold} /></View>);
   }
 
   return (
     <View style={styles.container}>
-      <AppHeader title="My Rewards" variant="gold" />
+      <AppHeader title="My Rewards" variant="gold" showLogo logoUri={LOGO_URI} />
 
       <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {rewards.length === 0 ? (
-          <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>🏆</Text>
-            <Text style={styles.emptyTitle}>No Rewards Yet</Text>
-            <Text style={styles.emptyText}>Enter raffles to win amazing prizes!</Text>
-          </View>
+          <View style={styles.emptyState}><Text style={styles.emptyIcon}>🏆</Text><Text style={styles.emptyTitle}>No Rewards Yet</Text><Text style={styles.emptyText}>Enter raffles to win amazing prizes!</Text></View>
         ) : (
           rewards.map((reward) => (
             <View key={reward.id} style={styles.rewardCard}>
-              <View style={styles.rewardHeader}>
-                <Text style={styles.rewardTitle}>{reward.raffleTitle}</Text>
-                <View style={[styles.statusBadge, { backgroundColor: getStatusColor(reward.claimStatus) }]}>
-                  <Text style={styles.statusText}>{reward.claimStatus.toUpperCase()}</Text>
-                </View>
-              </View>
+              <View style={styles.rewardHeader}><Text style={styles.rewardTitle}>{reward.raffleTitle}</Text><View style={[styles.statusBadge, { backgroundColor: getStatusColor(reward.claimStatus) }]}><Text style={styles.statusText}>{reward.claimStatus.toUpperCase()}</Text></View></View>
               <Text style={styles.rewardPartner}>{reward.partnerName}</Text>
               <Text style={styles.rewardDetails}>{reward.prizeDetails}</Text>
               <View style={styles.rewardFooter}>
                 <Text style={styles.rewardDate}>Won on {format(new Date(reward.wonAt), 'MMM dd, yyyy')}</Text>
-                {reward.claimStatus === 'unclaimed' && (
-                  <TouchableOpacity style={styles.claimButton} onPress={() => {}}>
-                    <Text style={styles.claimButtonText}>Claim Prize</Text>
-                  </TouchableOpacity>
-                )}
+                {reward.claimStatus === 'unclaimed' && (<TouchableOpacity style={styles.claimButton} onPress={() => {}}><Text style={styles.claimButtonText}>Claim Prize</Text></TouchableOpacity>)}
               </View>
             </View>
           ))
         )}
       </ScrollView>
-
       <BannerAdComponent position="bottom" />
     </View>
   );

@@ -8,6 +8,8 @@ import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 import * as Haptics from 'expo-haptics';
 
+const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg';
+
 export default function TicketsScreen() {
   const { user, updateTickets } = useUserStore();
   const [adReady, setAdReady] = useState(false);
@@ -16,40 +18,24 @@ export default function TicketsScreen() {
   useEffect(() => {
     if (user) {
       rewardedAdManager.loadRewardedAd(user.id);
-      rewardedAdManager.setRewardCallback(async (reward) => {
-        try {
-          const response = await api.get('/api/users/me/tickets');
-          updateTickets(response.data.tickets);
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
-        } catch (error) {
-          console.error('Failed to refresh tickets:', error);
-        }
+      rewardedAdManager.setRewardCallback(async () => {
+        try { const response = await api.get('/api/users/me/tickets'); updateTickets(response.data.tickets); Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); } catch (error) { console.error('Failed to refresh tickets:', error); }
       });
     }
-
-    const interval = setInterval(() => {
-      setAdReady(rewardedAdManager.isRewardedAdReady());
-    }, 1000);
-
+    const interval = setInterval(() => { setAdReady(rewardedAdManager.isRewardedAdReady()); }, 1000);
     return () => clearInterval(interval);
   }, [user]);
 
   const handleWatchAd = async () => {
     setLoading(true);
-    try {
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      await rewardedAdManager.showRewardedAd();
-    } catch (error) {
-      console.error('Failed to show ad:', error);
-    } finally {
-      setLoading(false);
-    }
+    try { await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); await rewardedAdManager.showRewardedAd(); }
+    catch (error) { console.error('Failed to show ad:', error); }
+    finally { setLoading(false); }
   };
 
   return (
     <View style={styles.container}>
-      <AppHeader title="Tickets" variant="emerald" />
-
+      <AppHeader title="Tickets" variant="emerald" showLogo logoUri={LOGO_URI} />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.balanceCard}>
           <Text style={styles.balanceLabel}>Your Ticket Balance</Text>
@@ -62,37 +48,18 @@ export default function TicketsScreen() {
 
         <View style={styles.earnSection}>
           <Text style={styles.sectionTitle}>Earn More Tickets</Text>
-          <TouchableOpacity
-            style={[styles.playButton, (!adReady || loading) && styles.playButtonDisabled]}
-            onPress={handleWatchAd}
-            disabled={!adReady || loading}
-            activeOpacity={0.8}
-          >
+          <TouchableOpacity style={[styles.playButton, (!adReady || loading) && styles.playButtonDisabled]} onPress={handleWatchAd} disabled={!adReady || loading} activeOpacity={0.8}>
             {loading ? (
-              <View style={styles.playButtonContent}>
-                <ActivityIndicator color="#ffffff" size="large" />
-                <Text style={styles.playButtonTextLoading}>Loading...</Text>
-              </View>
+              <View style={styles.playButtonContent}><ActivityIndicator color="#ffffff" size="large" /><Text style={styles.playButtonTextLoading}>Loading...</Text></View>
             ) : (
               <View style={styles.playButtonContent}>
-                <View style={styles.playIconContainer}>
-                  <Text style={styles.playIcon}>▶</Text>
-                </View>
-                <View style={styles.playButtonTextContainer}>
-                  <Text style={styles.playButtonTitle}>
-                    {adReady ? '🎬 Play Rewarded Ad' : '⏳ Loading Ad...'}
-                  </Text>
-                  <Text style={styles.playButtonSubtitle}>Earn +10 tickets instantly</Text>
-                </View>
+                <View style={styles.playIconContainer}><Text style={styles.playIcon}>▶</Text></View>
+                <View style={styles.playButtonTextContainer}><Text style={styles.playButtonTitle}>{adReady ? '🎬 Play Rewarded Ad' : '⏳ Loading Ad...'}</Text><Text style={styles.playButtonSubtitle}>Earn +10 tickets instantly</Text></View>
               </View>
             )}
           </TouchableOpacity>
 
-          {!adReady && (
-            <Text style={styles.adStatusText}>
-              📱 Note: Ads only work on mobile devices (iOS/Android). Use Expo Go or production build.
-            </Text>
-          )}
+          {!adReady && (<Text style={styles.adStatusText}>📱 Note: Ads only work on mobile devices (iOS/Android). Use Expo Go or production build.</Text>)}
 
           <View style={styles.infoCard}>
             <Text style={styles.infoTitle}>How to Earn Tickets</Text>
@@ -102,12 +69,8 @@ export default function TicketsScreen() {
           </View>
         </View>
 
-        <View style={styles.usageSection}>
-          <Text style={styles.sectionTitle}>Ticket Usage</Text>
-          <Text style={styles.usageText}>Use your tickets to enter raffles and win amazing prizes! Each raffle entry typically costs 10 tickets.</Text>
-        </View>
+        <View style={styles.usageSection}><Text style={styles.sectionTitle}>Ticket Usage</Text><Text style={styles.usageText}>Use your tickets to enter raffles and win amazing prizes! Each raffle entry typically costs 10 tickets.</Text></View>
       </ScrollView>
-
       <BannerAdComponent position="bottom" />
     </View>
   );

@@ -10,6 +10,7 @@ import { theme } from '../../src/theme/tokens';
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
 const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
+const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg';
 
 const categories = [
   { id: 'all', name: 'All', emoji: '🎉' },
@@ -43,21 +44,15 @@ export default function RafflesScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader title="Raffles" variant="mint" />
+      <AppHeader title="Raffles" variant="mint" showLogo logoUri={LOGO_URI} />
 
       {/* Category Filter */}
       <View style={styles.categoryContainer}>
         <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScroll}>
           {categories.map((cat) => (
-            <TouchableOpacity
-              key={cat.id}
-              style={[styles.categoryButton, selectedCategory === cat.id && styles.categoryButtonActive]}
-              onPress={() => setSelectedCategory(cat.id)}
-            >
+            <TouchableOpacity key={cat.id} style={[styles.categoryButton, selectedCategory === cat.id && styles.categoryButtonActive]} onPress={() => setSelectedCategory(cat.id)}>
               <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
-              <Text style={[styles.categoryText, selectedCategory === cat.id && styles.categoryTextActive]}>
-                {cat.name}
-              </Text>
+              <Text style={[styles.categoryText, selectedCategory === cat.id && styles.categoryTextActive]}>{cat.name}</Text>
             </TouchableOpacity>
           ))}
         </ScrollView>
@@ -68,16 +63,8 @@ export default function RafflesScreen() {
           <ActivityIndicator size="large" color={theme.colors.primaryGold} />
         </View>
       ) : (
-        <ScrollView
-          style={styles.scrollView}
-          contentContainerStyle={styles.scrollContent}
-          refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />}
-          showsVerticalScrollIndicator={false}
-        >
-          <View style={styles.resultsHeader}>
-            <Text style={styles.resultsText}>{raffles.length} {raffles.length === 1 ? 'Raffle' : 'Raffles'} Available</Text>
-          </View>
-
+        <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />} showsVerticalScrollIndicator={false}>
+          <View style={styles.resultsHeader}><Text style={styles.resultsText}>{raffles.length} {raffles.length === 1 ? 'Raffle' : 'Raffles'} Available</Text></View>
           <View style={styles.gridContainer}>
             {raffles.map((raffle) => (
               <View key={raffle.id} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
@@ -85,7 +72,6 @@ export default function RafflesScreen() {
               </View>
             ))}
           </View>
-
           {raffles.length === 0 && (
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon}>🎁</Text>
