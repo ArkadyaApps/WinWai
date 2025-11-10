@@ -16,7 +16,7 @@ export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
   const { adminMode, setAdminMode, initializeAdminMode } = useAdminStore();
   const { language, setLanguage, initializeLanguage } = useLanguageStore();
-  const { signOut } = useAuth();
+  const { signOut, changePassword } = useAuth();
   const router = useRouter();
 
   const [editModalVisible, setEditModalVisible] = useState(false);
