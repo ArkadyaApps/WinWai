@@ -55,9 +55,32 @@ export default function AdminUsersScreen() {
   };
 
   const handleSave = async () => {
-    if (!formData.name || !formData.email) { Alert.alert('Error', 'Please fill in all required fields'); return; }
-    try { await api.put(`/api/admin/users/${editingUser?.id}`, formData); Alert.alert('Success', 'User updated successfully'); setModalVisible(false); fetchUsers(true); }
-    catch (error: any) { Alert.alert('Error', error.response?.data?.detail || 'Failed to save user'); }
+    if (!formData.name || !formData.email) { 
+      Alert.alert('Error', 'Please fill in all required fields'); 
+      return; 
+    }
+    
+    // Validate password for new users
+    if (!editingUser && (!formData.password || formData.password.length < 6)) {
+      Alert.alert('Error', 'Password must be at least 6 characters');
+      return;
+    }
+    
+    try {
+      if (editingUser) {
+        // Update existing user
+        await api.put(`/api/admin/users/${editingUser.id}`, formData);
+        Alert.alert('Success', 'User updated successfully');
+      } else {
+        // Create new user
+        await api.post('/api/admin/users', formData);
+        Alert.alert('Success', 'User created successfully');
+      }
+      setModalVisible(false);
+      fetchUsers(true);
+    } catch (error: any) {
+      Alert.alert('Error', error.response?.data?.detail || 'Failed to save user');
+    }
   };
 
   const handleDelete = (user: User) => {
