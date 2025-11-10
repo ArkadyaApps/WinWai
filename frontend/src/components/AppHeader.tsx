@@ -20,19 +20,17 @@ export default function AppHeader({
   onBack,
   right,
   patternUri,
-  showLogo = false,
   logoUri,
-  size = 'normal',
   showDivider = false,
 }: Props) {
   const colors = theme.gradients[variant];
   const defaultPattern = 'https://images.unsplash.com/photo-1545873692-64145c8c42ed?q=85&w=1200&auto=format&fit=crop';
+  const defaultLogo = 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg';
   const isLight = variant === 'gold';
-  const headerStyle = [styles.header, size === 'tall' && styles.headerTall];
   const dividerColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.14)';
 
   return (
-    <LinearGradient colors={colors as any} style={headerStyle as any}>
+    <LinearGradient colors={colors as any} style={styles.header}>
       {/* Subtle pattern overlay */}
       <Image source={{ uri: patternUri || defaultPattern }} style={styles.pattern} resizeMode="cover" />
 
@@ -47,25 +45,11 @@ export default function AppHeader({
       </View>
 
       <View style={styles.center}>
-        {showLogo && (
-          <Image
-            source={{ uri: logoUri || 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg' }}
-            style={[styles.logo, size === 'tall' && styles.logoTall, styles.logoRing]}
-            resizeMode="contain"
-          />
-        )}
-        {title ? (
-          <Text
-            style={[
-              styles.title,
-              { color: isLight ? '#000' : '#fff' },
-              size === 'tall' && styles.titleTall,
-            ]}
-            numberOfLines={1}
-          >
-            {title}
-          </Text>
-        ) : null}
+        <Image
+          source={{ uri: logoUri || defaultLogo }}
+          style={styles.logo}
+          resizeMode="contain"
+        />
       </View>
 
       <View style={[styles.side, { alignItems: 'flex-end' }]}>
