@@ -171,15 +171,18 @@ backend:
   
   - task: "Reset Password endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/auth/reset-password endpoint already implemented. Validates reset token, checks expiry, validates new password (min 6 chars), and clears reset token after successful reset."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Reset password endpoint working perfectly. Valid token resets password (200), invalid token rejection (400). Token validation, expiry check, and password update working correctly. Reset token cleared after successful use. New password can be used for signin immediately."
 
   - task: "Add profile update endpoint"
     implemented: true
