@@ -8,6 +8,8 @@ WebBrowser.maybeCompleteAuthSession();
 
 interface AuthContextType {
   signIn: () => Promise<void>;
+  signInWithEmail: (email: string, password: string) => Promise<void>;
+  signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
   signOut: () => Promise<void>;
   isLoading: boolean;
 }
