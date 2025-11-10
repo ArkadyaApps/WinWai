@@ -821,6 +821,55 @@ async def get_all_users(authorization: Optional[str] = Header(None), page: int =
     users = await cursor.to_list(length=limit)
     return [User(**u) for u in users]
 
+class CreateUserRequest(BaseModel):
+    name: str
+    email: str
+    phone: Optional[str] = None
+    password: str
+    role: str = "user"
+    tickets: int = 0
+
+@api_router.post("/admin/users")
+async def create_user(request: CreateUserRequest, authorization: Optional[str] = Header(None)):
+    """Admin endpoint to create a new user"""
+    admin_user = await get_current_user(authorization=authorization)
+    if not admin_user or admin_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Validate email
+    if not request.email or "@" not in request.email:
+        raise HTTPException(status_code=400, detail="Invalid email address")
+    
+    # Check if user already exists
+    existing_user = await db.users.find_one({"email": request.email})
+    if existing_user:
+        raise HTTPException(status_code=400, detail="User with this email already exists")
+    
+    # Validate role
+    if request.role not in ["user", "admin"]:
+        raise HTTPException(status_code=400, detail="Role must be 'user' or 'admin'")
+    
+    # Validate password
+    if len(request.password) < 6:
+        raise HTTPException(status_code=400, detail="Password must be at least 6 characters")
+    
+    # Create new user
+    new_user = User(
+        id=str(uuid.uuid4()),
+        name=request.name,
+        email=request.email,
+        phone=request.phone,
+        password_hash=hash_password(request.password),
+        role=request.role,
+        tickets=request.tickets,
+        dailyStreak=0,
+        lastLogin=datetime.now(timezone.utc),
+        createdAt=datetime.now(timezone.utc)
+    )
+    
+    await db.users.insert_one(new_user.dict())
+    return new_user
+
 @api_router.post("/admin/raffles")
 async def create_raffle(raffle: Raffle, authorization: Optional[str] = Header(None)):
     user = await get_current_user(authorization=authorization)
