@@ -21,8 +21,10 @@ export default function ProfileScreen() {
 
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
+  const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
+  const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
 
   useEffect(() => { initializeAdminMode(); initializeLanguage(); }, []);
   useEffect(() => { if (user) setFormData({ name: user.name, email: user.email, phone: user.phone || '' }); }, [user]);
