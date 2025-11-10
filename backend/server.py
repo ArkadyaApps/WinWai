@@ -32,11 +32,14 @@ class User(BaseModel):
     name: str
     picture: Optional[str] = None
     phone: Optional[str] = None
+    password_hash: Optional[str] = None  # For email/password auth
     tickets: int = Field(default=50)  # Starting bonus
     role: str = Field(default="user")  # user or admin
     dailyStreak: int = Field(default=0)
     lastLogin: Optional[datetime] = None
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    resetToken: Optional[str] = None  # For password reset
+    resetTokenExpiry: Optional[datetime] = None
 
 class Partner(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
