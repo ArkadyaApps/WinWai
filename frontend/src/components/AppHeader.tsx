@@ -69,33 +69,36 @@ export default function AppHeader({
 
 const styles = StyleSheet.create({
   header: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    justifyContent: 'space-between',
     paddingHorizontal: 16,
-    paddingTop: Platform.OS === 'ios' ? 64 : 48,
-    paddingBottom: 20,
+    paddingTop: Platform.OS === 'ios' ? 50 : 40,
+    paddingBottom: 12,
     overflow: 'hidden',
   },
   pattern: {
     ...StyleSheet.absoluteFillObject,
     opacity: 0.06,
   },
-  side: {
-    width: 72,
-  },
-  iconBtn: { padding: 8 },
-  iconPlaceholder: { width: 24, height: 24 },
-  center: {
-    flex: 1,
+  logoContainer: {
     alignItems: 'center',
-    justifyContent: 'center',
-    paddingHorizontal: 8,
+    marginBottom: 8,
   },
   logo: {
     width: 360,
     height: 144,
   },
+  controlsRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+  },
+  side: {
+    minWidth: 72,
+  },
+  spacer: {
+    flex: 1,
+  },
+  iconBtn: { padding: 8 },
+  iconPlaceholder: { width: 24, height: 24 },
   divider: {
     position: 'absolute',
     left: 0,
