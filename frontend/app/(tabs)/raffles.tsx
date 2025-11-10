@@ -5,6 +5,7 @@ import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import AppHeader from '../../src/components/AppHeader';
+import LocationFilter from '../../src/components/LocationFilter';
 import { theme } from '../../src/theme/tokens';
 import { useRouter } from 'expo-router';
 
@@ -18,14 +19,6 @@ const categories = [
   { id: 'food', name: 'Food', emoji: '🍽️' },
   { id: 'hotel', name: 'Hotels', emoji: '🏨' },
   { id: 'spa', name: 'Spa', emoji: '💆' },
-];
-
-const locations = [
-  { id: 'all', label: 'All' },
-  { id: 'bangkok', label: 'Bangkok' },
-  { id: 'phuket', label: 'Phuket' },
-  { id: 'chiang mai', label: 'Chiang Mai' },
-  { id: 'pattaya', label: 'Pattaya' },
 ];
 
 export default function RafflesScreen() {
