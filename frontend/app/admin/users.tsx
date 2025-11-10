@@ -62,7 +62,7 @@ export default function AdminUsersScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader title="Manage Users" variant="emerald" onBack={() => router.back()} />
+      <AppHeader variant="emerald" logoUri="https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg" onBack={() => router.back()} showDivider />
 
       <View style={styles.filterBar}>
         <View style={styles.searchBox}>
