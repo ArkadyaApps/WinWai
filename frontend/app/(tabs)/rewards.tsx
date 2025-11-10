@@ -1,28 +1,67 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
-import { Reward } from '../../src/types';
+import { useRouter } from 'expo-router';
+import { Voucher } from '../../src/types';
 import api from '../../src/utils/api';
 import BannerAdComponent from '../../src/components/BannerAd';
-import { format } from 'date-fns';
+import VoucherCard from '../../src/components/VoucherCard';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
+import { isPast } from 'date-fns';
 
 const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
 
 export default function RewardsScreen() {
-  const [rewards, setRewards] = useState<Reward[]>([]);
+  const router = useRouter();
+  const [vouchers, setVouchers] = useState<Voucher[]>([]);
+  const [filteredVouchers, setFilteredVouchers] = useState<Voucher[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [filter, setFilter] = useState<'all' | 'active' | 'redeemed' | 'expired'>('all');
 
-  useEffect(() => { loadRewards(); }, []);
+  useEffect(() => { loadVouchers(); }, []);
 
-  const loadRewards = async () => {
-    try { const response = await api.get('/api/rewards/my-rewards'); setRewards(response.data); }
-    catch (error) { console.error('Failed to load rewards:', error); }
-    finally { setLoading(false); setRefreshing(false); }
+  useEffect(() => {
+    // Apply filter
+    switch (filter) {
+      case 'active':
+        setFilteredVouchers(vouchers.filter(v => !v.isRedeemed && !isPast(new Date(v.expiresAt))));
+        break;
+      case 'redeemed':
+        setFilteredVouchers(vouchers.filter(v => v.isRedeemed));
+        break;
+      case 'expired':
+        setFilteredVouchers(vouchers.filter(v => !v.isRedeemed && isPast(new Date(v.expiresAt))));
+        break;
+      default:
+        setFilteredVouchers(vouchers);
+    }
+  }, [filter, vouchers]);
+
+  const loadVouchers = async () => {
+    try { 
+      const response = await api.get('/api/vouchers'); 
+      setVouchers(response.data); 
+    }
+    catch (error) { 
+      console.error('Failed to load vouchers:', error); 
+    }
+    finally { 
+      setLoading(false); 
+      setRefreshing(false); 
+    }
   };
 
-  const onRefresh = () => { setRefreshing(true); loadRewards(); };
+  const onRefresh = () => { setRefreshing(true); loadVouchers(); };
+
+  const handleVoucherPress = (voucher: Voucher) => {
+    router.push(`/voucher/${voucher.id}`);
+  };
+
+  // Count vouchers by status
+  const activeCount = vouchers.filter(v => !v.isRedeemed && !isPast(new Date(v.expiresAt))).length;
+  const redeemedCount = vouchers.filter(v => v.isRedeemed).length;
+  const expiredCount = vouchers.filter(v => !v.isRedeemed && isPast(new Date(v.expiresAt))).length;
 
   if (loading) {
     return (<View style={styles.centered}><ActivityIndicator size="large" color={theme.colors.primaryGold} /></View>);
@@ -32,20 +71,68 @@ export default function RewardsScreen() {
     <View style={styles.container}>
       <AppHeader variant="gold" logoUri={LOGO_URI} showDivider />
 
-      <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
-        {rewards.length === 0 ? (
-          <View style={styles.emptyState}><Text style={styles.emptyIcon}>🏆</Text><Text style={styles.emptyTitle}>No Rewards Yet</Text><Text style={styles.emptyText}>Enter raffles to win amazing prizes!</Text></View>
+      {/* Filter Tabs */}
+      <View style={styles.filterContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.filterScroll}>
+          <TouchableOpacity 
+            style={[styles.filterTab, filter === 'all' && styles.filterTabActive]}
+            onPress={() => setFilter('all')}
+          >
+            <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
+              All ({vouchers.length})
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.filterTab, filter === 'active' && styles.filterTabActive]}
+            onPress={() => setFilter('active')}
+          >
+            <Text style={[styles.filterText, filter === 'active' && styles.filterTextActive]}>
+              Active ({activeCount})
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.filterTab, filter === 'redeemed' && styles.filterTabActive]}
+            onPress={() => setFilter('redeemed')}
+          >
+            <Text style={[styles.filterText, filter === 'redeemed' && styles.filterTextActive]}>
+              Redeemed ({redeemedCount})
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity 
+            style={[styles.filterTab, filter === 'expired' && styles.filterTabActive]}
+            onPress={() => setFilter('expired')}
+          >
+            <Text style={[styles.filterText, filter === 'expired' && styles.filterTextActive]}>
+              Expired ({expiredCount})
+            </Text>
+          </TouchableOpacity>
+        </ScrollView>
+      </View>
+
+      <ScrollView 
+        contentContainerStyle={styles.content} 
+        refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}
+      >
+        {filteredVouchers.length === 0 ? (
+          <View style={styles.emptyState}>
+            <Text style={styles.emptyIcon}>🎟️</Text>
+            <Text style={styles.emptyTitle}>
+              {filter === 'all' ? 'No Vouchers Yet' : 
+               filter === 'active' ? 'No Active Vouchers' :
+               filter === 'redeemed' ? 'No Redeemed Vouchers' :
+               'No Expired Vouchers'}
+            </Text>
+            <Text style={styles.emptyText}>
+              {filter === 'all' ? 'Win raffles to get vouchers!' : 'Try a different filter'}
+            </Text>
+          </View>
         ) : (
-          rewards.map((reward) => (
-            <View key={reward.id} style={styles.rewardCard}>
-              <View style={styles.rewardHeader}><Text style={styles.rewardTitle}>{reward.raffleTitle}</Text><View style={[styles.statusBadge, { backgroundColor: getStatusColor(reward.claimStatus) }]}><Text style={styles.statusText}>{reward.claimStatus.toUpperCase()}</Text></View></View>
-              <Text style={styles.rewardPartner}>{reward.partnerName}</Text>
-              <Text style={styles.rewardDetails}>{reward.prizeDetails}</Text>
-              <View style={styles.rewardFooter}>
-                <Text style={styles.rewardDate}>Won on {format(new Date(reward.wonAt), 'MMM dd, yyyy')}</Text>
-                {reward.claimStatus === 'unclaimed' && (<TouchableOpacity style={styles.claimButton} onPress={() => {}}><Text style={styles.claimButtonText}>Claim Prize</Text></TouchableOpacity>)}
-              </View>
-            </View>
+          filteredVouchers.map((voucher) => (
+            <VoucherCard 
+              key={voucher.id} 
+              voucher={voucher} 
+              onPress={() => handleVoucherPress(voucher)}
+            />
           ))
         )}
       </ScrollView>
@@ -54,32 +141,39 @@ export default function RewardsScreen() {
   );
 }
 
-const getStatusColor = (status: string) => {
-  switch (status) {
-    case 'unclaimed': return theme.colors.primaryGold;
-    case 'pending': return '#FF9800';
-    case 'claimed': return '#4CAF50';
-    default: return '#999';
-  }
-};
-
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.cloud },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
+  filterContainer: {
+    backgroundColor: '#fff',
+    borderBottomWidth: 1,
+    borderBottomColor: '#f0f0f0',
+  },
+  filterScroll: {
+    paddingHorizontal: 16,
+    paddingVertical: 12,
+    gap: 8,
+  },
+  filterTab: {
+    paddingHorizontal: 16,
+    paddingVertical: 8,
+    borderRadius: 20,
+    backgroundColor: '#f5f5f5',
+  },
+  filterTabActive: {
+    backgroundColor: theme.colors.primaryGold,
+  },
+  filterText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+  },
+  filterTextActive: {
+    color: '#000',
+  },
   content: { padding: 16, paddingBottom: 80 },
   emptyState: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 64 },
   emptyIcon: { fontSize: 72, marginBottom: 16 },
   emptyTitle: { fontSize: 20, fontWeight: '700', color: theme.colors.onyx, marginBottom: 8 },
   emptyText: { fontSize: 14, color: '#95A5A6', textAlign: 'center' },
-  rewardCard: { backgroundColor: '#ffffff', padding: 16, borderRadius: 12, marginBottom: 16, shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4, elevation: 3 },
-  rewardHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 8 },
-  rewardTitle: { fontSize: 16, fontWeight: '700', color: theme.colors.onyx, flex: 1, marginRight: 8 },
-  statusBadge: { paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
-  statusText: { fontSize: 10, fontWeight: '700', color: '#ffffff' },
-  rewardPartner: { fontSize: 14, color: theme.colors.slate, marginBottom: 8 },
-  rewardDetails: { fontSize: 14, color: '#555', marginBottom: 12 },
-  rewardFooter: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', borderTopWidth: 1, borderTopColor: '#f0f0f0', paddingTop: 12 },
-  rewardDate: { fontSize: 12, color: '#95A5A6' },
-  claimButton: { backgroundColor: theme.colors.primaryGold, paddingHorizontal: 16, paddingVertical: 8, borderRadius: 20 },
-  claimButtonText: { fontSize: 13, fontWeight: '700', color: '#000' },
 });
