@@ -1,4 +1,6 @@
 // Design tokens for WinWai
+import { Platform } from 'react-native';
+
 export const colors = {
   primaryGold: '#FFD700',
   primaryGoldDark: '#FFC200',
