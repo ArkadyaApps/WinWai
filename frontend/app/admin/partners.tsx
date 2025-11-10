@@ -345,6 +345,40 @@ export default function AdminPartnersScreen() {
               
               <Text style={[styles.label, { marginTop: 20, fontSize: 16, color: theme.colors.primaryGold }]}>📍 Location Details</Text>
               
+              {/* Google Places Search */}
+              <Text style={styles.label}>Search on Google Maps</Text>
+              <View style={styles.searchContainer}>
+                <Ionicons name="search" size={20} color="#999" style={{ marginRight: 8 }} />
+                <TextInput
+                  style={styles.searchInput}
+                  value={placeSearchQuery}
+                  onChangeText={searchPlaces}
+                  placeholder="Type partner name or address..."
+                  placeholderTextColor="#999"
+                />
+                {searchingPlaces && <ActivityIndicator size="small" color={theme.colors.primaryGold} />}
+              </View>
+              
+              {placeSuggestions.length > 0 && (
+                <View style={styles.suggestionsContainer}>
+                  <ScrollView style={styles.suggestionsList} nestedScrollEnabled>
+                    {placeSuggestions.map((place) => (
+                      <TouchableOpacity
+                        key={place.place_id}
+                        style={styles.suggestionItem}
+                        onPress={() => selectPlace(place.place_id)}
+                      >
+                        <Ionicons name="location" size={20} color={theme.colors.emeraldA} style={{ marginRight: 8 }} />
+                        <View style={{ flex: 1 }}>
+                          <Text style={styles.suggestionMain}>{place.structured_formatting.main_text}</Text>
+                          <Text style={styles.suggestionSecondary}>{place.structured_formatting.secondary_text}</Text>
+                        </View>
+                      </TouchableOpacity>
+                    ))}
+                  </ScrollView>
+                </View>
+              )}
+              
               <Text style={styles.label}>Address</Text>
               <TextInput style={[styles.input, styles.textArea]} value={formData.address} onChangeText={(text) => setFormData({ ...formData, address: text })} placeholder="123 Street Name, City, Province, Postal Code" placeholderTextColor="#999" multiline numberOfLines={2} />
               
