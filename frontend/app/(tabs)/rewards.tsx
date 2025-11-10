@@ -7,7 +7,7 @@ import { format } from 'date-fns';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 
-const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg';
+const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/qlp006k7_logo.png';
 
 export default function RewardsScreen() {
   const [rewards, setRewards] = useState<Reward[]>([]);
