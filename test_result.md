@@ -141,15 +141,18 @@ backend:
   
   - task: "Change Password endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/auth/change-password endpoint already implemented. Requires authentication header, verifies current password, validates new password (min 6 chars), and updates password hash."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All change password scenarios working perfectly. Authenticated change (200), wrong current password rejection (401), unauthenticated request rejection (401). Password verification and update working correctly. New password can be used for signin immediately after change."
   
   - task: "Forgot Password endpoint"
     implemented: true
