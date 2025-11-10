@@ -776,6 +776,14 @@ async def admob_ssv_callback(request: Request):
         return Response(status_code=200, content="OK")
 
 # Admin Endpoints
+def generate_voucher_code() -> str:
+    """Generate a unique voucher code"""
+    import string
+    import random as rand
+    chars = string.ascii_uppercase + string.digits
+    code = ''.join(rand.choice(chars) for _ in range(12))
+    return f"WW-{code[:4]}-{code[4:8]}-{code[8:]}"
+
 @api_router.post("/admin/draw-winner")
 async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[str] = Header(None)):
     user = await get_current_user(authorization=authorization)
@@ -787,6 +795,9 @@ async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[s
     if not raffle:
         raise HTTPException(status_code=404, detail="Raffle not found")
     
+    # Get partner info
+    partner = await db.partners.find_one({"id": raffle.get("partnerId")})
+    
     # Get all entries
     entries = await db.entries.find({"raffleId": draw_request.raffleId}).to_list(10000)
     if not entries:
@@ -796,9 +807,17 @@ async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[s
     prizes_to_award = min(raffle["prizesRemaining"], len(entries))
     winners = random.sample(entries, prizes_to_award)
     
-    # Create rewards
+    # Create rewards and vouchers
     rewards_created = []
+    vouchers_created = []
+    
     for winner_entry in winners:
+        # Get winner user info
+        winner_user = await db.users.find_one({"id": winner_entry["userId"]})
+        if not winner_user:
+            continue
+            
+        # Create reward
         reward = Reward(
             userId=winner_entry["userId"],
             raffleId=draw_request.raffleId,
@@ -808,6 +827,32 @@ async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[s
         )
         await db.rewards.insert_one(reward.dict())
         rewards_created.append(reward.id)
+        
+        # Calculate expiry date based on validityMonths
+        validity_months = raffle.get("validityMonths", 3)
+        issued_at = datetime.now(timezone.utc)
+        expires_at = issued_at + timedelta(days=validity_months * 30)  # Approximate months to days
+        
+        # Generate voucher
+        voucher = Voucher(
+            voucherCode=generate_voucher_code(),
+            userId=winner_entry["userId"],
+            userName=winner_user.get("name", "User"),
+            userEmail=winner_user.get("email", ""),
+            raffleId=draw_request.raffleId,
+            raffleTitle=raffle["title"],
+            prizeDetails=raffle["description"],
+            partnerId=raffle.get("partnerId", ""),
+            partnerName=raffle.get("partnerName", "WinWai"),
+            category=raffle.get("category", "general"),
+            issuedAt=issued_at,
+            expiresAt=expires_at,
+            location=raffle.get("location"),
+            address=raffle.get("address"),
+            terms=f"Valid for {validity_months} months from issue date. Present this voucher at {raffle.get('partnerName', 'partner location')}."
+        )
+        await db.vouchers.insert_one(voucher.dict())
+        vouchers_created.append(voucher.voucherCode)
     
     # Update raffle
     await db.raffles.update_one(
@@ -821,7 +866,8 @@ async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[s
     return {
         "message": f"Drew {prizes_to_award} winner(s)",
         "winners": [w["userId"] for w in winners],
-        "rewardsCreated": rewards_created
+        "rewardsCreated": rewards_created,
+        "vouchersCreated": vouchers_created
     }
 
 @api_router.get("/admin/users")
