@@ -55,8 +55,40 @@ export default function AdminPartnersScreen() {
   const onEndReached = () => { if (!loading && hasMore) fetchPartners(); };
 
   const handleOpenModal = (partner?: Partner) => {
-    if (partner) { setEditingPartner(partner); setFormData({ name: partner.name, description: partner.description, category: partner.category, contactInfo: partner.contactInfo || '', sponsored: partner.sponsored }); }
-    else { setEditingPartner(null); setFormData({ name: '', description: '', category: 'food', contactInfo: '', sponsored: false }); }
+    if (partner) { 
+      setEditingPartner(partner); 
+      setFormData({ 
+        name: partner.name, 
+        description: partner.description, 
+        category: partner.category, 
+        contactInfo: partner.contactInfo || '', 
+        sponsored: partner.sponsored,
+        email: partner.email || '',
+        whatsapp: partner.whatsapp || '',
+        line: partner.line || '',
+        address: partner.address || '',
+        latitude: partner.latitude?.toString() || '',
+        longitude: partner.longitude?.toString() || '',
+        photo: partner.photo || '',
+      }); 
+    }
+    else { 
+      setEditingPartner(null); 
+      setFormData({ 
+        name: '', 
+        description: '', 
+        category: 'food', 
+        contactInfo: '', 
+        sponsored: false,
+        email: '',
+        whatsapp: '',
+        line: '',
+        address: '',
+        latitude: '',
+        longitude: '',
+        photo: '',
+      }); 
+    }
     setModalVisible(true);
   };
 
