@@ -1,94 +1,60 @@
 <analysis>
-The previous AI engineer developed the WinWai Raffle Rewards Thailand mobile application from scratch, moving from initial setup (0 to 1) to a functional MVP. This included establishing a React Native/Expo frontend, FastAPI backend, and MongoDB database, alongside Firebase Authentication and AdMob integration. Key achievements were implementing a 3-column grid UI, location-based filtering, multi-language support, and robust AdMob Server-Side Verification. Challenges involved resolving AdMob web incompatibility and duplicate package issues. Recent work focused on implementing admin CRUD endpoints (Partners, Users, Raffles) and making the user profile editable. Significant effort was dedicated to fixing critical issues: persistent login (implementing route protection), broken profile links, non-functional logout, and language settings. The AdMob Rewarded Ad integration on the Tickets page was also enhanced. The primary unresolved issue is the Expo Go app failing to launch due to a , likely stemming from an Expo configuration error where the manifest endpoint returns HTML instead of JSON.
+The previous AI engineer successfully brought the WinWai Raffle Rewards Thailand application from inception (0 to 1) to a functional MVP, establishing a full-stack architecture (React Native/Expo, FastAPI, MongoDB) with Firebase authentication and AdMob integration. Initial work focused on core features like the 3-column UI, location filtering, and multi-language support. A major challenge involved resolving a persistent Expo Go launch issue due to a manifest error, which was investigated but not definitively resolved by the AI engineer. Subsequent efforts concentrated on implementing comprehensive admin CRUD capabilities (Partners, Users, Raffles) with pagination, search, and date pickers, alongside a significant UI/UX overhaul based on brand guidelines. The AI engineer also tackled critical bug fixes like broken logout and profile links, culminating in a refined user experience for key tabs and admin screens.
 </analysis>
 
 <product_requirements>
-The WinWai Raffle Rewards Thailand mobile application aims to provide free raffles (meals, hotel stays, spa) in Thailand, monetized by AdMob rewarded ads, engagement, and referrals, without gambling. Core features include Firebase Authentication (Google, Email/Password), raffle creation with prizes and draw dates, and a ticket system where users earn tickets from ads, daily logins, and referrals. It requires a randomized draw, in-app winner notifications, and a My Rewards tab. An admin dashboard is necessary for managing partners, users, raffles, and prizes. UI/UX should be clean, Thai-inspired (gold, white, green), with clear tab navigation (Home, Raffles, Tickets, Rewards, Profile) and an onboarding carousel. Subsequent additions included a 3-column raffle grid, logo, stock photos, shadows, location-based offers via , a search by category/location, a detailed product page, and a language selector with geolocation.
+The WinWai Raffle Rewards Thailand mobile application provides free raffles (meals, hotel stays, spa) in Thailand, monetized by AdMob ads. It features Firebase Authentication (Google, Email/Password), raffle creation with prizes, a ticket system (ads, daily logins, referrals), randomized draws, in-app winner notifications, and a My Rewards tab. An admin dashboard manages partners, users, raffles, and prizes. UI/UX emphasizes a clean, Thai-inspired design (gold, white, green) with tab navigation (Home, Raffles, Tickets, Rewards, Profile) and an onboarding carousel. Later additions included a 3-column raffle grid, location-based offers via , category/location search, a detailed product page, and multi-language support.
 </product_requirements>
 
 <key_technical_concepts>
-- **Frontend:** React Native (Expo, Expo Router for file-based routing), Zustand (state management), React Navigation.
-- **Backend:** FastAPI (Python), MongoDB.
-- **Authentication:** Firebase Authentication (Google, Email/Password), Google OAuth.
-- **Monetization:** Google AdMob SDK (Rewarded, Interstitial, Banner Ads).
-- **Geolocation:** .
-- **UI/UX:** Component-based design, base64 image handling.
+-   **Frontend:** React Native (Expo, Expo Router for file-based routing), Zustand (state management), React Navigation, .
+-   **Backend:** FastAPI (Python), MongoDB.
+-   **Authentication:** Firebase Authentication, Google OAuth.
+-   **Monetization:** Google AdMob SDK (Rewarded, Interstitial, Banner Ads).
+-   **Geolocation:** .
 </key_technical_concepts>
 
 <code_architecture>
-The application uses a full-stack architecture with React Native (Expo) for the frontend, FastAPI for the backend, and MongoDB as the database.
+The application employs a full-stack architecture: React Native (Expo) for the frontend, FastAPI for the backend, and MongoDB for the database.
 
 
 
--   **/app/backend/server.py**:
-    -   **Importance:** Defines all API endpoints and MongoDB models.
-    -   **Changes:** Expanded user profile updates (added phone field), and comprehensive admin CRUD endpoints for Partners, Users, and Raffles.
--   **/app/backend/populate_mock_data.py**:
-    -   **Importance:** Populates MongoDB with mock data.
-    -   **Changes:** Updated to include detailed location data for raffles and partners, and three admin user accounts.
--   **/app/frontend/app.json**:
-    -   **Importance:** Expo configuration file for metadata, plugins, deep linking.
-    -   **Changes:** Configured AdMob plugin, , ,  for deep linking and Google OAuth redirect.
--   **/app/frontend/app/_layout.tsx**:
-    -   **Importance:** Root layout for Expo Router.
-    -   **Changes:** Initial setup for AuthProvider and navigation container.
--   **/app/frontend/app/(tabs)/_layout.tsx**:
-    -   **Importance:** Defines tab navigation.
-    -   **Changes:** Implemented authentication check to prevent unauthenticated access to main tabs, redirecting to the index (login) page.
--   **/app/frontend/app/(tabs)/home.tsx**:
-    -   **Importance:** Main home screen.
-    -   **Changes:** Redesigned with 3-column grid, integrated , , , .
--   **/app/frontend/app/(tabs)/profile.tsx**:
-    -   **Importance:** User profile screen.
-    -   **Changes:** Made user profile fields (name, email, phone) editable via a modal. Added an Edit Profile button, implemented handlers for profile updates, notifications, and language settings. Added a language selection modal and fixed the logout functionality, ensuring proper state clearing and redirection.
--   **/app/frontend/app/index.tsx**:
-    -   **Importance:** Initial login/authentication screen.
-    -   **Changes:** Initial setup for Google and Email/Password login.
--   **/app/frontend/app/raffle/[id].tsx**:
-    -   **Importance:** Detailed product page.
-    -   **Changes:** Displays comprehensive raffle details.
--   **/app/frontend/app/(tabs)/tickets.tsx**:
-    -   **Importance:** Screen for earning/managing tickets.
-    -   **Changes:** Enhanced with a more prominent Play Ad button for watching rewarded ads.
--   **/app/frontend/app/admin/_layout.tsx**:
-    -   **Importance:** Layout for admin screens.
-    -   **Changes:** Created to add route protection for admin-specific paths.
--   **/app/frontend/app/admin/partners.tsx**:
-    -   **Importance:** Admin management screen for partners.
-    -   **Changes:** Created as a placeholder for partner management.
--   **/app/frontend/app/admin/users.tsx**:
-    -   **Importance:** Admin management screen for users.
-    -   **Changes:** Created as a placeholder for user management.
--   **/app/frontend/app/admin/raffles.tsx**:
-    -   **Importance:** Admin management screen for raffles.
-    -   **Changes:** Created as a placeholder for raffle management, with a fix for a typo in the endpoint path.
--   **/app/frontend/src/store/userStore.ts**:
-    -   **Importance:** Manages user authentication state.
-    -   **Changes:**  function updated for robustness.
--   **/app/frontend/src/store/languageStore.ts**:
-    -   **Importance:** Manages language state.
-    -   **Changes:** Integrated with the profile page for language selection.
--   **/app/frontend/src/types/index.ts**:
-    -   **Importance:** Defines TypeScript interfaces.
-    -   **Changes:** Updated  interface to include  field, and  interface to include  and .
--   **/app/frontend/src/managers/RewardedAdManager.ts**:
-    -   **Importance:** Manages AdMob rewarded ads.
-    -   **Changes:** Implemented proper AdMob loading and showing functionality.
+-   **/app/backend/server.py**: Defines API endpoints; expanded user profile updates, comprehensive admin CRUD endpoints for Partners, Users, Raffles, and support for pagination.
+-   **/app/frontend/app.json**: Expo configuration; AdMob plugin, deep linking setup.
+-   **/app/frontend/app/_layout.tsx**: Root layout for Expo Router; wrapped with  and . Sets  for tabs.
+-   **/app/frontend/app/(tabs)/_layout.tsx**: Defines tab navigation; enforces authentication. Now sets  for individual tabs to hide native headers.
+-   **/app/frontend/app/(tabs)/home.tsx**: Main home screen; redesigned with  (gold, tall, logo, divider), 3-column grid, , , .
+-   **/app/frontend/app/(tabs)/profile.tsx**: User profile screen; made editable (name, email, phone); functional logout and language settings.  (gold) with existing gradient.
+-   **/app/frontend/app/(tabs)/raffles.tsx**: Raffle list screen;  (mint, tall, logo, divider), integrated location and category filter pills, fixed navigation to .
+-   **/app/frontend/app/(tabs)/tickets.tsx**: Tickets screen;  (emerald, logo, divider), prominent Play Ad button with haptic feedback.
+-   **/app/frontend/app/(tabs)/rewards.tsx**: Rewards screen;  (gold, logo, divider).
+-   **/app/frontend/app/raffle/[id].tsx**: Detailed product page; displays raffle details. Navigation fixed.
+-   **/app/frontend/app/admin/_layout.tsx**: Layout for admin screens; route protection.
+-   **/app/frontend/app/admin/partners.tsx**: Admin management for partners;  (gold), infinite scroll, search bar, category filter pills, fixed JSX typo, existing create/edit/delete.
+-   **/app/frontend/app/admin/users.tsx**: Admin management for users;  (emerald), infinite scroll, search bar, role filter pills, edit/delete.
+-   **/app/frontend/app/admin/raffles.tsx**: Admin management for raffles;  (mint), full CRUD,  with future-date validation, pull-to-refresh.
+-   **/app/frontend/src/store/userStore.ts**: Manages user authentication state;  function updated.
+-   **/app/frontend/src/store/languageStore.ts**: Manages language state.
+-   **/app/frontend/src/types/index.ts**: Defines TypeScript interfaces; updated  (phone) and  (location, address).
+-   **/app/frontend/src/managers/RewardedAdManager.ts**: Manages AdMob rewarded ads.
+-   **/app/frontend/src/theme/tokens.ts**: (NEW) Centralized UI tokens (colors, gradients, spacing, radii, shadows).
+-   **/app/frontend/src/theme/ThemeProvider.tsx**: (NEW) Context provider for theme and font loading.
+-   **/app/frontend/src/components/AppHeader.tsx**: (NEW/MODIFIED) Reusable gradient header with back/right slots, logo, divider, size variants, and subtle Thai gold pattern overlay.
 </code_architecture>
 
 <pending_tasks>
-- Fix the Expo Go application launch issue () which is currently preventing the app from running on mobile devices.
-- Fully implement CRUD operations for Partners, Users, and Raffles in the admin management screens.
+-   Resolve the Expo Go application launch issue () where the manifest endpoint returns HTML instead of JSON.
+-   Implement 'create' functionality for the Admin Users screen.
 </pending_tasks>
 
 <current_work>
-The WinWai Raffle Rewards Thailand mobile application has an operational full-stack. The backend features robust user authentication, raffle, partner, ticket, and reward management, including a fully functional AdMob SSV endpoint. Hardcoded URLs have been replaced by environment variables.
+The WinWai Raffle Rewards Thailand mobile application is functional with a full-stack architecture. The backend provides robust API endpoints for user, raffle, partner, ticket, and reward management, including AdMob SSV, with support for pagination. Frontend routes are handled by Expo Router, enforcing authentication for core features.
 
-The frontend, using Expo Router, provides a tab-based interface. Authentication is now enforced, preventing unauthenticated access to core app features. The user profile page is editable, allowing updates to name, email, and phone, and includes a functional language selector and a robust logout mechanism. Admin management screens for Partners, Users, and Raffles have been created, though their full CRUD functionality is pending. The Tickets page has an enhanced Play Ad button integrated with the  for AdMob ads.
+Significant progress has been made on the admin dashboard, with comprehensive CRUD functionality (create/edit/delete/draw winner) implemented for Raffles, including a native date/time picker with future-date validation. Admin Partners and Users screens now feature infinite scroll, pull-to-refresh, a search bar, and segmented filter pills (by category for partners, by role for users), with backend pagination integrated. Edit/delete operations are functional for Partners and Users, and Partner creation is supported via an existing modal workflow.
 
-However, a critical issue persists: the Expo Go app fails to launch on mobile devices with a failed to download remote update error. This appears to be an Expo configuration issue where the manifest endpoint serves HTML instead of JSON. The web preview works, but native testing is currently blocked.
+A major UI/UX overhaul is underway, with a new theme system (, ) and a reusable  component. Custom  instances, featuring brand-inspired gradients (gold, emerald, mint), a prominently visible logo, and subtle Thai gold pattern overlays, have replaced native navigation headers and custom headers across all user-facing tabs (Home, Raffles, Tickets, Rewards). Admin screens retain a clean header without the logo. Haptic feedback has been added to key interactions. The Raffles page now includes a static location filter bar, and a critical bug preventing navigation to the product detail page from raffle cards has been fixed.
 </current_work>
 
 <optional_next_step>
-Investigate and resolve the Expo Go application launch issue where the manifest endpoint returns HTML instead of JSON.
+The AI engineer proposed improving the Raffles page location filter by dynamically pulling available locations from the API or adding a Use my location pill.
 </optional_next_step>
