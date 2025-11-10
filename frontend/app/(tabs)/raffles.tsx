@@ -44,7 +44,7 @@ export default function RafflesScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader title="Raffles" variant="mint" showLogo logoUri={LOGO_URI} />
+      <AppHeader title="Raffles" variant="mint" showLogo logoUri={LOGO_URI} showDivider />
 
       {/* Category Filter */}
       <View style={styles.categoryContainer}>

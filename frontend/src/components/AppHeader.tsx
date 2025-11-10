@@ -13,6 +13,7 @@ interface Props {
   showLogo?: boolean;
   logoUri?: string;
   size?: 'normal' | 'tall';
+  showDivider?: boolean;
 }
 
 export default function AppHeader({
@@ -24,14 +25,14 @@ export default function AppHeader({
   showLogo = false,
   logoUri,
   size = 'normal',
+  showDivider = false,
 }: Props) {
   const colors = theme.gradients[variant];
   const defaultPattern = 'https://images.unsplash.com/photo-1545873692-64145c8c42ed?q=85&w=1200&auto=format&fit=crop';
   const isLight = variant === 'gold';
-  const headerStyle = [
-    styles.header,
-    size === 'tall' && styles.headerTall,
-  ];
+  const headerStyle = [styles.header, size === 'tall' && styles.headerTall];
+  const dividerColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.14)';
+
   return (
     <LinearGradient colors={colors as any} style={headerStyle as any}>
       {/* Subtle pattern overlay */}
@@ -51,12 +52,19 @@ export default function AppHeader({
         {showLogo && (
           <Image
             source={{ uri: logoUri || 'https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg' }}
-            style={[styles.logo, size === 'tall' && styles.logoTall]}
+            style={[styles.logo, size === 'tall' && styles.logoTall, styles.logoRing]}
             resizeMode="contain"
           />
         )}
         {title ? (
-          <Text style={[styles.title, { color: isLight ? '#000' : '#fff' }, size === 'tall' && styles.titleTall]}>
+          <Text
+            style={[
+              styles.title,
+              { color: isLight ? '#000' : '#fff' },
+              size === 'tall' && styles.titleTall,
+            ]}
+            numberOfLines={1}
+          >
             {title}
           </Text>
         ) : null}
@@ -65,6 +73,8 @@ export default function AppHeader({
       <View style={[styles.side, { alignItems: 'flex-end' }]}>
         {right ?? <View style={styles.iconPlaceholder} />}
       </View>
+
+      {showDivider && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}
     </LinearGradient>
   );
 }
@@ -87,7 +97,7 @@ const styles = StyleSheet.create({
     opacity: 0.06,
   },
   side: {
-    width: 64,
+    width: 72,
   },
   iconBtn: { padding: 8 },
   iconPlaceholder: { width: 24, height: 24 },
@@ -96,7 +106,8 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'center',
-    gap: 8,
+    gap: 10,
+    paddingHorizontal: 8,
   },
   logo: {
     width: 32,
@@ -105,9 +116,24 @@ const styles = StyleSheet.create({
     backgroundColor: 'rgba(255,255,255,0.75)',
   },
   logoTall: {
-    width: 40,
-    height: 40,
-    borderRadius: 20,
+    width: 44,
+    height: 44,
+    borderRadius: 22,
+  },
+  logoRing: {
+    borderWidth: 2,
+    borderColor: 'rgba(255,255,255,0.85)',
+    ...Platform.select({
+      ios: {
+        shadowColor: '#000',
+        shadowOffset: { width: 0, height: 1 },
+        shadowOpacity: 0.12,
+        shadowRadius: 2,
+      },
+      android: {
+        elevation: 2,
+      },
+    }),
   },
   title: {
     fontSize: 20,
@@ -115,6 +141,14 @@ const styles = StyleSheet.create({
     letterSpacing: 0.3,
   },
   titleTall: {
-    fontSize: 22,
+    fontSize: 24,
+    letterSpacing: 0.4,
+  },
+  divider: {
+    position: 'absolute',
+    left: 0,
+    right: 0,
+    bottom: 0,
+    height: 1,
   },
 });

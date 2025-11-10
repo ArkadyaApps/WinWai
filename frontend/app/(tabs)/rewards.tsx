@@ -30,7 +30,7 @@ export default function RewardsScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader title="My Rewards" variant="gold" showLogo logoUri={LOGO_URI} />
+      <AppHeader title="My Rewards" variant="gold" showLogo logoUri={LOGO_URI} showDivider />
 
       <ScrollView contentContainerStyle={styles.content} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} />}>
         {rewards.length === 0 ? (

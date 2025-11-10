@@ -35,7 +35,7 @@ export default function TicketsScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader title="Tickets" variant="emerald" showLogo logoUri={LOGO_URI} />
+      <AppHeader title="Tickets" variant="emerald" showLogo logoUri={LOGO_URI} showDivider />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.balanceCard}>
           <Text style={styles.balanceLabel}>Your Ticket Balance</Text>

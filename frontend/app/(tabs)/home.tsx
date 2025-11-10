@@ -80,6 +80,7 @@ export default function HomeScreen() {
         showLogo
         logoUri={LOGO_URI}
         size="tall"
+        showDivider
         right={(
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <View style={styles.ticketBadge}><Ionicons name="ticket" size={18} color={theme.colors.primaryGold} /><Text style={styles.ticketText}>{user?.tickets || 0}</Text></View>
