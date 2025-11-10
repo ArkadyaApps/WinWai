@@ -470,6 +470,14 @@ async def get_raffle(raffle_id: str):
         raise HTTPException(status_code=404, detail="Raffle not found")
     return Raffle(**raffle)
 
+@api_router.get("/partners/{partner_id}", response_model=Partner)
+async def get_partner(partner_id: str):
+    """Get partner details by ID (public endpoint)"""
+    partner = await db.partners.find_one({"id": partner_id})
+    if not partner:
+        raise HTTPException(status_code=404, detail="Partner not found")
+    return Partner(**partner)
+
 @api_router.post("/raffles/enter")
 async def enter_raffle(entry_request: RaffleEntryRequest, authorization: Optional[str] = Header(None)):
     user = await get_current_user(authorization=authorization)
