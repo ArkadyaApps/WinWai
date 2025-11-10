@@ -16,11 +16,13 @@ import { useRouter } from 'expo-router';
 import { useAuth } from '../src/contexts/AuthContext';
 import { useUserStore } from '../src/store/userStore';
 import { validateEmail, validatePassword } from '../src/utils/validation';
+import { useTranslation } from '../src/i18n/useTranslation';
 
 export default function Index() {
   const router = useRouter();
   const { signIn, signInWithEmail, isLoading: authLoading } = useAuth();
   const { isAuthenticated, isLoading: userLoading } = useUserStore();
+  const { t } = useTranslation();
   
   const [authMode, setAuthMode] = useState<'google' | 'email'>('email');
   const [email, setEmail] = useState('');
