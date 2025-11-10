@@ -20,7 +20,7 @@ export default function AdminUsersScreen() {
   const [query, setQuery] = useState('');
   const [roleFilter, setRoleFilter] = useState<'all' | 'user' | 'admin'>('all');
 
-  const [formData, setFormData] = useState({ name: '', email: '', phone: '', tickets: 0, role: 'user' });
+  const [formData, setFormData] = useState({ name: '', email: '', phone: '', tickets: 0, role: 'user', password: '' });
 
   useEffect(() => { fetchUsers(true); }, []);
   useEffect(() => { const t = setTimeout(() => fetchUsers(true), 400); return () => clearTimeout(t); }, [query, roleFilter]);
