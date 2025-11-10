@@ -20,7 +20,7 @@ export default function AdminRafflesScreen() {
   const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: '', description: '', image: '', category: 'food', partnerId: '', location: '', address: '', prizesAvailable: 1, ticketCost: 10, drawDate: new Date(), active: true,
+    title: '', description: '', image: '', category: 'food', partnerId: '', location: '', address: '', prizesAvailable: 1, ticketCost: 10, drawDate: new Date(), validityMonths: 3, active: true,
   });
 
   const [showDatePicker, setShowDatePicker] = useState(false);
