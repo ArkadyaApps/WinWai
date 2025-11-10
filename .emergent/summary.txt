@@ -1,60 +1,63 @@
 <analysis>
-The previous AI engineer successfully brought the WinWai Raffle Rewards Thailand application from inception (0 to 1) to a functional MVP, establishing a full-stack architecture (React Native/Expo, FastAPI, MongoDB) with Firebase authentication and AdMob integration. Initial work focused on core features like the 3-column UI, location filtering, and multi-language support. A major challenge involved resolving a persistent Expo Go launch issue due to a manifest error, which was investigated but not definitively resolved by the AI engineer. Subsequent efforts concentrated on implementing comprehensive admin CRUD capabilities (Partners, Users, Raffles) with pagination, search, and date pickers, alongside a significant UI/UX overhaul based on brand guidelines. The AI engineer also tackled critical bug fixes like broken logout and profile links, culminating in a refined user experience for key tabs and admin screens.
+The previous AI engineer successfully initiated the WinWai Raffle Rewards Thailand application, establishing a full-stack architecture. Initially, the focus was on core features, admin CRUD, and UI/UX improvements. The current session began by addressing a  error in , which was quickly resolved. The primary user request was to unify the header with a larger logo, leading to extensive modifications in  and various screen files. Several iterations were required to achieve the desired logo size, aspect ratio, and transparent background for both the header and splash screen. The agent also implemented UI adjustments like reducing header margins and changing grid column counts. The session concluded with the implementation of a Firebase Cloud Function for the backend raffle draw logic and a partial setup for email/password authentication (backend complete, frontend in progress).
 </analysis>
 
 <product_requirements>
-The WinWai Raffle Rewards Thailand mobile application provides free raffles (meals, hotel stays, spa) in Thailand, monetized by AdMob ads. It features Firebase Authentication (Google, Email/Password), raffle creation with prizes, a ticket system (ads, daily logins, referrals), randomized draws, in-app winner notifications, and a My Rewards tab. An admin dashboard manages partners, users, raffles, and prizes. UI/UX emphasizes a clean, Thai-inspired design (gold, white, green) with tab navigation (Home, Raffles, Tickets, Rewards, Profile) and an onboarding carousel. Later additions included a 3-column raffle grid, location-based offers via , category/location search, a detailed product page, and multi-language support.
+The WinWai Raffle Rewards Thailand mobile application offers free raffles (meals, hotel stays, spa) in Thailand, primarily monetized through AdMob ads. Key features include Firebase Authentication (Google, Email/Password), raffle creation with prize details, a ticket acquisition system (ads, daily logins, referrals), randomized draws, and in-app winner notifications accessible via a My Rewards tab. An administrative dashboard facilitates the management of partners, users, raffles, and prizes. The application's UI/UX emphasizes a clean, Thai-inspired design using gold, white, and green color palettes, supported by tab-based navigation (Home, Raffles, Tickets, Rewards, Profile) and an onboarding carousel. Recent enhancements included a 3-column raffle grid, location-based offers using , category/location search, a detailed product page, and multi-language support. The system for raffle draws must be self-funded by ad revenue, triggering a draw only when an ad revenue threshold is met *and* the scheduled draw date has arrived.
 </product_requirements>
 
 <key_technical_concepts>
--   **Frontend:** React Native (Expo, Expo Router for file-based routing), Zustand (state management), React Navigation, .
--   **Backend:** FastAPI (Python), MongoDB.
--   **Authentication:** Firebase Authentication, Google OAuth.
+-   **Frontend:** React Native (Expo, Expo Router, React Navigation), Zustand, .
+-   **Backend:** FastAPI (Python), MongoDB, Firebase Cloud Functions (TypeScript).
+-   **Authentication:** Firebase Authentication, Google OAuth, Email/Password (implemented).
 -   **Monetization:** Google AdMob SDK (Rewarded, Interstitial, Banner Ads).
 -   **Geolocation:** .
 </key_technical_concepts>
 
 <code_architecture>
-The application employs a full-stack architecture: React Native (Expo) for the frontend, FastAPI for the backend, and MongoDB for the database.
+The application utilizes a full-stack architecture with a React Native (Expo) frontend, a FastAPI backend, and a MongoDB database.
 
 
 
--   **/app/backend/server.py**: Defines API endpoints; expanded user profile updates, comprehensive admin CRUD endpoints for Partners, Users, Raffles, and support for pagination.
--   **/app/frontend/app.json**: Expo configuration; AdMob plugin, deep linking setup.
--   **/app/frontend/app/_layout.tsx**: Root layout for Expo Router; wrapped with  and . Sets  for tabs.
--   **/app/frontend/app/(tabs)/_layout.tsx**: Defines tab navigation; enforces authentication. Now sets  for individual tabs to hide native headers.
--   **/app/frontend/app/(tabs)/home.tsx**: Main home screen; redesigned with  (gold, tall, logo, divider), 3-column grid, , , .
--   **/app/frontend/app/(tabs)/profile.tsx**: User profile screen; made editable (name, email, phone); functional logout and language settings.  (gold) with existing gradient.
--   **/app/frontend/app/(tabs)/raffles.tsx**: Raffle list screen;  (mint, tall, logo, divider), integrated location and category filter pills, fixed navigation to .
--   **/app/frontend/app/(tabs)/tickets.tsx**: Tickets screen;  (emerald, logo, divider), prominent Play Ad button with haptic feedback.
--   **/app/frontend/app/(tabs)/rewards.tsx**: Rewards screen;  (gold, logo, divider).
--   **/app/frontend/app/raffle/[id].tsx**: Detailed product page; displays raffle details. Navigation fixed.
--   **/app/frontend/app/admin/_layout.tsx**: Layout for admin screens; route protection.
--   **/app/frontend/app/admin/partners.tsx**: Admin management for partners;  (gold), infinite scroll, search bar, category filter pills, fixed JSX typo, existing create/edit/delete.
--   **/app/frontend/app/admin/users.tsx**: Admin management for users;  (emerald), infinite scroll, search bar, role filter pills, edit/delete.
--   **/app/frontend/app/admin/raffles.tsx**: Admin management for raffles;  (mint), full CRUD,  with future-date validation, pull-to-refresh.
--   **/app/frontend/src/store/userStore.ts**: Manages user authentication state;  function updated.
--   **/app/frontend/src/store/languageStore.ts**: Manages language state.
--   **/app/frontend/src/types/index.ts**: Defines TypeScript interfaces; updated  (phone) and  (location, address).
--   **/app/frontend/src/managers/RewardedAdManager.ts**: Manages AdMob rewarded ads.
--   **/app/frontend/src/theme/tokens.ts**: (NEW) Centralized UI tokens (colors, gradients, spacing, radii, shadows).
--   **/app/frontend/src/theme/ThemeProvider.tsx**: (NEW) Context provider for theme and font loading.
--   **/app/frontend/src/components/AppHeader.tsx**: (NEW/MODIFIED) Reusable gradient header with back/right slots, logo, divider, size variants, and subtle Thai gold pattern overlay.
+-   **/app/backend/server.py**: Updated to include new  model fields (, , , ) and new API endpoints for email/password authentication: , , , , . Also includes utility functions for password hashing and JWT token management.
+-   **/app/frontend/app.json**: Modified  configuration for splash screen image  to have .
+-   **/app/frontend/app/_layout.tsx**: Root layout for Expo Router.
+-   **/app/frontend/app/(tabs)/_layout.tsx**: Tab navigation layout.
+-   **/app/frontend/app/(tabs)/home.tsx**: Updated to use the new  structure and changed the raffle grid to 4 columns.
+-   **/app/frontend/app/(tabs)/profile.tsx**:  styles removed to avoid duplicate headers. Updated to use the new  structure.
+-   **/app/frontend/app/(tabs)/raffles.tsx**: Updated to use the new  structure and changed the raffle grid to 4 columns.
+-   **/app/frontend/app/(tabs)/tickets.tsx**: Updated to use the new  structure.
+-   **/app/frontend/app/(tabs)/rewards.tsx**: Updated to use the new  structure.
+-   **/app/frontend/app/index.tsx**: Landing page updated to display the new transparent PNG logo with 80% width.
+-   **/app/frontend/src/components/AppHeader.tsx**: Heavily modified to remove the top header, integrate a larger logo (height 144, width 360), reduce margins, align functional elements (language switch, search filter, ticket balance) at the bottom, and use the new transparent PNG logo URL.
+-   **/app/frontend/src/context/AuthContext.tsx**: Interface updated to include new methods for email/password authentication (, , , ). The implementation details for these methods are still pending.
+-   **/app/frontend/src/theme/tokens.ts**:  imported from  to resolve a runtime error.
+-   **/app/raffle-backend-functions.ts**: (NEW) Contains Firebase Cloud Functions for , , , and  to manage the raffle draw logic based on ad revenue and draw date.
+-   **/app/package.json.firebase**: (NEW) Package configuration file for the Firebase Cloud Functions.
+-   **/app/FIREBASE_DEPLOYMENT_GUIDE.md**: (NEW) Instructions for deploying Firebase Functions.
+-   **/app/AUTH_IMPLEMENTATION_STATUS.md**: (NEW) Handoff document summarizing the status of the email/password authentication implementation.
 </code_architecture>
 
 <pending_tasks>
 -   Resolve the Expo Go application launch issue () where the manifest endpoint returns HTML instead of JSON.
 -   Implement 'create' functionality for the Admin Users screen.
+-   Improve the Raffles page location filter by dynamically pulling available locations from the API or adding a Use my location pill.
+-   Complete the frontend implementation for email/password authentication in  and create corresponding UI forms (sign-in, sign-up, forgot password, password change).
 </pending_tasks>
 
 <current_work>
-The WinWai Raffle Rewards Thailand mobile application is functional with a full-stack architecture. The backend provides robust API endpoints for user, raffle, partner, ticket, and reward management, including AdMob SSV, with support for pagination. Frontend routes are handled by Expo Router, enforcing authentication for core features.
+The WinWai Raffle Rewards Thailand application has undergone significant UI/UX and backend feature development. The primary focus immediately before this summary was a major header overhaul, including:
+1.  **Unified Header Design:** The  component was extensively refactored to serve as a single, consistent header across the platform, replacing previous disparate headers.
+2.  **Larger Logo Integration:** The logo dimensions were adjusted multiple times (initially 56/72px, then 360x144px) and finally configured to use a transparent PNG logo provided by the user, ensuring it is prominently displayed without circular effects.
+3.  **Layout Refinement:** Header margins were reduced, and elements like the language switch, search filter, and ticket balance were aligned at the bottom of the header for a cleaner look.
+4.  **Splash Screen Update:** The application's splash screen in  was configured to use the transparent PNG logo at 80% screen width.
+5.  **Grid Layout Change:** The raffle grids on the home () and raffles () screens were updated from 3 to 4 columns.
+6.  **Email/Password Authentication Backend:** A complete backend algorithm for email/password authentication was implemented in , including user registration, login, password hashing, password reset (with token generation), and password change functionalities. This involved adding new models, helper functions, and API endpoints.
+7.  **Raffle Draw Backend Logic:** A comprehensive Firebase Cloud Function () was created, implementing the core logic for automated raffle draws based on ad revenue thresholds and scheduled dates, including winner selection and status updates.
 
-Significant progress has been made on the admin dashboard, with comprehensive CRUD functionality (create/edit/delete/draw winner) implemented for Raffles, including a native date/time picker with future-date validation. Admin Partners and Users screens now feature infinite scroll, pull-to-refresh, a search bar, and segmented filter pills (by category for partners, by role for users), with backend pagination integrated. Edit/delete operations are functional for Partners and Users, and Partner creation is supported via an existing modal workflow.
-
-A major UI/UX overhaul is underway, with a new theme system (, ) and a reusable  component. Custom  instances, featuring brand-inspired gradients (gold, emerald, mint), a prominently visible logo, and subtle Thai gold pattern overlays, have replaced native navigation headers and custom headers across all user-facing tabs (Home, Raffles, Tickets, Rewards). Admin screens retain a clean header without the logo. Haptic feedback has been added to key interactions. The Raffles page now includes a static location filter bar, and a critical bug preventing navigation to the product detail page from raffle cards has been fixed.
+The current work concluded with the backend for email/password authentication being fully implemented and the frontend  interface updated to support these new methods. However, the actual frontend UI forms and the complete logic within  are still pending implementation.
 </current_work>
 
 <optional_next_step>
-The AI engineer proposed improving the Raffles page location filter by dynamically pulling available locations from the API or adding a Use my location pill.
+Complete the remaining frontend implementation for email/password authentication forms and logic within .
 </optional_next_step>
