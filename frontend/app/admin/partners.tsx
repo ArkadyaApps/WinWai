@@ -35,6 +35,11 @@ export default function AdminPartnersScreen() {
     longitude: '',
     photo: '',
   });
+  
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [placeSearchQuery, setPlaceSearchQuery] = useState('');
+  const [placeSuggestions, setPlaceSuggestions] = useState<any[]>([]);
+  const [searchingPlaces, setSearchingPlaces] = useState(false);
 
   useEffect(() => { fetchPartners(true); }, []);
   useEffect(() => { const t = setTimeout(() => fetchPartners(true), 400); return () => clearTimeout(t); }, [query, categoryFilter]);
