@@ -192,8 +192,36 @@ export default function AdminPartnersScreen() {
                   </TouchableOpacity>
                 ))}
               </View>
-              <Text style={styles.label}>Contact Info</Text>
+              <Text style={styles.label}>Contact Info (Legacy)</Text>
               <TextInput style={styles.input} value={formData.contactInfo} onChangeText={(text) => setFormData({ ...formData, contactInfo: text })} placeholder="Phone or email" placeholderTextColor="#999" />
+              
+              <Text style={[styles.label, { marginTop: 20, fontSize: 16, color: theme.colors.primaryGold }]}>📍 Contact Details</Text>
+              
+              <Text style={styles.label}>Email</Text>
+              <TextInput style={styles.input} value={formData.email} onChangeText={(text) => setFormData({ ...formData, email: text })} placeholder="partner@example.com" placeholderTextColor="#999" keyboardType="email-address" autoCapitalize="none" />
+              
+              <Text style={styles.label}>WhatsApp Number</Text>
+              <TextInput style={styles.input} value={formData.whatsapp} onChangeText={(text) => setFormData({ ...formData, whatsapp: text })} placeholder="+66812345678" placeholderTextColor="#999" keyboardType="phone-pad" />
+              
+              <Text style={styles.label}>LINE ID</Text>
+              <TextInput style={styles.input} value={formData.line} onChangeText={(text) => setFormData({ ...formData, line: text })} placeholder="@partnerline" placeholderTextColor="#999" autoCapitalize="none" />
+              
+              <Text style={[styles.label, { marginTop: 20, fontSize: 16, color: theme.colors.primaryGold }]}>📍 Location Details</Text>
+              
+              <Text style={styles.label}>Address</Text>
+              <TextInput style={[styles.input, styles.textArea]} value={formData.address} onChangeText={(text) => setFormData({ ...formData, address: text })} placeholder="123 Street Name, City, Province, Postal Code" placeholderTextColor="#999" multiline numberOfLines={2} />
+              
+              <Text style={styles.label}>Latitude (Optional)</Text>
+              <TextInput style={styles.input} value={formData.latitude} onChangeText={(text) => setFormData({ ...formData, latitude: text })} placeholder="13.7563" placeholderTextColor="#999" keyboardType="numeric" />
+              
+              <Text style={styles.label}>Longitude (Optional)</Text>
+              <TextInput style={styles.input} value={formData.longitude} onChangeText={(text) => setFormData({ ...formData, longitude: text })} placeholder="100.5018" placeholderTextColor="#999" keyboardType="numeric" />
+              
+              <Text style={[styles.label, { marginTop: 20, fontSize: 16, color: theme.colors.primaryGold }]}>📷 Media</Text>
+              
+              <Text style={styles.label}>Photo URL</Text>
+              <TextInput style={styles.input} value={formData.photo} onChangeText={(text) => setFormData({ ...formData, photo: text })} placeholder="https://example.com/photo.jpg" placeholderTextColor="#999" autoCapitalize="none" />
+              
               <TouchableOpacity style={styles.sponsoredToggle} onPress={() => setFormData({ ...formData, sponsored: !formData.sponsored })}>
                 <Text style={styles.sponsoredToggleText}>Sponsored Partner</Text>
                 <Ionicons name={formData.sponsored ? 'checkbox' : 'square-outline'} size={24} color={formData.sponsored ? theme.colors.primaryGold : '#999'} />
