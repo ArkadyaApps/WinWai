@@ -41,7 +41,138 @@ export default function AdminPartnersScreen() {
   const [placeSuggestions, setPlaceSuggestions] = useState<any[]>([]);
   const [searchingPlaces, setSearchingPlaces] = useState(false);
 
+  const GOOGLE_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
+
   useEffect(() => { fetchPartners(true); }, []);
+
+  // Image Picker Handler
+  const pickImage = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Please allow access to your photos to upload images.');
+        return;
+      }
+      
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.7,
+        base64: true,
+      });
+      
+      if (!result.canceled && result.assets[0]) {
+        const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+        setSelectedImage(base64Image);
+        setFormData({ ...formData, photo: base64Image });
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      Alert.alert('Error', 'Failed to pick image');
+    }
+  };
+
+  const takePhoto = async () => {
+    try {
+      const { status } = await ImagePicker.requestCameraPermissionsAsync();
+      
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Please allow camera access to take photos.');
+        return;
+      }
+      
+      const result = await ImagePicker.launchCameraAsync({
+        allowsEditing: true,
+        aspect: [4, 3],
+        quality: 0.7,
+        base64: true,
+      });
+      
+      if (!result.canceled && result.assets[0]) {
+        const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+        setSelectedImage(base64Image);
+        setFormData({ ...formData, photo: base64Image });
+      }
+    } catch (error) {
+      console.error('Error taking photo:', error);
+      Alert.alert('Error', 'Failed to take photo');
+    }
+  };
+
+  const removeImage = () => {
+    setSelectedImage(null);
+    setFormData({ ...formData, photo: '' });
+  };
+
+  // Google Places Search Handler
+  const searchPlaces = async (query: string) => {
+    setPlaceSearchQuery(query);
+    
+    if (query.length < 3) {
+      setPlaceSuggestions([]);
+      return;
+    }
+    
+    setSearchingPlaces(true);
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&key=${GOOGLE_API_KEY}&components=country:th&language=en`
+      );
+      const data = await response.json();
+      
+      if (data.status === 'OK') {
+        setPlaceSuggestions(data.predictions || []);
+      } else {
+        console.error('Places API error:', data.status);
+        setPlaceSuggestions([]);
+      }
+    } catch (error) {
+      console.error('Error searching places:', error);
+      setPlaceSuggestions([]);
+    } finally {
+      setSearchingPlaces(false);
+    }
+  };
+
+  const selectPlace = async (placeId: string) => {
+    try {
+      const response = await fetch(
+        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_API_KEY}&fields=name,formatted_address,geometry,address_components`
+      );
+      const data = await response.json();
+      
+      if (data.status === 'OK' && data.result) {
+        const place = data.result;
+        
+        // Extract city from address components
+        let city = '';
+        if (place.address_components) {
+          const cityComponent = place.address_components.find(
+            (comp: any) => comp.types.includes('locality') || comp.types.includes('administrative_area_level_1')
+          );
+          city = cityComponent ? cityComponent.long_name : '';
+        }
+        
+        setFormData({
+          ...formData,
+          name: place.name || formData.name,
+          address: place.formatted_address || '',
+          latitude: place.geometry?.location?.lat?.toString() || '',
+          longitude: place.geometry?.location?.lng?.toString() || '',
+          location: city,
+        });
+        
+        setPlaceSearchQuery('');
+        setPlaceSuggestions([]);
+        Alert.alert('Success', 'Location details filled from Google Maps!');
+      }
+    } catch (error) {
+      console.error('Error fetching place details:', error);
+      Alert.alert('Error', 'Failed to fetch place details');
+    }
+  };
   useEffect(() => { const t = setTimeout(() => fetchPartners(true), 400); return () => clearTimeout(t); }, [query, categoryFilter]);
 
   const fetchPartners = async (reset = false) => {
