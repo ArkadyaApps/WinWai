@@ -329,18 +329,18 @@ metadata:
   backend_test_success_rate: "100%"
 
 test_plan:
-  current_focus:
-    - "Email/Password Signup endpoint"
-    - "Email/Password Signin endpoint"
-    - "Change Password endpoint"
-    - "Forgot Password endpoint"
-    - "Reset Password endpoint"
+  current_focus: []
   completed_backend_tasks:
     - "Add profile update endpoint"
     - "Admin Partner CRUD endpoints"
     - "Admin User management endpoints"
     - "Admin Raffle management endpoints"
     - "Add phone field to User model"
+    - "Email/Password Signup endpoint"
+    - "Email/Password Signin endpoint"
+    - "Change Password endpoint"
+    - "Forgot Password endpoint"
+    - "Reset Password endpoint"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
