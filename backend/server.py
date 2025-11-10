@@ -46,9 +46,18 @@ class Partner(BaseModel):
     name: str
     description: str
     logo: Optional[str] = None
+    photo: Optional[str] = None  # Main photo/image of the business
     category: str  # food, hotel, spa
     sponsored: bool = Field(default=False)
     contactInfo: Optional[str] = None
+    # Contact details
+    email: Optional[str] = None
+    whatsapp: Optional[str] = None  # WhatsApp number
+    line: Optional[str] = None  # LINE ID
+    # Location details
+    address: Optional[str] = None
+    latitude: Optional[float] = None
+    longitude: Optional[float] = None
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class Raffle(BaseModel):
