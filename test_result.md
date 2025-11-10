@@ -109,6 +109,66 @@ user_problem_statement: |
   - Fix the User Page functionality to allow users to make changes to their profile.
 
 backend:
+  - task: "Email/Password Signup endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/auth/email/signup endpoint already implemented with email validation, password hashing (SHA256), and session creation. Returns user object and session_token."
+  
+  - task: "Email/Password Signin endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/auth/email/signin endpoint already implemented with password verification, OAuth-only user check, and session creation. Returns user object and session_token."
+  
+  - task: "Change Password endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/auth/change-password endpoint already implemented. Requires authentication header, verifies current password, validates new password (min 6 chars), and updates password hash."
+  
+  - task: "Forgot Password endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/auth/forgot-password endpoint already implemented. Generates secure reset token (32-byte urlsafe), sets 1-hour expiry, and returns token in response (production should send via email)."
+  
+  - task: "Reset Password endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "POST /api/auth/reset-password endpoint already implemented. Validates reset token, checks expiry, validates new password (min 6 chars), and clears reset token after successful reset."
+
   - task: "Add profile update endpoint"
     implemented: true
     working: true
