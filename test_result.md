@@ -315,10 +315,11 @@ metadata:
 
 test_plan:
   current_focus:
-    - "Edit profile functionality"
-    - "Admin Partners management screen"
-    - "Admin Users management screen"
-    - "Admin Raffles management screen"
+    - "Email/Password Signup endpoint"
+    - "Email/Password Signin endpoint"
+    - "Change Password endpoint"
+    - "Forgot Password endpoint"
+    - "Reset Password endpoint"
   completed_backend_tasks:
     - "Add profile update endpoint"
     - "Admin Partner CRUD endpoints"
@@ -327,7 +328,7 @@ test_plan:
     - "Add phone field to User model"
   stuck_tasks: []
   test_all: false
-  test_priority: "frontend_only"
+  test_priority: "high_first"
 
 agent_communication:
   - agent: "main"
