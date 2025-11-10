@@ -148,6 +148,9 @@ export default function AdminRafflesScreen() {
               <TextInput style={styles.input} value={String(formData.prizesAvailable)} onChangeText={(text) => setFormData({ ...formData, prizesAvailable: parseInt(text) || 0 })} placeholder="Number of prizes" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.label}>Ticket Cost *</Text>
               <TextInput style={styles.input} value={String(formData.ticketCost)} onChangeText={(text) => setFormData({ ...formData, ticketCost: parseInt(text) || 0 })} placeholder="Tickets per entry" placeholderTextColor="#999" keyboardType="numeric" />
+              <Text style={styles.label}>Prize Validity (months) *</Text>
+              <TextInput style={styles.input} value={String(formData.validityMonths)} onChangeText={(text) => setFormData({ ...formData, validityMonths: parseInt(text) || 3 })} placeholder="3" placeholderTextColor="#999" keyboardType="numeric" />
+              <Text style={styles.helperText}>How long the prize is valid after winning (default: 3 months)</Text>
               <Text style={styles.label}>Draw Date *</Text>
               <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
                 <Text style={{ color: theme.colors.onyx, fontSize: 16 }}>{formatDate(formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate))}</Text>
