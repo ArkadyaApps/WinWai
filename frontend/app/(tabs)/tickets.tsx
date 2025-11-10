@@ -8,7 +8,7 @@ import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 import * as Haptics from 'expo-haptics';
 
-const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/qlp006k7_logo.png';
+const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
 
 export default function TicketsScreen() {
   const { user, updateTickets } = useUserStore();
