@@ -62,7 +62,7 @@ export default function AdminUsersScreen() {
 
   return (
     <View style={styles.container}>
-      <AppHeader variant="emerald" logoUri="https://customer-assets.emergentagent.com/job_raffleprize/artifacts/1bule6ml_logo.jpg" onBack={() => router.back()} showDivider />
+      <AppHeader variant="emerald" logoUri="https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/qlp006k7_logo.png" onBack={() => router.back()} showDivider />
 
       <View style={styles.filterBar}>
         <View style={styles.searchBox}>
