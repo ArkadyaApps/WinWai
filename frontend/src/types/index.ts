@@ -16,9 +16,18 @@ export interface Partner {
   name: string;
   description: string;
   logo?: string;
+  photo?: string;
   category: string;
   sponsored: boolean;
   contactInfo?: string;
+  // Contact details
+  email?: string;
+  whatsapp?: string;
+  line?: string;
+  // Location details
+  address?: string;
+  latitude?: number;
+  longitude?: number;
   createdAt: string;
 }
 
