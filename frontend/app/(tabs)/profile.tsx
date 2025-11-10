@@ -54,6 +54,36 @@ export default function ProfileScreen() {
     finally { setSaving(false); }
   };
 
+  const handleChangePassword = async () => {
+    if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
+      Alert.alert('Error', 'All fields are required');
+      return;
+    }
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      Alert.alert('Error', 'New passwords do not match');
+      return;
+    }
+    if (passwordData.newPassword.length < 6) {
+      Alert.alert('Error', 'Password must be at least 6 characters');
+      return;
+    }
+    try {
+      setSaving(true);
+      const { changePassword } = useAuth();
+      await changePassword(passwordData.currentPassword, passwordData.newPassword);
+      setChangePasswordModalVisible(false);
+      setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
+      Alert.alert('Success', 'Password changed successfully');
+    } catch (error: any) {
+      Alert.alert('Error', error.message || 'Failed to change password');
+    } finally {
+      setSaving(false);
+    }
+  };
+
+  // Check if user has password (not OAuth-only)
+  const hasPassword = user && !user.picture?.includes('google');
+
   const handleLanguageChange = async (lang: 'en' | 'th' | 'fr') => { await setLanguage(lang); setLanguageModalVisible(false); Alert.alert('Language Changed', `App language changed to ${getLanguageName(lang)}`); };
 
   const getLanguageName = (lang: string) => lang === 'th' ? 'ภาษาไทย (Thai)' : lang === 'fr' ? 'Français (French)' : 'English';
