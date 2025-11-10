@@ -20,7 +20,20 @@ export default function AdminPartnersScreen() {
   const [query, setQuery] = useState('');
   const [categoryFilter, setCategoryFilter] = useState<'all' | 'food' | 'hotel' | 'spa'>('all');
 
-  const [formData, setFormData] = useState({ name: '', description: '', category: 'food', contactInfo: '', sponsored: false });
+  const [formData, setFormData] = useState({ 
+    name: '', 
+    description: '', 
+    category: 'food', 
+    contactInfo: '', 
+    sponsored: false,
+    email: '',
+    whatsapp: '',
+    line: '',
+    address: '',
+    latitude: '',
+    longitude: '',
+    photo: '',
+  });
 
   useEffect(() => { fetchPartners(true); }, []);
   useEffect(() => { const t = setTimeout(() => fetchPartners(true), 400); return () => clearTimeout(t); }, [query, categoryFilter]);
