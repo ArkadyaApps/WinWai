@@ -10,6 +10,9 @@ interface AuthContextType {
   signIn: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
+  forgotPassword: (email: string) => Promise<{ resetToken: string; email: string }>;
+  resetPassword: (email: string, resetToken: string, newPassword: string) => Promise<void>;
+  changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   signOut: () => Promise<void>;
   isLoading: boolean;
 }
