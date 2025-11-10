@@ -222,6 +222,9 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: '#FFF8E7',
   },
+  scrollContent: {
+    flexGrow: 1,
+  },
   content: {
     flex: 1,
     justifyContent: 'center',
@@ -230,31 +233,98 @@ const styles = StyleSheet.create({
   },
   logo: {
     width: '80%',
-    height: 200,
-    marginBottom: 32,
+    height: 160,
+    marginBottom: 16,
   },
   subtitle: {
     fontSize: 18,
     color: '#555',
-    marginBottom: 48,
+    marginBottom: 32,
     textAlign: 'center',
   },
   features: {
     flexDirection: 'row',
     gap: 24,
-    marginBottom: 48,
+    marginBottom: 24,
   },
   featureItem: {
     alignItems: 'center',
   },
   featureIcon: {
-    fontSize: 32,
-    marginBottom: 8,
+    fontSize: 28,
+    marginBottom: 4,
   },
   featureText: {
-    fontSize: 14,
+    fontSize: 12,
     color: '#666',
     fontWeight: '600',
+  },
+  authToggle: {
+    flexDirection: 'row',
+    backgroundColor: '#fff',
+    borderRadius: 25,
+    padding: 4,
+    marginBottom: 24,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+  },
+  toggleButton: {
+    paddingHorizontal: 32,
+    paddingVertical: 10,
+    borderRadius: 20,
+  },
+  toggleButtonActive: {
+    backgroundColor: '#FFD700',
+  },
+  toggleText: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#666',
+  },
+  toggleTextActive: {
+    color: '#000',
+  },
+  formContainer: {
+    width: '100%',
+    maxWidth: 350,
+  },
+  input: {
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    padding: 16,
+    fontSize: 16,
+    marginBottom: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+  },
+  passwordContainer: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#fff',
+    borderRadius: 12,
+    borderWidth: 1,
+    borderColor: '#e0e0e0',
+    marginBottom: 12,
+  },
+  passwordInput: {
+    flex: 1,
+    padding: 16,
+    fontSize: 16,
+  },
+  eyeButton: {
+    padding: 12,
+  },
+  eyeIcon: {
+    fontSize: 20,
+  },
+  errorText: {
+    color: '#ff4444',
+    fontSize: 14,
+    marginBottom: 12,
+    textAlign: 'center',
   },
   button: {
     backgroundColor: '#FFD700',
@@ -266,13 +336,29 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.2,
     shadowRadius: 8,
     elevation: 5,
-    minWidth: 250,
     alignItems: 'center',
+    marginTop: 8,
   },
   buttonText: {
     color: '#000',
     fontSize: 18,
     fontWeight: '700',
+  },
+  linkContainer: {
+    flexDirection: 'row',
+    justifyContent: 'center',
+    alignItems: 'center',
+    marginTop: 16,
+    gap: 8,
+  },
+  link: {
+    color: '#2196F3',
+    fontSize: 14,
+    fontWeight: '600',
+  },
+  linkSeparator: {
+    color: '#999',
+    fontSize: 14,
   },
   disclaimer: {
     marginTop: 24,
