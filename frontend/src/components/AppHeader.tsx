@@ -34,17 +34,8 @@ export default function AppHeader({
       {/* Subtle pattern overlay */}
       <Image source={{ uri: patternUri || defaultPattern }} style={styles.pattern} resizeMode="cover" />
 
-      <View style={styles.side}>
-        {onBack ? (
-          <TouchableOpacity onPress={onBack} style={styles.iconBtn}>
-            <Ionicons name="arrow-back" size={24} color={isLight ? '#000' : '#fff'} />
-          </TouchableOpacity>
-        ) : (
-          <View style={styles.iconPlaceholder} />
-        )}
-      </View>
-
-      <View style={styles.center}>
+      {/* Logo centered at top */}
+      <View style={styles.logoContainer}>
         <Image
           source={{ uri: logoUri || defaultLogo }}
           style={styles.logo}
@@ -52,8 +43,23 @@ export default function AppHeader({
         />
       </View>
 
-      <View style={[styles.side, { alignItems: 'flex-end' }]}>
-        {right ?? <View style={styles.iconPlaceholder} />}
+      {/* Controls row at bottom */}
+      <View style={styles.controlsRow}>
+        <View style={styles.side}>
+          {onBack ? (
+            <TouchableOpacity onPress={onBack} style={styles.iconBtn}>
+              <Ionicons name="arrow-back" size={24} color={isLight ? '#000' : '#fff'} />
+            </TouchableOpacity>
+          ) : (
+            <View style={styles.iconPlaceholder} />
+          )}
+        </View>
+
+        <View style={styles.spacer} />
+
+        <View style={[styles.side, { alignItems: 'flex-end' }]}>
+          {right ?? <View style={styles.iconPlaceholder} />}
+        </View>
       </View>
 
       {showDivider && <View style={[styles.divider, { backgroundColor: dividerColor }]} />}
