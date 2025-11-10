@@ -111,15 +111,18 @@ user_problem_statement: |
 backend:
   - task: "Email/Password Signup endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/auth/email/signup endpoint already implemented with email validation, password hashing (SHA256), and session creation. Returns user object and session_token."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: All signup scenarios working perfectly. New user creation (200), duplicate email rejection (400), weak password validation (6+ chars required). User object properly excludes sensitive fields (password_hash, resetToken). Session token generation working correctly."
   
   - task: "Email/Password Signin endpoint"
     implemented: true
