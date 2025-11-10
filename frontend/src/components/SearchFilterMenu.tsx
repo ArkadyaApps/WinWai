@@ -155,37 +155,107 @@ const SearchFilterMenu: React.FC<SearchFilterMenuProps> = ({
             {/* Location Section */}
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Location</Text>
-              <View style={styles.locationList}>
-                {locations.map((location) => (
+              {loadingLocations ? (
+                <View style={styles.loadingContainer}>
+                  <ActivityIndicator size="small" color="#FFD700" />
+                </View>
+              ) : (
+                <View style={styles.locationList}>
+                  {/* All Locations */}
                   <TouchableOpacity
-                    key={location.id}
                     style={[
                       styles.locationItem,
-                      selectedLocation === location.id && styles.locationItemSelected,
+                      selectedLocation === 'all' && styles.locationItemSelected,
                     ]}
-                    onPress={() => onLocationChange(location.id)}
+                    onPress={() => onLocationChange('all')}
                   >
                     <View style={styles.locationItemContent}>
                       <Ionicons
-                        name="location-outline"
+                        name="apps-outline"
                         size={20}
-                        color={selectedLocation === location.id ? '#FFD700' : '#7F8C8D'}
+                        color={selectedLocation === 'all' ? '#FFD700' : '#7F8C8D'}
                       />
                       <Text
                         style={[
                           styles.locationItemText,
-                          selectedLocation === location.id && styles.locationItemTextSelected,
+                          selectedLocation === 'all' && styles.locationItemTextSelected,
                         ]}
                       >
-                        {location.name}
+                        All Locations
                       </Text>
                     </View>
-                    {selectedLocation === location.id && (
+                    {selectedLocation === 'all' && (
                       <Ionicons name="checkmark-circle" size={24} color="#FFD700" />
                     )}
                   </TouchableOpacity>
-                ))}
-              </View>
+
+                  {/* Use My Location */}
+                  <TouchableOpacity
+                    style={[
+                      styles.locationItem,
+                      styles.myLocationItem,
+                      selectedLocation === detectedLocation && styles.locationItemSelected,
+                    ]}
+                    onPress={handleUseMyLocation}
+                    disabled={detectingLocation}
+                  >
+                    <View style={styles.locationItemContent}>
+                      {detectingLocation ? (
+                        <ActivityIndicator size="small" color="#4ECDC4" />
+                      ) : (
+                        <Ionicons
+                          name="navigate"
+                          size={20}
+                          color={selectedLocation === detectedLocation ? '#FFD700' : '#4ECDC4'}
+                        />
+                      )}
+                      <Text
+                        style={[
+                          styles.locationItemText,
+                          styles.myLocationText,
+                          selectedLocation === detectedLocation && styles.locationItemTextSelected,
+                        ]}
+                      >
+                        Use My Location {detectedLocation && `(${detectedLocation})`}
+                      </Text>
+                    </View>
+                    {selectedLocation === detectedLocation && (
+                      <Ionicons name="checkmark-circle" size={24} color="#FFD700" />
+                    )}
+                  </TouchableOpacity>
+
+                  {/* Dynamic Locations */}
+                  {locations.map((location) => (
+                    <TouchableOpacity
+                      key={location}
+                      style={[
+                        styles.locationItem,
+                        selectedLocation === location && styles.locationItemSelected,
+                      ]}
+                      onPress={() => onLocationChange(location)}
+                    >
+                      <View style={styles.locationItemContent}>
+                        <Ionicons
+                          name="location-outline"
+                          size={20}
+                          color={selectedLocation === location ? '#FFD700' : '#7F8C8D'}
+                        />
+                        <Text
+                          style={[
+                            styles.locationItemText,
+                            selectedLocation === location && styles.locationItemTextSelected,
+                          ]}
+                        >
+                          {location}
+                        </Text>
+                      </View>
+                      {selectedLocation === location && (
+                        <Ionicons name="checkmark-circle" size={24} color="#FFD700" />
+                      )}
+                    </TouchableOpacity>
+                  ))}
+                </View>
+              )}
             </View>
 
             {/* Apply Button */}
