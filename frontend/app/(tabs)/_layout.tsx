@@ -29,6 +29,7 @@ export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
+        headerShown: false,
         tabBarActiveTintColor: '#FFD700',
         tabBarInactiveTintColor: '#999',
         tabBarStyle: {
@@ -42,13 +43,6 @@ export default function TabLayout() {
         tabBarLabelStyle: {
           fontSize: 12,
           fontWeight: '600',
-        },
-        headerStyle: {
-          backgroundColor: '#FFD700',
-        },
-        headerTintColor: '#000',
-        headerTitleStyle: {
-          fontWeight: '700',
         },
       }}
     >
