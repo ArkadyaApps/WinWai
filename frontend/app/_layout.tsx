@@ -22,6 +22,12 @@ export default function RootLayout() {
           <Stack screenOptions={{ headerShown: false }}>
             <Stack.Screen name="index" />
             <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
+            <Stack.Screen name="signup" />
+            <Stack.Screen name="forgot-password" />
+            <Stack.Screen name="reset-password" />
+            <Stack.Screen name="admin" />
+            <Stack.Screen name="raffle/[id]" />
+            <Stack.Screen name="voucher/[id]" />
           </Stack>
         </AuthProvider>
       </ThemeProvider>
