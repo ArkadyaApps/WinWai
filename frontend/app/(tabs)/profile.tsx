@@ -125,28 +125,55 @@ export default function ProfileScreen() {
 
         {isAdmin && (
           <View style={styles.section}>
-            <View style={styles.sectionHeader}><Ionicons name="shield-checkmark" size={24} color={theme.colors.primaryGold} /><Text style={styles.sectionTitle}>Admin Panel</Text></View>
-            <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/partners')}>
-              <LinearGradient colors={["#FF6B6B", "#FF8E53"]} style={styles.adminMenuGradient}>
-                <Ionicons name="business" size={24} color="#fff" />
-                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>Manage Partners</Text><Text style={styles.adminMenuSubtitle}>Add, edit, remove partners</Text></View>
-                <Ionicons name="chevron-forward" size={20} color="#fff" />
-              </LinearGradient>
+            <View style={styles.sectionHeader}>
+              <Ionicons name="shield-checkmark" size={24} color={theme.colors.primaryGold} />
+              <Text style={styles.sectionTitle}>Admin Panel</Text>
+            </View>
+            
+            {/* Admin Mode Toggle */}
+            <TouchableOpacity 
+              style={styles.adminToggleItem} 
+              onPress={() => handleAdminToggle(!adminMode)}
+            >
+              <View style={styles.adminToggleContent}>
+                <Ionicons name="settings" size={24} color={theme.colors.onyx} />
+                <View style={styles.adminToggleText}>
+                  <Text style={styles.adminToggleTitle}>Admin Mode</Text>
+                  <Text style={styles.adminToggleSubtitle}>
+                    {adminMode ? 'Admin features enabled' : 'Enable to access admin features'}
+                  </Text>
+                </View>
+              </View>
+              <View style={[styles.toggle, adminMode && styles.toggleActive]}>
+                <View style={[styles.toggleCircle, adminMode && styles.toggleCircleActive]} />
+              </View>
             </TouchableOpacity>
-            <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/users')}>
-              <LinearGradient colors={["#4ECDC4", "#44A08D"]} style={styles.adminMenuGradient}>
-                <Ionicons name="people" size={24} color="#fff" />
-                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>Manage Users</Text><Text style={styles.adminMenuSubtitle}>View and manage all users</Text></View>
-                <Ionicons name="chevron-forward" size={20} color="#fff" />
-              </LinearGradient>
-            </TouchableOpacity>
-            <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/raffles')}>
-              <LinearGradient colors={["#A8E6CF", "#88D8B0"]} style={styles.adminMenuGradient}>
-                <Ionicons name="gift" size={24} color="#fff" />
-                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>Manage Raffles</Text><Text style={styles.adminMenuSubtitle}>Create, edit, draw winners</Text></View>
-                <Ionicons name="chevron-forward" size={20} color="#fff" />
-              </LinearGradient>
-            </TouchableOpacity>
+
+            {adminMode && (
+              <>
+                <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/partners')}>
+                  <LinearGradient colors={["#FF6B6B", "#FF8E53"]} style={styles.adminMenuGradient}>
+                    <Ionicons name="business" size={24} color="#fff" />
+                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>Manage Partners</Text><Text style={styles.adminMenuSubtitle}>Add, edit, remove partners</Text></View>
+                    <Ionicons name="chevron-forward" size={20} color="#fff" />
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/users')}>
+                  <LinearGradient colors={["#4ECDC4", "#44A08D"]} style={styles.adminMenuGradient}>
+                    <Ionicons name="people" size={24} color="#fff" />
+                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>Manage Users</Text><Text style={styles.adminMenuSubtitle}>View and manage all users</Text></View>
+                    <Ionicons name="chevron-forward" size={20} color="#fff" />
+                  </LinearGradient>
+                </TouchableOpacity>
+                <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/raffles')}>
+                  <LinearGradient colors={["#A8E6CF", "#88D8B0"]} style={styles.adminMenuGradient}>
+                    <Ionicons name="gift" size={24} color="#fff" />
+                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>Manage Raffles</Text><Text style={styles.adminMenuSubtitle}>Create, edit, draw winners</Text></View>
+                    <Ionicons name="chevron-forward" size={20} color="#fff" />
+                  </LinearGradient>
+                </TouchableOpacity>
+              </>
+            )}
           </View>
         )}
 
