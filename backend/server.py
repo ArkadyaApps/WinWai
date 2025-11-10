@@ -74,6 +74,7 @@ class Raffle(BaseModel):
     prizesRemaining: int
     ticketCost: int = Field(default=10)
     drawDate: datetime
+    validityMonths: int = Field(default=3)  # Prize validity in months (default 3)
     active: bool = Field(default=True)
     totalEntries: int = Field(default=0)
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
