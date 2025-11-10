@@ -25,7 +25,7 @@ export default function AppHeader({
 }: Props) {
   const colors = theme.gradients[variant];
   const defaultPattern = 'https://images.unsplash.com/photo-1545873692-64145c8c42ed?q=85&w=1200&auto=format&fit=crop';
-  const defaultLogo = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/qlp006k7_logo.png';
+  const defaultLogo = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
   const isLight = variant === 'gold';
   const dividerColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.14)';
 
