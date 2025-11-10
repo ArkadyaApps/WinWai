@@ -156,15 +156,18 @@ backend:
   
   - task: "Forgot Password endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: "POST /api/auth/forgot-password endpoint already implemented. Generates secure reset token (32-byte urlsafe), sets 1-hour expiry, and returns token in response (production should send via email)."
+      - working: true
+        agent: "testing"
+        comment: "✅ TESTED: Forgot password endpoint working perfectly. Valid email generates reset token (200), non-existent email returns generic security message (200). Reset token generation and 1-hour expiry working correctly. Security: doesn't reveal if email exists."
   
   - task: "Reset Password endpoint"
     implemented: true
