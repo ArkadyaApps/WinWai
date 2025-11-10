@@ -97,18 +97,9 @@ const styles = StyleSheet.create({
     padding: 24,
   },
   logo: {
-    width: 150,
-    height: 150,
-    marginBottom: 24,
-  },
-  title: {
-    fontSize: 42,
-    fontWeight: '800',
-    color: '#FFD700',
-    marginBottom: 8,
-    textShadowColor: 'rgba(0, 0, 0, 0.1)',
-    textShadowOffset: { width: 2, height: 2 },
-    textShadowRadius: 4,
+    width: '80%',
+    height: 200,
+    marginBottom: 32,
   },
   subtitle: {
     fontSize: 18,
