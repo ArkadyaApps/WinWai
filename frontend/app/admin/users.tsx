@@ -41,7 +41,18 @@ export default function AdminUsersScreen() {
   const onRefresh = () => { setRefreshing(true); fetchUsers(true); };
   const onEndReached = () => { if (!loading && hasMore) fetchUsers(); };
 
-  const handleOpenModal = (user: User) => { setEditingUser(user); setFormData({ name: user.name, email: user.email, phone: user.phone || '', tickets: user.tickets, role: user.role }); setModalVisible(true); };
+  const handleOpenModal = (user?: User) => { 
+    if (user) {
+      // Edit mode
+      setEditingUser(user); 
+      setFormData({ name: user.name, email: user.email, phone: user.phone || '', tickets: user.tickets, role: user.role, password: '' }); 
+    } else {
+      // Create mode
+      setEditingUser(null);
+      setFormData({ name: '', email: '', phone: '', tickets: 0, role: 'user', password: '' });
+    }
+    setModalVisible(true); 
+  };
 
   const handleSave = async () => {
     if (!formData.name || !formData.email) { Alert.alert('Error', 'Please fill in all required fields'); return; }
