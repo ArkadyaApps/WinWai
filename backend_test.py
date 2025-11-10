@@ -74,7 +74,7 @@ class AuthTester:
         
         response = self.make_request("POST", "/auth/email/signup", data)
         if not response:
-            self.log_test("1. Sign Up New User", False, "Request failed")
+            self.log_test("1. Sign Up New User", False, "Network request failed")
             return False
             
         if response.status_code == 200:
