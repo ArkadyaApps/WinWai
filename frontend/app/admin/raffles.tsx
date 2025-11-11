@@ -235,6 +235,7 @@ const styles = StyleSheet.create({
   partnerItemActive: { backgroundColor: '#E8F8F7', borderWidth: 2, borderColor: '#4ECDC4' },
   partnerItemText: { fontSize: 14, color: theme.colors.onyx },
   partnerItemTextActive: { fontWeight: '700', color: theme.colors.onyx },
+  noResultsText: { fontSize: 14, color: theme.colors.slate, textAlign: 'center', padding: 16 },
   saveButton: { backgroundColor: '#4ECDC4', padding: 16, borderRadius: 8, alignItems: 'center', marginTop: 24 },
   saveButtonText: { fontSize: 16, fontWeight: '700', color: '#fff' },
 });
