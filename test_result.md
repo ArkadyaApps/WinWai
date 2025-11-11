@@ -103,10 +103,10 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Implement admin role toggle switch on the user profile page and display the corresponding admin management menu.
-  - Add a toggle switch in the Admin user Panel to allow users to switch between Admin and User roles.
-  - Display the Admin menu (Add/manage Partners, Users, Products) when in Admin role.
-  - Fix the User Page functionality to allow users to make changes to their profile.
+  Enhance raffle creation form in Admin dashboard:
+  - Remove address fields (location and address) from raffle creation
+  - Implement searchable partner dropdown
+  - Add prizeValue and gamePrice fields to determine ticket usage
 
 backend:
   - task: "Email/Password Signup endpoint"
