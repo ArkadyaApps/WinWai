@@ -380,6 +380,27 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
+      CURRENT TASK: Enhanced raffle creation form in Admin dashboard.
+      
+      COMPLETED CHANGES:
+      1. ✅ Removed location and address fields from raffle creation form
+      2. ✅ Implemented searchable partner dropdown with live filtering
+      3. ✅ Added prizeValue (฿) field for prize value in Thai Baht
+      4. ✅ Added gamePrice (฿) field for cost per ticket/game
+      5. ✅ Updated backend payload to include new fields
+      6. ✅ Added helper text for improved UX
+      
+      BACKEND: prizeValue and gamePrice fields already exist in Raffle model (confirmed)
+      FRONTEND: Updated /app/frontend/app/admin/raffles.tsx with all new functionality
+      
+      READY FOR TESTING:
+      - Backend: Verify prizeValue and gamePrice are stored/retrieved correctly
+      - Frontend: Test searchable partner dropdown, new field inputs, form validation
+      
+      Test with admin user: artteabnc@gmail.com (password: winwanadmin)
+
+  - agent: "previous_session"
+    message: |
       Implementation complete for admin role toggle and profile editing features:
       
       BACKEND:
