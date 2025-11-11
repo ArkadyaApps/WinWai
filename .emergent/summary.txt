@@ -1,63 +1,147 @@
 <analysis>
-The previous AI engineer successfully initiated the WinWai Raffle Rewards Thailand application, establishing a full-stack architecture. Initially, the focus was on core features, admin CRUD, and UI/UX improvements. The current session began by addressing a  error in , which was quickly resolved. The primary user request was to unify the header with a larger logo, leading to extensive modifications in  and various screen files. Several iterations were required to achieve the desired logo size, aspect ratio, and transparent background for both the header and splash screen. The agent also implemented UI adjustments like reducing header margins and changing grid column counts. The session concluded with the implementation of a Firebase Cloud Function for the backend raffle draw logic and a partial setup for email/password authentication (backend complete, frontend in progress).
+The AI engineer successfully progressed on the WinWai Raffle Rewards Thailand application, addressing multiple critical user requests. The session began by confirming backend authentication endpoints, which were found to be fully implemented and passed all tests. Subsequent work focused on frontend integration, including creating validation utilities, completing , and developing UI components for sign-up, forgot/reset password, and change password features. Geolocation-based language detection was implemented, alongside a robust translation system. Significant enhancements were made to partner information display on the raffle detail page, requiring backend model updates, new API endpoints, and comprehensive frontend form integration (including image selection and Google Places search). Admin 'create' functionality for users was added, and a prize validity and voucher system was implemented, covering backend model updates, voucher generation, and frontend display. Finally, admin navigation links were fixed, and a toggle for admin mode was reinstated. The current task involves refining raffle creation.
 </analysis>
 
 <product_requirements>
-The WinWai Raffle Rewards Thailand mobile application offers free raffles (meals, hotel stays, spa) in Thailand, primarily monetized through AdMob ads. Key features include Firebase Authentication (Google, Email/Password), raffle creation with prize details, a ticket acquisition system (ads, daily logins, referrals), randomized draws, and in-app winner notifications accessible via a My Rewards tab. An administrative dashboard facilitates the management of partners, users, raffles, and prizes. The application's UI/UX emphasizes a clean, Thai-inspired design using gold, white, and green color palettes, supported by tab-based navigation (Home, Raffles, Tickets, Rewards, Profile) and an onboarding carousel. Recent enhancements included a 3-column raffle grid, location-based offers using , category/location search, a detailed product page, and multi-language support. The system for raffle draws must be self-funded by ad revenue, triggering a draw only when an ad revenue threshold is met *and* the scheduled draw date has arrived.
+The WinWai Raffle Rewards Thailand mobile application provides free raffles, monetized by AdMob ads. Core features include Firebase Authentication (Google, Email/Password), raffle management, ticket acquisition (ads, daily logins, referrals), randomized draws, and in-app winner notifications. An admin dashboard manages partners, users, and raffles. The UI/UX features a clean, Thai-inspired design with tab-based navigation. Recent additions include a 3-column raffle grid (updated to 4), location-based offers, category/location search, product page, and multi-language support. Raffle draws are triggered by ad revenue thresholds and scheduled dates.
+
+So far, the application has:
+- Implemented email/password authentication backend (register, login, password reset, change password).
+- Created a Firebase Cloud Function for automated raffle draws based on ad revenue and dates.
+- Overhauled the application header and splash screen for a unified, larger logo display.
+- Implemented geolocation-based language detection and a translation system.
+- Enhanced partner information display on product/price pages (maps location, logo, contact details) with backend model updates, a new API endpoint, and frontend form for admin.
+- Added file selector for partner photos and integrated Google Places search for partner addresses in the admin panel.
+- Implemented 'create' functionality for Admin Users, including a new backend endpoint and frontend UI.
+- Implemented prize validity (default 3 months) for raffles and a voucher generation system for winners, displayed in their accounts.
+- Fixed navigation issues in the Admin dashboard and reinstated the admin mode toggle.
 </product_requirements>
 
 <key_technical_concepts>
--   **Frontend:** React Native (Expo, Expo Router, React Navigation), Zustand, .
--   **Backend:** FastAPI (Python), MongoDB, Firebase Cloud Functions (TypeScript).
--   **Authentication:** Firebase Authentication, Google OAuth, Email/Password (implemented).
--   **Monetization:** Google AdMob SDK (Rewarded, Interstitial, Banner Ads).
--   **Geolocation:** .
+- **Frontend**: React Native (Expo, Expo Router, React Navigation), Zustand, , .
+- **Backend**: FastAPI (Python), MongoDB, Firebase Cloud Functions (TypeScript),  for hashing.
+- **Authentication**: Email/Password (implemented), JWT tokens, password reset flows.
+- **Internationalization**: Geolocation-based language detection,  hook.
+- **Location Services**: Google Places API for partner addresses.
 </key_technical_concepts>
 
 <code_architecture>
-The application utilizes a full-stack architecture with a React Native (Expo) frontend, a FastAPI backend, and a MongoDB database.
 
 
-
--   **/app/backend/server.py**: Updated to include new  model fields (, , , ) and new API endpoints for email/password authentication: , , , , . Also includes utility functions for password hashing and JWT token management.
--   **/app/frontend/app.json**: Modified  configuration for splash screen image  to have .
--   **/app/frontend/app/_layout.tsx**: Root layout for Expo Router.
--   **/app/frontend/app/(tabs)/_layout.tsx**: Tab navigation layout.
--   **/app/frontend/app/(tabs)/home.tsx**: Updated to use the new  structure and changed the raffle grid to 4 columns.
--   **/app/frontend/app/(tabs)/profile.tsx**:  styles removed to avoid duplicate headers. Updated to use the new  structure.
--   **/app/frontend/app/(tabs)/raffles.tsx**: Updated to use the new  structure and changed the raffle grid to 4 columns.
--   **/app/frontend/app/(tabs)/tickets.tsx**: Updated to use the new  structure.
--   **/app/frontend/app/(tabs)/rewards.tsx**: Updated to use the new  structure.
--   **/app/frontend/app/index.tsx**: Landing page updated to display the new transparent PNG logo with 80% width.
--   **/app/frontend/src/components/AppHeader.tsx**: Heavily modified to remove the top header, integrate a larger logo (height 144, width 360), reduce margins, align functional elements (language switch, search filter, ticket balance) at the bottom, and use the new transparent PNG logo URL.
--   **/app/frontend/src/context/AuthContext.tsx**: Interface updated to include new methods for email/password authentication (, , , ). The implementation details for these methods are still pending.
--   **/app/frontend/src/theme/tokens.ts**:  imported from  to resolve a runtime error.
--   **/app/raffle-backend-functions.ts**: (NEW) Contains Firebase Cloud Functions for , , , and  to manage the raffle draw logic based on ad revenue and draw date.
--   **/app/package.json.firebase**: (NEW) Package configuration file for the Firebase Cloud Functions.
--   **/app/FIREBASE_DEPLOYMENT_GUIDE.md**: (NEW) Instructions for deploying Firebase Functions.
--   **/app/AUTH_IMPLEMENTATION_STATUS.md**: (NEW) Handoff document summarizing the status of the email/password authentication implementation.
+-   **/app/backend/server.py**:
+    -   **Importance**: Central FastAPI backend.
+    -   **Changes**: Updated  model; added endpoints for email/password authentication (, , , , );  model updated with , , , , , , , ; new endpoint  for public partner details; new endpoint  for unique raffle locations;  model updated with , , ;  model created; draw winner endpoint updated to generate vouchers; new endpoints  and .  model and  endpoint added.
+-   **/app/frontend/app.json**:
+    -   **Importance**: Expo app configuration.
+    -   **Changes**: Splash screen configured for  with .
+-   **/app/frontend/app/_layout.tsx**:
+    -   **Importance**: Root layout for Expo Router.
+    -   **Changes**: Updated to initialize language based on geolocation and to include all new routes (, , , , admin routes).
+-   **/app/frontend/app/(tabs)/home.tsx**:
+    -   **Importance**: Home screen.
+    -   **Changes**: Updated to use the new  and a 4-column raffle grid. Search filter menu now uses  component.
+-   **/app/frontend/app/(tabs)/profile.tsx**:
+    -   **Importance**: User profile screen.
+    -   **Changes**: Uses new . Added Change Password option in the Account section, conditional on user having a password (not OAuth). Admin mode toggle switch re-introduced.
+-   **/app/frontend/app/(tabs)/raffles.tsx**:
+    -   **Importance**: Raffles listing screen.
+    -   **Changes**: Uses new  and a 4-column raffle grid. Now uses the  component for dynamic location filtering.
+-   **/app/frontend/app/(tabs)/rewards.tsx**:
+    -   **Importance**: Rewards screen.
+    -   **Changes**: Completely rewritten to display user vouchers using the  component and integrate with  screen.
+-   **/app/frontend/app/(tabs)/tickets.tsx**:
+    -   **Importance**: Tickets screen.
+    -   **Changes**: Updated to use the new  structure.
+-   **/app/frontend/app/index.tsx**:
+    -   **Importance**: Landing page.
+    -   **Changes**: Displays transparent PNG logo. Updated to include email/password authentication UI options and to use  hook for key text elements.
+-   **/app/frontend/app/raffle/[id].tsx**:
+    -   **Importance**: Individual raffle detail page.
+    -   **Changes**: Enhanced to load and display comprehensive partner information, including logo, map, contact details, etc.
+-   **/app/frontend/app/admin/partners.tsx**:
+    -   **Importance**: Admin screen for managing partners.
+    -   **Changes**: Form updated to include new partner fields (, , , , , , , ). Integrated  for photo selection and Google Places API for address search.
+-   **/app/frontend/app/admin/raffles.tsx**:
+    -   **Importance**: Admin screen for managing raffles.
+    -   **Changes**: Form updated to include , , and  fields.
+-   **/app/frontend/app/admin/users.tsx**:
+    -   **Importance**: Admin screen for managing users.
+    -   **Changes**: Implemented 'create' user functionality with a new Create User button and a modal that handles both create and edit operations, including a password field for new users.
+-   **/app/frontend/app/signup.tsx**: (NEW)
+    -   **Importance**: User signup screen.
+    -   **Changes**: Created to handle email/password registration.
+-   **/app/frontend/app/forgot-password.tsx**: (NEW)
+    -   **Importance**: Forgot password screen.
+    -   **Changes**: Created to handle forgot password requests.
+-   **/app/frontend/app/reset-password.tsx**: (NEW)
+    -   **Importance**: Reset password screen.
+    -   **Changes**: Created to handle password reset using a token.
+-   **/app/frontend/app/voucher/[id].tsx**: (NEW)
+    -   **Importance**: Detail screen for individual vouchers.
+    -   **Changes**: Created to display voucher details.
+-   **/app/frontend/src/api/api.ts**:
+    -   **Importance**: Axios instance for API calls.
+    -   **Changes**: Confirmed API utility is set up.
+-   **/app/frontend/src/components/AppHeader.tsx**:
+    -   **Importance**: Reusable application header.
+    -   **Changes**: Modified for larger logo (360x144), reduced margins, aligned functional elements, and uses transparent PNG.
+-   **/app/frontend/src/components/LocationFilter.tsx**: (NEW)
+    -   **Importance**: Reusable component for location filtering.
+    -   **Changes**: Created to provide dynamic location options and Use my location functionality.
+-   **/app/frontend/src/components/SearchFilterMenu.tsx**:
+    -   **Importance**: Component for search and filter options.
+    -   **Changes**: Updated to use the new  component for dynamic locations.
+-   **/app/frontend/src/components/VoucherCard.tsx**: (NEW)
+    -   **Importance**: Component to display individual vouchers.
+    -   **Changes**: Created to display voucher information.
+-   **/app/frontend/src/context/AuthContext.tsx**:
+    -   **Importance**: Authentication context for the frontend.
+    -   **Changes**: Interface updated to include methods for email/password authentication (, , , ). Implementation details were added.
+-   **/app/frontend/src/store/languageStore.ts**:
+    -   **Importance**: Zustand store for managing language state.
+    -   **Changes**: Updated to support geolocation-based language detection ().
+-   **/app/frontend/src/store/adminStore.ts**: (NEW)
+    -   **Importance**: Zustand store for managing admin mode state.
+    -   **Changes**: Created to manage the  toggle.
+-   **/app/frontend/src/theme/tokens.ts**:
+    -   **Importance**: Theme tokens and constants.
+    -   **Changes**:  imported to resolve runtime error.
+-   **/app/frontend/src/types/index.ts**:
+    -   **Importance**: TypeScript type definitions.
+    -   **Changes**:  interface updated to match new backend fields.  interface updated to include , , .  interface added.
+-   **/app/frontend/src/utils/validation.ts**: (NEW)
+    -   **Importance**: Utility functions for input validation.
+    -   **Changes**: Created for frontend input validation.
+-   **/app/frontend/src/utils/locationService.ts**:
+    -   **Importance**: Service for geolocation.
+    -   **Changes**: Confirmed existence and used by .
+-   **/app/frontend/src/i18n/translations.ts**: (NEW)
+    -   **Importance**: Translation dictionary for i18n.
+    -   **Changes**: Created to store app translations.
+-   **/app/frontend/src/i18n/useTranslation.ts**: (NEW)
+    -   **Importance**: Custom hook for translations.
+    -   **Changes**: Created to simplify translation usage in components.
+-   **/app/raffle-backend-functions.ts**:
+    -   **Importance**: Firebase Cloud Functions for raffle logic.
+    -   **Changes**: Contains logic for , , , .
 </code_architecture>
 
 <pending_tasks>
--   Resolve the Expo Go application launch issue () where the manifest endpoint returns HTML instead of JSON.
--   Implement 'create' functionality for the Admin Users screen.
--   Improve the Raffles page location filter by dynamically pulling available locations from the API or adding a Use my location pill.
--   Complete the frontend implementation for email/password authentication in  and create corresponding UI forms (sign-in, sign-up, forgot password, password change).
+- Resolve the Expo Go application launch issue () where the manifest endpoint returns HTML instead of JSON. (Initially requested, not addressed in trajectory)
 </pending_tasks>
 
 <current_work>
-The WinWai Raffle Rewards Thailand application has undergone significant UI/UX and backend feature development. The primary focus immediately before this summary was a major header overhaul, including:
-1.  **Unified Header Design:** The  component was extensively refactored to serve as a single, consistent header across the platform, replacing previous disparate headers.
-2.  **Larger Logo Integration:** The logo dimensions were adjusted multiple times (initially 56/72px, then 360x144px) and finally configured to use a transparent PNG logo provided by the user, ensuring it is prominently displayed without circular effects.
-3.  **Layout Refinement:** Header margins were reduced, and elements like the language switch, search filter, and ticket balance were aligned at the bottom of the header for a cleaner look.
-4.  **Splash Screen Update:** The application's splash screen in  was configured to use the transparent PNG logo at 80% screen width.
-5.  **Grid Layout Change:** The raffle grids on the home () and raffles () screens were updated from 3 to 4 columns.
-6.  **Email/Password Authentication Backend:** A complete backend algorithm for email/password authentication was implemented in , including user registration, login, password hashing, password reset (with token generation), and password change functionalities. This involved adding new models, helper functions, and API endpoints.
-7.  **Raffle Draw Backend Logic:** A comprehensive Firebase Cloud Function () was created, implementing the core logic for automated raffle draws based on ad revenue thresholds and scheduled dates, including winner selection and status updates.
+Immediately before this summary request, the AI engineer was working on enhancing the raffle creation functionality within the Admin dashboard. The specific user request was to:
+1.  Remove address fields from raffle creation.
+2.  Implement a searchable drop-down for partners.
+3.  Add fields for  and  to determine ticket usage.
 
-The current work concluded with the backend for email/password authentication being fully implemented and the frontend  interface updated to support these new methods. However, the actual frontend UI forms and the complete logic within  are still pending implementation.
+The work for this task commenced with:
+-   **Backend Update**: The  model in  was updated to include  and  fields.
+
+-   **Frontend Update**: The next step, which was the last action taken, was to update the frontend TypeScript types () and then modify the Admin Raffles form () to reflect these new  and  fields, as well as to implement the searchable partner dropdown and remove address fields.
 </current_work>
 
 <optional_next_step>
-Complete the remaining frontend implementation for email/password authentication forms and logic within .
+Update the frontend TypeScript types for the  model and then proceed to modify the Admin Raffles form.
 </optional_next_step>
