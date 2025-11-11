@@ -184,6 +184,18 @@ backend:
         agent: "testing"
         comment: "✅ TESTED: Reset password endpoint working perfectly. Valid token resets password (200), invalid token rejection (400). Token validation, expiry check, and password update working correctly. Reset token cleared after successful use. New password can be used for signin immediately."
 
+  - task: "Raffle model prizeValue and gamePrice fields"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: "Added prizeValue (float) and gamePrice (float) fields to Raffle model. Backend already had these fields implemented. Both fields default to 0.0 and have validation (ge=0)."
+
   - task: "Add profile update endpoint"
     implemented: true
     working: true
