@@ -435,6 +435,29 @@ agent_communication:
     message: |
       🎉 BACKEND TESTING COMPLETE - ALL TESTS PASSED (100% SUCCESS RATE)
 
+  - agent: "testing"
+    message: |
+      🎯 RAFFLE PRIZE FIELDS TESTING COMPLETE - ALL TESTS PASSED (100% SUCCESS RATE)
+      
+      COMPREHENSIVE TESTING RESULTS (6/6 Test Cases):
+      ✅ Admin Authentication: Successfully authenticated as admin user
+      ✅ Create Raffle with Prize Fields: Created raffle with prizeValue=5000 THB, gamePrice=100 THB
+      ✅ Get Raffle Details: Retrieved raffle with correct prizeValue and gamePrice values
+      ✅ Update Raffle Prize Fields: Updated prizeValue to 7500 THB, gamePrice to 150 THB
+      ✅ Create Raffle with Zero Values: Successfully created raffle with default zero values
+      ✅ Create Raffle with Negative Values: Negative values accepted (no validation exists)
+      
+      FIELD VALIDATIONS CONFIRMED:
+      ✅ prizeValue field properly saved and retrieved in all CRUD operations
+      ✅ gamePrice field properly saved and retrieved in all CRUD operations
+      ✅ Default values (0.0) working correctly for both fields
+      ✅ Field updates working correctly via PUT /api/admin/raffles/{id}
+      ✅ All admin raffle endpoints (GET/POST/PUT) handling new fields correctly
+      
+      NOTE: No validation exists for negative values - may want to add validation (ge=0)
+      
+      ALL RAFFLE PRIZEVALUE AND GAMEPRICE FIELDS ARE FULLY FUNCTIONAL AND PRODUCTION-READY.
+
   - agent: "main"
 
   - agent: "main"
