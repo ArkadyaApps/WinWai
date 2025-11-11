@@ -72,7 +72,9 @@ class Raffle(BaseModel):
     address: Optional[str] = None
     prizesAvailable: int
     prizesRemaining: int
-    ticketCost: int = Field(default=10)
+    ticketCost: int = Field(default=10)  # Tickets required to enter
+    prizeValue: float = Field(default=0.0)  # Total value of prize in THB
+    gamePrice: float = Field(default=0.0)  # Cost per ticket/game in THB
     drawDate: datetime
     validityMonths: int = Field(default=3)  # Prize validity in months (default 3)
     active: bool = Field(default=True)
