@@ -27,6 +27,11 @@ export default function AdminRafflesScreen() {
   const [showDatePicker, setShowDatePicker] = useState(false);
   const minDate = useMemo(() => new Date(Date.now() + 60 * 60 * 1000), []); // +1 hour
 
+  const filteredPartners = useMemo(() => {
+    if (!partnerSearch) return partners;
+    return partners.filter(p => p.name.toLowerCase().includes(partnerSearch.toLowerCase()));
+  }, [partners, partnerSearch]);
+
   useEffect(() => { fetchAll(); }, []);
 
   const fetchAll = async () => {
