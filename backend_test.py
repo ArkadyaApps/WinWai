@@ -15,32 +15,22 @@ BACKEND_URL = "https://rewards-platform-3.preview.emergentagent.com/api"
 ADMIN_EMAIL = "artteabnc@gmail.com"
 ADMIN_PASSWORD = "winwanadmin"
 
-class AuthTester:
+class BackendTester:
     def __init__(self):
         self.session_token = None
-        self.reset_token = None
         self.test_results = []
         
-    def log_test(self, test_name, success, details="", expected="", actual=""):
-        """Log test results"""
+    def log_test(self, test_name: str, success: bool, details: str = ""):
+        """Log test result"""
         status = "✅ PASS" if success else "❌ FAIL"
-        result = {
-            "test": test_name,
-            "status": status,
-            "success": success,
-            "details": details,
-            "expected": expected,
-            "actual": actual,
-            "timestamp": datetime.now().isoformat()
-        }
-        self.test_results.append(result)
         print(f"{status}: {test_name}")
         if details:
             print(f"   Details: {details}")
-        if not success and expected:
-            print(f"   Expected: {expected}")
-            print(f"   Actual: {actual}")
-        print()
+        self.test_results.append({
+            "test": test_name,
+            "success": success,
+            "details": details
+        })
         
     def make_request(self, method, endpoint, data=None, headers=None):
         """Make HTTP request with error handling"""
