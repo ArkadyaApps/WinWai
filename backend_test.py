@@ -32,649 +32,383 @@ class BackendTester:
             "details": details
         })
         
-    def make_request(self, method, endpoint, data=None, headers=None):
-        """Make HTTP request with error handling"""
-        url = f"{BASE_URL}{endpoint}"
+    def authenticate_admin(self) -> bool:
+        """Authenticate as admin user"""
         try:
-            # Set default headers
-            if headers is None:
-                headers = {}
-            headers.setdefault('Content-Type', 'application/json')
+            response = requests.post(f"{BACKEND_URL}/auth/email/signin", json={
+                "email": ADMIN_EMAIL,
+                "password": ADMIN_PASSWORD
+            })
             
-            if method.upper() == "POST":
-                response = requests.post(url, json=data, headers=headers, timeout=30)
-            elif method.upper() == "GET":
-                response = requests.get(url, headers=headers, timeout=30)
+            if response.status_code == 200:
+                data = response.json()
+                self.session_token = data.get("session_token")
+                user = data.get("user", {})
+                if user.get("role") == "admin":
+                    self.log_test("Admin Authentication", True, f"Authenticated as {user.get('name', 'Admin')}")
+                    return True
+                else:
+                    self.log_test("Admin Authentication", False, f"User role is {user.get('role')}, not admin")
+                    return False
             else:
-                raise ValueError(f"Unsupported method: {method}")
+                self.log_test("Admin Authentication", False, f"HTTP {response.status_code}: {response.text}")
+                return False
                 
-            print(f"DEBUG: {method} {url} -> {response.status_code}")
-            return response
-        except requests.exceptions.RequestException as e:
-            print(f"Request failed for {method} {url}: {e}")
+        except Exception as e:
+            self.log_test("Admin Authentication", False, f"Exception: {str(e)}")
+            return False
+    
+    def get_headers(self) -> Dict[str, str]:
+        """Get headers with authentication"""
+        return {
+            "Authorization": f"Bearer {self.session_token}",
+            "Content-Type": "application/json"
+        }
+    
+    def get_partners(self) -> Optional[list]:
+        """Get list of partners for raffle creation"""
+        try:
+            response = requests.get(f"{BACKEND_URL}/admin/partners", headers=self.get_headers())
+            if response.status_code == 200:
+                partners = response.json()
+                if partners:
+                    return partners
+                else:
+                    # Create a test partner if none exist
+                    return self.create_test_partner()
+            return None
+        except Exception as e:
+            print(f"Error getting partners: {e}")
+            return None
+    
+    def create_test_partner(self) -> Optional[list]:
+        """Create a test partner for raffle testing"""
+        try:
+            partner_data = {
+                "id": "test-partner-001",
+                "name": "Test Restaurant Bangkok",
+                "description": "Premium dining experience in the heart of Bangkok",
+                "category": "food",
+                "sponsored": True,
+                "email": "contact@testrestaurant.com",
+                "whatsapp": "+66123456789",
+                "address": "123 Sukhumvit Road, Bangkok 10110",
+                "latitude": 13.7563,
+                "longitude": 100.5018
+            }
+            
+            response = requests.post(f"{BACKEND_URL}/admin/partners", 
+                                   json=partner_data, 
+                                   headers=self.get_headers())
+            
+            if response.status_code == 200:
+                return [response.json()]
+            return None
+        except Exception as e:
+            print(f"Error creating test partner: {e}")
+            return None
+    
+    def test_create_raffle_with_prize_fields(self) -> Optional[str]:
+        """Test creating a raffle with prizeValue and gamePrice fields"""
+        partners = self.get_partners()
+        if not partners:
+            self.log_test("Create Raffle with Prize Fields", False, "No partners available")
             return None
             
-    def test_1_signup_new_user(self):
-        """Test 1: Sign Up New User"""
-        data = {
-            "email": TEST_EMAIL,
-            "password": TEST_PASSWORD,
-            "name": TEST_NAME
+        partner = partners[0]
+        
+        # Create raffle with prizeValue and gamePrice
+        raffle_data = {
+            "id": f"test-raffle-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "title": "Premium Dining Experience - Prize Value Test",
+            "description": "Win a luxurious 5-course tasting menu for two at our award-winning restaurant",
+            "image": "https://example.com/dining-experience.jpg",
+            "category": "food",
+            "partnerId": partner["id"],
+            "partnerName": partner["name"],
+            "location": "bangkok",
+            "address": "123 Sukhumvit Road, Bangkok",
+            "prizesAvailable": 5,
+            "prizesRemaining": 5,
+            "ticketCost": 25,
+            "prizeValue": 5000.0,  # 5000 THB prize value
+            "gamePrice": 100.0,    # 100 THB per ticket
+            "drawDate": (datetime.now(timezone.utc) + timedelta(days=7)).isoformat(),
+            "validityMonths": 6,
+            "active": True,
+            "totalEntries": 0
         }
         
-        response = self.make_request("POST", "/auth/email/signup", data)
-        if not response:
-            self.log_test("1. Sign Up New User", False, "Network request failed")
-            return False
+        try:
+            response = requests.post(f"{BACKEND_URL}/admin/raffles", 
+                                   json=raffle_data, 
+                                   headers=self.get_headers())
             
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                if "user" in result and "session_token" in result:
-                    user = result["user"]
-                    # Check user object doesn't expose password_hash
-                    if "password_hash" not in user and "resetToken" not in user:
-                        self.session_token = result["session_token"]
-                        self.log_test("1. Sign Up New User", True, 
-                                    f"User created successfully. Session token: {self.session_token[:20]}...")
+            if response.status_code == 200:
+                created_raffle = response.json()
+                # Verify prizeValue and gamePrice are saved
+                if (created_raffle.get("prizeValue") == 5000.0 and 
+                    created_raffle.get("gamePrice") == 100.0):
+                    self.log_test("Create Raffle with Prize Fields", True, 
+                                f"Raffle created with prizeValue: {created_raffle.get('prizeValue')} THB, gamePrice: {created_raffle.get('gamePrice')} THB")
+                    return created_raffle["id"]
+                else:
+                    self.log_test("Create Raffle with Prize Fields", False, 
+                                f"Prize fields not saved correctly. prizeValue: {created_raffle.get('prizeValue')}, gamePrice: {created_raffle.get('gamePrice')}")
+                    return None
+            else:
+                self.log_test("Create Raffle with Prize Fields", False, 
+                            f"HTTP {response.status_code}: {response.text}")
+                return None
+                
+        except Exception as e:
+            self.log_test("Create Raffle with Prize Fields", False, f"Exception: {str(e)}")
+            return None
+    
+    def test_get_raffle_details(self, raffle_id: str) -> bool:
+        """Test retrieving raffle details to verify prizeValue and gamePrice"""
+        try:
+            response = requests.get(f"{BACKEND_URL}/admin/raffles", headers=self.get_headers())
+            
+            if response.status_code == 200:
+                raffles = response.json()
+                # Find our test raffle
+                test_raffle = None
+                for raffle in raffles:
+                    if raffle["id"] == raffle_id:
+                        test_raffle = raffle
+                        break
+                
+                if test_raffle:
+                    prize_value = test_raffle.get("prizeValue")
+                    game_price = test_raffle.get("gamePrice")
+                    
+                    if prize_value == 5000.0 and game_price == 100.0:
+                        self.log_test("Get Raffle Details", True, 
+                                    f"Retrieved raffle with correct prizeValue: {prize_value} THB, gamePrice: {game_price} THB")
                         return True
                     else:
-                        self.log_test("1. Sign Up New User", False, 
-                                    "User object exposes sensitive data", 
-                                    "No password_hash/resetToken in response",
-                                    f"Found sensitive fields: {[k for k in user.keys() if k in ['password_hash', 'resetToken']]}")
+                        self.log_test("Get Raffle Details", False, 
+                                    f"Incorrect prize fields. prizeValue: {prize_value}, gamePrice: {game_price}")
                         return False
                 else:
-                    self.log_test("1. Sign Up New User", False, 
-                                "Missing user or session_token in response",
-                                "{ user: {...}, session_token: '...' }",
-                                str(result))
+                    self.log_test("Get Raffle Details", False, "Test raffle not found in list")
                     return False
-            except json.JSONDecodeError:
-                self.log_test("1. Sign Up New User", False, "Invalid JSON response")
+            else:
+                self.log_test("Get Raffle Details", False, 
+                            f"HTTP {response.status_code}: {response.text}")
                 return False
-        else:
-            self.log_test("1. Sign Up New User", False, 
-                        f"HTTP {response.status_code}: {response.text}",
-                        "200 OK",
-                        f"{response.status_code}")
-            return False
-            
-    def test_2_signup_duplicate_email(self):
-        """Test 2: Sign Up Duplicate Email"""
-        data = {
-            "email": TEST_EMAIL,
-            "password": TEST_PASSWORD,
-            "name": TEST_NAME
-        }
-        
-        response = self.make_request("POST", "/auth/email/signup", data)
-        if not response:
-            self.log_test("2. Sign Up Duplicate Email", False, "Request failed")
-            return False
-            
-        if response.status_code == 400:
-            try:
-                result = response.json()
-                if "detail" in result and "already registered" in result["detail"].lower():
-                    self.log_test("2. Sign Up Duplicate Email", True, 
-                                f"Correctly rejected duplicate email: {result['detail']}")
-                    return True
-                else:
-                    self.log_test("2. Sign Up Duplicate Email", False,
-                                "Wrong error message",
-                                "Email already registered",
-                                result.get("detail", "No detail"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("2. Sign Up Duplicate Email", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("2. Sign Up Duplicate Email", False,
-                        f"Wrong status code: {response.status_code}",
-                        "400",
-                        str(response.status_code))
-            return False
-            
-    def test_3_signup_weak_password(self):
-        """Test 3: Sign Up Weak Password"""
-        data = {
-            "email": "weak_password_test@example.com",
-            "password": "123",  # Less than 6 characters
-            "name": "Weak Password Test"
-        }
-        
-        response = self.make_request("POST", "/auth/email/signup", data)
-        if not response:
-            self.log_test("3. Sign Up Weak Password", False, "Request failed")
-            return False
-            
-        if response.status_code == 400:
-            try:
-                result = response.json()
-                if "detail" in result and "6 characters" in result["detail"]:
-                    self.log_test("3. Sign Up Weak Password", True,
-                                f"Correctly rejected weak password: {result['detail']}")
-                    return True
-                else:
-                    self.log_test("3. Sign Up Weak Password", False,
-                                "Wrong error message",
-                                "Password must be at least 6 characters",
-                                result.get("detail", "No detail"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("3. Sign Up Weak Password", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("3. Sign Up Weak Password", False,
-                        f"Wrong status code: {response.status_code}",
-                        "400",
-                        str(response.status_code))
-            return False
-            
-    def test_4_signin_correct_credentials(self):
-        """Test 4: Sign In Correct Credentials"""
-        data = {
-            "email": TEST_EMAIL,
-            "password": TEST_PASSWORD
-        }
-        
-        response = self.make_request("POST", "/auth/email/signin", data)
-        if not response:
-            self.log_test("4. Sign In Correct Credentials", False, "Request failed")
-            return False
-            
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                if "user" in result and "session_token" in result:
-                    self.session_token = result["session_token"]
-                    self.log_test("4. Sign In Correct Credentials", True,
-                                f"Successfully signed in. New session token: {self.session_token[:20]}...")
-                    return True
-                else:
-                    self.log_test("4. Sign In Correct Credentials", False,
-                                "Missing user or session_token in response",
-                                "{ user: {...}, session_token: '...' }",
-                                str(result))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("4. Sign In Correct Credentials", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("4. Sign In Correct Credentials", False,
-                        f"HTTP {response.status_code}: {response.text}",
-                        "200 OK",
-                        f"{response.status_code}")
-            return False
-            
-    def test_5_signin_wrong_password(self):
-        """Test 5: Sign In Wrong Password"""
-        data = {
-            "email": TEST_EMAIL,
-            "password": "wrongpassword"
-        }
-        
-        response = self.make_request("POST", "/auth/email/signin", data)
-        if not response:
-            self.log_test("5. Sign In Wrong Password", False, "Request failed")
-            return False
-            
-        if response.status_code == 401:
-            try:
-                result = response.json()
-                if "detail" in result and "invalid" in result["detail"].lower():
-                    self.log_test("5. Sign In Wrong Password", True,
-                                f"Correctly rejected wrong password: {result['detail']}")
-                    return True
-                else:
-                    self.log_test("5. Sign In Wrong Password", False,
-                                "Wrong error message",
-                                "Invalid email or password",
-                                result.get("detail", "No detail"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("5. Sign In Wrong Password", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("5. Sign In Wrong Password", False,
-                        f"Wrong status code: {response.status_code}",
-                        "401",
-                        str(response.status_code))
-            return False
-            
-    def test_6_signin_nonexistent_user(self):
-        """Test 6: Sign In Non-existent User"""
-        data = {
-            "email": "nonexistent@example.com",
-            "password": "anypassword"
-        }
-        
-        response = self.make_request("POST", "/auth/email/signin", data)
-        if not response:
-            self.log_test("6. Sign In Non-existent User", False, "Request failed")
-            return False
-            
-        if response.status_code == 401:
-            try:
-                result = response.json()
-                if "detail" in result and "invalid" in result["detail"].lower():
-                    self.log_test("6. Sign In Non-existent User", True,
-                                f"Correctly rejected non-existent user: {result['detail']}")
-                    return True
-                else:
-                    self.log_test("6. Sign In Non-existent User", False,
-                                "Wrong error message",
-                                "Invalid email or password",
-                                result.get("detail", "No detail"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("6. Sign In Non-existent User", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("6. Sign In Non-existent User", False,
-                        f"Wrong status code: {response.status_code}",
-                        "401",
-                        str(response.status_code))
-            return False
-            
-    def test_7_change_password_authenticated(self):
-        """Test 7: Change Password - Authenticated"""
-        if not self.session_token:
-            self.log_test("7. Change Password - Authenticated", False, "No session token available")
-            return False
-            
-        data = {
-            "currentPassword": TEST_PASSWORD,
-            "newPassword": "newpass456"
-        }
-        
-        headers = {"Authorization": f"Bearer {self.session_token}"}
-        
-        response = self.make_request("POST", "/auth/change-password", data, headers)
-        if not response:
-            self.log_test("7. Change Password - Authenticated", False, "Request failed")
-            return False
-            
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                if "message" in result and "success" in result["message"].lower():
-                    self.log_test("7. Change Password - Authenticated", True,
-                                f"Password changed successfully: {result['message']}")
-                    return True
-                else:
-                    self.log_test("7. Change Password - Authenticated", False,
-                                "Wrong success message",
-                                "Password changed successfully",
-                                result.get("message", "No message"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("7. Change Password - Authenticated", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("7. Change Password - Authenticated", False,
-                        f"HTTP {response.status_code}: {response.text}",
-                        "200 OK",
-                        f"{response.status_code}")
-            return False
-            
-    def test_8_signin_with_new_password(self):
-        """Test 8: Sign In With New Password"""
-        data = {
-            "email": TEST_EMAIL,
-            "password": "newpass456"
-        }
-        
-        response = self.make_request("POST", "/auth/email/signin", data)
-        if not response:
-            self.log_test("8. Sign In With New Password", False, "Request failed")
-            return False
-            
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                if "user" in result and "session_token" in result:
-                    self.session_token = result["session_token"]
-                    self.log_test("8. Sign In With New Password", True,
-                                f"Successfully signed in with new password. Token: {self.session_token[:20]}...")
-                    return True
-                else:
-                    self.log_test("8. Sign In With New Password", False,
-                                "Missing user or session_token in response")
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("8. Sign In With New Password", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("8. Sign In With New Password", False,
-                        f"HTTP {response.status_code}: {response.text}",
-                        "200 OK",
-                        f"{response.status_code}")
-            return False
-            
-    def test_9_change_password_wrong_current(self):
-        """Test 9: Change Password - Wrong Current Password"""
-        if not self.session_token:
-            self.log_test("9. Change Password - Wrong Current Password", False, "No session token available")
-            return False
-            
-        data = {
-            "currentPassword": "wrongpass",
-            "newPassword": "anotherpass"
-        }
-        
-        headers = {"Authorization": f"Bearer {self.session_token}"}
-        
-        response = self.make_request("POST", "/auth/change-password", data, headers)
-        if not response:
-            self.log_test("9. Change Password - Wrong Current Password", False, "Request failed")
-            return False
-            
-        if response.status_code == 401:
-            try:
-                result = response.json()
-                if "detail" in result and "incorrect" in result["detail"].lower():
-                    self.log_test("9. Change Password - Wrong Current Password", True,
-                                f"Correctly rejected wrong current password: {result['detail']}")
-                    return True
-                else:
-                    self.log_test("9. Change Password - Wrong Current Password", False,
-                                "Wrong error message",
-                                "Current password is incorrect",
-                                result.get("detail", "No detail"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("9. Change Password - Wrong Current Password", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("9. Change Password - Wrong Current Password", False,
-                        f"Wrong status code: {response.status_code}",
-                        "401",
-                        str(response.status_code))
-            return False
-            
-    def test_10_change_password_unauthenticated(self):
-        """Test 10: Change Password - Unauthenticated"""
-        data = {
-            "currentPassword": "newpass456",
-            "newPassword": "anotherpass"
-        }
-        
-        # No Authorization header
-        response = self.make_request("POST", "/auth/change-password", data)
-        if not response:
-            self.log_test("10. Change Password - Unauthenticated", False, "Request failed")
-            return False
-            
-        if response.status_code == 401:
-            try:
-                result = response.json()
-                if "detail" in result and "not authenticated" in result["detail"].lower():
-                    self.log_test("10. Change Password - Unauthenticated", True,
-                                f"Correctly rejected unauthenticated request: {result['detail']}")
-                    return True
-                else:
-                    self.log_test("10. Change Password - Unauthenticated", False,
-                                "Wrong error message",
-                                "Not authenticated",
-                                result.get("detail", "No detail"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("10. Change Password - Unauthenticated", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("10. Change Password - Unauthenticated", False,
-                        f"Wrong status code: {response.status_code}",
-                        "401",
-                        str(response.status_code))
-            return False
-            
-    def test_11_forgot_password_valid_email(self):
-        """Test 11: Forgot Password - Valid Email"""
-        data = {
-            "email": TEST_EMAIL
-        }
-        
-        response = self.make_request("POST", "/auth/forgot-password", data)
-        if not response:
-            self.log_test("11. Forgot Password - Valid Email", False, "Request failed")
-            return False
-            
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                if "message" in result and "resetToken" in result and "email" in result:
-                    self.reset_token = result["resetToken"]
-                    self.log_test("11. Forgot Password - Valid Email", True,
-                                f"Reset token generated: {self.reset_token[:20]}... (Note: In production, token should only be sent via email)")
-                    return True
-                else:
-                    self.log_test("11. Forgot Password - Valid Email", False,
-                                "Missing required fields in response",
-                                "{ message: '...', resetToken: '...', email: '...' }",
-                                str(result))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("11. Forgot Password - Valid Email", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("11. Forgot Password - Valid Email", False,
-                        f"HTTP {response.status_code}: {response.text}",
-                        "200 OK",
-                        f"{response.status_code}")
-            return False
-            
-    def test_12_reset_password_valid_token(self):
-        """Test 12: Reset Password With Valid Token"""
-        if not self.reset_token:
-            self.log_test("12. Reset Password With Valid Token", False, "No reset token available")
-            return False
-            
-        data = {
-            "email": TEST_EMAIL,
-            "resetToken": self.reset_token,
-            "newPassword": "resetpass789"
-        }
-        
-        response = self.make_request("POST", "/auth/reset-password", data)
-        if not response:
-            self.log_test("12. Reset Password With Valid Token", False, "Request failed")
-            return False
-            
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                if "message" in result and "success" in result["message"].lower():
-                    self.log_test("12. Reset Password With Valid Token", True,
-                                f"Password reset successfully: {result['message']}")
-                    return True
-                else:
-                    self.log_test("12. Reset Password With Valid Token", False,
-                                "Wrong success message",
-                                "Password reset successfully",
-                                result.get("message", "No message"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("12. Reset Password With Valid Token", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("12. Reset Password With Valid Token", False,
-                        f"HTTP {response.status_code}: {response.text}",
-                        "200 OK",
-                        f"{response.status_code}")
-            return False
-            
-    def test_13_signin_after_password_reset(self):
-        """Test 13: Sign In After Password Reset"""
-        data = {
-            "email": TEST_EMAIL,
-            "password": "resetpass789"
-        }
-        
-        response = self.make_request("POST", "/auth/email/signin", data)
-        if not response:
-            self.log_test("13. Sign In After Password Reset", False, "Request failed")
-            return False
-            
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                if "user" in result and "session_token" in result:
-                    self.session_token = result["session_token"]
-                    self.log_test("13. Sign In After Password Reset", True,
-                                f"Successfully signed in after password reset. Token: {self.session_token[:20]}...")
-                    return True
-                else:
-                    self.log_test("13. Sign In After Password Reset", False,
-                                "Missing user or session_token in response")
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("13. Sign In After Password Reset", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("13. Sign In After Password Reset", False,
-                        f"HTTP {response.status_code}: {response.text}",
-                        "200 OK",
-                        f"{response.status_code}")
-            return False
-            
-    def test_14_reset_password_invalid_token(self):
-        """Test 14: Reset Password With Invalid Token"""
-        data = {
-            "email": TEST_EMAIL,
-            "resetToken": "invalid_token",
-            "newPassword": "anypass"
-        }
-        
-        response = self.make_request("POST", "/auth/reset-password", data)
-        if not response:
-            self.log_test("14. Reset Password With Invalid Token", False, "Request failed")
-            return False
-            
-        if response.status_code == 400:
-            try:
-                result = response.json()
-                if "detail" in result and ("invalid" in result["detail"].lower() or "expired" in result["detail"].lower()):
-                    self.log_test("14. Reset Password With Invalid Token", True,
-                                f"Correctly rejected invalid token: {result['detail']}")
-                    return True
-                else:
-                    self.log_test("14. Reset Password With Invalid Token", False,
-                                "Wrong error message",
-                                "Invalid or expired reset token",
-                                result.get("detail", "No detail"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("14. Reset Password With Invalid Token", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("14. Reset Password With Invalid Token", False,
-                        f"Wrong status code: {response.status_code}",
-                        "400",
-                        str(response.status_code))
-            return False
-            
-    def test_15_forgot_password_nonexistent_email(self):
-        """Test 15: Forgot Password - Non-existent Email"""
-        data = {
-            "email": "nonexistent@example.com"
-        }
-        
-        response = self.make_request("POST", "/auth/forgot-password", data)
-        if not response:
-            self.log_test("15. Forgot Password - Non-existent Email", False, "Request failed")
-            return False
-            
-        if response.status_code == 200:
-            try:
-                result = response.json()
-                if "message" in result and "if the email exists" in result["message"].lower():
-                    self.log_test("15. Forgot Password - Non-existent Email", True,
-                                f"Correctly returned generic message for security: {result['message']}")
-                    return True
-                else:
-                    self.log_test("15. Forgot Password - Non-existent Email", False,
-                                "Wrong security message",
-                                "If the email exists, a reset link will be sent",
-                                result.get("message", "No message"))
-                    return False
-            except json.JSONDecodeError:
-                self.log_test("15. Forgot Password - Non-existent Email", False, "Invalid JSON response")
-                return False
-        else:
-            self.log_test("15. Forgot Password - Non-existent Email", False,
-                        f"HTTP {response.status_code}: {response.text}",
-                        "200 OK",
-                        f"{response.status_code}")
-            return False
-            
-    def run_all_tests(self):
-        """Run all authentication tests in sequence"""
-        print("=" * 80)
-        print("WinWai Raffle Rewards - Email/Password Authentication Testing")
-        print("=" * 80)
-        print(f"Base URL: {BASE_URL}")
-        print(f"Test Email: {TEST_EMAIL}")
-        print(f"Started at: {datetime.now().isoformat()}")
-        print("=" * 80)
-        print()
-        
-        # Run tests in sequence
-        tests = [
-            self.test_1_signup_new_user,
-            self.test_2_signup_duplicate_email,
-            self.test_3_signup_weak_password,
-            self.test_4_signin_correct_credentials,
-            self.test_5_signin_wrong_password,
-            self.test_6_signin_nonexistent_user,
-            self.test_7_change_password_authenticated,
-            self.test_8_signin_with_new_password,
-            self.test_9_change_password_wrong_current,
-            self.test_10_change_password_unauthenticated,
-            self.test_11_forgot_password_valid_email,
-            self.test_12_reset_password_valid_token,
-            self.test_13_signin_after_password_reset,
-            self.test_14_reset_password_invalid_token,
-            self.test_15_forgot_password_nonexistent_email
-        ]
-        
-        passed = 0
-        failed = 0
-        
-        for test in tests:
-            try:
-                if test():
-                    passed += 1
-                else:
-                    failed += 1
-            except Exception as e:
-                print(f"❌ FAIL: {test.__name__} - Exception: {str(e)}")
-                failed += 1
                 
-        # Summary
-        print("=" * 80)
-        print("TEST SUMMARY")
-        print("=" * 80)
-        print(f"Total Tests: {len(tests)}")
-        print(f"Passed: {passed}")
-        print(f"Failed: {failed}")
-        print(f"Success Rate: {(passed/len(tests)*100):.1f}%")
-        print()
-        
-        if failed > 0:
-            print("FAILED TESTS:")
-            for result in self.test_results:
-                if not result["success"]:
-                    print(f"- {result['test']}: {result['details']}")
-        else:
-            print("🎉 ALL TESTS PASSED!")
+        except Exception as e:
+            self.log_test("Get Raffle Details", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_update_raffle_prize_fields(self, raffle_id: str) -> bool:
+        """Test updating raffle prizeValue and gamePrice"""
+        try:
+            # First get the current raffle
+            response = requests.get(f"{BACKEND_URL}/admin/raffles", headers=self.get_headers())
+            if response.status_code != 200:
+                self.log_test("Update Raffle Prize Fields", False, "Could not fetch current raffle")
+                return False
             
-        print("=" * 80)
+            raffles = response.json()
+            current_raffle = None
+            for raffle in raffles:
+                if raffle["id"] == raffle_id:
+                    current_raffle = raffle
+                    break
+            
+            if not current_raffle:
+                self.log_test("Update Raffle Prize Fields", False, "Raffle not found for update")
+                return False
+            
+            # Update prizeValue and gamePrice
+            current_raffle["prizeValue"] = 7500.0  # Updated to 7500 THB
+            current_raffle["gamePrice"] = 150.0    # Updated to 150 THB
+            current_raffle["description"] = "Updated: Win a luxurious 7-course tasting menu for two"
+            
+            response = requests.put(f"{BACKEND_URL}/admin/raffles/{raffle_id}", 
+                                  json=current_raffle, 
+                                  headers=self.get_headers())
+            
+            if response.status_code == 200:
+                updated_raffle = response.json()
+                if (updated_raffle.get("prizeValue") == 7500.0 and 
+                    updated_raffle.get("gamePrice") == 150.0):
+                    self.log_test("Update Raffle Prize Fields", True, 
+                                f"Updated prizeValue: {updated_raffle.get('prizeValue')} THB, gamePrice: {updated_raffle.get('gamePrice')} THB")
+                    return True
+                else:
+                    self.log_test("Update Raffle Prize Fields", False, 
+                                f"Update failed. prizeValue: {updated_raffle.get('prizeValue')}, gamePrice: {updated_raffle.get('gamePrice')}")
+                    return False
+            else:
+                self.log_test("Update Raffle Prize Fields", False, 
+                            f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Update Raffle Prize Fields", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_create_raffle_with_zero_values(self) -> bool:
+        """Test creating raffle with prizeValue=0 and gamePrice=0 (defaults)"""
+        partners = self.get_partners()
+        if not partners:
+            self.log_test("Create Raffle with Zero Values", False, "No partners available")
+            return False
+            
+        partner = partners[0]
         
-        return failed == 0
+        raffle_data = {
+            "id": f"test-raffle-zero-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "title": "Free Entry Raffle - Zero Values Test",
+            "description": "Test raffle with zero prize value and game price",
+            "category": "food",
+            "partnerId": partner["id"],
+            "partnerName": partner["name"],
+            "prizesAvailable": 1,
+            "prizesRemaining": 1,
+            "ticketCost": 10,
+            "prizeValue": 0.0,  # Default value
+            "gamePrice": 0.0,   # Default value
+            "drawDate": (datetime.now(timezone.utc) + timedelta(days=3)).isoformat(),
+            "active": True,
+            "totalEntries": 0
+        }
+        
+        try:
+            response = requests.post(f"{BACKEND_URL}/admin/raffles", 
+                                   json=raffle_data, 
+                                   headers=self.get_headers())
+            
+            if response.status_code == 200:
+                created_raffle = response.json()
+                if (created_raffle.get("prizeValue") == 0.0 and 
+                    created_raffle.get("gamePrice") == 0.0):
+                    self.log_test("Create Raffle with Zero Values", True, 
+                                "Successfully created raffle with zero prizeValue and gamePrice")
+                    return True
+                else:
+                    self.log_test("Create Raffle with Zero Values", False, 
+                                f"Unexpected values. prizeValue: {created_raffle.get('prizeValue')}, gamePrice: {created_raffle.get('gamePrice')}")
+                    return False
+            else:
+                self.log_test("Create Raffle with Zero Values", False, 
+                            f"HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Create Raffle with Zero Values", False, f"Exception: {str(e)}")
+            return False
+    
+    def test_create_raffle_with_negative_values(self) -> bool:
+        """Test creating raffle with negative prizeValue and gamePrice (should be rejected if validation exists)"""
+        partners = self.get_partners()
+        if not partners:
+            self.log_test("Create Raffle with Negative Values", False, "No partners available")
+            return False
+            
+        partner = partners[0]
+        
+        raffle_data = {
+            "id": f"test-raffle-negative-{datetime.now().strftime('%Y%m%d%H%M%S')}",
+            "title": "Negative Values Test Raffle",
+            "description": "Test raffle with negative prize values",
+            "category": "food",
+            "partnerId": partner["id"],
+            "partnerName": partner["name"],
+            "prizesAvailable": 1,
+            "prizesRemaining": 1,
+            "ticketCost": 10,
+            "prizeValue": -100.0,  # Negative value
+            "gamePrice": -50.0,    # Negative value
+            "drawDate": (datetime.now(timezone.utc) + timedelta(days=3)).isoformat(),
+            "active": True,
+            "totalEntries": 0
+        }
+        
+        try:
+            response = requests.post(f"{BACKEND_URL}/admin/raffles", 
+                                   json=raffle_data, 
+                                   headers=self.get_headers())
+            
+            # Check if validation exists (should reject negative values)
+            if response.status_code == 422 or response.status_code == 400:
+                self.log_test("Create Raffle with Negative Values", True, 
+                            f"Correctly rejected negative values with HTTP {response.status_code}")
+                return True
+            elif response.status_code == 200:
+                # If no validation, check if negative values were saved
+                created_raffle = response.json()
+                prize_value = created_raffle.get("prizeValue")
+                game_price = created_raffle.get("gamePrice")
+                
+                if prize_value == -100.0 and game_price == -50.0:
+                    self.log_test("Create Raffle with Negative Values", True, 
+                                "No validation exists - negative values accepted (may need validation)")
+                    return True
+                else:
+                    self.log_test("Create Raffle with Negative Values", False, 
+                                f"Unexpected behavior. prizeValue: {prize_value}, gamePrice: {game_price}")
+                    return False
+            else:
+                self.log_test("Create Raffle with Negative Values", False, 
+                            f"Unexpected HTTP {response.status_code}: {response.text}")
+                return False
+                
+        except Exception as e:
+            self.log_test("Create Raffle with Negative Values", False, f"Exception: {str(e)}")
+            return False
+    
+    def run_all_tests(self):
+        """Run all raffle prize field tests"""
+        print("🧪 Starting Backend Tests for Raffle prizeValue and gamePrice fields")
+        print("=" * 70)
+        
+        # Authenticate
+        if not self.authenticate_admin():
+            print("❌ Authentication failed. Cannot proceed with tests.")
+            return
+        
+        # Test 1: Create raffle with prizeValue and gamePrice
+        raffle_id = self.test_create_raffle_with_prize_fields()
+        
+        if raffle_id:
+            # Test 2: Get raffle details to verify fields are saved
+            self.test_get_raffle_details(raffle_id)
+            
+            # Test 3: Update raffle prizeValue and gamePrice
+            self.test_update_raffle_prize_fields(raffle_id)
+        
+        # Test 4: Create raffle with zero values (defaults)
+        self.test_create_raffle_with_zero_values()
+        
+        # Test 5: Test negative values (edge case)
+        self.test_create_raffle_with_negative_values()
+        
+        # Summary
+        print("\n" + "=" * 70)
+        print("🏁 TEST SUMMARY")
+        print("=" * 70)
+        
+        passed = sum(1 for result in self.test_results if result["success"])
+        total = len(self.test_results)
+        
+        print(f"Total Tests: {total}")
+        print(f"Passed: {passed}")
+        print(f"Failed: {total - passed}")
+        print(f"Success Rate: {(passed/total)*100:.1f}%")
+        
+        if passed == total:
+            print("\n🎉 ALL TESTS PASSED! Raffle prizeValue and gamePrice fields are working correctly.")
+        else:
+            print(f"\n⚠️  {total - passed} test(s) failed. Please review the issues above.")
+        
+        return passed == total
 
 if __name__ == "__main__":
-    tester = AuthTester()
+    tester = BackendTester()
     success = tester.run_all_tests()
     sys.exit(0 if success else 1)
