@@ -40,7 +40,7 @@ export default function AdminRafflesScreen() {
 
   const onRefresh = async () => { setRefreshing(true); try { await fetchAll(); } finally { setRefreshing(false); } };
 
-  const openCreateModal = () => { setEditingRaffle(null); setFormData({ title: '', description: '', image: '', category: 'food', partnerId: partners[0]?.id || '', location: 'bangkok', address: '', prizesAvailable: 1, ticketCost: 10, drawDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), validityMonths: 3, active: true, }); setModalVisible(true); };
+  const openCreateModal = () => { setEditingRaffle(null); setFormData({ title: '', description: '', image: '', category: 'food', partnerId: partners[0]?.id || '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, drawDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), validityMonths: 3, active: true, }); setPartnerSearch(''); setModalVisible(true); };
 
   const openEditModal = (raffle: Raffle) => { setEditingRaffle(raffle); setFormData({ title: raffle.title, description: raffle.description, image: raffle.image || '', category: raffle.category, partnerId: raffle.partnerId, location: raffle.location || '', address: raffle.address || '', prizesAvailable: raffle.prizesAvailable, ticketCost: raffle.ticketCost, drawDate: new Date(raffle.drawDate), validityMonths: raffle.validityMonths || 3, active: raffle.active, }); setModalVisible(true); };
 
