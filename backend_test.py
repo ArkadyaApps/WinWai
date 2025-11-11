@@ -1,19 +1,19 @@
 #!/usr/bin/env python3
 """
-Backend Authentication Testing Script for WinWai Raffle Rewards App
-Tests all email/password authentication endpoints in sequence
+Backend API Testing Script for Raffle prizeValue and gamePrice fields
+Tests the enhanced raffle creation with new prizeValue and gamePrice fields
 """
 
 import requests
 import json
 import sys
-from datetime import datetime
+from datetime import datetime, timedelta, timezone
+from typing import Dict, Any, Optional
 
 # Configuration
-BASE_URL = "https://rewards-platform-3.preview.emergentagent.com/api"
-TEST_EMAIL = "test_auth_user@example.com"
-TEST_PASSWORD = "testpass123"
-TEST_NAME = "Test Auth User"
+BACKEND_URL = "https://rewards-platform-3.preview.emergentagent.com/api"
+ADMIN_EMAIL = "artteabnc@gmail.com"
+ADMIN_PASSWORD = "winwanadmin"
 
 class AuthTester:
     def __init__(self):
