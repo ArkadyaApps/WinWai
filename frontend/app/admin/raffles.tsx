@@ -161,6 +161,16 @@ export default function AdminRafflesScreen() {
               <TextInput style={styles.input} value={String(formData.prizesAvailable)} onChangeText={(text) => setFormData({ ...formData, prizesAvailable: parseInt(text) || 0 })} placeholder="Number of prizes" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.label}>Ticket Cost *</Text>
               <TextInput style={styles.input} value={String(formData.ticketCost)} onChangeText={(text) => setFormData({ ...formData, ticketCost: parseInt(text) || 0 })} placeholder="Tickets per entry" placeholderTextColor="#999" keyboardType="numeric" />
+              <Text style={styles.helperText}>Number of tickets required to enter this raffle</Text>
+              
+              <Text style={styles.label}>Prize Value (฿) *</Text>
+              <TextInput style={styles.input} value={String(formData.prizeValue)} onChangeText={(text) => setFormData({ ...formData, prizeValue: parseFloat(text) || 0 })} placeholder="e.g., 5000" placeholderTextColor="#999" keyboardType="numeric" />
+              <Text style={styles.helperText}>Total value of the prize in Thai Baht</Text>
+              
+              <Text style={styles.label}>Game Price (฿) *</Text>
+              <TextInput style={styles.input} value={String(formData.gamePrice)} onChangeText={(text) => setFormData({ ...formData, gamePrice: parseFloat(text) || 0 })} placeholder="e.g., 100" placeholderTextColor="#999" keyboardType="numeric" />
+              <Text style={styles.helperText}>Cost per ticket/game in Thai Baht</Text>
+              
               <Text style={styles.label}>Prize Validity (months) *</Text>
               <TextInput style={styles.input} value={String(formData.validityMonths)} onChangeText={(text) => setFormData({ ...formData, validityMonths: parseInt(text) || 3 })} placeholder="3" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.helperText}>How long the prize is valid after winning (default: 3 months)</Text>
