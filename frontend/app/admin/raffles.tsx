@@ -137,19 +137,26 @@ export default function AdminRafflesScreen() {
                   </TouchableOpacity>
                 ))}
               </View>
-              <Text style={styles.label}>Partner *</Text>
+              <Text style={styles.label}>Partner * (Searchable)</Text>
+              <TextInput 
+                style={styles.input} 
+                value={partnerSearch} 
+                onChangeText={setPartnerSearch}
+                placeholder="Search partners..." 
+                placeholderTextColor="#999" 
+              />
               <View style={styles.partnerList}>
-                {partners.map((p) => (
-                  <TouchableOpacity key={p.id} style={[styles.partnerItem, formData.partnerId === p.id && styles.partnerItemActive]} onPress={() => setFormData({ ...formData, partnerId: p.id })}>
-                    <Text style={[styles.partnerItemText, formData.partnerId === p.id && styles.partnerItemTextActive]}>{p.name}</Text>
-                    {formData.partnerId === p.id && (<Ionicons name="checkmark-circle" size={20} color="#4ECDC4" />)}
-                  </TouchableOpacity>
-                ))}
+                {filteredPartners.length === 0 ? (
+                  <Text style={styles.noResultsText}>No partners found</Text>
+                ) : (
+                  filteredPartners.map((p) => (
+                    <TouchableOpacity key={p.id} style={[styles.partnerItem, formData.partnerId === p.id && styles.partnerItemActive]} onPress={() => setFormData({ ...formData, partnerId: p.id })}>
+                      <Text style={[styles.partnerItemText, formData.partnerId === p.id && styles.partnerItemTextActive]}>{p.name}</Text>
+                      {formData.partnerId === p.id && (<Ionicons name="checkmark-circle" size={20} color="#4ECDC4" />)}
+                    </TouchableOpacity>
+                  ))
+                )}
               </View>
-              <Text style={styles.label}>Location</Text>
-              <TextInput style={styles.input} value={formData.location} onChangeText={(text) => setFormData({ ...formData, location: text.toLowerCase() })} placeholder="e.g., bangkok" placeholderTextColor="#999" autoCapitalize="none" />
-              <Text style={styles.label}>Address</Text>
-              <TextInput style={styles.input} value={formData.address} onChangeText={(text) => setFormData({ ...formData, address: text })} placeholder="Full address (optional)" placeholderTextColor="#999" />
               <Text style={styles.label}>Prizes Available *</Text>
               <TextInput style={styles.input} value={String(formData.prizesAvailable)} onChangeText={(text) => setFormData({ ...formData, prizesAvailable: parseInt(text) || 0 })} placeholder="Number of prizes" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.label}>Ticket Cost *</Text>
