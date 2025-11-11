@@ -44,6 +44,8 @@ export interface Raffle {
   prizesAvailable: number;
   prizesRemaining: number;
   ticketCost: number;
+  prizeValue: number;
+  gamePrice: number;
   drawDate: string;
   validityMonths: number;
   active: boolean;
