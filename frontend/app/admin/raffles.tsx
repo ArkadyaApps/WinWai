@@ -20,8 +20,9 @@ export default function AdminRafflesScreen() {
   const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: '', description: '', image: '', category: 'food', partnerId: '', location: '', address: '', prizesAvailable: 1, ticketCost: 10, drawDate: new Date(), validityMonths: 3, active: true,
+    title: '', description: '', image: '', category: 'food', partnerId: '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, drawDate: new Date(), validityMonths: 3, active: true,
   });
+  const [partnerSearch, setPartnerSearch] = useState('');
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const minDate = useMemo(() => new Date(Date.now() + 60 * 60 * 1000), []); // +1 hour
