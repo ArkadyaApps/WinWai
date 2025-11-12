@@ -41,7 +41,6 @@ module.exports = {
           backgroundColor: "#FFD700"
         }
       ],
-      "expo-web-browser",
       [
         "expo-build-properties",
         {
