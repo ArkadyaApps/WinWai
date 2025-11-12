@@ -11,7 +11,7 @@ from datetime import datetime, timedelta, timezone
 from typing import Dict, Any, Optional
 
 # Configuration
-BACKEND_URL = "https://rewards-platform-3.preview.emergentagent.com/api"
+BACKEND_URL = "https://raffle-rewards-th.preview.emergentagent.com/api"
 ADMIN_EMAIL = "artteabnc@gmail.com"
 ADMIN_PASSWORD = "winwanadmin"
 

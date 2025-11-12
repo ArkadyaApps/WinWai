@@ -1,147 +1,198 @@
 <analysis>
-The AI engineer successfully progressed on the WinWai Raffle Rewards Thailand application, addressing multiple critical user requests. The session began by confirming backend authentication endpoints, which were found to be fully implemented and passed all tests. Subsequent work focused on frontend integration, including creating validation utilities, completing , and developing UI components for sign-up, forgot/reset password, and change password features. Geolocation-based language detection was implemented, alongside a robust translation system. Significant enhancements were made to partner information display on the raffle detail page, requiring backend model updates, new API endpoints, and comprehensive frontend form integration (including image selection and Google Places search). Admin 'create' functionality for users was added, and a prize validity and voucher system was implemented, covering backend model updates, voucher generation, and frontend display. Finally, admin navigation links were fixed, and a toggle for admin mode was reinstated. The current task involves refining raffle creation.
+The trajectory details the work of an AI engineer on the WinWai Raffle Rewards Thailand application. The session began with the successful completion of a feature enhancement for the admin raffle creation form. This involved backend model verification and extensive frontend modifications to , including adding a searchable partner dropdown and new input fields (, ).
+
+The primary focus then shifted to a series of user-initiated, complex, and ultimately interconnected issues. The user first requested to connect a custom domain, which was premature as the app wasn't deployed. The task then pivoted to building an Android APK. This request led to a prolonged and difficult troubleshooting process.
+
+The core of the struggle was a persistent Android build failure (). The engineer correctly identified this as an issue with React Native's New Architecture but struggled to resolve it within Expo SDK 54. Attempts to fix it by toggling , clearing caches, and modifying build configurations (, , ) were unsuccessful, partly due to a known bug in Expo SDK 54.
+
+After exhausting options on SDK 54 and receiving user feedback on the repetitive failures, the engineer made the decisive move to downgrade the entire project to the more stable Expo SDK 51. This involved a thorough cleanup of all npm packages, resolving version conflicts identified by , and providing the user with a new, clean project ZIP file and instructions for a local build. The final state of the project is a stable SDK 51 version, awaiting a local build attempt by the user.
 </analysis>
 
 <product_requirements>
-The WinWai Raffle Rewards Thailand mobile application provides free raffles, monetized by AdMob ads. Core features include Firebase Authentication (Google, Email/Password), raffle management, ticket acquisition (ads, daily logins, referrals), randomized draws, and in-app winner notifications. An admin dashboard manages partners, users, and raffles. The UI/UX features a clean, Thai-inspired design with tab-based navigation. Recent additions include a 3-column raffle grid (updated to 4), location-based offers, category/location search, product page, and multi-language support. Raffle draws are triggered by ad revenue thresholds and scheduled dates.
+The WinWai Raffle Rewards Thailand is a mobile application designed to offer users free-to-enter raffles, monetized through AdMob advertising.
 
-So far, the application has:
-- Implemented email/password authentication backend (register, login, password reset, change password).
-- Created a Firebase Cloud Function for automated raffle draws based on ad revenue and dates.
-- Overhauled the application header and splash screen for a unified, larger logo display.
-- Implemented geolocation-based language detection and a translation system.
-- Enhanced partner information display on product/price pages (maps location, logo, contact details) with backend model updates, a new API endpoint, and frontend form for admin.
-- Added file selector for partner photos and integrated Google Places search for partner addresses in the admin panel.
-- Implemented 'create' functionality for Admin Users, including a new backend endpoint and frontend UI.
-- Implemented prize validity (default 3 months) for raffles and a voucher generation system for winners, displayed in their accounts.
-- Fixed navigation issues in the Admin dashboard and reinstated the admin mode toggle.
+**Core Functionality:**
+-   **User Authentication:** Supports Google and Email/Password login via Firebase Authentication.
+-   **Raffle System:** Users can view and participate in various raffles. Draws are triggered automatically based on ad revenue thresholds or scheduled dates, managed by a Firebase Cloud Function.
+-   **Ticket & Rewards System:** Users acquire tickets through activities like watching ads, daily logins, or referrals. Winners receive digital vouchers in their accounts, which have a defined validity period.
+-   **Admin Dashboard:** A web-based interface for administrators to manage partners, raffles, and users.
+
+**Recent Implementations:**
+-   Full email/password authentication flow (sign-up, sign-in, password reset).
+-   Geolocation for language detection and a multi-language translation system.
+-   Enhanced partner profiles with logos, contact info, and map locations.
+-   A voucher system for raffle winners.
+-   **Completed Feature:** The admin raffle creation form was updated to remove address fields, add a searchable dropdown for selecting partners, and include new fields for  and  to manage ticket costs.
 </product_requirements>
 
 <key_technical_concepts>
-- **Frontend**: React Native (Expo, Expo Router, React Navigation), Zustand, , .
-- **Backend**: FastAPI (Python), MongoDB, Firebase Cloud Functions (TypeScript),  for hashing.
-- **Authentication**: Email/Password (implemented), JWT tokens, password reset flows.
-- **Internationalization**: Geolocation-based language detection,  hook.
-- **Location Services**: Google Places API for partner addresses.
+-   **Frontend:** React Native, Expo (SDK 51, previously SDK 54), Expo Router, Zustand.
+-   **Backend:** FastAPI (Python), MongoDB.
+-   **Build & Deployment:** EAS Build for creating APKs,  for build configuration.
+-   **Core Concepts:** React Native New Architecture (Fabric/TurboModules) was a central point of failure, leading to a project-wide downgrade.
+-   **Authentication:** Firebase Authentication, Android Keystore for app signing.
 </key_technical_concepts>
 
 <code_architecture>
+The application follows a monorepo structure with a distinct frontend and backend.
 
 
--   **/app/backend/server.py**:
-    -   **Importance**: Central FastAPI backend.
-    -   **Changes**: Updated  model; added endpoints for email/password authentication (, , , , );  model updated with , , , , , , , ; new endpoint  for public partner details; new endpoint  for unique raffle locations;  model updated with , , ;  model created; draw winner endpoint updated to generate vouchers; new endpoints  and .  model and  endpoint added.
--   **/app/frontend/app.json**:
-    -   **Importance**: Expo app configuration.
-    -   **Changes**: Splash screen configured for  with .
--   **/app/frontend/app/_layout.tsx**:
-    -   **Importance**: Root layout for Expo Router.
-    -   **Changes**: Updated to initialize language based on geolocation and to include all new routes (, , , , admin routes).
--   **/app/frontend/app/(tabs)/home.tsx**:
-    -   **Importance**: Home screen.
-    -   **Changes**: Updated to use the new  and a 4-column raffle grid. Search filter menu now uses  component.
--   **/app/frontend/app/(tabs)/profile.tsx**:
-    -   **Importance**: User profile screen.
-    -   **Changes**: Uses new . Added Change Password option in the Account section, conditional on user having a password (not OAuth). Admin mode toggle switch re-introduced.
--   **/app/frontend/app/(tabs)/raffles.tsx**:
-    -   **Importance**: Raffles listing screen.
-    -   **Changes**: Uses new  and a 4-column raffle grid. Now uses the  component for dynamic location filtering.
--   **/app/frontend/app/(tabs)/rewards.tsx**:
-    -   **Importance**: Rewards screen.
-    -   **Changes**: Completely rewritten to display user vouchers using the  component and integrate with  screen.
--   **/app/frontend/app/(tabs)/tickets.tsx**:
-    -   **Importance**: Tickets screen.
-    -   **Changes**: Updated to use the new  structure.
--   **/app/frontend/app/index.tsx**:
-    -   **Importance**: Landing page.
-    -   **Changes**: Displays transparent PNG logo. Updated to include email/password authentication UI options and to use  hook for key text elements.
--   **/app/frontend/app/raffle/[id].tsx**:
-    -   **Importance**: Individual raffle detail page.
-    -   **Changes**: Enhanced to load and display comprehensive partner information, including logo, map, contact details, etc.
--   **/app/frontend/app/admin/partners.tsx**:
-    -   **Importance**: Admin screen for managing partners.
-    -   **Changes**: Form updated to include new partner fields (, , , , , , , ). Integrated  for photo selection and Google Places API for address search.
--   **/app/frontend/app/admin/raffles.tsx**:
-    -   **Importance**: Admin screen for managing raffles.
-    -   **Changes**: Form updated to include , , and  fields.
--   **/app/frontend/app/admin/users.tsx**:
-    -   **Importance**: Admin screen for managing users.
-    -   **Changes**: Implemented 'create' user functionality with a new Create User button and a modal that handles both create and edit operations, including a password field for new users.
--   **/app/frontend/app/signup.tsx**: (NEW)
-    -   **Importance**: User signup screen.
-    -   **Changes**: Created to handle email/password registration.
--   **/app/frontend/app/forgot-password.tsx**: (NEW)
-    -   **Importance**: Forgot password screen.
-    -   **Changes**: Created to handle forgot password requests.
--   **/app/frontend/app/reset-password.tsx**: (NEW)
-    -   **Importance**: Reset password screen.
-    -   **Changes**: Created to handle password reset using a token.
--   **/app/frontend/app/voucher/[id].tsx**: (NEW)
-    -   **Importance**: Detail screen for individual vouchers.
-    -   **Changes**: Created to display voucher details.
--   **/app/frontend/src/api/api.ts**:
-    -   **Importance**: Axios instance for API calls.
-    -   **Changes**: Confirmed API utility is set up.
--   **/app/frontend/src/components/AppHeader.tsx**:
-    -   **Importance**: Reusable application header.
-    -   **Changes**: Modified for larger logo (360x144), reduced margins, aligned functional elements, and uses transparent PNG.
--   **/app/frontend/src/components/LocationFilter.tsx**: (NEW)
-    -   **Importance**: Reusable component for location filtering.
-    -   **Changes**: Created to provide dynamic location options and Use my location functionality.
--   **/app/frontend/src/components/SearchFilterMenu.tsx**:
-    -   **Importance**: Component for search and filter options.
-    -   **Changes**: Updated to use the new  component for dynamic locations.
--   **/app/frontend/src/components/VoucherCard.tsx**: (NEW)
-    -   **Importance**: Component to display individual vouchers.
-    -   **Changes**: Created to display voucher information.
--   **/app/frontend/src/context/AuthContext.tsx**:
-    -   **Importance**: Authentication context for the frontend.
-    -   **Changes**: Interface updated to include methods for email/password authentication (, , , ). Implementation details were added.
--   **/app/frontend/src/store/languageStore.ts**:
-    -   **Importance**: Zustand store for managing language state.
-    -   **Changes**: Updated to support geolocation-based language detection ().
--   **/app/frontend/src/store/adminStore.ts**: (NEW)
-    -   **Importance**: Zustand store for managing admin mode state.
-    -   **Changes**: Created to manage the  toggle.
--   **/app/frontend/src/theme/tokens.ts**:
-    -   **Importance**: Theme tokens and constants.
-    -   **Changes**:  imported to resolve runtime error.
--   **/app/frontend/src/types/index.ts**:
-    -   **Importance**: TypeScript type definitions.
-    -   **Changes**:  interface updated to match new backend fields.  interface updated to include , , .  interface added.
--   **/app/frontend/src/utils/validation.ts**: (NEW)
-    -   **Importance**: Utility functions for input validation.
-    -   **Changes**: Created for frontend input validation.
--   **/app/frontend/src/utils/locationService.ts**:
-    -   **Importance**: Service for geolocation.
-    -   **Changes**: Confirmed existence and used by .
--   **/app/frontend/src/i18n/translations.ts**: (NEW)
-    -   **Importance**: Translation dictionary for i18n.
-    -   **Changes**: Created to store app translations.
--   **/app/frontend/src/i18n/useTranslation.ts**: (NEW)
-    -   **Importance**: Custom hook for translations.
-    -   **Changes**: Created to simplify translation usage in components.
--   **/app/raffle-backend-functions.ts**:
-    -   **Importance**: Firebase Cloud Functions for raffle logic.
-    -   **Changes**: Contains logic for , , , .
+
+-   ****
+    -   **Importance:** This file contains the UI and logic for the admin to create and edit raffles.
+    -   **Summary of Changes:** The file was heavily modified to improve UX. Address fields were removed. State management for partner search (, ) was added. The UI was updated to replace a simple partner ID input with a searchable modal/dropdown () for selecting partners.  fields for  and  were added, and the  function was updated to send this new data to the backend.
+
+-   ** & **
+    -   **Importance:** These files control Expo application configuration, including SDK version, plugins, and build properties like the Android package name and New Architecture settings.
+    -   **Summary of Changes:** These files were the epicenter of the build-failure debugging.  was created to provide a more robust configuration. The  property was toggled between  and  multiple times in an attempt to fix the build. The  and  were also updated during EAS project initialization. Ultimately,  was removed to prevent conflicts with , which was configured for Expo SDK 51.
+
+-   ****
+    -   **Importance:** This file configures the Expo Application Services (EAS) build process.
+    -   **Summary of Changes:** It was created and modified extensively. Build profiles (, ) were defined. The  property was added to force the use of the uploaded keystore. The  property was added to use the latest build workers. These changes were part of the unsuccessful attempt to fix the SDK 54 build. The final version was simplified for the SDK 51 downgrade.
+
+-   ****
+    -   **Importance:** Defines all frontend project dependencies.
+    -   **Summary of Changes:** The file underwent a major overhaul. After  revealed numerous version mismatches, the engineer first attempted to align all packages with Expo SDK 54. When that failed, a full downgrade was performed, with  used to align all dependencies with the stable **Expo SDK 51**.
 </code_architecture>
 
 <pending_tasks>
-- Resolve the Expo Go application launch issue () where the manifest endpoint returns HTML instead of JSON. (Initially requested, not addressed in trajectory)
+-   The primary pending task is for the user to build the Android APK on their local Windows machine using the provided project files, which have been downgraded to the stable Expo SDK 51.
+-   Connecting the  custom domain. This task was paused and is dependent on a successful deployment.
+-   The initial Expo Go launch issue () was deferred and never resolved.
 </pending_tasks>
 
 <current_work>
-Immediately before this summary request, the AI engineer was working on enhancing the raffle creation functionality within the Admin dashboard. The specific user request was to:
-1.  Remove address fields from raffle creation.
-2.  Implement a searchable drop-down for partners.
-3.  Add fields for  and  to determine ticket usage.
+The most recent work was an extensive and critical debugging effort to resolve a persistent Android build failure (). This issue was identified as a bug within Expo SDK 54 related to its New Architecture.
 
-The work for this task commenced with:
--   **Backend Update**: The  model in  was updated to include  and  fields.
+After numerous failed attempts to patch the configuration for SDK 54, the engineer executed a full project downgrade to the more stable **Expo SDK 51**. This involved:
+1.  Running env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_PUBLIC_REDIRECT_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+› Installing 1 other package using yarn
+› Using ~51.0.0 instead of 54.0.23 for expo because this version was explicitly provided. Packages excluded from dependency validation should be listed in expo.install.exclude in package.json. Learn more: https://docs.expo.dev/more/expo-cli/#configuring-dependency-validation
+> yarn add expo@~51.0.0
+yarn add v1.22.22
+[1/4] Resolving packages...
+[2/4] Fetching packages...
+[3/4] Linking dependencies...
+[4/4] Building fresh packages...
+success Saved lockfile.
+success Saved 102 new dependencies.
+info Direct dependencies
+└─ expo@51.0.39
+info All dependencies
+├─ @babel/plugin-transform-export-namespace-from@7.27.1
+├─ @babel/plugin-transform-object-rest-spread@7.28.4
+├─ @expo/bunyan@4.0.1
+├─ @expo/cli@0.18.31
+├─ @expo/code-signing-certificates@0.0.5
+├─ @expo/devcert@1.2.0
+├─ @expo/osascript@2.3.7
+├─ @expo/package-manager@1.9.8
+├─ @expo/rudder-sdk-node@1.1.1
+├─ @graphql-typed-document-node/core@3.2.0
+├─ @npmcli/fs@3.1.1
+├─ @react-native/debugger-frontend@0.74.85
+├─ @react-native/dev-middleware@0.74.85
+├─ @segment/loosely-validate-event@2.0.0
+├─ @urql/core@2.3.6
+├─ @urql/exchange-retry@0.3.0
+├─ agent-base@6.0.2
+├─ aggregate-error@3.1.0
+├─ arg@5.0.2
+├─ babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517
+├─ babel-plugin-react-native-web@0.19.13
+├─ babel-preset-expo@11.0.15
+├─ bplist-creator@0.0.7
+├─ buffer-alloc-unsafe@1.1.0
+├─ buffer-alloc@1.2.0
+├─ buffer-fill@1.0.0
+├─ builtins@1.0.3
+├─ cacache@18.0.4
+├─ charenc@0.0.2
+├─ chownr@2.0.0
+├─ clean-stack@2.2.0
+├─ component-type@1.2.2
+├─ crypt@0.0.2
+├─ dag-map@1.0.2
+├─ default-gateway@4.2.0
+├─ del@6.1.1
+├─ detect-libc@1.0.3
+├─ expo-asset@10.0.10
+├─ expo-file-system@17.0.1
+├─ expo-keep-awake@13.0.2
+├─ expo-modules-autolinking@1.11.3
+├─ expo-modules-core@1.12.26
+├─ expo@51.0.39
+├─ fbemitter@3.0.0
+├─ fetch-retry@4.1.1
+├─ freeport-async@2.0.0
+├─ fs-minipass@2.1.0
+├─ graphql-tag@2.12.6
+├─ graphql@15.8.0
+├─ hosted-git-info@3.0.8
+├─ https-proxy-agent@5.0.1
+├─ indent-string@4.0.0
+├─ internal-ip@4.3.0
+├─ ip-regex@2.1.0
+├─ ipaddr.js@1.9.1
+├─ is-buffer@1.1.6
+├─ is-invalid-path@0.1.0
+├─ is-path-cwd@2.2.0
+├─ is-path-inside@3.0.3
+├─ is-valid-path@0.1.1
+├─ join-component@1.1.0
+├─ json-schema-deref-sync@0.13.0
+├─ lightningcss-linux-arm64-gnu@1.19.0
+├─ lightningcss-linux-arm64-musl@1.19.0
+├─ lightningcss@1.19.0
+├─ md5-file@3.2.3
+├─ md5@2.3.0
+├─ md5hex@1.0.0
+├─ memory-cache@0.2.0
+├─ minipass-collect@2.0.1
+├─ minipass-flush@1.0.5
+├─ minipass-pipeline@1.2.4
+├─ minizlib@2.1.2
+├─ nice-try@1.0.5
+├─ npm-package-arg@7.0.0
+├─ os-homedir@1.0.2
+├─ os-tmpdir@1.0.2
+├─ osenv@0.1.5
+├─ p-finally@1.0.0
+├─ path-key@2.0.1
+├─ pretty-bytes@5.6.0
+├─ progress@2.0.3
+├─ remove-trailing-slash@0.1.1
+├─ resolve.exports@2.0.3
+├─ send@0.18.0
+├─ ssri@10.0.6
+├─ strip-eof@1.0.0
+├─ tar@6.2.1
+├─ tempy@0.7.1
+├─ text-table@0.2.0
+├─ traverse@0.6.11
+├─ trim-right@1.0.1
+├─ typedarray.prototype.slice@1.0.5
+├─ unique-filename@3.0.0
+├─ unique-slug@4.0.0
+├─ unique-string@2.0.0
+├─ url-join@4.0.0
+├─ uuid@8.3.2
+├─ valid-url@1.0.9
+├─ validate-npm-package-name@3.0.0
+├─ zod-validation-error@2.1.0
+└─ zod@3.25.76
+Done in 14.25s. to set the core SDK version.
+2.  Running env: load .env
+env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_PUBLIC_REDIRECT_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
+Dependencies are up to date to align all dependent packages (, , etc.) with SDK 51, resolving numerous version conflicts.
+3.  Updating the  file to be compatible with SDK 51.
+4.  Removing the conflicting  file.
+5.  Packaging the entire cleaned-up  directory into a new  file.
 
--   **Frontend Update**: The next step, which was the last action taken, was to update the frontend TypeScript types () and then modify the Admin Raffles form () to reflect these new  and  fields, as well as to implement the searchable partner dropdown and remove address fields.
+The final action was providing the user with this ZIP file and clear instructions to perform the APK build on their local Windows machine, which is expected to succeed now that the project is on a stable SDK version.
 </current_work>
 
 <optional_next_step>
-Update the frontend TypeScript types for the  model and then proceed to modify the Admin Raffles form.
+Guide the user through the local APK build process on their Windows computer using the provided Expo SDK 51 project files, and assist with any issues that arise from that attempt.
 </optional_next_step>
