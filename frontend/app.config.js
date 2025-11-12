@@ -41,7 +41,18 @@ module.exports = {
           backgroundColor: "#FFD700"
         }
       ],
-      "expo-web-browser"
+      "expo-web-browser",
+      [
+        "expo-build-properties",
+        {
+          android: {
+            compileSdkVersion: 34,
+            targetSdkVersion: 34,
+            minSdkVersion: 23,
+            buildToolsVersion: "34.0.0"
+          }
+        }
+      ]
     ],
     experiments: {
       typedRoutes: true
