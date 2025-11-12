@@ -1,0 +1,55 @@
+module.exports = {
+  expo: {
+    name: "WinWai",
+    slug: "winwai-raffle",
+    owner: "arkadyaapps",
+    version: "1.0.0",
+    orientation: "portrait",
+    icon: "./assets/images/icon.png",
+    scheme: "winwai",
+    userInterfaceStyle: "light",
+    newArchEnabled: false,
+    ios: {
+      supportsTablet: true,
+      bundleIdentifier: "com.winwai.raffle"
+    },
+    android: {
+      adaptiveIcon: {
+        foregroundImage: "./assets/images/adaptive-icon.png",
+        backgroundColor: "#FFD700"
+      },
+      package: "com.winwai.raffle",
+      permissions: [
+        "android.permission.INTERNET",
+        "android.permission.ACCESS_NETWORK_STATE",
+        "com.google.android.gms.permission.AD_ID"
+      ]
+    },
+    web: {
+      bundler: "metro",
+      output: "static",
+      favicon: "./assets/images/favicon.png"
+    },
+    plugins: [
+      "expo-router",
+      [
+        "expo-splash-screen",
+        {
+          image: "./assets/images/splash-icon.png",
+          imageWidth: "80%",
+          resizeMode: "contain",
+          backgroundColor: "#FFD700"
+        }
+      ],
+      "expo-web-browser"
+    ],
+    experiments: {
+      typedRoutes: true
+    },
+    extra: {
+      eas: {
+        projectId: "019dd289-3f32-4930-9048-725d49bcb28a"
+      }
+    }
+  }
+};
