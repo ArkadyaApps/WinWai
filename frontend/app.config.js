@@ -8,7 +8,7 @@ module.exports = {
     icon: "./assets/images/icon.png",
     scheme: "winwai",
     userInterfaceStyle: "light",
-    newArchEnabled: false,
+    newArchEnabled: true,
     ios: {
       supportsTablet: true,
       bundleIdentifier: "com.winwai.raffle"
