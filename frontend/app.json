@@ -46,9 +46,6 @@
       "typedRoutes": true
     },
     "extra": {
-      "eas": {
-        "projectId": "winwai-raffle"
-      }
     }
   }
 }
