@@ -9,7 +9,8 @@
       "distribution": "internal",
       "android": {
         "credentialsSource": "remote",
-        "image": "latest"
+        "image": "latest",
+        "newArchEnabled": false
       }
     },
     "preview": {
@@ -18,14 +19,16 @@
         "buildType": "apk",
         "credentialsSource": "remote",
         "image": "latest",
-        "gradleCommand": ":app:assembleRelease"
+        "gradleCommand": ":app:assembleRelease",
+        "newArchEnabled": false
       }
     },
     "production": {
       "android": {
         "buildType": "apk",
         "credentialsSource": "remote",
-        "image": "latest"
+        "image": "latest",
+        "newArchEnabled": false
       }
     }
   },
