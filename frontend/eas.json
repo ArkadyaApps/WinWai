@@ -28,7 +28,8 @@
         "image": "latest"
       },
       "env": {
-        "EXPO_PUBLIC_BACKEND_URL": "https://winwai.up.railway.app"
+        "EXPO_PUBLIC_BACKEND_URL": "https://winwai.up.railway.app",
+        "EXPO_PUBLIC_REDIRECT_URL": "winwai://"
       }
     }
   },
