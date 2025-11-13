@@ -29,18 +29,24 @@ class RewardedAdManager {
       // Try to dynamically import AdMob only on native platforms
       let RewardedInterstitialAd, RewardedAdEventType, TestIds;
       try {
-        const admob = await import('react-native-google-mobile-ads');
+        // Check if module exists before importing
+        const admob = require('react-native-google-mobile-ads');
+        if (!admob) {
+          console.log('AdMob module not found');
+          this.adReady = false;
+          return;
+        }
         RewardedInterstitialAd = admob.RewardedInterstitialAd;
         RewardedAdEventType = admob.RewardedAdEventType;
         TestIds = admob.TestIds;
       } catch (importError) {
-        console.log('AdMob not available:', importError);
+        console.log('AdMob not available (module not installed)');
         this.adReady = false;
         return;
       }
       
-      if (!RewardedInterstitialAd) {
-        console.log('RewardedInterstitialAd not available');
+      if (!RewardedInterstitialAd || typeof RewardedInterstitialAd.createForAdRequest !== 'function') {
+        console.log('RewardedInterstitialAd not available or invalid');
         this.adReady = false;
         return;
       }
