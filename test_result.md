@@ -385,6 +385,32 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
+      CURRENT TASK (NEW SESSION): Critical fixes for WinWai Raffle Rewards app.
+      
+      COMPLETED CHANGES:
+      1. ✅ Locked Expo SDK to version ~51.0.0 in package.json with resolutions field
+      2. ✅ Completed translation implementation:
+         - Added 40+ new translation keys for Tickets and Profile screens
+         - Translated all hardcoded text in Tickets screen (balance, earn tickets, ad loading, etc.)
+         - Translated all hardcoded text in Profile screen (admin panel, account, support sections)
+         - Translated all modal content (Edit Profile, Change Password, Select Language)
+         - Both English and Thai translations complete
+      3. ✅ Fixed admin access for netcorez13@gmail.com:
+         - Updated /api/admin/make-admins endpoint to use 'role' field instead of 'isAdmin'
+         - Added automatic admin role assignment for netcorez13@gmail.com, artteabnc@gmail.com, arkadyaproperties@gmail.com in both OAuth and email signup flows
+         - User will automatically get admin access upon next login/signup
+      
+      PENDING TASKS:
+      1. 🔄 Add stock images for raffles (currently no images)
+      2. 🔄 Fix Tickets page crash (AdMob/RewardedAdManager issue - needs testing)
+      3. 🔄 Test all translations work correctly across screens
+      
+      READY FOR TESTING:
+      - Backend: Admin role assignment for specific emails
+      - Frontend: Translation keys in Tickets and Profile screens
+      
+  - agent: "main"
+    message: |
       CURRENT TASK: Enhanced raffle creation form in Admin dashboard.
       
       COMPLETED CHANGES:
