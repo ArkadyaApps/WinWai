@@ -61,15 +61,15 @@ async def seed_raffles():
             "partnerId": "partner-1",
             "prizeValue": 500,
             "ticketCost": 10,
-            "maxEntries": 100,
-            "currentEntries": 45,
+            "prizesAvailable": 10,
+            "prizesRemaining": 6,
+            "totalEntries": 45,
             "active": True,
-            "drawDate": (now + timedelta(days=3)).isoformat(),
-            "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/gift_card.png",
+            "drawDate": (now + timedelta(days=3)),
+            "image": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/gift_card.png",
             "category": "Shopping",
             "location": "Bangkok",
-            "createdAt": now,
-            "updatedAt": now
+            "createdAt": now
         },
         {
             "id": "raffle-2",
