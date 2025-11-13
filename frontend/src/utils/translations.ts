@@ -51,6 +51,54 @@ export const translations = {
     goBack: 'Go Back',
     success: 'Success!',
     error: 'Error',
+    
+    // Profile
+    editProfile: 'Edit Profile',
+    inviteFriends: 'Invite Friends (Get 1 Ticket)',
+    changePassword: 'Change Password',
+    notifications: 'Notifications',
+    language: 'Language',
+    helpCenter: 'Help Center',
+    termsConditions: 'Terms & Conditions',
+    privacyPolicy: 'Privacy Policy',
+    signOut: 'Sign Out',
+    
+    // Tickets Page
+    earnTickets: 'Earn Tickets',
+    watchAd: 'Watch an Ad',
+    watchAdDescription: 'Watch a short video ad to earn 10 free tickets',
+    dailyBonus: 'Daily Bonus',
+    dailyBonusDescription: 'Come back daily to earn bonus tickets',
+    inviteFriend: 'Invite Friends',
+    inviteFriendDescription: 'Share your referral code and both get 1 ticket',
+    
+    // Referral Page
+    inviteGetTickets: 'Invite Friends, Get Tickets!',
+    referralSubtitle: 'Share your referral link and both you and your friend get 1 free ticket when they sign up!',
+    yourReferralCode: 'Your Referral Code',
+    yourReferralLink: 'Your Referral Link',
+    copyLink: 'Copy Link',
+    copied: 'Copied!',
+    shareVia: 'Share via...',
+    howItWorks: 'How it works',
+    shareYourLink: 'Share your link',
+    shareDescription: 'Send your referral link to friends',
+    theySignUp: 'They sign up',
+    signUpDescription: 'Your friend creates an account using your link',
+    bothGetTickets: 'You both get tickets!',
+    bothGetDescription: 'Both of you receive 1 free ticket instantly',
+    
+    // Auth
+    signIn: 'Sign In',
+    signUp: 'Sign Up',
+    email: 'Email',
+    password: 'Password',
+    name: 'Name',
+    alreadyHaveAccount: 'Already have an account?',
+    dontHaveAccount: "Don't have an account?",
+    continueWithGoogle: 'Continue with Google',
+    orSignInWith: 'or sign in with',
+    bySigningUp: 'By signing up, you agree to our Terms & Conditions',
   },
   th: {
     // Header
