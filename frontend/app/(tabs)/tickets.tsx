@@ -17,12 +17,28 @@ export default function TicketsScreen() {
 
   useEffect(() => {
     if (user) {
-      rewardedAdManager.loadRewardedAd(user.id);
-      rewardedAdManager.setRewardCallback(async () => {
-        try { const response = await api.get('/api/users/me/tickets'); updateTickets(response.data.tickets); Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); } catch (error) { console.error('Failed to refresh tickets:', error); }
-      });
+      try {
+        rewardedAdManager.loadRewardedAd(user.id);
+        rewardedAdManager.setRewardCallback(async () => {
+          try { 
+            const response = await api.get('/api/users/me/tickets'); 
+            updateTickets(response.data.tickets); 
+            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); 
+          } catch (error) { 
+            console.error('Failed to refresh tickets:', error); 
+          }
+        });
+      } catch (error) {
+        console.error('Failed to initialize ad manager:', error);
+      }
     }
-    const interval = setInterval(() => { setAdReady(rewardedAdManager.isRewardedAdReady()); }, 1000);
+    const interval = setInterval(() => { 
+      try {
+        setAdReady(rewardedAdManager.isRewardedAdReady()); 
+      } catch (error) {
+        console.error('Failed to check ad status:', error);
+      }
+    }, 1000);
     return () => clearInterval(interval);
   }, [user]);
 
