@@ -115,21 +115,21 @@ export default function ProfileScreen() {
 
         {/* Stats Card */}
         <View style={styles.statsCard}>
-          <View style={styles.statItem}><Text style={styles.statValue}>{user?.tickets || 0}</Text><Text style={styles.statLabel}>Tickets</Text></View>
+          <View style={styles.statItem}><Text style={styles.statValue}>{user?.tickets || 0}</Text><Text style={styles.statLabel}>{t.tickets}</Text></View>
           <View style={styles.statDivider} />
-          <View style={styles.statItem}><Text style={styles.statValue}>{user?.dailyStreak || 0}</Text><Text style={styles.statLabel}>Day Streak</Text></View>
+          <View style={styles.statItem}><Text style={styles.statValue}>{user?.dailyStreak || 0}</Text><Text style={styles.statLabel}>{t.dayStreak}</Text></View>
         </View>
 
         <TouchableOpacity style={styles.editProfileButton} onPress={handleEditProfile}>
           <Ionicons name="create-outline" size={20} color="#fff" />
-          <Text style={styles.editProfileText}>Edit Profile</Text>
+          <Text style={styles.editProfileText}>{t.editProfile}</Text>
         </TouchableOpacity>
 
         {isAdmin && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="shield-checkmark" size={24} color={theme.colors.primaryGold} />
-              <Text style={styles.sectionTitle}>Admin Panel</Text>
+              <Text style={styles.sectionTitle}>{t.adminPanel}</Text>
             </View>
             
             {/* Admin Mode Toggle */}
@@ -140,9 +140,9 @@ export default function ProfileScreen() {
               <View style={styles.adminToggleContent}>
                 <Ionicons name="settings" size={24} color={theme.colors.onyx} />
                 <View style={styles.adminToggleText}>
-                  <Text style={styles.adminToggleTitle}>Admin Mode</Text>
+                  <Text style={styles.adminToggleTitle}>{t.adminMode}</Text>
                   <Text style={styles.adminToggleSubtitle}>
-                    {adminMode ? 'Admin features enabled' : 'Enable to access admin features'}
+                    {adminMode ? t.adminFeaturesEnabled : t.enableAdminFeatures}
                   </Text>
                 </View>
               </View>
@@ -156,21 +156,21 @@ export default function ProfileScreen() {
                 <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/partners')}>
                   <LinearGradient colors={["#FF6B6B", "#FF8E53"]} style={styles.adminMenuGradient}>
                     <Ionicons name="business" size={24} color="#fff" />
-                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>Manage Partners</Text><Text style={styles.adminMenuSubtitle}>Add, edit, remove partners</Text></View>
+                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.managePartners}</Text><Text style={styles.adminMenuSubtitle}>{t.addEditRemovePartners}</Text></View>
                     <Ionicons name="chevron-forward" size={20} color="#fff" />
                   </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/users')}>
                   <LinearGradient colors={["#4ECDC4", "#44A08D"]} style={styles.adminMenuGradient}>
                     <Ionicons name="people" size={24} color="#fff" />
-                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>Manage Users</Text><Text style={styles.adminMenuSubtitle}>View and manage all users</Text></View>
+                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.manageUsers}</Text><Text style={styles.adminMenuSubtitle}>{t.viewManageUsers}</Text></View>
                     <Ionicons name="chevron-forward" size={20} color="#fff" />
                   </LinearGradient>
                 </TouchableOpacity>
                 <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/raffles')}>
                   <LinearGradient colors={["#A8E6CF", "#88D8B0"]} style={styles.adminMenuGradient}>
                     <Ionicons name="gift" size={24} color="#fff" />
-                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>Manage Raffles</Text><Text style={styles.adminMenuSubtitle}>Create, edit, draw winners</Text></View>
+                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.manageRaffles}</Text><Text style={styles.adminMenuSubtitle}>{t.createEditDrawWinners}</Text></View>
                     <Ionicons name="chevron-forward" size={20} color="#fff" />
                   </LinearGradient>
                 </TouchableOpacity>
