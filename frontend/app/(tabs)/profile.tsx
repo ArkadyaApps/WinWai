@@ -119,7 +119,7 @@ export default function ProfileScreen() {
         </View>
 
         <TouchableOpacity style={styles.editProfileButton} onPress={handleEditProfile}>
-          <Ionicons name="create-outline" size={20} color="#4ECDC4" />
+          <Ionicons name="create-outline" size={20} color="#fff" />
           <Text style={styles.editProfileText}>Edit Profile</Text>
         </TouchableOpacity>
 
