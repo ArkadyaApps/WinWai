@@ -15,8 +15,8 @@ export default function ReferralScreen() {
   const referralCode = user?.id?.substring(0, 8).toUpperCase() || 'WINWAI00';
   const referralLink = `https://winwai.app/invite/${referralCode}`;
   
-  const handleCopyLink = async () => {
-    await Clipboard.setStringAsync(referralLink);
+  const handleCopyLink = () => {
+    Clipboard.setString(referralLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
     Alert.alert('Copied!', 'Referral link copied to clipboard');
