@@ -152,6 +152,7 @@ class EmailSignUpRequest(BaseModel):
     email: EmailStr
     password: str
     name: str
+    referralCode: Optional[str] = None
 
 class EmailSignInRequest(BaseModel):
     email: EmailStr
