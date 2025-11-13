@@ -44,9 +44,6 @@ class RewardedAdManager {
         this.adReady = false;
         return;
       }
-
-      const { RewardedInterstitialAd: _unused, RewardedAdEventType: _unused2, TestIds: _unused3 } = 
-        require('react-native-google-mobile-ads');
       
       const adUnitId = __DEV__ 
         ? TestIds.REWARDED_INTERSTITIAL 
