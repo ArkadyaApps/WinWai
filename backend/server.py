@@ -662,6 +662,27 @@ async def verify_ad_reward(reward_request: AdRewardRequest):
         "newBalance": user["tickets"] if user else 0
     }
 
+@api_router.post("/admin/make-admins")
+async def make_admins(request: dict):
+    """Make specified users admins"""
+    try:
+        emails = request.get("emails", [])
+        updated = 0
+        for email in emails:
+            result = await db.users.update_one(
+                {"email": email},
+                {"$set": {"isAdmin": True}}
+            )
+            updated += result.modified_count
+        
+        return {
+            "success": True,
+            "message": f"Updated {updated} user(s) to admin",
+            "emails": emails
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
 @api_router.post("/admin/seed-database")
 async def seed_database():
     """Seed the database with mock data for testing"""
