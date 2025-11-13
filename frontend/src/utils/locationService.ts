@@ -1,6 +1,7 @@
 import axios from 'axios';
+import * as Location from 'expo-location';
 
-interface LocationData {
+export interface LocationData {
   city: string;
   regionName: string;
   country: string;
@@ -9,9 +10,41 @@ interface LocationData {
   lon: number;
 }
 
+// Try GPS location first, fall back to IP geolocation
 export const getUserLocation = async (): Promise<LocationData | null> => {
   try {
-    // Use HTTPS endpoint for better compatibility
+    // First, try to get GPS location
+    const { status } = await Location.requestForegroundPermissionsAsync();
+    
+    if (status === 'granted') {
+      try {
+        const location = await Location.getCurrentPositionAsync({
+          accuracy: Location.Accuracy.Balanced,
+        });
+        
+        // Reverse geocode to get city/country
+        const reverseGeocode = await Location.reverseGeocodeAsync({
+          latitude: location.coords.latitude,
+          longitude: location.coords.longitude,
+        });
+        
+        if (reverseGeocode && reverseGeocode.length > 0) {
+          const place = reverseGeocode[0];
+          return {
+            city: place.city || place.subregion || 'Bangkok',
+            regionName: place.region || 'Bangkok',
+            country: place.country || 'Thailand',
+            countryCode: place.isoCountryCode || 'TH',
+            lat: location.coords.latitude,
+            lon: location.coords.longitude,
+          };
+        }
+      } catch (gpsError) {
+        console.log('GPS location failed, falling back to IP:', gpsError);
+      }
+    }
+    
+    // Fallback to IP geolocation
     const response = await axios.get('https://ipapi.co/json/');
     if (response.data) {
       return {
@@ -23,7 +56,8 @@ export const getUserLocation = async (): Promise<LocationData | null> => {
         lon: response.data.longitude || 100.5018,
       };
     }
-    // Fallback to Bangkok
+    
+    // Final fallback to Bangkok
     return {
       city: 'Bangkok',
       regionName: 'Bangkok',
