@@ -15,28 +15,20 @@ class RewardedAdManager {
   private onRewardCallback?: (reward: RewardEvent) => void;
   private adReady = false;
   private rewardedInterstitial: any = null;
-  private adMobAvailable = false;
 
   async loadRewardedAd(userId: string): Promise<void> {
     this.currentUserId = userId;
-    this.adReady = false;
     
     // Only load ads on native platforms
     if (Platform.OS === 'web') {
-      return;
-    }
-
-    // Don't try to load if AdMob is not available
-    if (!this.adMobAvailable && !this.checkAdMobAvailability()) {
-      console.log('AdMob not available, skipping ad load');
+      this.adReady = false;
       return;
     }
 
     try {
-      const admob = (global as any).__admobModule;
-      const RewardedInterstitialAd = admob.RewardedInterstitialAd;
-      const RewardedAdEventType = admob.RewardedAdEventType;
-      const TestIds = admob.TestIds;
+      // Dynamically import AdMob module
+      const { RewardedInterstitialAd, RewardedAdEventType, TestIds } = 
+        await import('react-native-google-mobile-ads');
       
       const adUnitId = __DEV__ 
         ? TestIds.REWARDED_INTERSTITIAL 
