@@ -292,15 +292,33 @@ async def email_signup(signup_request: EmailSignUpRequest):
     
     # Create new user
     password_hash = hash_password(signup_request.password)
+    welcome_tickets = 100  # Base welcome bonus
+    
+    # Process referral code if provided
+    referrer_id = None
+    if signup_request.referralCode:
+        # Find referrer by referral code (first 8 chars of user ID)
+        referrer = await db.users.find_one({"id": {"$regex": f"^{signup_request.referralCode.lower()}"}})
+        if referrer:
+            referrer_id = referrer["id"]
+            welcome_tickets += 1  # Bonus ticket for being referred
+    
     new_user = User(
         email=signup_request.email,
         name=signup_request.name,
         password_hash=password_hash,
-        tickets=100,  # Welcome bonus
+        tickets=welcome_tickets,
         lastLogin=datetime.now(timezone.utc)
     )
     
     await db.users.insert_one(new_user.dict())
+    
+    # Give referrer their bonus ticket
+    if referrer_id:
+        await db.users.update_one(
+            {"id": referrer_id},
+            {"$inc": {"tickets": 1}}
+        )
     
     # Create session
     session_token = str(uuid.uuid4())
