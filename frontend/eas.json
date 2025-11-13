@@ -26,6 +26,9 @@
         "buildType": "apk",
         "credentialsSource": "remote",
         "image": "latest"
+      },
+      "env": {
+        "EXPO_PUBLIC_BACKEND_URL": "https://winwai.up.railway.app"
       }
     }
   },
