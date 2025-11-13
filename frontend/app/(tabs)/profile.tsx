@@ -34,10 +34,10 @@ export default function ProfileScreen() {
   const isAdmin = user?.role === 'admin';
 
   const handleSignOut = () => {
-    Alert.alert('Sign Out', 'Are you sure you want to sign out?', [
-      { text: 'Cancel', style: 'cancel' },
-      { text: 'Sign Out', style: 'destructive', onPress: async () => {
-        try { await signOut(); setTimeout(() => { router.push('/'); }, 100); } catch (e) { Alert.alert('Error', 'Failed to sign out. Please try again.'); }
+    Alert.alert(t.signOut, t.areYouSure, [
+      { text: t.cancel, style: 'cancel' },
+      { text: t.signOut, style: 'destructive', onPress: async () => {
+        try { await signOut(); setTimeout(() => { router.push('/'); }, 100); } catch (e) { Alert.alert(t.error, 'Failed to sign out. Please try again.'); }
       }}
     ]);
   };
