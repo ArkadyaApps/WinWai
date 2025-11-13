@@ -78,15 +78,15 @@ async def seed_raffles():
             "partnerId": "partner-2",
             "prizeValue": 1000,
             "ticketCost": 20,
-            "maxEntries": 50,
-            "currentEntries": 23,
+            "prizesAvailable": 5,
+            "prizesRemaining": 3,
+            "totalEntries": 23,
             "active": True,
-            "drawDate": (now + timedelta(days=5)).isoformat(),
-            "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/voucher.png",
+            "drawDate": (now + timedelta(days=5)),
+            "image": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/voucher.png",
             "category": "Shopping",
             "location": "Bangkok",
-            "createdAt": now,
-            "updatedAt": now
+            "createdAt": now
         },
         {
             "id": "raffle-3",
@@ -95,15 +95,15 @@ async def seed_raffles():
             "partnerId": "partner-3",
             "prizeValue": 200,
             "ticketCost": 5,
-            "maxEntries": 200,
-            "currentEntries": 156,
+            "prizesAvailable": 20,
+            "prizesRemaining": 8,
+            "totalEntries": 156,
             "active": True,
-            "drawDate": (now + timedelta(days=2)).isoformat(),
-            "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/grab_credit.png",
+            "drawDate": (now + timedelta(days=2)),
+            "image": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/grab_credit.png",
             "category": "Transport",
             "location": "Bangkok",
-            "createdAt": now,
-            "updatedAt": now
+            "createdAt": now
         },
         {
             "id": "raffle-4",
@@ -112,15 +112,15 @@ async def seed_raffles():
             "partnerId": "partner-1",
             "prizeValue": 300,
             "ticketCost": 8,
-            "maxEntries": 150,
-            "currentEntries": 87,
+            "prizesAvailable": 15,
+            "prizesRemaining": 7,
+            "totalEntries": 87,
             "active": True,
-            "drawDate": (now + timedelta(days=4)).isoformat(),
-            "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/food_voucher.png",
+            "drawDate": (now + timedelta(days=4)),
+            "image": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/food_voucher.png",
             "category": "Food",
             "location": "Bangkok",
-            "createdAt": now,
-            "updatedAt": now
+            "createdAt": now
         },
         {
             "id": "raffle-5",
@@ -129,15 +129,15 @@ async def seed_raffles():
             "partnerId": "partner-2",
             "prizeValue": 2000,
             "ticketCost": 50,
-            "maxEntries": 30,
-            "currentEntries": 12,
+            "prizesAvailable": 3,
+            "prizesRemaining": 2,
+            "totalEntries": 12,
             "active": True,
-            "drawDate": (now + timedelta(days=7)).isoformat(),
-            "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/mega_voucher.png",
+            "drawDate": (now + timedelta(days=7)),
+            "image": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/mega_voucher.png",
             "category": "Shopping",
             "location": "Bangkok",
-            "createdAt": now,
-            "updatedAt": now
+            "createdAt": now
         }
     ]
     
