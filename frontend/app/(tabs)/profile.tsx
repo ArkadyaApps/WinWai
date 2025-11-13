@@ -242,15 +242,15 @@ export default function ProfileScreen() {
       <Modal visible={editModalVisible} animationType="slide" transparent onRequestClose={() => setEditModalVisible(false)}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}><Text style={styles.modalTitle}>Edit Profile</Text><TouchableOpacity onPress={() => setEditModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
+            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t.editProfile}</Text><TouchableOpacity onPress={() => setEditModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
             <ScrollView style={styles.formContainer}>
-              <Text style={styles.label}>Name *</Text>
-              <TextInput style={styles.input} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} placeholder="Your name" placeholderTextColor="#999" />
-              <Text style={styles.label}>Email *</Text>
-              <TextInput style={styles.input} value={formData.email} onChangeText={(text) => setFormData({ ...formData, email: text })} placeholder="Email address" placeholderTextColor="#999" keyboardType="email-address" autoCapitalize="none" />
-              <Text style={styles.label}>Phone</Text>
-              <TextInput style={styles.input} value={formData.phone} onChangeText={(text) => setFormData({ ...formData, phone: text })} placeholder="Phone number" placeholderTextColor="#999" keyboardType="phone-pad" />
-              <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile} disabled={saving}>{saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>Save Changes</Text>)}</TouchableOpacity>
+              <Text style={styles.label}>{t.name} *</Text>
+              <TextInput style={styles.input} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} placeholder={t.yourName} placeholderTextColor="#999" />
+              <Text style={styles.label}>{t.email} *</Text>
+              <TextInput style={styles.input} value={formData.email} onChangeText={(text) => setFormData({ ...formData, email: text })} placeholder={t.emailAddress} placeholderTextColor="#999" keyboardType="email-address" autoCapitalize="none" />
+              <Text style={styles.label}>{t.phone}</Text>
+              <TextInput style={styles.input} value={formData.phone} onChangeText={(text) => setFormData({ ...formData, phone: text })} placeholder={t.phoneNumber} placeholderTextColor="#999" keyboardType="phone-pad" />
+              <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile} disabled={saving}>{saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>{t.saveChanges}</Text>)}</TouchableOpacity>
             </ScrollView>
           </View>
         </KeyboardAvoidingView>
@@ -260,7 +260,7 @@ export default function ProfileScreen() {
       <Modal visible={languageModalVisible} animationType="slide" transparent onRequestClose={() => setLanguageModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}><Text style={styles.modalTitle}>Select Language</Text><TouchableOpacity onPress={() => setLanguageModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
+            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t.selectLanguage}</Text><TouchableOpacity onPress={() => setLanguageModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
             <View style={styles.languageList}>
               <TouchableOpacity style={[styles.languageOption, language === 'en' && styles.languageOptionActive]} onPress={() => handleLanguageChange('en')}>
                 <Text style={styles.languageFlag}>🇺🇸</Text>
