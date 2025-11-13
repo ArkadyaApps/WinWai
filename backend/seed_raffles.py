@@ -6,8 +6,15 @@ from dotenv import load_dotenv
 
 load_dotenv()
 
-MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
-DB_NAME = os.getenv("DB_NAME", "winwai")
+# Check if we should seed production
+import sys
+if len(sys.argv) > 1 and sys.argv[1] == "--production":
+    # For Railway production - you need to provide the MongoDB URL
+    MONGO_URL = input("Enter Railway MongoDB URL: ")
+    DB_NAME = input("Enter Database Name (default: winwai): ") or "winwai"
+else:
+    MONGO_URL = os.getenv("MONGO_URL", "mongodb://localhost:27017")
+    DB_NAME = os.getenv("DB_NAME", "winwai")
 
 async def seed_raffles():
     client = AsyncIOMotorClient(MONGO_URL)
