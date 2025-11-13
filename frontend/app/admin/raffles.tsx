@@ -129,6 +129,14 @@ export default function AdminRafflesScreen() {
               <TextInput style={styles.input} value={formData.title} onChangeText={(text) => setFormData({ ...formData, title: text })} placeholder="Raffle title" placeholderTextColor="#999" />
               <Text style={styles.label}>Description *</Text>
               <TextInput style={[styles.input, styles.textArea]} value={formData.description} onChangeText={(text) => setFormData({ ...formData, description: text })} placeholder="Raffle description" placeholderTextColor="#999" multiline numberOfLines={3} />
+              <Text style={styles.label}>Language * (Content Language)</Text>
+              <View style={styles.categoryButtons}>
+                {[{ code: 'en', name: 'English' }, { code: 'th', name: 'ภาษาไทย' }, { code: 'fr', name: 'Français' }].map((lang) => (
+                  <TouchableOpacity key={lang.code} style={[styles.categoryButton, formData.language === lang.code && styles.categoryButtonActive]} onPress={() => setFormData({ ...formData, language: lang.code })}>
+                    <Text style={[styles.categoryButtonText, formData.language === lang.code && styles.categoryButtonTextActive]}>{lang.name}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
               <Text style={styles.label}>Category *</Text>
               <View style={styles.categoryButtons}>
                 {['food', 'hotel', 'spa'].map((cat) => (
