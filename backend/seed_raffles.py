@@ -80,14 +80,11 @@ async def seed_raffles():
             "ticketCost": 20,
             "maxEntries": 50,
             "currentEntries": 23,
-            "status": "active",
+            "active": True,
             "drawDate": (now + timedelta(days=5)).isoformat(),
             "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/voucher.png",
             "category": "Shopping",
-            "location": {
-                "city": "Bangkok",
-                "district": "Pathum Wan"
-            },
+            "location": "Bangkok",
             "createdAt": now,
             "updatedAt": now
         },
@@ -100,14 +97,11 @@ async def seed_raffles():
             "ticketCost": 5,
             "maxEntries": 200,
             "currentEntries": 156,
-            "status": "active",
+            "active": True,
             "drawDate": (now + timedelta(days=2)).isoformat(),
             "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/grab_credit.png",
             "category": "Transport",
-            "location": {
-                "city": "Bangkok",
-                "district": "All Districts"
-            },
+            "location": "Bangkok",
             "createdAt": now,
             "updatedAt": now
         },
@@ -120,14 +114,11 @@ async def seed_raffles():
             "ticketCost": 8,
             "maxEntries": 150,
             "currentEntries": 87,
-            "status": "active",
+            "active": True,
             "drawDate": (now + timedelta(days=4)).isoformat(),
             "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/food_voucher.png",
             "category": "Food",
-            "location": {
-                "city": "Bangkok",
-                "district": "Bang Rak"
-            },
+            "location": "Bangkok",
             "createdAt": now,
             "updatedAt": now
         },
@@ -140,14 +131,11 @@ async def seed_raffles():
             "ticketCost": 50,
             "maxEntries": 30,
             "currentEntries": 12,
-            "status": "active",
+            "active": True,
             "drawDate": (now + timedelta(days=7)).isoformat(),
             "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/mega_voucher.png",
             "category": "Shopping",
-            "location": {
-                "city": "Bangkok",
-                "district": "Pathum Wan"
-            },
+            "location": "Bangkok",
             "createdAt": now,
             "updatedAt": now
         }
