@@ -287,44 +287,44 @@ export default function ProfileScreen() {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>Change Password</Text>
+              <Text style={styles.modalTitle}>{t.changePassword}</Text>
               <TouchableOpacity onPress={() => { setChangePasswordModalVisible(false); setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); }}>
                 <Ionicons name="close" size={28} color="#000" />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.formContainer}>
-              <Text style={styles.label}>Current Password *</Text>
+              <Text style={styles.label}>{t.currentPassword} *</Text>
               <TextInput 
                 style={styles.input} 
                 value={passwordData.currentPassword} 
                 onChangeText={(text) => setPasswordData({ ...passwordData, currentPassword: text })} 
-                placeholder="Enter current password" 
+                placeholder={t.enterCurrentPassword} 
                 placeholderTextColor="#999" 
                 secureTextEntry 
                 autoCapitalize="none" 
               />
-              <Text style={styles.label}>New Password *</Text>
+              <Text style={styles.label}>{t.newPassword} *</Text>
               <TextInput 
                 style={styles.input} 
                 value={passwordData.newPassword} 
                 onChangeText={(text) => setPasswordData({ ...passwordData, newPassword: text })} 
-                placeholder="Enter new password (min 6 characters)" 
+                placeholder={t.enterNewPassword} 
                 placeholderTextColor="#999" 
                 secureTextEntry 
                 autoCapitalize="none" 
               />
-              <Text style={styles.label}>Confirm New Password *</Text>
+              <Text style={styles.label}>{t.confirmPassword} *</Text>
               <TextInput 
                 style={styles.input} 
                 value={passwordData.confirmPassword} 
                 onChangeText={(text) => setPasswordData({ ...passwordData, confirmPassword: text })} 
-                placeholder="Re-enter new password" 
+                placeholder={t.reenterNewPassword} 
                 placeholderTextColor="#999" 
                 secureTextEntry 
                 autoCapitalize="none" 
               />
               <TouchableOpacity style={styles.saveButton} onPress={handleChangePassword} disabled={saving}>
-                {saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>Change Password</Text>)}
+                {saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>{t.changePassword}</Text>)}
               </TouchableOpacity>
             </ScrollView>
           </View>
