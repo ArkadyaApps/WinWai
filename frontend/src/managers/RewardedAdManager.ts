@@ -145,6 +145,21 @@ class RewardedAdManager {
   private generateTransactionId(): string {
     return `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
   }
+
+  private checkAdMobAvailability(): boolean {
+    try {
+      const admob = require('react-native-google-mobile-ads');
+      if (admob && admob.RewardedInterstitialAd) {
+        (global as any).__admobModule = admob;
+        this.adMobAvailable = true;
+        return true;
+      }
+    } catch (error) {
+      console.log('AdMob module not installed');
+    }
+    this.adMobAvailable = false;
+    return false;
+  }
 }
 
 export const rewardedAdManager = new RewardedAdManager();
