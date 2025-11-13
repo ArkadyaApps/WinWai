@@ -103,10 +103,12 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Enhance raffle creation form in Admin dashboard:
-  - Remove address fields (location and address) from raffle creation
-  - Implement searchable partner dropdown
-  - Add prizeValue and gamePrice fields to determine ticket usage
+  Critical fixes for WinWai Raffle Rewards app:
+  1. Lock Expo SDK to version ~51.0.0 to prevent auto-upgrade to 54.x (causes build failures)
+  2. Replace all hardcoded text with translatable keys (most screens not translated)
+  3. Add stock images to raffles (currently have no images)
+  4. Fix Tickets page crash (AdMob/RewardedAdManager issue)
+  5. Grant admin access to netcorez13@gmail.com (currently not showing admin panel)
 
 backend:
   - task: "Email/Password Signup endpoint"
