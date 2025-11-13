@@ -63,14 +63,11 @@ async def seed_raffles():
             "ticketCost": 10,
             "maxEntries": 100,
             "currentEntries": 45,
-            "status": "active",
+            "active": True,
             "drawDate": (now + timedelta(days=3)).isoformat(),
             "imageUrl": "https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/gift_card.png",
             "category": "Shopping",
-            "location": {
-                "city": "Bangkok",
-                "district": "Pathum Wan"
-            },
+            "location": "Bangkok",
             "createdAt": now,
             "updatedAt": now
         },
