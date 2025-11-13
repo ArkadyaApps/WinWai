@@ -79,6 +79,7 @@ class Raffle(BaseModel):
     validityMonths: int = Field(default=3)  # Prize validity in months (default 3)
     active: bool = Field(default=True)
     totalEntries: int = Field(default=0)
+    language: str = Field(default='en')  # Content language: en, th, fr
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class Entry(BaseModel):
