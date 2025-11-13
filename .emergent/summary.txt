@@ -1,198 +1,107 @@
 <analysis>
-The trajectory details the work of an AI engineer on the WinWai Raffle Rewards Thailand application. The session began with the successful completion of a feature enhancement for the admin raffle creation form. This involved backend model verification and extensive frontend modifications to , including adding a searchable partner dropdown and new input fields (, ).
+The trajectory documents a tumultuous development cycle focused on stabilizing a WinWai Raffle Rewards Android application. The core problem was a recurring, cryptic Gradle build failure () that plagued the entire process. The root cause was an unwanted, automatic upgrade of the Expo SDK from version 51 to 54, which was incompatible with the project's Gradle setup. The previous engineer made numerous attempts to fix user-reported issues, including app crashes, authentication failures (Google OAuth and email signup), missing fonts, and UI bugs.
 
-The primary focus then shifted to a series of user-initiated, complex, and ultimately interconnected issues. The user first requested to connect a custom domain, which was premature as the app wasn't deployed. The task then pivoted to building an Android APK. This request led to a prolonged and difficult troubleshooting process.
+Each attempt involved a cycle of diagnosing the problem, implementing a fix (e.g., adding fonts, correcting backend URLs in , seeding the production database, improving UI), and submitting a new EAS build. However, the underlying SDK version conflict frequently caused these builds to fail, leading to significant user frustration and multiple requests to revert all changes to a known-good state.
 
-The core of the struggle was a persistent Android build failure (). The engineer correctly identified this as an issue with React Native's New Architecture but struggled to resolve it within Expo SDK 54. Attempts to fix it by toggling , clearing caches, and modifying build configurations (, , ) were unsuccessful, partly due to a known bug in Expo SDK 54.
+The engineer addressed several key issues:
+1.  **Build Stability:** Fought the SDK 54 upgrade, repeatedly resetting  to use Expo .
+2.  **App Crash on Launch:** Fixed by adding missing font files (, ) and making the AdMob module loading more robust.
+3.  **Authentication:** Corrected the production backend URL in  and added a redirect URL for Google OAuth deep linking.
+4.  **Data Seeding:** Created and later fixed a Python script to populate the production MongoDB database with mock raffles, correcting data model mismatches.
+5.  **Feature/UI:** Implemented UI changes (grid layout, button styles), added a referral system, expanded translations, and fixed a build error by replacing  with React Native's built-in .
 
-After exhausting options on SDK 54 and receiving user feedback on the repetitive failures, the engineer made the decisive move to downgrade the entire project to the more stable Expo SDK 51. This involved a thorough cleanup of all npm packages, resolving version conflicts identified by , and providing the user with a new, clean project ZIP file and instructions for a local build. The final state of the project is a stable SDK 51 version, awaiting a local build attempt by the user.
+The session concluded after submitting a new build to fix the  dependency issue.
 </analysis>
 
 <product_requirements>
-The WinWai Raffle Rewards Thailand is a mobile application designed to offer users free-to-enter raffles, monetized through AdMob advertising.
+The application, WinWai Raffle Rewards Thailand, is a mobile raffle platform for Thai users. It is designed to be free-to-play and monetized via AdMob ads.
 
-**Core Functionality:**
--   **User Authentication:** Supports Google and Email/Password login via Firebase Authentication.
--   **Raffle System:** Users can view and participate in various raffles. Draws are triggered automatically based on ad revenue thresholds or scheduled dates, managed by a Firebase Cloud Function.
--   **Ticket & Rewards System:** Users acquire tickets through activities like watching ads, daily logins, or referrals. Winners receive digital vouchers in their accounts, which have a defined validity period.
--   **Admin Dashboard:** A web-based interface for administrators to manage partners, raffles, and users.
+**Core User-Facing Features:**
+- **Authentication:** Users can sign in with Google or Email/Password. The goal is a seamless in-app experience.
+- **Raffle System:** Users view and enter raffles. The app should display mock raffles for testing and demonstration.
+- **UI/UX:** The app must support English and Thai, with language selection based on user location. It requires specific UI layouts (e.g., 3-column grids) and functional components like a Tickets page.
+- **Referral System:** Users should be able to invite friends via a referral link, with both parties receiving rewards.
 
-**Recent Implementations:**
--   Full email/password authentication flow (sign-up, sign-in, password reset).
--   Geolocation for language detection and a multi-language translation system.
--   Enhanced partner profiles with logos, contact info, and map locations.
--   A voucher system for raffle winners.
--   **Completed Feature:** The admin raffle creation form was updated to remove address fields, add a searchable dropdown for selecting partners, and include new fields for  and  to manage ticket costs.
+**Project Goal & Current State:**
+The primary objective evolved from feature implementation to achieving a stable, installable Android APK. A series of build failures, primarily due to an unstable dependency environment, blocked progress. The immediate goal is to produce a working APK that resolves all previously reported bugs, including authentication flows, app crashes (especially on the Tickets page), missing raffle data, and incorrect UI layouts, without introducing new build errors.
 </product_requirements>
 
 <key_technical_concepts>
--   **Frontend:** React Native, Expo (SDK 51, previously SDK 54), Expo Router, Zustand.
--   **Backend:** FastAPI (Python), MongoDB.
--   **Build & Deployment:** EAS Build for creating APKs,  for build configuration.
--   **Core Concepts:** React Native New Architecture (Fabric/TurboModules) was a central point of failure, leading to a project-wide downgrade.
--   **Authentication:** Firebase Authentication, Android Keystore for app signing.
+- **Mobile Development**: React Native, Expo SDK (critical version conflict between  and ).
+- **Build Service**: Expo Application Services (EAS) for Android APK builds.
+- **Backend**: Python with FastAPI, deployed on Railway.
+- **Database**: MongoDB (local and cloud instances on Railway).
+- **Build & Dependency Management**: Gradle, Yarn (the  and  were frequent points of failure).
+- **Configuration**:  (for build profiles/env vars),  (for plugins and permissions),  (for backend logic and routes).
 </key_technical_concepts>
 
 <code_architecture>
-The application follows a monorepo structure with a distinct frontend and backend.
+The application is a monorepo with a  Expo app and a  FastAPI service.
 
 
 
--   ****
-    -   **Importance:** This file contains the UI and logic for the admin to create and edit raffles.
-    -   **Summary of Changes:** The file was heavily modified to improve UX. Address fields were removed. State management for partner search (, ) was added. The UI was updated to replace a simple partner ID input with a searchable modal/dropdown () for selecting partners.  fields for  and  were added, and the  function was updated to send this new data to the backend.
+-   ****:
+    -   **Importance**: The source of the most persistent build failures.
+    -   **Changes**: Was repeatedly and automatically upgraded to use , which caused a Gradle  error. The main fix was to manually revert this line back to  before every successful build.
 
--   ** & **
-    -   **Importance:** These files control Expo application configuration, including SDK version, plugins, and build properties like the Android package name and New Architecture settings.
-    -   **Summary of Changes:** These files were the epicenter of the build-failure debugging.  was created to provide a more robust configuration. The  property was toggled between  and  multiple times in an attempt to fix the build. The  and  were also updated during EAS project initialization. Ultimately,  was removed to prevent conflicts with , which was configured for Expo SDK 51.
+-   ****:
+    -   **Importance**: Configures build environment variables.
+    -   **Changes**: The  profile was updated multiple times. The  was corrected from  to . Later,  was added with the value  to fix the Google OAuth flow.
 
--   ****
-    -   **Importance:** This file configures the Expo Application Services (EAS) build process.
-    -   **Summary of Changes:** It was created and modified extensively. Build profiles (, ) were defined. The  property was added to force the use of the uploaded keystore. The  property was added to use the latest build workers. These changes were part of the unsuccessful attempt to fix the SDK 54 build. The final version was simplified for the SDK 51 downgrade.
+-   ****:
+    -   **Importance**: The app crashed on launch due to missing fonts.
+    -   **Changes**: This directory was initially empty. The AI engineer downloaded and added the required  and  font files to fix the crash.
 
--   ****
-    -   **Importance:** Defines all frontend project dependencies.
-    -   **Summary of Changes:** The file underwent a major overhaul. After  revealed numerous version mismatches, the engineer first attempted to align all packages with Expo SDK 54. When that failed, a full downgrade was performed, with  used to align all dependencies with the stable **Expo SDK 51**.
+-   ****:
+    -   **Importance**: Contains all backend API logic.
+    -   **Changes**: A new endpoint  was added to allow seeding the production Railway database. The  Pydantic model was updated to include a  field. Referral logic was added to the  endpoint.
+
+-   ****:
+    -   **Importance**: Script to populate the database with mock data.
+    -   **Changes**: Created from scratch and then heavily modified to align the data structure with the backend's Pydantic models, fixing mismatches in fields like , , and .
+
+-   ****:
+    -   **Importance**: A new feature screen that caused a build failure.
+    -   **Changes**: Created to handle user referrals. It initially imported , which was not an installed dependency, causing a build failure. This was fixed by changing the import and implementation to use the built-in  from .
+
+-   ****:
+    -   **Importance**: Caused the Tickets page to crash.
+    -   **Changes**: Modified to be more defensive. It now safely checks if the  module is available before trying to use its properties (like ), preventing a crash if the module fails to load.
+
+-   ** & **:
+    -   **Importance**: Core UI screens for displaying raffles.
+    -   **Changes**: The calculation for card width was changed to display 3 columns per row instead of 4, as requested by the user.
+
+-   ****:
+    -   **Importance**: User profile screen.
+    -   **Changes**: The Edit Profile button was restyled to be more prominent with a background color, icon, and new text styles. A link to the new referral page was also added to the settings menu.
+
+-   ****:
+    - **Importance**: The header component displayed on the home screen.
+    - **Changes**: The ticket balance view was wrapped in a  to make it a button that navigates the user to the  page.
 </code_architecture>
 
 <pending_tasks>
--   The primary pending task is for the user to build the Android APK on their local Windows machine using the provided project files, which have been downgraded to the stable Expo SDK 51.
--   Connecting the  custom domain. This task was paused and is dependent on a successful deployment.
--   The initial Expo Go launch issue () was deferred and never resolved.
+- Monitor the most recent EAS build ().
+- Report the final build outcome (success or failure) to the user.
+- Await user confirmation on testing the new APK to verify that the referral page, UI updates, and Tickets page crash are all resolved.
 </pending_tasks>
 
 <current_work>
-The most recent work was an extensive and critical debugging effort to resolve a persistent Android build failure (). This issue was identified as a bug within Expo SDK 54 related to its New Architecture.
+The AI engineer was in the process of fixing a build failure caused by an unresolved module. The user reported the error: .
 
-After numerous failed attempts to patch the configuration for SDK 54, the engineer executed a full project downgrade to the more stable **Expo SDK 51**. This involved:
-1.  Running env: load .env
-env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_PUBLIC_REDIRECT_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
-› Installing 1 other package using yarn
-› Using ~51.0.0 instead of 54.0.23 for expo because this version was explicitly provided. Packages excluded from dependency validation should be listed in expo.install.exclude in package.json. Learn more: https://docs.expo.dev/more/expo-cli/#configuring-dependency-validation
-> yarn add expo@~51.0.0
-yarn add v1.22.22
-[1/4] Resolving packages...
-[2/4] Fetching packages...
-[3/4] Linking dependencies...
-[4/4] Building fresh packages...
-success Saved lockfile.
-success Saved 102 new dependencies.
-info Direct dependencies
-└─ expo@51.0.39
-info All dependencies
-├─ @babel/plugin-transform-export-namespace-from@7.27.1
-├─ @babel/plugin-transform-object-rest-spread@7.28.4
-├─ @expo/bunyan@4.0.1
-├─ @expo/cli@0.18.31
-├─ @expo/code-signing-certificates@0.0.5
-├─ @expo/devcert@1.2.0
-├─ @expo/osascript@2.3.7
-├─ @expo/package-manager@1.9.8
-├─ @expo/rudder-sdk-node@1.1.1
-├─ @graphql-typed-document-node/core@3.2.0
-├─ @npmcli/fs@3.1.1
-├─ @react-native/debugger-frontend@0.74.85
-├─ @react-native/dev-middleware@0.74.85
-├─ @segment/loosely-validate-event@2.0.0
-├─ @urql/core@2.3.6
-├─ @urql/exchange-retry@0.3.0
-├─ agent-base@6.0.2
-├─ aggregate-error@3.1.0
-├─ arg@5.0.2
-├─ babel-plugin-react-compiler@0.0.0-experimental-592953e-20240517
-├─ babel-plugin-react-native-web@0.19.13
-├─ babel-preset-expo@11.0.15
-├─ bplist-creator@0.0.7
-├─ buffer-alloc-unsafe@1.1.0
-├─ buffer-alloc@1.2.0
-├─ buffer-fill@1.0.0
-├─ builtins@1.0.3
-├─ cacache@18.0.4
-├─ charenc@0.0.2
-├─ chownr@2.0.0
-├─ clean-stack@2.2.0
-├─ component-type@1.2.2
-├─ crypt@0.0.2
-├─ dag-map@1.0.2
-├─ default-gateway@4.2.0
-├─ del@6.1.1
-├─ detect-libc@1.0.3
-├─ expo-asset@10.0.10
-├─ expo-file-system@17.0.1
-├─ expo-keep-awake@13.0.2
-├─ expo-modules-autolinking@1.11.3
-├─ expo-modules-core@1.12.26
-├─ expo@51.0.39
-├─ fbemitter@3.0.0
-├─ fetch-retry@4.1.1
-├─ freeport-async@2.0.0
-├─ fs-minipass@2.1.0
-├─ graphql-tag@2.12.6
-├─ graphql@15.8.0
-├─ hosted-git-info@3.0.8
-├─ https-proxy-agent@5.0.1
-├─ indent-string@4.0.0
-├─ internal-ip@4.3.0
-├─ ip-regex@2.1.0
-├─ ipaddr.js@1.9.1
-├─ is-buffer@1.1.6
-├─ is-invalid-path@0.1.0
-├─ is-path-cwd@2.2.0
-├─ is-path-inside@3.0.3
-├─ is-valid-path@0.1.1
-├─ join-component@1.1.0
-├─ json-schema-deref-sync@0.13.0
-├─ lightningcss-linux-arm64-gnu@1.19.0
-├─ lightningcss-linux-arm64-musl@1.19.0
-├─ lightningcss@1.19.0
-├─ md5-file@3.2.3
-├─ md5@2.3.0
-├─ md5hex@1.0.0
-├─ memory-cache@0.2.0
-├─ minipass-collect@2.0.1
-├─ minipass-flush@1.0.5
-├─ minipass-pipeline@1.2.4
-├─ minizlib@2.1.2
-├─ nice-try@1.0.5
-├─ npm-package-arg@7.0.0
-├─ os-homedir@1.0.2
-├─ os-tmpdir@1.0.2
-├─ osenv@0.1.5
-├─ p-finally@1.0.0
-├─ path-key@2.0.1
-├─ pretty-bytes@5.6.0
-├─ progress@2.0.3
-├─ remove-trailing-slash@0.1.1
-├─ resolve.exports@2.0.3
-├─ send@0.18.0
-├─ ssri@10.0.6
-├─ strip-eof@1.0.0
-├─ tar@6.2.1
-├─ tempy@0.7.1
-├─ text-table@0.2.0
-├─ traverse@0.6.11
-├─ trim-right@1.0.1
-├─ typedarray.prototype.slice@1.0.5
-├─ unique-filename@3.0.0
-├─ unique-slug@4.0.0
-├─ unique-string@2.0.0
-├─ url-join@4.0.0
-├─ uuid@8.3.2
-├─ valid-url@1.0.9
-├─ validate-npm-package-name@3.0.0
-├─ zod-validation-error@2.1.0
-└─ zod@3.25.76
-Done in 14.25s. to set the core SDK version.
-2.  Running env: load .env
-env: export EXPO_TUNNEL_SUBDOMAIN EXPO_PACKAGER_HOSTNAME EXPO_PUBLIC_BACKEND_URL EXPO_PUBLIC_REDIRECT_URL EXPO_USE_FAST_RESOLVER METRO_CACHE_ROOT
-Dependencies are up to date to align all dependent packages (, , etc.) with SDK 51, resolving numerous version conflicts.
-3.  Updating the  file to be compatible with SDK 51.
-4.  Removing the conflicting  file.
-5.  Packaging the entire cleaned-up  directory into a new  file.
+The previous engineer's final actions were:
+1.  **Diagnose the Error**: Identified that  was trying to import , a package that was not installed in .
+2.  **Implement a Fix**: Instead of adding a new dependency (which could risk more versioning conflicts), the engineer astutely decided to replace the functionality with a built-in alternative.
+    -   **File Edited**: 
+    -   **Change**: The import  was replaced with .
+    -   **Change**: The function call  was updated to .
+3.  **Verify Environment**: Before building, the engineer checked  to ensure the Expo SDK version was still  to prevent the recurring Gradle error.
+4.  **Submit a New Build**: After confirming the environment was stable, a new production build was submitted to EAS. The build ID is .
 
-The final action was providing the user with this ZIP file and clear instructions to perform the APK build on their local Windows machine, which is expected to succeed now that the project is on a stable SDK version.
+The immediate work is now waiting for this EAS build to complete. Its success depends on whether replacing the clipboard library was sufficient to resolve the bundling error without any side effects.
 </current_work>
 
 <optional_next_step>
-Guide the user through the local APK build process on their Windows computer using the provided Expo SDK 51 project files, and assist with any issues that arise from that attempt.
+Monitor the in-progress EAS build (). Once it completes, report the outcome and ask the user to test the new APK to confirm the fix.
 </optional_next_step>
