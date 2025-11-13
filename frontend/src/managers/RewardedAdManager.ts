@@ -18,17 +18,18 @@ class RewardedAdManager {
 
   async loadRewardedAd(userId: string): Promise<void> {
     this.currentUserId = userId;
+    this.adReady = false;
     
     // Only load ads on native platforms
     if (Platform.OS === 'web') {
-      this.adReady = false;
+      console.log('AdMob: Web platform not supported');
       return;
     }
 
     try {
-      // Dynamically import AdMob module
-      const { RewardedInterstitialAd, RewardedAdEventType, TestIds } = 
-        await import('react-native-google-mobile-ads');
+      // Try to dynamically import AdMob module
+      const admobModule = await import('react-native-google-mobile-ads');
+      const { RewardedInterstitialAd, RewardedAdEventType, TestIds } = admobModule;
       
       const adUnitId = __DEV__ 
         ? TestIds.REWARDED_INTERSTITIAL 
