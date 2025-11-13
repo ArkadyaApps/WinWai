@@ -10,16 +10,23 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
   useEffect(() => {
     (async () => {
       try {
-        await Font.loadAsync({
-          Inter: require('../assets/fonts/Inter-Regular.ttf'),
-          'Inter-SemiBold': require('../assets/fonts/Inter-SemiBold.ttf'),
-          'Inter-Bold': require('../assets/fonts/Inter-Bold.ttf'),
-          Prompt: require('../assets/fonts/Prompt-Regular.ttf'),
-          'Prompt-SemiBold': require('../assets/fonts/Prompt-SemiBold.ttf'),
-          'Prompt-Bold': require('../assets/fonts/Prompt-Bold.ttf'),
-        });
+        const fontMap: Record<string, any> = {};
+        
+        try {
+          fontMap['Inter'] = require('../assets/fonts/Inter-Regular.ttf');
+          fontMap['Inter-SemiBold'] = require('../assets/fonts/Inter-SemiBold.ttf');
+          fontMap['Inter-Bold'] = require('../assets/fonts/Inter-Bold.ttf');
+          fontMap['Prompt'] = require('../assets/fonts/Prompt-Regular.ttf');
+          fontMap['Prompt-SemiBold'] = require('../assets/fonts/Prompt-SemiBold.ttf');
+          fontMap['Prompt-Bold'] = require('../assets/fonts/Prompt-Bold.ttf');
+        } catch (requireError) {
+          console.log('Font files not found, using system fonts');
+          setFontsReady(true);
+          return;
+        }
+
+        await Font.loadAsync(fontMap);
       } catch (e) {
-        // Fallback silently
         console.log('Font load error (fallback to system):', e);
       } finally {
         setFontsReady(true);
