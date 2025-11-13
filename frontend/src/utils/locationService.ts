@@ -11,21 +11,38 @@ interface LocationData {
 
 export const getUserLocation = async (): Promise<LocationData | null> => {
   try {
-    const response = await axios.get('http://ip-api.com/json/');
-    if (response.data.status === 'success') {
+    // Use HTTPS endpoint for better compatibility
+    const response = await axios.get('https://ipapi.co/json/');
+    if (response.data) {
       return {
-        city: response.data.city,
-        regionName: response.data.regionName,
-        country: response.data.country,
-        countryCode: response.data.countryCode,
-        lat: response.data.lat,
-        lon: response.data.lon,
+        city: response.data.city || 'Bangkok',
+        regionName: response.data.region || 'Bangkok',
+        country: response.data.country_name || 'Thailand',
+        countryCode: response.data.country_code || 'TH',
+        lat: response.data.latitude || 13.7563,
+        lon: response.data.longitude || 100.5018,
       };
     }
-    return null;
+    // Fallback to Bangkok
+    return {
+      city: 'Bangkok',
+      regionName: 'Bangkok',
+      country: 'Thailand',
+      countryCode: 'TH',
+      lat: 13.7563,
+      lon: 100.5018,
+    };
   } catch (error) {
     console.error('Failed to get user location:', error);
-    return null;
+    // Return Bangkok as fallback
+    return {
+      city: 'Bangkok',
+      regionName: 'Bangkok',
+      country: 'Thailand',
+      countryCode: 'TH',
+      lat: 13.7563,
+      lon: 100.5018,
+    };
   }
 };
 
