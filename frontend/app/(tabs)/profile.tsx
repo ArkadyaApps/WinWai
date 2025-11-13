@@ -3,6 +3,7 @@ import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Swi
 import { useUserStore } from '../../src/store/userStore';
 import { useAdminStore } from '../../src/store/adminStore';
 import { useLanguageStore } from '../../src/store/languageStore';
+import { translations } from '../../src/utils/translations';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,6 +17,7 @@ export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
   const { adminMode, setAdminMode, initializeAdminMode } = useAdminStore();
   const { language, setLanguage, initializeLanguage } = useLanguageStore();
+  const t = translations[language];
   const { signOut, changePassword } = useAuth();
   const router = useRouter();
 
