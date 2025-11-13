@@ -44,29 +44,29 @@ export default function ProfileScreen() {
 
   const handleAdminToggle = async (value: boolean) => {
     await setAdminMode(value);
-    Alert.alert(value ? 'Admin Mode Enabled' : 'Admin Mode Disabled', value ? 'You now have access to admin management features.' : 'Admin features are now hidden.');
+    Alert.alert(value ? t.adminModeEnabled : t.adminModeDisabled, value ? t.adminAccessMessage : t.adminFeaturesHidden);
   };
 
   const handleEditProfile = () => setEditModalVisible(true);
 
   const handleSaveProfile = async () => {
-    if (!formData.name || !formData.email) { Alert.alert('Error', 'Name and email are required'); return; }
-    try { setSaving(true); const response = await api.put('/api/users/me/profile', formData); setUser(response.data); setEditModalVisible(false); Alert.alert('Success', 'Profile updated successfully'); }
-    catch (error: any) { Alert.alert('Error', error.response?.data?.detail || 'Failed to update profile'); }
+    if (!formData.name || !formData.email) { Alert.alert(t.error, t.nameEmailRequired); return; }
+    try { setSaving(true); const response = await api.put('/api/users/me/profile', formData); setUser(response.data); setEditModalVisible(false); Alert.alert(t.success, t.profileUpdated); }
+    catch (error: any) { Alert.alert(t.error, error.response?.data?.detail || 'Failed to update profile'); }
     finally { setSaving(false); }
   };
 
   const handleChangePassword = async () => {
     if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-      Alert.alert('Error', 'All fields are required');
+      Alert.alert(t.error, t.allFieldsRequired);
       return;
     }
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      Alert.alert('Error', 'New passwords do not match');
+      Alert.alert(t.error, t.passwordsDontMatch);
       return;
     }
     if (passwordData.newPassword.length < 6) {
-      Alert.alert('Error', 'Password must be at least 6 characters');
+      Alert.alert(t.error, t.passwordMin6);
       return;
     }
     try {
@@ -74,9 +74,9 @@ export default function ProfileScreen() {
       await changePassword(passwordData.currentPassword, passwordData.newPassword);
       setChangePasswordModalVisible(false);
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      Alert.alert('Success', 'Password changed successfully');
+      Alert.alert(t.success, t.passwordChanged);
     } catch (error: any) {
-      Alert.alert('Error', error.message || 'Failed to change password');
+      Alert.alert(t.error, error.message || 'Failed to change password');
     } finally {
       setSaving(false);
     }
