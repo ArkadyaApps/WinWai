@@ -61,10 +61,6 @@ module.exports = {
     extra: {
       eas: {
         projectId: "019dd289-3f32-4930-9048-725d49bcb28a"
-      },
-      "react-native-google-mobile-ads": {
-        android_app_id: "ca-app-pub-3940256099942544~3347511713",
-        ios_app_id: "ca-app-pub-3940256099942544~1458002511"
       }
     }
   }
