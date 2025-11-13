@@ -231,11 +231,16 @@ async def process_session(request: Request):
     
     if not user:
         # Create new user
+        # Check if email should be admin
+        admin_emails = ["artteabnc@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
+        user_role = "admin" if session_data["email"].lower() in admin_emails else "user"
+        
         new_user = User(
             email=session_data["email"],
             name=session_data.get("name", session_data["email"].split("@")[0]),
             picture=session_data.get("picture"),
             tickets=100,  # Welcome bonus
+            role=user_role,
             lastLogin=datetime.now(timezone.utc)
         )
         await db.users.insert_one(new_user.dict())
