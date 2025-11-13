@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
+import { useLanguageStore } from '../../src/store/languageStore';
+import { translations } from '../../src/utils/translations';
 import { rewardedAdManager } from '../../src/managers/RewardedAdManager';
 import api from '../../src/utils/api';
 import BannerAdComponent from '../../src/components/BannerAd';
@@ -12,6 +14,8 @@ const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1
 
 export default function TicketsScreen() {
   const { user, updateTickets } = useUserStore();
+  const { language } = useLanguageStore();
+  const t = translations[language];
   const [adReady, setAdReady] = useState(false);
   const [loading, setLoading] = useState(false);
 
