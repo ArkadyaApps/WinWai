@@ -310,4 +310,15 @@ const styles = StyleSheet.create({
     color: '#2196F3',
     fontWeight: '600',
   },
+  termsButton: {
+    marginTop: 16,
+    alignItems: 'center',
+    paddingHorizontal: 20,
+  },
+  termsText: {
+    color: '#666',
+    fontSize: 12,
+    textAlign: 'center',
+    textDecorationLine: 'underline',
+  },
 });
