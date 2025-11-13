@@ -304,11 +304,16 @@ async def email_signup(signup_request: EmailSignUpRequest):
             referrer_id = referrer["id"]
             welcome_tickets += 1  # Bonus ticket for being referred
     
+    # Check if email should be admin
+    admin_emails = ["artteabnc@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
+    user_role = "admin" if signup_request.email.lower() in admin_emails else "user"
+    
     new_user = User(
         email=signup_request.email,
         name=signup_request.name,
         password_hash=password_hash,
         tickets=welcome_tickets,
+        role=user_role,
         lastLogin=datetime.now(timezone.utc)
     )
     
