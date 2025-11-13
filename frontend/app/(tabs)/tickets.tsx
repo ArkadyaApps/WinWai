@@ -58,38 +58,38 @@ export default function TicketsScreen() {
       <AppHeader variant="emerald" logoUri={LOGO_URI} showDivider />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>Your Ticket Balance</Text>
+          <Text style={styles.balanceLabel}>{t.yourTicketBalance}</Text>
           <View style={styles.balanceRow}>
             <Text style={styles.balanceIcon}>🎟️</Text>
             <Text style={styles.balanceAmount}>{user?.tickets || 0}</Text>
           </View>
-          <Text style={styles.balanceSubtext}>tickets available</Text>
+          <Text style={styles.balanceSubtext}>{t.ticketsAvailable}</Text>
         </View>
 
         <View style={styles.earnSection}>
-          <Text style={styles.sectionTitle}>Earn More Tickets</Text>
+          <Text style={styles.sectionTitle}>{t.earnMoreTickets}</Text>
           <TouchableOpacity style={[styles.playButton, (!adReady || loading) && styles.playButtonDisabled]} onPress={handleWatchAd} disabled={!adReady || loading} activeOpacity={0.8}>
             {loading ? (
-              <View style={styles.playButtonContent}><ActivityIndicator color="#ffffff" size="large" /><Text style={styles.playButtonTextLoading}>Loading...</Text></View>
+              <View style={styles.playButtonContent}><ActivityIndicator color="#ffffff" size="large" /><Text style={styles.playButtonTextLoading}>{t.loading}</Text></View>
             ) : (
               <View style={styles.playButtonContent}>
                 <View style={styles.playIconContainer}><Text style={styles.playIcon}>▶</Text></View>
-                <View style={styles.playButtonTextContainer}><Text style={styles.playButtonTitle}>{adReady ? '🎬 Play Rewarded Ad' : '⏳ Loading Ad...'}</Text><Text style={styles.playButtonSubtitle}>Earn +10 tickets instantly</Text></View>
+                <View style={styles.playButtonTextContainer}><Text style={styles.playButtonTitle}>{adReady ? t.playRewardedAd : t.loadingAd}</Text><Text style={styles.playButtonSubtitle}>{t.earnTicketsInstantly}</Text></View>
               </View>
             )}
           </TouchableOpacity>
 
-          {!adReady && (<Text style={styles.adStatusText}>📱 Note: Ads only work on mobile devices (iOS/Android). Use Expo Go or production build.</Text>)}
+          {!adReady && (<Text style={styles.adStatusText}>{t.adsOnlyMobile}</Text>)}
 
           <View style={styles.infoCard}>
-            <Text style={styles.infoTitle}>How to Earn Tickets</Text>
-            <View style={styles.infoItem}><Text style={styles.infoBullet}>🎥</Text><Text style={styles.infoText}>Watch rewarded ads (+10 tickets)</Text></View>
-            <View style={styles.infoItem}><Text style={styles.infoBullet}>🎁</Text><Text style={styles.infoText}>Daily login bonus (+5 tickets)</Text></View>
-            <View style={styles.infoItem}><Text style={styles.infoBullet}>👥</Text><Text style={styles.infoText}>Refer friends (+20 tickets)</Text></View>
+            <Text style={styles.infoTitle}>{t.howToEarnTickets}</Text>
+            <View style={styles.infoItem}><Text style={styles.infoBullet}>🎥</Text><Text style={styles.infoText}>{t.watchRewardedAds}</Text></View>
+            <View style={styles.infoItem}><Text style={styles.infoBullet}>🎁</Text><Text style={styles.infoText}>{t.dailyLoginBonus}</Text></View>
+            <View style={styles.infoItem}><Text style={styles.infoBullet}>👥</Text><Text style={styles.infoText}>{t.referFriends}</Text></View>
           </View>
         </View>
 
-        <View style={styles.usageSection}><Text style={styles.sectionTitle}>Ticket Usage</Text><Text style={styles.usageText}>Use your tickets to enter raffles and win amazing prizes! Each raffle entry typically costs 10 tickets.</Text></View>
+        <View style={styles.usageSection}><Text style={styles.sectionTitle}>{t.ticketUsage}</Text><Text style={styles.usageText}>{t.ticketUsageDescription}</Text></View>
       </ScrollView>
       <BannerAdComponent position="bottom" />
     </View>
