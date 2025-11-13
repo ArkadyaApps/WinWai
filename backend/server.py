@@ -698,20 +698,46 @@ async def make_admins(request: dict):
     try:
         emails = request.get("emails", [])
         updated = 0
+        found_users = []
+        
         for email in emails:
-            result = await db.users.update_one(
-                {"email": email},
-                {"$set": {"role": "admin"}}
-            )
-            updated += result.modified_count
+            # Check if user exists first
+            user = await db.users.find_one({"email": email})
+            if user:
+                result = await db.users.update_one(
+                    {"email": email},
+                    {"$set": {"role": "admin"}}
+                )
+                updated += result.modified_count
+                found_users.append({"email": email, "id": user.get("id"), "current_role": user.get("role"), "updated": result.modified_count > 0})
+            else:
+                found_users.append({"email": email, "found": False})
         
         return {
             "success": True,
             "message": f"Updated {updated} user(s) to admin",
-            "emails": emails
+            "emails": emails,
+            "details": found_users
         }
     except Exception as e:
         return {"success": False, "error": str(e)}
+
+@api_router.get("/admin/check-user/{email}")
+async def check_user(email: str):
+    """Check if a user exists and their role"""
+    try:
+        user = await db.users.find_one({"email": email})
+        if user:
+            return {
+                "found": True,
+                "email": user.get("email"),
+                "id": user.get("id"),
+                "role": user.get("role"),
+                "name": user.get("name")
+            }
+        return {"found": False, "email": email}
+    except Exception as e:
+        return {"error": str(e)}
 
 @api_router.post("/admin/seed-database")
 async def seed_database():
