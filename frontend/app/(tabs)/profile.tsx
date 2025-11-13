@@ -344,6 +344,33 @@ const styles = StyleSheet.create({
   statValue: { fontSize: 32, fontWeight: '700', color: theme.colors.onyx },
   statLabel: { fontSize: 14, color: theme.colors.slate, marginTop: 4 },
   statDivider: { width: 1, backgroundColor: theme.colors.line },
+  editProfileButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'center',
+    gap: 8,
+    backgroundColor: '#4ECDC4',
+    marginHorizontal: 16,
+    marginBottom: 20,
+    padding: 14,
+    borderRadius: 12,
+    ...Platform.select({
+      ios: {
+        shadowColor: '#4ECDC4',
+        shadowOffset: { width: 0, height: 4 },
+        shadowOpacity: 0.3,
+        shadowRadius: 8,
+      },
+      android: {
+        elevation: 6,
+      },
+    }),
+  },
+  editProfileText: {
+    fontSize: 16,
+    fontWeight: '700',
+    color: '#fff',
+  },
   section: { backgroundColor: '#ffffff', marginBottom: 16, marginHorizontal: 16, borderRadius: 12, overflow: 'hidden', ...Platform.select({ ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4 }, android: { elevation: 2 } }) },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', padding: 16, paddingBottom: 12, gap: 8 },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: theme.colors.onyx },
