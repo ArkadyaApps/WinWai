@@ -152,6 +152,54 @@ export const translations = {
     goBack: 'กลับ',
     success: 'สำเร็จ!',
     error: 'ข้อผิดพลาด',
+    
+    // Profile
+    editProfile: 'แก้ไขโปรไฟล์',
+    inviteFriends: 'เชิญเพื่อน (ได้ 1 ตั๋ว)',
+    changePassword: 'เปลี่ยนรหัสผ่าน',
+    notifications: 'การแจ้งเตือน',
+    language: 'ภาษา',
+    helpCenter: 'ศูนย์ช่วยเหลือ',
+    termsConditions: 'ข้อกำหนดและเงื่อนไข',
+    privacyPolicy: 'นโยบายความเป็นส่วนตัว',
+    signOut: 'ออกจากระบบ',
+    
+    // Tickets Page
+    earnTickets: 'รับตั๋ว',
+    watchAd: 'ดูโฆษณา',
+    watchAdDescription: 'ดูวิดีโอโฆษณาสั้นๆ เพื่อรับ 10 ตั๋วฟรี',
+    dailyBonus: 'โบนัสรายวัน',
+    dailyBonusDescription: 'กลับมาทุกวันเพื่อรับตั๋วโบนัส',
+    inviteFriend: 'เชิญเพื่อน',
+    inviteFriendDescription: 'แชร์รหัสแนะนำและทั้งคู่จะได้ 1 ตั๋ว',
+    
+    // Referral Page
+    inviteGetTickets: 'เชิญเพื่อน รับตั๋ว!',
+    referralSubtitle: 'แชร์ลิงก์แนะนำและทั้งคุณและเพื่อนจะได้รับ 1 ตั๋วฟรีเมื่อสมัครสมาชิก!',
+    yourReferralCode: 'รหัสแนะนำของคุณ',
+    yourReferralLink: 'ลิงก์แนะนำของคุณ',
+    copyLink: 'คัดลอกลิงก์',
+    copied: 'คัดลอกแล้ว!',
+    shareVia: 'แชร์ผ่าน...',
+    howItWorks: 'วิธีการทำงาน',
+    shareYourLink: 'แชร์ลิงก์ของคุณ',
+    shareDescription: 'ส่งลิงก์แนะนำไปยังเพื่อน',
+    theySignUp: 'พวกเขาสมัคร',
+    signUpDescription: 'เพื่อนของคุณสร้างบัญชีโดยใช้ลิงก์ของคุณ',
+    bothGetTickets: 'ทั้งคู่ได้ตั๋ว!',
+    bothGetDescription: 'ทั้งคู่จะได้รับ 1 ตั๋วฟรีทันที',
+    
+    // Auth
+    signIn: 'เข้าสู่ระบบ',
+    signUp: 'สมัครสมาชิก',
+    email: 'อีเมล',
+    password: 'รหัสผ่าน',
+    name: 'ชื่อ',
+    alreadyHaveAccount: 'มีบัญชีอยู่แล้ว?',
+    dontHaveAccount: 'ยังไม่มีบัญชี?',
+    continueWithGoogle: 'ดำเนินการต่อด้วย Google',
+    orSignInWith: 'หรือเข้าสู่ระบบด้วย',
+    bySigningUp: 'การสมัครสมาชิกแสดงว่าคุณยอมรับข้อกำหนดและเงื่อนไขของเรา',
   },
   fr: {
     // Header
