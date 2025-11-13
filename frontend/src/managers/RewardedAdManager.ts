@@ -63,9 +63,11 @@ class RewardedAdManager {
       // Load the ad
       await this.rewardedInterstitial.load();
       
-    } catch (error) {
-      console.error('Failed to load rewarded ad:', error);
+    } catch (error: any) {
+      console.log('AdMob not available:', error?.message || 'Module not installed');
+      this.isLoading = false;
       this.adReady = false;
+      // Silently fail - AdMob is optional
     }
   }
 
