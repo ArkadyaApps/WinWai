@@ -185,6 +185,15 @@ export default function SignUp() {
                   Already have an account? <Text style={styles.linkTextBold}>Sign In</Text>
                 </Text>
               </TouchableOpacity>
+
+              <TouchableOpacity 
+                style={styles.termsButton}
+                onPress={() => router.push('/terms')}
+              >
+                <Text style={styles.termsText}>
+                  By signing up, you agree to our Terms & Conditions
+                </Text>
+              </TouchableOpacity>
             </View>
           </View>
         </ScrollView>
