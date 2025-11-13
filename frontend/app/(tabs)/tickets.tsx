@@ -34,13 +34,16 @@ export default function TicketsScreen() {
         });
       } catch (error) {
         console.error('Failed to initialize ad manager:', error);
+        setAdReady(false);
       }
     }
     const interval = setInterval(() => { 
       try {
-        setAdReady(rewardedAdManager.isRewardedAdReady()); 
+        const ready = rewardedAdManager.isRewardedAdReady(); 
+        setAdReady(ready);
       } catch (error) {
         console.error('Failed to check ad status:', error);
+        setAdReady(false);
       }
     }, 1000);
     return () => clearInterval(interval);
