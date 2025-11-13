@@ -691,7 +691,7 @@ async def make_admins(request: dict):
         for email in emails:
             result = await db.users.update_one(
                 {"email": email},
-                {"$set": {"isAdmin": True}}
+                {"$set": {"role": "admin"}}
             )
             updated += result.modified_count
         
