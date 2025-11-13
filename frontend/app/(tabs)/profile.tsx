@@ -181,28 +181,28 @@ export default function ProfileScreen() {
 
         {/* Account Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitleGray}>Account</Text>
+          <Text style={styles.sectionTitleGray}>{t.account}</Text>
           {hasPassword && (
             <TouchableOpacity style={styles.menuItem} onPress={() => setChangePasswordModalVisible(true)}>
               <Ionicons name="lock-closed-outline" size={24} color={theme.colors.onyx} />
-              <Text style={styles.menuText}>Change Password</Text>
+              <Text style={styles.menuText}>{t.changePassword}</Text>
               <Ionicons name="chevron-forward" size={20} color="#999" />
             </TouchableOpacity>
           )}
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/referral')}>
             <Ionicons name="gift-outline" size={24} color={theme.colors.primaryGold} />
-            <Text style={styles.menuText}>Invite Friends (Get 1 Ticket)</Text>
+            <Text style={styles.menuText}>{t.inviteFriends}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Notifications', 'Notification settings coming soon!')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.notifications, 'Notification settings coming soon!')}>
             <Ionicons name="notifications-outline" size={24} color={theme.colors.onyx} />
-            <Text style={styles.menuText}>Notifications</Text>
+            <Text style={styles.menuText}>{t.notifications}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => setLanguageModalVisible(true)}>
             <Ionicons name="language-outline" size={24} color={theme.colors.onyx} />
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={styles.menuText}>Language</Text>
+              <Text style={styles.menuText}>{t.language}</Text>
               <Text style={styles.currentLanguage}>{getLanguageFlag(language)} {getLanguageName(language)}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
@@ -211,27 +211,27 @@ export default function ProfileScreen() {
 
         {/* Support Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitleGray}>Support</Text>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Help Center', 'Need help? Contact support at support@winwai.com')}>
+          <Text style={styles.sectionTitleGray}>{t.support}</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.helpCenter, t.needHelp)}>
             <Ionicons name="help-circle-outline" size={24} color={theme.colors.onyx} />
-            <Text style={styles.menuText}>Help Center</Text>
+            <Text style={styles.menuText}>{t.helpCenter}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Terms & Conditions', 'View our terms at www.winwai.com/terms')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.termsConditions, t.viewTerms)}>
             <Ionicons name="document-text-outline" size={24} color={theme.colors.onyx} />
-            <Text style={styles.menuText}>Terms & Conditions</Text>
+            <Text style={styles.menuText}>{t.termsConditions}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert('Privacy Policy', 'View our privacy policy at www.winwai.com/privacy')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.privacyPolicy, t.viewPrivacy)}>
             <Ionicons name="shield-checkmark-outline" size={24} color={theme.colors.onyx} />
-            <Text style={styles.menuText}>Privacy Policy</Text>
+            <Text style={styles.menuText}>{t.privacyPolicy}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
           <Ionicons name="log-out-outline" size={24} color={theme.colors.danger} />
-          <Text style={styles.signOutText}>Sign Out</Text>
+          <Text style={styles.signOutText}>{t.signOut}</Text>
         </TouchableOpacity>
 
         <Text style={styles.version}>WinWai v1.0.0</Text>
