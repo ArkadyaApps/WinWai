@@ -240,13 +240,17 @@ async def google_exchange_code(request: Request):
     
     # Exchange code for tokens
     token_url = "https://oauth2.googleapis.com/token"
+    client_id = os.getenv("GOOGLE_CLIENT_ID")
     client_secret = os.getenv("GOOGLE_CLIENT_SECRET")
+    
+    if not client_id:
+        raise HTTPException(status_code=500, detail="GOOGLE_CLIENT_ID not configured")
     if not client_secret:
         raise HTTPException(status_code=500, detail="GOOGLE_CLIENT_SECRET not configured")
     
     token_data = {
         "code": code,
-        "client_id": "581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com",
+        "client_id": client_id,
         "client_secret": client_secret,
         "redirect_uri": "https://winwai.up.railway.app/auth/google/callback",
         "grant_type": "authorization_code"
