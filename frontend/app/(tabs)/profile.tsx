@@ -133,69 +133,37 @@ export default function ProfileScreen() {
           <Text style={styles.editProfileText}>{t.editProfile}</Text>
         </TouchableOpacity>
 
-        {/* TEMPORARY: Admin & Seed Buttons - Remove after use */}
-        {!isAdmin && (
+        {/* Admin Mode Switch - Only visible to admins */}
+        {isAdmin && (
           <TouchableOpacity 
-            style={[styles.editProfileButton, { backgroundColor: '#FF6B6B', marginTop: 8 }]} 
-            onPress={async () => {
-              try {
-                const response = await api.post('/api/admin/make-me-admin');
-                console.log('Make admin response:', response.data);
-                Alert.alert(
-                  'Admin Update', 
-                  `Matched: ${response.data.matched}\nModified: ${response.data.modified}\nCurrent role: ${response.data.current_role}\n\nPlease sign out and sign in again!`
-                );
-              } catch (error: any) {
-                console.error('Make admin error:', error);
-                Alert.alert('Error', error.response?.data?.detail || error.message || 'Failed to become admin');
-              }
-            }}
+            style={styles.adminModeSwitch} 
+            onPress={() => handleAdminToggle(!adminMode)}
           >
-            <Ionicons name="shield-checkmark" size={20} color="#fff" />
-            <Text style={styles.editProfileText}>🔧 Make Me Admin (Tap Once)</Text>
+            <View style={styles.adminToggleContent}>
+              <Ionicons name="shield-checkmark" size={24} color={theme.colors.primaryGold} />
+              <View style={styles.adminToggleText}>
+                <Text style={styles.adminToggleTitle}>{t.adminMode}</Text>
+                <Text style={styles.adminToggleSubtitle}>
+                  {adminMode ? t.adminFeaturesEnabled : t.enableAdminFeatures}
+                </Text>
+              </View>
+            </View>
+            <Switch
+              value={adminMode}
+              onValueChange={handleAdminToggle}
+              trackColor={{ false: '#ccc', true: theme.colors.emeraldA }}
+              thumbColor="#fff"
+              ios_backgroundColor="#ccc"
+            />
           </TouchableOpacity>
         )}
-        
-        <TouchableOpacity 
-          style={[styles.editProfileButton, { backgroundColor: '#4ECDC4', marginTop: 8 }]} 
-          onPress={async () => {
-            try {
-              const response = await api.post('/api/admin/seed-database');
-              Alert.alert('Success', `Database seeded! ${response.data.raffles_created} raffles created with new images.`);
-            } catch (error: any) {
-              Alert.alert('Error', 'Failed to seed database');
-            }
-          }}
-        >
-          <Ionicons name="images" size={20} color="#fff" />
-          <Text style={styles.editProfileText}>🔧 Update Raffle Images (Tap Once)</Text>
-        </TouchableOpacity>
 
-        {isAdmin && (
+        {isAdmin && adminMode && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="shield-checkmark" size={24} color={theme.colors.primaryGold} />
               <Text style={styles.sectionTitle}>{t.adminPanel}</Text>
             </View>
-            
-            {/* Admin Mode Toggle */}
-            <TouchableOpacity 
-              style={styles.adminToggleItem} 
-              onPress={() => handleAdminToggle(!adminMode)}
-            >
-              <View style={styles.adminToggleContent}>
-                <Ionicons name="settings" size={24} color={theme.colors.onyx} />
-                <View style={styles.adminToggleText}>
-                  <Text style={styles.adminToggleTitle}>{t.adminMode}</Text>
-                  <Text style={styles.adminToggleSubtitle}>
-                    {adminMode ? t.adminFeaturesEnabled : t.enableAdminFeatures}
-                  </Text>
-                </View>
-              </View>
-              <View style={[styles.toggle, adminMode && styles.toggleActive]}>
-                <View style={[styles.toggleCircle, adminMode && styles.toggleCircleActive]} />
-              </View>
-            </TouchableOpacity>
 
             {adminMode && (
               <>
