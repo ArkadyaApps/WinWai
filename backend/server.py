@@ -1675,6 +1675,23 @@ async def privacy_policy():
     """Serve Privacy Policy page"""
     return FileResponse("static/privacy.html", media_type="text/html")
 
+@app.get("/download", response_class=HTMLResponse)
+async def download_page():
+    """Serve app download page with QR code"""
+    return FileResponse("static/download.html", media_type="text/html")
+
+@app.get("/download-apk")
+async def download_apk():
+    """Serve APK file for download"""
+    apk_path = Path("static/app.apk")
+    if not apk_path.exists():
+        raise HTTPException(status_code=404, detail="APK file not found. Please build the app first.")
+    return FileResponse(
+        path=str(apk_path),
+        media_type="application/vnd.android.package-archive",
+        filename="WinWaiRaffle.apk"
+    )
+
 app.include_router(api_router)
 
 app.add_middleware(

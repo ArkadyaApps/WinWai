@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Download WinWai Raffle Rewards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .qr-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+        
+        .qr-text {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.6;
+        }
+        
+        .version {
+            margin-top: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎟️</div>
+        <h1>WinWai Raffle Rewards</h1>
+        <p class="subtitle">Download the app and start winning!</p>
+        
+        <div class="qr-container">
+            <div id="qrcode"></div>
+            <p class="qr-text">Scan QR code to download</p>
+        </div>
+        
+        <a href="/download-apk" class="download-btn" download>
+            📱 Download APK
+        </a>
+        
+        <div class="info">
+            <strong>📋 Installation Instructions:</strong><br>
+            1. Download the APK file<br>
+            2. Enable "Install from Unknown Sources" in your device settings<br>
+            3. Open the downloaded APK and install<br>
+            4. Sign in with your Google account and enjoy!
+        </div>
+        
+        <p class="version">Latest Version • Android</p>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        // Generate QR code with current download URL
+        const downloadUrl = window.location.origin + '/download-apk';
+        QRCode.toCanvas(document.createElement('canvas'), downloadUrl, {
+            width: 200,
+            margin: 2,
+            color: {
+                dark: '#667eea',
+                light: '#ffffff'
+            }
+        }, function (error, canvas) {
+            if (error) console.error(error);
+            document.getElementById('qrcode').appendChild(canvas);
+        });
+    </script>
+</body>
+</html>
