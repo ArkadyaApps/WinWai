@@ -206,6 +206,123 @@ async def get_current_user(authorization: Optional[str] = Header(None), session_
     return User(**user)
 
 # Auth Endpoints
+@api_router.get("/auth/google/callback")
+async def google_callback(code: str = None, error: str = None):
+    """OAuth callback endpoint - redirects to app with code"""
+    if error:
+        # Redirect to app with error
+        return {"error": error}
+    if code:
+        # Return HTML that closes the browser and passes code to app
+        html = f"""
+        <html>
+        <head><title>Sign in successful</title></head>
+        <body>
+        <h1>Signing in...</h1>
+        <script>
+        window.close();
+        </script>
+        </body>
+        </html>
+        """
+        from fastapi.responses import HTMLResponse
+        return HTMLResponse(content=html)
+    return {"error": "No code received"}
+
+@api_router.post("/auth/google/exchange")
+async def google_exchange_code(request: Request):
+    """Exchange authorization code for user info"""
+    body = await request.json()
+    code = body.get("code")
+    
+    if not code:
+        raise HTTPException(status_code=400, detail="code required")
+    
+    # Exchange code for tokens
+    token_url = "https://oauth2.googleapis.com/token"
+    token_data = {
+        "code": code,
+        "client_id": "581979281149-bg4qaibj9rtgkfbffv6ogc2r83i8a13m.apps.googleusercontent.com",
+        "client_secret": os.getenv("GOOGLE_CLIENT_SECRET", ""),  # Add this to .env
+        "redirect_uri": "https://winwai.up.railway.app/auth/google/callback",
+        "grant_type": "authorization_code"
+    }
+    
+    try:
+        # Get access token
+        token_response = requests.post(token_url, data=token_data, timeout=10)
+        token_response.raise_for_status()
+        tokens = token_response.json()
+        
+        access_token = tokens.get("access_token")
+        id_token = tokens.get("id_token")
+        
+        if not id_token:
+            raise HTTPException(status_code=401, detail="No ID token received")
+        
+        # Verify ID token
+        verify_response = requests.get(
+            f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}",
+            timeout=10
+        )
+        verify_response.raise_for_status()
+        token_info = verify_response.json()
+        
+        email = token_info.get("email")
+        name = token_info.get("name", email.split("@")[0] if email else "User")
+        picture = token_info.get("picture")
+        
+        if not email:
+            raise HTTPException(status_code=401, detail="Email not found in token")
+            
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Failed to exchange code: {e}")
+        raise HTTPException(status_code=401, detail=f"Failed to exchange code: {str(e)}")
+    
+    # Check if user exists
+    user = await db.users.find_one({"email": email})
+    
+    if not user:
+        # Create new user
+        admin_emails = ["artteabnc@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
+        user_role = "admin" if email.lower() in admin_emails else "user"
+        
+        new_user = User(
+            email=email,
+            name=name,
+            picture=picture,
+            tickets=100,
+            role=user_role,
+            lastLogin=datetime.now(timezone.utc)
+        )
+        await db.users.insert_one(new_user.dict())
+        user = new_user.dict()
+        logging.info(f"Created new user: {email} with role: {user_role}")
+    else:
+        # Update last login
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$set": {"lastLogin": datetime.now(timezone.utc)}}
+        )
+        logging.info(f"User logged in: {email}")
+    
+    # Create session
+    session_token = str(uuid.uuid4())
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    
+    user_session = UserSession(
+        userId=user["id"],
+        sessionToken=session_token,
+        expiresAt=expires_at
+    )
+    
+    await db.user_sessions.insert_one(user_session.dict())
+    
+    return {
+        "user": User(**user).dict(),
+        "session_token": session_token
+    }
+
 @api_router.post("/auth/google")
 async def google_signin(request: Request):
     """Native Google OAuth sign-in - verifies ID token directly"""
