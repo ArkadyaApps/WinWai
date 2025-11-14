@@ -141,6 +141,7 @@ export default function AdminRafflesScreen() {
               <View style={styles.countryGrid}>
                 {[
                   { code: 'TH', name: '🇹🇭 Thailand', flag: '🇹🇭' },
+                  { code: 'MA', name: '🇲🇦 Morocco', flag: '🇲🇦' },
                   { code: 'US', name: '🇺🇸 USA', flag: '🇺🇸' },
                   { code: 'GB', name: '🇬🇧 UK', flag: '🇬🇧' },
                   { code: 'FR', name: '🇫🇷 France', flag: '🇫🇷' },
