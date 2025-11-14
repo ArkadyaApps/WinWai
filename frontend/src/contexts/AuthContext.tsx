@@ -51,10 +51,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     console.log('==================== NATIVE GOOGLE SIGNIN START ====================');
     
     try {
-      // Configure Google Sign-In with Android client ID
+      // Configure Google Sign-In
       GoogleSignin.configure({
-        webClientId: '581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com', // Web client for backend verification
-        androidClientId: '581979281149-q58v33o76tvkk1brndr0jigl6v3327da.apps.googleusercontent.com', // Android client with SHA-1
+        webClientId: '581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com',
         offlineAccess: false,
       });
 
