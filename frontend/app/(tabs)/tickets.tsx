@@ -55,8 +55,23 @@ export default function TicketsScreen() {
   }, [user]);
 
   const handleWatchAd = async () => {
+    if (!user) return;
+    
     setLoading(true);
-    try { await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium); await rewardedAdManager.showRewardedAd(); }
+    try { 
+      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+      
+      // If ad not ready, load it first
+      if (!adReady) {
+        console.log('Loading ad...');
+        await rewardedAdManager.loadRewardedAd(user.id);
+        // Wait a bit for ad to load
+        await new Promise(resolve => setTimeout(resolve, 2000));
+      }
+      
+      // Show the ad
+      await rewardedAdManager.showRewardedAd();
+    }
     catch (error) { console.error('Failed to show ad:', error); }
     finally { setLoading(false); }
   };
