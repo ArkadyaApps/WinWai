@@ -20,6 +20,11 @@ class RewardedAdManager {
     this.currentUserId = userId;
     this.adReady = false;
     
+    // AdMob disabled - requires proper setup with google-services.json
+    console.log('AdMob: Currently disabled. Requires proper configuration.');
+    return;
+    
+    /* Commented out until AdMob is properly configured
     // Only load ads on native platforms
     if (Platform.OS === 'web') {
       console.log('AdMob: Web platform not supported');
