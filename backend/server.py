@@ -1533,6 +1533,8 @@ async def create_raffle(raffle: Raffle, authorization: Optional[str] = Header(No
         raise HTTPException(status_code=403, detail="Admin access required")
     
     raffle.prizesRemaining = raffle.prizesAvailable
+    # Convert prize value to USD for automatic raffle drawer
+    raffle.prizeValueUSD = convert_to_usd(raffle.prizeValue, raffle.currency)
     await db.raffles.insert_one(raffle.dict())
     return raffle
 
