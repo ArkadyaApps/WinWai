@@ -89,6 +89,26 @@ The app uses these build profiles (configure in `eas.json` if needed):
 - Users need to enable "Install from Unknown Sources" on their devices
 - The current version is 1.0.0 (update in `app.config.js` for new versions)
 
+## ⚠️ IMPORTANT: Update APK URL in Cloudflare Page
+
+Before deploying to Cloudflare Pages, you MUST update the APK download URL:
+
+1. **Open `/app/cloudflare-pages/index.html`**
+2. **Find line 188** (around there):
+   ```javascript
+   const APK_URL = 'https://YOUR-RAILWAY-APP.railway.app/download-apk';
+   ```
+3. **Replace with your actual hosting URL:**
+   - Railway: `https://your-actual-app.railway.app/download-apk`
+   - GitHub: `https://github.com/user/repo/releases/download/v1.0.0/WinWaiRaffle.apk`
+   - Drive: `https://drive.google.com/uc?export=download&id=YOUR_FILE_ID`
+
+**Test QR Code Locally:**
+- Open `/app/cloudflare-pages/test-qr.html` in browser
+- Enter your APK URL
+- Click "Generate QR Code"
+- Verify QR code appears
+
 ## 🚀 Quick Deploy Checklist
 
 - [ ] Run EAS build command
