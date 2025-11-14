@@ -76,17 +76,29 @@ class RewardedAdManager {
 
       // Load the ad
       console.log('📡 Starting ad load request...');
-      await this.rewardedInterstitial.load();
-      console.log('📡 Ad load request sent (waiting for LOADED event)...');
+      
+      try {
+        await this.rewardedInterstitial.load();
+        console.log('📡 Ad load request sent (waiting for LOADED event)...');
+      } catch (loadError: any) {
+        console.error('❌ Ad load() failed:', loadError);
+        console.error('Load error message:', loadError?.message);
+        this.adReady = false;
+        
+        // Common ad load errors
+        if (loadError?.message?.includes('NO_FILL')) {
+          console.log('ℹ️ No ad inventory available - this is normal for new apps');
+        } else if (loadError?.message?.includes('NETWORK_ERROR')) {
+          console.log('ℹ️ Network error - check internet connection');
+        }
+      }
       
     } catch (error: any) {
       console.error('❌❌❌ AdMob initialization error:', error);
       console.error('Error message:', error?.message);
       console.error('Error stack:', error?.stack);
-      console.error('Error details:', JSON.stringify(error, null, 2));
       this.isLoading = false;
       this.adReady = false;
-      Alert.alert('AdMob Error', `Failed to initialize: ${error?.message || 'Unknown error'}`);
     }
     console.log('==================== LOAD AD END ====================');
   }
