@@ -1668,6 +1668,9 @@ async def update_raffle(raffle_id: str, raffle: Raffle, authorization: Optional[
     if not user or user.role != "admin":
         raise HTTPException(status_code=403, detail="Admin access required")
     
+    # Convert prize value to USD for automatic raffle drawer
+    raffle.prizeValueUSD = convert_to_usd(raffle.prizeValue, raffle.currency)
+    
     result = await db.raffles.update_one(
         {"id": raffle_id},
         {"$set": raffle.dict(exclude={"id"})}
