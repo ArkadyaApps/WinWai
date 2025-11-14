@@ -20,11 +20,6 @@ class RewardedAdManager {
     this.currentUserId = userId;
     this.adReady = false;
     
-    // AdMob disabled - requires proper setup with google-services.json
-    console.log('AdMob: Currently disabled. Requires proper configuration.');
-    return;
-    
-    /* Commented out until AdMob is properly configured
     // Only load ads on native platforms
     if (Platform.OS === 'web') {
       console.log('AdMob: Web platform not supported');
@@ -32,16 +27,18 @@ class RewardedAdManager {
     }
 
     try {
-      // Try to dynamically import AdMob module
-      const admobModule = await import('react-native-google-mobile-ads');
-      const { RewardedInterstitialAd, RewardedAdEventType, TestIds } = admobModule;
+      // Import AdMob module
+      const { RewardedInterstitialAd, RewardedAdEventType, TestIds } = await import('react-native-google-mobile-ads');
       
+      // Use test ads in development, real ads in production
       const adUnitId = __DEV__ 
         ? TestIds.REWARDED_INTERSTITIAL 
         : Platform.select({
-            ios: 'ca-app-pub-3940256099942544/5224354917',
-            android: 'ca-app-pub-3940256099942544/5224354917',
+            ios: 'ca-app-pub-3486145054830108/9341557600',
+            android: 'ca-app-pub-3486145054830108/3753903590',
           }) || TestIds.REWARDED_INTERSTITIAL;
+
+      console.log('AdMob: Creating rewarded ad with unit ID:', adUnitId);
 
       this.rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitId, {
         requestNonPersonalizedAdsOnly: false,
@@ -52,7 +49,7 @@ class RewardedAdManager {
       const unsubscribeLoaded = this.rewardedInterstitial.addAdEventListener(
         RewardedAdEventType.LOADED,
         () => {
-          console.log('Rewarded ad loaded successfully');
+          console.log('AdMob: Rewarded ad loaded successfully');
           this.adReady = true;
         }
       );
@@ -60,21 +57,20 @@ class RewardedAdManager {
       const unsubscribeEarned = this.rewardedInterstitial.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward: any) => {
-          console.log('User earned reward:', reward);
+          console.log('AdMob: User earned reward:', reward);
           await this.handleRewardEarned(reward);
         }
       );
 
       // Load the ad
+      console.log('AdMob: Loading rewarded ad...');
       await this.rewardedInterstitial.load();
       
     } catch (error: any) {
-      console.log('AdMob not available:', error?.message || 'Module not installed');
+      console.error('AdMob initialization error:', error?.message || 'Module not installed');
       this.isLoading = false;
       this.adReady = false;
-      // Silently fail - AdMob is optional
     }
-    */
   }
 
   async showRewardedAd(): Promise<void> {
