@@ -35,33 +35,34 @@ EXPO_PUBLIC_REDIRECT_URL=winwai://
 
 ✅ **No changes needed** - just use the production profile when building!
 
-### Step 2: Update app.config.js (if needed)
+### Step 2: Fix Expo SDK Version (CRITICAL!)
 
-Make sure your `app.config.js` uses these environment variables:
-
-```javascript
-export default {
-  expo: {
-    // ... other config
-    extra: {
-      backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL,
-      redirectUrl: process.env.EXPO_PUBLIC_REDIRECT_URL,
-    }
-  }
-}
-```
-
-### Step 3: Rebuild the APK
+**Before building, make sure Expo is locked at version 51.0.x:**
 
 ```bash
 cd /app/frontend
 
-# Clean previous builds
-rm -rf .expo
+# Verify Expo version
+yarn list expo
 
-# Build new production APK with Railway URLs
+# Should show: expo@51.0.39
+# If it shows 54.x.x, run this fix:
+npm pkg set "dependencies.expo=~51.0.0"
+yarn install --force
+```
+
+✅ **Already fixed** - Expo is now locked at 51.0.39
+
+### Step 3: Rebuild the APK with Production Profile
+
+```bash
+cd /app/frontend
+
+# Build new production APK with Railway URLs (.env.production will be used)
 eas build --platform android --profile production
 ```
+
+**The `production` profile will automatically use `.env.production` which has the correct Railway URLs!**
 
 ### Step 4: Install and Test New APK
 
