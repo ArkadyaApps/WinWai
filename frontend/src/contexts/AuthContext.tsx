@@ -1,8 +1,11 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
 import { useUserStore } from '../store/userStore';
 import api from '../utils/api';
+
+WebBrowser.maybeCompleteAuthSession();
 
 interface AuthContextType {
   signIn: () => Promise<void>;
