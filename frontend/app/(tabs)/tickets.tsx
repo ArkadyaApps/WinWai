@@ -36,6 +36,10 @@ export default function TicketsScreen() {
           console.error('Failed to refresh tickets:', error); 
         }
       });
+      
+      // Auto-load the first ad when component mounts
+      console.log('Auto-loading rewarded ad for user:', user.id);
+      rewardedAdManager.loadRewardedAd(user.id);
     }
     
     // Check ad status periodically
