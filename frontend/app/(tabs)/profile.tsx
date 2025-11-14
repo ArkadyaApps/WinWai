@@ -288,6 +288,11 @@ export default function ProfileScreen() {
                 <Text style={styles.languageText}>Français (French)</Text>
                 {language === 'fr' && (<Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />)}
               </TouchableOpacity>
+              <TouchableOpacity style={[styles.languageOption, language === 'ar' && styles.languageOptionActive]} onPress={() => handleLanguageChange('ar')}>
+                <Text style={styles.languageFlag}>🇲🇦</Text>
+                <Text style={styles.languageText}>العربية (Arabic)</Text>
+                {language === 'ar' && (<Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />)}
+              </TouchableOpacity>
             </View>
           </View>
         </View>
