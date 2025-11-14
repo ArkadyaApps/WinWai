@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async () => {
     // Use HTTPS redirect URI (Google only accepts HTTP/HTTPS)
-    const clientId = '581979281149-bg4qaibj9rtgkfbffv6ogc2r83i8a13m.apps.googleusercontent.com';
+    const clientId = '581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com';
     const redirectUri = 'https://winwai.up.railway.app/auth/google/callback';
     
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` + 
