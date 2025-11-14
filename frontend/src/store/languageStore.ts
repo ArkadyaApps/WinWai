@@ -19,6 +19,11 @@ const getLanguageFromCountryCode = (countryCode: string): Language => {
     'BE': 'fr', // Belgium -> French (can be refined)
     'CH': 'fr', // Switzerland -> French (can be refined)
     'CA': 'fr', // Canada -> French (can be refined for Quebec)
+    'MA': 'ar', // Morocco -> Arabic
+    'DZ': 'ar', // Algeria -> Arabic
+    'EG': 'ar', // Egypt -> Arabic
+    'SA': 'ar', // Saudi Arabia -> Arabic
+    'AE': 'ar', // UAE -> Arabic
   };
   
   return languageMap[countryCode] || 'en'; // Default to English
