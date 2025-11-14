@@ -1,8 +1,14 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { GoogleSignin } from '@react-native-google-signin/google-signin';
+import { Platform } from 'react-native';
 import { useUserStore } from '../store/userStore';
 import api from '../utils/api';
+
+// Conditionally import GoogleSignin only on native platforms
+let GoogleSignin: any = null;
+if (Platform.OS !== 'web') {
+  GoogleSignin = require('@react-native-google-signin/google-signin').GoogleSignin;
+}
 
 interface AuthContextType {
   signIn: () => Promise<void>;
