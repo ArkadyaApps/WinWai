@@ -41,46 +41,55 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  // Use Google OAuth hook from expo-auth-session
-  const [request, response, promptAsync] = Google.useIdTokenAuthRequest({
-    clientId: '581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com',
-  });
-
-  // Handle OAuth response
-  useEffect(() => {
-    if (response?.type === 'success') {
-      const { id_token } = response.params;
-      handleGoogleSignIn(id_token);
-    }
-  }, [response]);
-
-  const handleGoogleSignIn = async (idToken: string) => {
+  const signIn = async () => {
+    console.log('==================== NATIVE GOOGLE SIGNIN START ====================');
+    
     try {
+      // Configure Google Sign-In
+      GoogleSignin.configure({
+        webClientId: '581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com',
+        offlineAccess: false,
+      });
+
+      // Check if Google Play Services is available
+      await GoogleSignin.hasPlayServices();
+      console.log('Google Play Services available');
+
+      // Sign in with native Google Sign-In UI
+      const userInfo = await GoogleSignin.signIn();
+      console.log('Native sign-in successful, user:', userInfo.data?.user.email);
+
+      // Get the ID token
+      const idToken = userInfo.data?.idToken;
+      if (!idToken) {
+        throw new Error('No ID token received from Google');
+      }
+
       console.log('ID token received, sending to backend...');
-      
-      // Send ID token to backend for verification
-      const apiResponse = await api.post('/api/auth/google', { id_token: idToken });
+
+      // Send ID token to backend for verification and session creation
+      const response = await api.post('/api/auth/google', { id_token: idToken });
       console.log('Backend response received');
-      
-      const { session_token, user } = apiResponse.data;
-      
+
+      const { session_token, user } = response.data;
+
       console.log('Saving session token...');
       await AsyncStorage.setItem('session_token', session_token);
       console.log('Setting user:', user.email);
       setUser(user);
-      console.log('==================== GOOGLE SIGNIN COMPLETE ====================');
-    } catch (error) {
-      console.error('Failed to sign in with Google:', error);
-      throw error;
-    }
-  };
-
-  const signIn = async () => {
-    console.log('==================== GOOGLE SIGNIN START ====================');
-    try {
-      await promptAsync();
-    } catch (error) {
-      console.error('!!! Sign in failed:', error);
+      console.log('==================== NATIVE GOOGLE SIGNIN COMPLETE ====================');
+    } catch (error: any) {
+      console.error('!!! Native Google Sign in failed:', error);
+      
+      // Handle specific error codes
+      if (error.code === 'SIGN_IN_CANCELLED') {
+        console.log('User cancelled sign in');
+      } else if (error.code === 'IN_PROGRESS') {
+        console.log('Sign in already in progress');
+      } else if (error.code === 'PLAY_SERVICES_NOT_AVAILABLE') {
+        console.error('Google Play Services not available');
+      }
+      
       throw error;
     }
   };
