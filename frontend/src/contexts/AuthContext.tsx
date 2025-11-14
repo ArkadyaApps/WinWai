@@ -44,7 +44,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async () => {
-    const redirectUrl = process.env.EXPO_PUBLIC_REDIRECT_URL || 'https://winwai-fix.preview.emergentagent.com';
+    const redirectUrl = process.env.EXPO_PUBLIC_REDIRECT_URL || 'https://raffle-rewards-2.preview.emergentagent.com';
     const authUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
     
     console.log('==================== GOOGLE SIGNIN START ====================');

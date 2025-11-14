@@ -673,7 +673,7 @@ index ebbc124..e69de29 100644
 -------------+from pymongo import MongoClient
 -------------+
 -------------+# Configuration
--------------+BASE_URL = "https://winwai-fix.preview.emergentagent.com/api"
+-------------+BASE_URL = "https://raffle-rewards-2.preview.emergentagent.com/api"
 -------------+TEST_EMAIL = "test_auth_user@example.com"
 -------------+TEST_PASSWORD = "testpass123"
 -------------+TEST_NAME = "Test Auth User"
@@ -1386,7 +1386,7 @@ index ebbc124..e69de29 100644
 -------------+import pymongo
 -------------+from pymongo import MongoClient
 -------------+
--------------+BASE_URL = "https://winwai-fix.preview.emergentagent.com/api"
+-------------+BASE_URL = "https://raffle-rewards-2.preview.emergentagent.com/api"
 -------------+TEST_EMAIL = "test_auth_user@example.com"
 -------------+TEST_PASSWORD = "testpass123"
 -------------+TEST_NAME = "Test Auth User"
@@ -1987,7 +1987,7 @@ index ebbc124..e69de29 100644
 -------------+import pymongo
 -------------+from pymongo import MongoClient
 -------------+
--------------+BASE_URL = "https://winwai-fix.preview.emergentagent.com/api"
+-------------+BASE_URL = "https://raffle-rewards-2.preview.emergentagent.com/api"
 -------------+TEST_EMAIL = "test_auth_user@example.com"
 -------------+
 -------------+def cleanup():
