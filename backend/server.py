@@ -328,36 +328,51 @@ async def google_exchange_code(request: Request):
 @api_router.post("/auth/google")
 async def google_signin(request: Request):
     """Native Google OAuth sign-in - verifies ID token directly"""
-    body = await request.json()
-    id_token = body.get("id_token")
-    
-    if not id_token:
-        raise HTTPException(status_code=400, detail="id_token required")
-    
-    # Verify Google ID token by calling Google's tokeninfo endpoint
     try:
-        response = requests.get(
-            f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}",
-            timeout=10
-        )
-        response.raise_for_status()
-        token_info = response.json()
+        body = await request.json()
+        id_token = body.get("id_token")
         
-        # Verify the token is valid
-        if "error" in token_info:
-            raise HTTPException(status_code=401, detail="Invalid Google ID token")
+        if not id_token:
+            logging.error("No id_token provided in request")
+            raise HTTPException(status_code=400, detail="id_token required")
         
-        # Extract user info from token
-        email = token_info.get("email")
-        name = token_info.get("name", email.split("@")[0] if email else "User")
-        picture = token_info.get("picture")
+        logging.info(f"Verifying Google ID token (length: {len(id_token)})")
         
-        if not email:
-            raise HTTPException(status_code=401, detail="Email not found in token")
+        # Verify Google ID token by calling Google's tokeninfo endpoint
+        try:
+            response = requests.get(
+                f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}",
+                timeout=10
+            )
+            response.raise_for_status()
+            token_info = response.json()
             
-    except requests.exceptions.RequestException as e:
-        logging.error(f"Failed to verify Google token: {e}")
-        raise HTTPException(status_code=401, detail=f"Failed to verify Google token: {str(e)}")
+            logging.info(f"Token verification response: {token_info.keys()}")
+            
+            # Verify the token is valid
+            if "error" in token_info:
+                logging.error(f"Google returned error: {token_info.get('error')}")
+                raise HTTPException(status_code=401, detail="Invalid Google ID token")
+            
+            # Extract user info from token
+            email = token_info.get("email")
+            name = token_info.get("name", email.split("@")[0] if email else "User")
+            picture = token_info.get("picture")
+            
+            if not email:
+                logging.error("No email in token_info")
+                raise HTTPException(status_code=401, detail="Email not found in token")
+            
+            logging.info(f"Successfully verified token for: {email}")
+                
+        except requests.exceptions.RequestException as e:
+            logging.error(f"Failed to verify Google token: {e}")
+            raise HTTPException(status_code=401, detail=f"Failed to verify Google token: {str(e)}")
+    except HTTPException:
+        raise
+    except Exception as e:
+        logging.error(f"Unexpected error in google_signin: {e}", exc_info=True)
+        raise HTTPException(status_code=500, detail=f"Internal server error: {str(e)}")
     
     # Check if user exists
     user = await db.users.find_one({"email": email})
