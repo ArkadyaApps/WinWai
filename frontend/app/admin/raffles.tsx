@@ -214,9 +214,24 @@ export default function AdminRafflesScreen() {
               <TextInput style={styles.input} value={String(formData.ticketCost)} onChangeText={(text) => setFormData({ ...formData, ticketCost: parseInt(text) || 0 })} placeholder="Tickets per entry" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.helperText}>Number of tickets required to enter this raffle</Text>
               
-              <Text style={styles.label}>Prize Value (฿) *</Text>
+              <Text style={styles.label}>Currency *</Text>
+              <View style={styles.categoryButtons}>
+                {[
+                  { code: 'THB', name: '฿ THB', symbol: '฿' },
+                  { code: 'USD', name: '$ USD', symbol: '$' },
+                  { code: 'EUR', name: '€ EUR', symbol: '€' },
+                  { code: 'GBP', name: '£ GBP', symbol: '£' },
+                  { code: 'MAD', name: 'DH MAD', symbol: 'DH' },
+                ].map((curr) => (
+                  <TouchableOpacity key={curr.code} style={[styles.categoryButton, formData.currency === curr.code && styles.categoryButtonActive]} onPress={() => setFormData({ ...formData, currency: curr.code })}>
+                    <Text style={[styles.categoryButtonText, formData.currency === curr.code && styles.categoryButtonTextActive]}>{curr.name}</Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              
+              <Text style={styles.label}>Prize Value ({formData.currency}) *</Text>
               <TextInput style={styles.input} value={String(formData.prizeValue)} onChangeText={(text) => setFormData({ ...formData, prizeValue: parseFloat(text) || 0 })} placeholder="e.g., 5000" placeholderTextColor="#999" keyboardType="numeric" />
-              <Text style={styles.helperText}>Total value of the prize in Thai Baht</Text>
+              <Text style={styles.helperText}>Total value of the prize in {formData.currency} (Auto-converted to USD in database)</Text>
               
               <Text style={styles.label}>Game Price (฿) *</Text>
               <TextInput style={styles.input} value={String(formData.gamePrice)} onChangeText={(text) => setFormData({ ...formData, gamePrice: parseFloat(text) || 0 })} placeholder="e.g., 100" placeholderTextColor="#999" keyboardType="numeric" />
