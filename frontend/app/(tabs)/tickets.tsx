@@ -19,11 +19,19 @@ export default function TicketsScreen() {
   const [adReady, setAdReady] = useState(false);
   const [loading, setLoading] = useState(false);
 
+  console.log('==================== TICKETS SCREEN MOUNTED ====================');
+  console.log('User:', user?.email);
+  
   useEffect(() => {
+    console.log('==================== TICKETS USEEFFECT START ====================');
     if (user) {
       try {
+        console.log('Calling rewardedAdManager.loadRewardedAd...');
         rewardedAdManager.loadRewardedAd(user.id);
+        console.log('loadRewardedAd called successfully');
+        
         rewardedAdManager.setRewardCallback(async () => {
+          console.log('Reward callback triggered');
           try { 
             const response = await api.get('/api/users/me/tickets'); 
             updateTickets(response.data.tickets); 
@@ -33,10 +41,12 @@ export default function TicketsScreen() {
           }
         });
       } catch (error) {
-        console.error('Failed to initialize ad manager:', error);
+        console.error('!!! Failed to initialize ad manager:', error);
         setAdReady(false);
       }
     }
+    
+    console.log('Setting up interval for ad status check...');
     const interval = setInterval(() => { 
       try {
         const ready = rewardedAdManager.isRewardedAdReady(); 
@@ -46,7 +56,12 @@ export default function TicketsScreen() {
         setAdReady(false);
       }
     }, 1000);
-    return () => clearInterval(interval);
+    
+    console.log('==================== TICKETS USEEFFECT END ====================');
+    return () => {
+      console.log('Tickets screen unmounting, clearing interval');
+      clearInterval(interval);
+    };
   }, [user]);
 
   const handleWatchAd = async () => {
