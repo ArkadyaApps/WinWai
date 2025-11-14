@@ -288,4 +288,9 @@ const styles = StyleSheet.create({
   noResultsText: { fontSize: 14, color: theme.colors.slate, textAlign: 'center', padding: 16 },
   saveButton: { backgroundColor: '#4ECDC4', padding: 16, borderRadius: 8, alignItems: 'center', marginTop: 24 },
   saveButtonText: { fontSize: 16, fontWeight: '700', color: '#fff' },
+  countryGrid: { flexDirection: 'row', flexWrap: 'wrap', gap: 8, marginBottom: 8 },
+  countryButton: { backgroundColor: '#F5F5F5', paddingHorizontal: 12, paddingVertical: 8, borderRadius: 8, minWidth: '30%' },
+  countryButtonActive: { backgroundColor: '#4ECDC4', borderWidth: 2, borderColor: '#3ABDB4' },
+  countryButtonText: { fontSize: 13, color: theme.colors.onyx },
+  countryButtonTextActive: { color: '#fff', fontWeight: '700' },
 });
