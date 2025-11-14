@@ -44,30 +44,39 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async () => {
-    const redirectUrl = process.env.EXPO_PUBLIC_REDIRECT_URL || 'https://raffle-rewards-2.preview.emergentagent.com';
-    const authUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
+    // Native Google OAuth using WebBrowser
+    const clientId = '366099954421-0ot0b3sih36eouf2bk6g19qc1h4a1n15.apps.googleusercontent.com'; // Replace with your OAuth client ID
+    const redirectUri = 'https://auth.expo.io/@arkadyaapps/winwai-raffle'; // Expo redirect URI
+    
+    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` + 
+      `client_id=${clientId}&` +
+      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
+      `response_type=id_token token&` +
+      `scope=openid email profile&` +
+      `nonce=${Math.random().toString(36)}`;
     
     console.log('==================== GOOGLE SIGNIN START ====================');
-    console.log('Redirect URL:', redirectUrl);
     console.log('Auth URL:', authUrl);
     
     try {
-      console.log('Opening auth session...');
-      const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUrl);
-      console.log('Auth result:', result);
+      console.log('Opening Google OAuth...');
+      const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
+      console.log('Auth result type:', result.type);
       
       if (result.type === 'success' && result.url) {
         console.log('Success! Result URL:', result.url);
+        
+        // Extract ID token from URL fragment
         const url = new URL(result.url);
         const hash = url.hash.substring(1);
         const params = new URLSearchParams(hash);
-        const sid = params.get('session_id');
+        const idToken = params.get('id_token');
         
-        console.log('Session ID extracted:', sid);
+        console.log('ID Token extracted:', idToken ? 'YES' : 'NO');
         
-        if (sid) {
-          console.log('Calling backend /api/auth/session...');
-          const response = await api.post('/api/auth/session', { session_id: sid });
+        if (idToken) {
+          console.log('Calling backend with ID token...');
+          const response = await api.post('/api/auth/google', { id_token: idToken });
           console.log('Backend response:', response.data);
           
           const { session_token, user } = response.data;
@@ -78,10 +87,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUser(user);
           console.log('==================== GOOGLE SIGNIN COMPLETE ====================');
         } else {
-          console.error('No session_id in URL!');
+          console.error('No id_token in URL!');
+          throw new Error('Failed to get Google ID token');
         }
       } else {
-        console.log('Auth result type:', result.type);
+        console.log('Auth cancelled or failed');
       }
     } catch (error) {
       console.error('!!! Sign in failed:', error);
