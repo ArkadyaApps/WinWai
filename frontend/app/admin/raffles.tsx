@@ -20,7 +20,7 @@ export default function AdminRafflesScreen() {
   const [saving, setSaving] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: '', description: '', image: '', category: 'food', partnerId: '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, drawDate: new Date(), validityMonths: 3, active: true, language: 'en', allowedCountries: ['TH'],
+    title: '', description: '', image: '', category: 'food', partnerId: '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, drawDate: new Date(), validityMonths: 3, active: true, language: 'en', allowedCountries: ['TH'], currency: 'THB',
   });
   const [partnerSearch, setPartnerSearch] = useState('');
 
