@@ -44,18 +44,19 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async () => {
-    // Native Google OAuth using WebBrowser
+    // Use app's custom scheme for better in-app experience
     const clientId = '581979281149-bg4qaibj9rtgkfbffv6ogc2r83i8a13m.apps.googleusercontent.com';
-    const redirectUri = 'https://auth.expo.io/@arkadyaapps/winwai-raffle'; // Expo redirect URI
+    const redirectUri = 'com.winwai.raffle:/oauth2redirect'; // Using reversed package name
     
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` + 
       `client_id=${clientId}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-      `response_type=id_token token&` +
+      `response_type=id_token&` +
       `scope=openid email profile&` +
       `nonce=${Math.random().toString(36)}`;
     
     console.log('==================== GOOGLE SIGNIN START ====================');
+    console.log('Redirect URI:', redirectUri);
     console.log('Auth URL:', authUrl);
     
     try {
@@ -77,7 +78,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         if (idToken) {
           console.log('Calling backend with ID token...');
           const response = await api.post('/api/auth/google', { id_token: idToken });
-          console.log('Backend response:', response.data);
+          console.log('Backend response received');
           
           const { session_token, user } = response.data;
           
@@ -91,7 +92,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           throw new Error('Failed to get Google ID token');
         }
       } else {
-        console.log('Auth cancelled or failed');
+        console.log('Auth cancelled or failed, result type:', result.type);
       }
     } catch (error) {
       console.error('!!! Sign in failed:', error);
