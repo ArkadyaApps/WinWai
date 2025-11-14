@@ -746,15 +746,29 @@ async def make_me_admin(current_user: dict = Depends(get_current_user)):
         if not current_user:
             raise HTTPException(status_code=401, detail="Not authenticated")
         
+        # Try to update by email first (more reliable)
         result = await db.users.update_one(
-            {"id": current_user["id"]},
+            {"email": current_user["email"]},
             {"$set": {"role": "admin"}}
         )
+        
+        # If that didn't work, try by id
+        if result.modified_count == 0:
+            result = await db.users.update_one(
+                {"id": current_user["id"]},
+                {"$set": {"role": "admin"}}
+            )
+        
+        # Verify the update
+        updated_user = await db.users.find_one({"email": current_user["email"]})
         
         return {
             "success": True,
             "message": f"User {current_user['email']} is now an admin",
-            "updated": result.modified_count > 0
+            "updated": result.modified_count > 0,
+            "current_role": updated_user.get("role") if updated_user else "not found",
+            "matched": result.matched_count,
+            "modified": result.modified_count
         }
     except Exception as e:
         return {"success": False, "error": str(e)}
