@@ -45,7 +45,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const signIn = async () => {
     // Native Google OAuth using WebBrowser
-    const clientId = '366099954421-0ot0b3sih36eouf2bk6g19qc1h4a1n15.apps.googleusercontent.com'; // Replace with your OAuth client ID
+    const clientId = '581979281149-bg4qaibj9rtgkfbffv6ogc2r83i8a13m.apps.googleusercontent.com';
     const redirectUri = 'https://auth.expo.io/@arkadyaapps/winwai-raffle'; // Expo redirect URI
     
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` + 
