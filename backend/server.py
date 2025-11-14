@@ -401,6 +401,9 @@ async def google_signin(request: Request):
             {"$set": {"lastLogin": datetime.now(timezone.utc)}}
         )
         logging.info(f"User logged in: {email}")
+        
+        # Remove MongoDB internal fields that might cause issues
+        user.pop("_id", None)
     
     # Create session
     session_token = str(uuid.uuid4())
@@ -414,8 +417,9 @@ async def google_signin(request: Request):
     
     await db.user_sessions.insert_one(user_session.dict())
     
+    # Return user data directly without re-validation for existing users
     return {
-        "user": User(**user).dict(),
+        "user": user if isinstance(user, dict) and "id" in user else User(**user).dict(),
         "session_token": session_token
     }
 
