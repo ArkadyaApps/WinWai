@@ -9,7 +9,7 @@ import time
 import pymongo
 from pymongo import MongoClient
 
-BASE_URL = "https://winwai-raffle-1.preview.emergentagent.com/api"
+BASE_URL = "https://winwai-raffle-2.preview.emergentagent.com/api"
 TEST_EMAIL = "test_auth_user@example.com"
 TEST_PASSWORD = "testpass123"
 TEST_NAME = "Test Auth User"
