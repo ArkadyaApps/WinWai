@@ -11,6 +11,9 @@ interface RaffleGridCardProps {
 }
 
 const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
+  // Debug: Check if raffle has image
+  console.log('RaffleGridCard:', raffle.title, 'has image:', !!raffle.image, raffle.image?.substring(0, 50));
+  
   const getCategoryGradient = (category: string): [string, string] => {
     switch (category) {
       case 'food': return ['#FF6B6B', '#FF8E53'];
