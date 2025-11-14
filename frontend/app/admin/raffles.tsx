@@ -137,6 +137,48 @@ export default function AdminRafflesScreen() {
                   </TouchableOpacity>
                 ))}
               </View>
+              <Text style={styles.label}>Allowed Countries * (User Geolocation)</Text>
+              <View style={styles.countryGrid}>
+                {[
+                  { code: 'TH', name: '🇹🇭 Thailand', flag: '🇹🇭' },
+                  { code: 'US', name: '🇺🇸 USA', flag: '🇺🇸' },
+                  { code: 'GB', name: '🇬🇧 UK', flag: '🇬🇧' },
+                  { code: 'FR', name: '🇫🇷 France', flag: '🇫🇷' },
+                  { code: 'DE', name: '🇩🇪 Germany', flag: '🇩🇪' },
+                  { code: 'JP', name: '🇯🇵 Japan', flag: '🇯🇵' },
+                  { code: 'CN', name: '🇨🇳 China', flag: '🇨🇳' },
+                  { code: 'IN', name: '🇮🇳 India', flag: '🇮🇳' },
+                  { code: 'SG', name: '🇸🇬 Singapore', flag: '🇸🇬' },
+                  { code: 'MY', name: '🇲🇾 Malaysia', flag: '🇲🇾' },
+                  { code: 'VN', name: '🇻🇳 Vietnam', flag: '🇻🇳' },
+                  { code: 'ALL', name: '🌍 All Countries', flag: '🌍' },
+                ].map((country) => {
+                  const isSelected = country.code === 'ALL' 
+                    ? formData.allowedCountries.includes('ALL')
+                    : formData.allowedCountries.includes(country.code);
+                  return (
+                    <TouchableOpacity 
+                      key={country.code} 
+                      style={[styles.countryButton, isSelected && styles.countryButtonActive]} 
+                      onPress={() => {
+                        if (country.code === 'ALL') {
+                          setFormData({ ...formData, allowedCountries: ['ALL'] });
+                        } else {
+                          const newCountries = isSelected
+                            ? formData.allowedCountries.filter(c => c !== country.code && c !== 'ALL')
+                            : [...formData.allowedCountries.filter(c => c !== 'ALL'), country.code];
+                          setFormData({ ...formData, allowedCountries: newCountries.length > 0 ? newCountries : ['TH'] });
+                        }
+                      }}
+                    >
+                      <Text style={[styles.countryButtonText, isSelected && styles.countryButtonTextActive]}>
+                        {country.flag} {country.name.replace(/🇹🇭 |🇺🇸 |🇬🇧 |🇫🇷 |🇩🇪 |🇯🇵 |🇨🇳 |🇮🇳 |🇸🇬 |🇲🇾 |🇻🇳 |🌍 /, '')}
+                      </Text>
+                    </TouchableOpacity>
+                  );
+                })}
+              </View>
+              <Text style={styles.helperText}>Users from selected countries can participate. Default: Thailand only.</Text>
               <Text style={styles.label}>Category *</Text>
               <View style={styles.categoryButtons}>
                 {['food', 'hotel', 'spa'].map((cat) => (
