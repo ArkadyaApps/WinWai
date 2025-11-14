@@ -17,18 +17,25 @@ class RewardedAdManager {
   private rewardedInterstitial: any = null;
 
   async loadRewardedAd(userId: string): Promise<void> {
+    console.log('==================== LOAD AD START ====================');
+    console.log('🎯 Platform:', Platform.OS);
+    console.log('🎯 User ID:', userId);
+    console.log('🎯 __DEV__:', __DEV__);
+    
     this.currentUserId = userId;
     this.adReady = false;
     
     // Only load ads on native platforms
     if (Platform.OS === 'web') {
-      console.log('AdMob: Web platform not supported');
+      console.log('❌ AdMob: Web platform not supported');
       return;
     }
 
     try {
+      console.log('📦 Importing AdMob module...');
       // Import AdMob module
       const { RewardedInterstitialAd, RewardedAdEventType, TestIds } = await import('react-native-google-mobile-ads');
+      console.log('✅ AdMob module imported successfully');
       
       // Use test ads in development, real ads in production
       const adUnitId = __DEV__ 
@@ -38,39 +45,60 @@ class RewardedAdManager {
             android: 'ca-app-pub-3486145054830108/3753903590',
           }) || TestIds.REWARDED_INTERSTITIAL;
 
-      console.log('AdMob: Creating rewarded ad with unit ID:', adUnitId);
+      console.log('🎯 Ad Unit ID:', adUnitId);
+      console.log('🎯 Using test ads:', __DEV__ ? 'YES' : 'NO');
 
+      console.log('📝 Creating rewarded ad instance...');
       this.rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitId, {
         requestNonPersonalizedAdsOnly: false,
         keywords: ['game', 'raffle', 'prize', 'reward'],
       });
+      console.log('✅ Rewarded ad instance created');
 
       // Set up event listeners
+      console.log('📝 Setting up event listeners...');
+      
       const unsubscribeLoaded = this.rewardedInterstitial.addAdEventListener(
         RewardedAdEventType.LOADED,
         () => {
-          console.log('AdMob: Rewarded ad loaded successfully');
+          console.log('✅✅✅ AdMob: Rewarded ad LOADED successfully! ✅✅✅');
           this.adReady = true;
+        }
+      );
+
+      const unsubscribeFailed = this.rewardedInterstitial.addAdEventListener(
+        RewardedAdEventType.ERROR,
+        (error: any) => {
+          console.error('❌❌❌ AdMob: Ad FAILED to load:', error);
+          console.error('Error details:', JSON.stringify(error, null, 2));
+          this.adReady = false;
+          Alert.alert('Ad Loading Failed', `Error: ${error.message || 'Unknown error'}`);
         }
       );
 
       const unsubscribeEarned = this.rewardedInterstitial.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward: any) => {
-          console.log('AdMob: User earned reward:', reward);
+          console.log('🎉 AdMob: User earned reward:', reward);
           await this.handleRewardEarned(reward);
         }
       );
 
       // Load the ad
-      console.log('AdMob: Loading rewarded ad...');
+      console.log('📡 Starting ad load request...');
       await this.rewardedInterstitial.load();
+      console.log('📡 Ad load request sent (waiting for LOADED event)...');
       
     } catch (error: any) {
-      console.error('AdMob initialization error:', error?.message || 'Module not installed');
+      console.error('❌❌❌ AdMob initialization error:', error);
+      console.error('Error message:', error?.message);
+      console.error('Error stack:', error?.stack);
+      console.error('Error details:', JSON.stringify(error, null, 2));
       this.isLoading = false;
       this.adReady = false;
+      Alert.alert('AdMob Error', `Failed to initialize: ${error?.message || 'Unknown error'}`);
     }
+    console.log('==================== LOAD AD END ====================');
   }
 
   async showRewardedAd(): Promise<void> {
