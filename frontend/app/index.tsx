@@ -39,11 +39,14 @@ export default function Index() {
 
   const handleGoogleSignIn = async () => {
     try {
+      setLoading(true);
       await signIn();
-      router.replace('/(tabs)/home');
+      // Navigation will happen automatically via useEffect when isAuthenticated becomes true
+      // Don't navigate manually here - let the useEffect handle it
     } catch (error) {
       console.error('Sign in error:', error);
       setError('Google sign-in failed. Please try again.');
+      setLoading(false);
     }
   };
 
