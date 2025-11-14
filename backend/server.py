@@ -75,13 +75,15 @@ class Raffle(BaseModel):
     prizesAvailable: int
     prizesRemaining: int
     ticketCost: int = Field(default=10)  # Tickets required to enter
-    prizeValue: float = Field(default=0.0)  # Total value of prize in THB
-    gamePrice: float = Field(default=0.0)  # Cost per ticket/game in THB
+    prizeValue: float = Field(default=0.0)  # Total value of prize in local currency
+    prizeValueUSD: float = Field(default=0.0)  # Prize value converted to USD (for raffle drawer)
+    currency: str = Field(default='THB')  # Currency code: THB, USD, EUR, MAD, etc
+    gamePrice: float = Field(default=0.0)  # Cost per ticket/game in local currency
     drawDate: datetime
     validityMonths: int = Field(default=3)  # Prize validity in months (default 3)
     active: bool = Field(default=True)
     totalEntries: int = Field(default=0)
-    language: str = Field(default='en')  # Content language: en, th, fr
+    language: str = Field(default='en')  # Content language: en, th, fr, ar
     allowedCountries: List[str] = Field(default_factory=lambda: ['TH'])  # Country codes allowed to play (default: Thailand only)
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
