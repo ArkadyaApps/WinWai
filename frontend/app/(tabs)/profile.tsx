@@ -93,10 +93,10 @@ export default function ProfileScreen() {
   // Check if user has password (not OAuth-only)
   const hasPassword = user && !user.picture?.includes('google');
 
-  const handleLanguageChange = async (lang: 'en' | 'th' | 'fr') => { await setLanguage(lang); setLanguageModalVisible(false); Alert.alert(t.language, `${getLanguageName(lang)}`); };
+  const handleLanguageChange = async (lang: 'en' | 'th' | 'fr' | 'ar') => { await setLanguage(lang); setLanguageModalVisible(false); Alert.alert(t.language, `${getLanguageName(lang)}`); };
 
-  const getLanguageName = (lang: string) => lang === 'th' ? 'ภาษาไทย (Thai)' : lang === 'fr' ? 'Français (French)' : 'English';
-  const getLanguageFlag = (lang: string) => lang === 'th' ? '🇹🇭' : lang === 'fr' ? '🇫🇷' : '🇺🇸';
+  const getLanguageName = (lang: string) => lang === 'th' ? 'ภาษาไทย (Thai)' : lang === 'fr' ? 'Français (French)' : lang === 'ar' ? 'العربية (Arabic)' : 'English';
+  const getLanguageFlag = (lang: string) => lang === 'th' ? '🇹🇭' : lang === 'fr' ? '🇫🇷' : lang === 'ar' ? '🇲🇦' : '🇺🇸';
 
   return (
     <View style={styles.container}>
