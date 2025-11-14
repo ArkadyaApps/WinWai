@@ -2,7 +2,7 @@ import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { getUserLocation } from '../utils/locationService';
 
-type Language = 'en' | 'th' | 'fr';
+type Language = 'en' | 'th' | 'fr' | 'ar';
 
 interface LanguageState {
   language: Language;
