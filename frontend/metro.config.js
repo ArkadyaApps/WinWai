@@ -22,4 +22,17 @@ config.cacheStores = [
 // Reduce the number of workers to decrease resource usage
 config.maxWorkers = 2;
 
+// Resolve native-only packages for web platform
+config.resolver.resolveRequest = (context, moduleName, platform) => {
+  // Redirect native-only packages to empty module on web
+  if (platform === 'web' && moduleName === '@react-native-google-signin/google-signin') {
+    return {
+      type: 'empty',
+    };
+  }
+  
+  // Default resolution
+  return context.resolveRequest(context, moduleName, platform);
+};
+
 module.exports = config;
