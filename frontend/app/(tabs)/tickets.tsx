@@ -65,16 +65,25 @@ export default function TicketsScreen() {
     try { 
       await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
       
-      // If ad not ready, load it first
-      if (!adReady) {
-        console.log('Loading ad...');
+      // Show the ad if ready
+      if (adReady) {
+        await rewardedAdManager.showRewardedAd();
+      } else {
+        // If ad not ready yet, try loading and waiting
+        console.log('Ad not ready, loading now...');
         await rewardedAdManager.loadRewardedAd(user.id);
-        // Wait a bit for ad to load
-        await new Promise(resolve => setTimeout(resolve, 2000));
+        // Wait for ad to load (max 3 seconds)
+        let attempts = 0;
+        while (!rewardedAdManager.isRewardedAdReady() && attempts < 30) {
+          await new Promise(resolve => setTimeout(resolve, 100));
+          attempts++;
+        }
+        if (rewardedAdManager.isRewardedAdReady()) {
+          await rewardedAdManager.showRewardedAd();
+        } else {
+          console.log('Ad failed to load in time');
+        }
       }
-      
-      // Show the ad
-      await rewardedAdManager.showRewardedAd();
     }
     catch (error) { console.error('Failed to show ad:', error); }
     finally { setLoading(false); }
