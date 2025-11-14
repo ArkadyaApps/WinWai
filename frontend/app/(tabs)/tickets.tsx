@@ -97,7 +97,7 @@ export default function TicketsScreen() {
             ) : (
               <View style={styles.playButtonContent}>
                 <View style={styles.playIconContainer}><Text style={styles.playIcon}>▶</Text></View>
-                <View style={styles.playButtonTextContainer}><Text style={styles.playButtonTitle}>{adReady ? t.playRewardedAd : t.loadingAd}</Text><Text style={styles.playButtonSubtitle}>{t.earnTicketsInstantly}</Text></View>
+                <View style={styles.playButtonTextContainer}><Text style={styles.playButtonTitle}>Watch Ad & Earn Ticket</Text><Text style={styles.playButtonSubtitle}>Tap to start • Earn 1 ticket per ad</Text></View>
               </View>
             )}
           </TouchableOpacity>
