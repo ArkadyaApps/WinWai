@@ -209,24 +209,13 @@ async def get_current_user(authorization: Optional[str] = Header(None), session_
 # Auth Endpoints
 @api_router.get("/auth/google/callback")
 async def google_callback(code: str = None, error: str = None):
-    """OAuth callback endpoint - redirects to app with code"""
+    """OAuth callback endpoint - passes code back to WebBrowser"""
     if error:
-        # Redirect to app with error
         return {"error": error}
     if code:
-        # Return HTML that closes the browser and passes code to app
-        html = f"""
-        <html>
-        <head><title>Sign in successful</title></head>
-        <body>
-        <h1>Signing in...</h1>
-        <script>
-        window.close();
-        </script>
-        </body>
-        </html>
-        """
-        return HTMLResponse(content=html)
+        # WebBrowser.openAuthSessionAsync will detect this response and extract the code
+        # Just return success - the WebBrowser will capture the URL with the code parameter
+        return {"success": True, "code": code}
     return {"error": "No code received"}
 
 @api_router.post("/auth/google/exchange")
