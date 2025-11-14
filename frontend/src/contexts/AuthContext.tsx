@@ -44,40 +44,38 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async () => {
-    // Use app's custom scheme for better in-app experience
+    // Use HTTPS redirect URI (Google only accepts HTTP/HTTPS)
     const clientId = '581979281149-bg4qaibj9rtgkfbffv6ogc2r83i8a13m.apps.googleusercontent.com';
-    const redirectUri = 'com.winwai.raffle:/oauth2redirect'; // Using reversed package name
+    const redirectUri = 'https://winwai.up.railway.app/auth/google/callback';
     
     const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` + 
       `client_id=${clientId}&` +
       `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-      `response_type=id_token&` +
+      `response_type=code&` +
       `scope=openid email profile&` +
-      `nonce=${Math.random().toString(36)}`;
+      `access_type=offline&` +
+      `prompt=consent`;
     
     console.log('==================== GOOGLE SIGNIN START ====================');
     console.log('Redirect URI:', redirectUri);
-    console.log('Auth URL:', authUrl);
+    console.log('Opening Google OAuth...');
     
     try {
-      console.log('Opening Google OAuth...');
       const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUri);
       console.log('Auth result type:', result.type);
       
       if (result.type === 'success' && result.url) {
         console.log('Success! Result URL:', result.url);
         
-        // Extract ID token from URL fragment
+        // Extract authorization code from URL
         const url = new URL(result.url);
-        const hash = url.hash.substring(1);
-        const params = new URLSearchParams(hash);
-        const idToken = params.get('id_token');
+        const code = url.searchParams.get('code');
         
-        console.log('ID Token extracted:', idToken ? 'YES' : 'NO');
+        console.log('Auth code extracted:', code ? 'YES' : 'NO');
         
-        if (idToken) {
-          console.log('Calling backend with ID token...');
-          const response = await api.post('/api/auth/google', { id_token: idToken });
+        if (code) {
+          console.log('Exchanging code for token...');
+          const response = await api.post('/api/auth/google/exchange', { code });
           console.log('Backend response received');
           
           const { session_token, user } = response.data;
@@ -88,8 +86,8 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
           setUser(user);
           console.log('==================== GOOGLE SIGNIN COMPLETE ====================');
         } else {
-          console.error('No id_token in URL!');
-          throw new Error('Failed to get Google ID token');
+          console.error('No authorization code in URL!');
+          throw new Error('Failed to get Google authorization code');
         }
       } else {
         console.log('Auth cancelled or failed, result type:', result.type);
