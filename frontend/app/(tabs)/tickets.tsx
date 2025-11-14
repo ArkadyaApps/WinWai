@@ -25,41 +25,31 @@ export default function TicketsScreen() {
   useEffect(() => {
     console.log('==================== TICKETS USEEFFECT START ====================');
     if (user) {
-      try {
-        console.log('Calling rewardedAdManager.loadRewardedAd...');
-        rewardedAdManager.loadRewardedAd(user.id);
-        console.log('loadRewardedAd called successfully');
-        
-        rewardedAdManager.setRewardCallback(async () => {
-          console.log('Reward callback triggered');
-          try { 
-            const response = await api.get('/api/users/me/tickets'); 
-            updateTickets(response.data.tickets); 
-            Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); 
-          } catch (error) { 
-            console.error('Failed to refresh tickets:', error); 
-          }
-        });
-      } catch (error) {
-        console.error('!!! Failed to initialize ad manager:', error);
-        setAdReady(false);
-      }
+      // Set up reward callback
+      rewardedAdManager.setRewardCallback(async () => {
+        console.log('Reward callback triggered');
+        try { 
+          const response = await api.get('/api/users/me/tickets'); 
+          updateTickets(response.data.tickets); 
+          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); 
+        } catch (error) { 
+          console.error('Failed to refresh tickets:', error); 
+        }
+      });
     }
     
-    console.log('Setting up interval for ad status check...');
+    // Check ad status periodically
     const interval = setInterval(() => { 
       try {
         const ready = rewardedAdManager.isRewardedAdReady(); 
         setAdReady(ready);
       } catch (error) {
-        console.error('Failed to check ad status:', error);
         setAdReady(false);
       }
     }, 1000);
     
     console.log('==================== TICKETS USEEFFECT END ====================');
     return () => {
-      console.log('Tickets screen unmounting, clearing interval');
       clearInterval(interval);
     };
   }, [user]);
