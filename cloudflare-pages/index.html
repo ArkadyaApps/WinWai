@@ -193,23 +193,45 @@
         // Option 3: Google Drive
         // const APK_URL = 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID';
         
-        // Set download button URL
-        document.getElementById('downloadBtn').href = APK_URL;
-        
-        // Generate QR code with download URL
-        QRCode.toCanvas(document.createElement('canvas'), APK_URL, {
-            width: 200,
-            margin: 2,
-            color: {
-                dark: '#667eea',
-                light: '#ffffff'
+        // Wait for page to fully load and QRCode library to be available
+        window.addEventListener('load', function() {
+            console.log('Page loaded, initializing QR code...');
+            
+            // Set download button URL
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn) {
+                downloadBtn.href = APK_URL;
+                console.log('Download button URL set to:', APK_URL);
             }
-        }, function (error, canvas) {
-            if (error) {
-                console.error(error);
-                document.getElementById('qrcode').innerHTML = '<p style="color: #999;">QR code generation failed</p>';
-            } else {
-                document.getElementById('qrcode').appendChild(canvas);
+            
+            // Check if QRCode library is loaded
+            if (typeof QRCode === 'undefined') {
+                console.error('QRCode library not loaded!');
+                document.getElementById('qrcode').innerHTML = '<p style="color: #999;">QR code library failed to load</p>';
+                return;
+            }
+            
+            // Generate QR code with download URL
+            try {
+                QRCode.toCanvas(document.createElement('canvas'), APK_URL, {
+                    width: 200,
+                    margin: 2,
+                    color: {
+                        dark: '#667eea',
+                        light: '#ffffff'
+                    }
+                }, function (error, canvas) {
+                    if (error) {
+                        console.error('QR code generation error:', error);
+                        document.getElementById('qrcode').innerHTML = '<p style="color: #999;">QR code generation failed</p>';
+                    } else {
+                        console.log('QR code generated successfully');
+                        document.getElementById('qrcode').appendChild(canvas);
+                    }
+                });
+            } catch (e) {
+                console.error('QR code generation exception:', e);
+                document.getElementById('qrcode').innerHTML = '<p style="color: #999;">Error: ' + e.message + '</p>';
             }
         });
     </script>
