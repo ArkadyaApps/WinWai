@@ -112,6 +112,24 @@ When you release a new version:
 
 ---
 
+## ⚠️ APK HOSTING UPDATE
+
+Cloudflare Pages has a **25MB file limit**, so you can't host the APK there directly.
+
+**✅ SOLUTION: Use Alternative Hosting**
+
+See `/app/APK_HOSTING_GUIDE.md` for detailed options:
+
+1. **Railway Backend** (Easiest - Already deployed!)
+2. **GitHub Releases** (Most Professional)
+3. **Google Drive** (Quick test)
+
+**Quick Setup:**
+1. Choose hosting method from guide
+2. Upload APK to chosen host
+3. Update `APK_URL` in `/app/cloudflare-pages/index.html` (line 135)
+4. Deploy Cloudflare page
+
 **Ready to deploy?** Just run:
 ```bash
 cd /app/cloudflare-pages && ./deploy.sh
