@@ -773,6 +773,30 @@ async def make_me_admin(current_user: dict = Depends(get_current_user)):
     except Exception as e:
         return {"success": False, "error": str(e)}
 
+@api_router.post("/admin/force-admin/{email}")
+async def force_admin(email: str):
+    """Emergency endpoint to force make a user admin - NO AUTH REQUIRED"""
+    try:
+        # Update by email
+        result = await db.users.update_one(
+            {"email": email},
+            {"$set": {"role": "admin"}}
+        )
+        
+        # Verify
+        user = await db.users.find_one({"email": email})
+        
+        return {
+            "success": True,
+            "email": email,
+            "matched": result.matched_count,
+            "modified": result.modified_count,
+            "current_role": user.get("role") if user else "user not found",
+            "user_id": user.get("id") if user else None
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
 @api_router.post("/admin/seed-database")
 async def seed_database():
     """Seed the database with mock data for testing"""
