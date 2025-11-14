@@ -82,6 +82,7 @@ class Raffle(BaseModel):
     active: bool = Field(default=True)
     totalEntries: int = Field(default=0)
     language: str = Field(default='en')  # Content language: en, th, fr
+    allowedCountries: List[str] = Field(default_factory=lambda: ['TH'])  # Country codes allowed to play (default: Thailand only)
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
 
 class Entry(BaseModel):
