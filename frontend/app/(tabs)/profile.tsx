@@ -133,6 +133,39 @@ export default function ProfileScreen() {
           <Text style={styles.editProfileText}>{t.editProfile}</Text>
         </TouchableOpacity>
 
+        {/* TEMPORARY: Admin & Seed Buttons - Remove after use */}
+        {!isAdmin && (
+          <TouchableOpacity 
+            style={[styles.editProfileButton, { backgroundColor: '#FF6B6B', marginTop: 8 }]} 
+            onPress={async () => {
+              try {
+                await api.post('/api/admin/make-me-admin');
+                Alert.alert('Success', 'You are now an admin! Please restart the app.');
+              } catch (error: any) {
+                Alert.alert('Error', error.response?.data?.detail || 'Failed to become admin');
+              }
+            }}
+          >
+            <Ionicons name="shield-checkmark" size={20} color="#fff" />
+            <Text style={styles.editProfileText}>🔧 Make Me Admin (Tap Once)</Text>
+          </TouchableOpacity>
+        )}
+        
+        <TouchableOpacity 
+          style={[styles.editProfileButton, { backgroundColor: '#4ECDC4', marginTop: 8 }]} 
+          onPress={async () => {
+            try {
+              const response = await api.post('/api/admin/seed-database');
+              Alert.alert('Success', `Database seeded! ${response.data.raffles_created} raffles created with new images.`);
+            } catch (error: any) {
+              Alert.alert('Error', 'Failed to seed database');
+            }
+          }}
+        >
+          <Ionicons name="images" size={20} color="#fff" />
+          <Text style={styles.editProfileText}>🔧 Update Raffle Images (Tap Once)</Text>
+        </TouchableOpacity>
+
         {isAdmin && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
