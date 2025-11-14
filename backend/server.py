@@ -739,6 +739,26 @@ async def check_user(email: str):
     except Exception as e:
         return {"error": str(e)}
 
+@api_router.post("/admin/make-me-admin")
+async def make_me_admin(current_user: dict = Depends(get_current_user)):
+    """Make the current logged-in user an admin"""
+    try:
+        if not current_user:
+            raise HTTPException(status_code=401, detail="Not authenticated")
+        
+        result = await db.users.update_one(
+            {"id": current_user["id"]},
+            {"$set": {"role": "admin"}}
+        )
+        
+        return {
+            "success": True,
+            "message": f"User {current_user['email']} is now an admin",
+            "updated": result.modified_count > 0
+        }
+    except Exception as e:
+        return {"success": False, "error": str(e)}
+
 @api_router.post("/admin/seed-database")
 async def seed_database():
     """Seed the database with mock data for testing"""
