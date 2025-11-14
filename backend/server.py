@@ -19,6 +19,28 @@ from pathlib import Path
 ROOT_DIR = Path(__file__).parent
 load_dotenv(ROOT_DIR / '.env')
 
+# Currency conversion rates to USD (approximate rates)
+CURRENCY_RATES = {
+    'USD': 1.0,
+    'THB': 0.028,      # Thai Baht
+    'EUR': 1.09,       # Euro
+    'GBP': 1.27,       # British Pound
+    'MAD': 0.10,       # Moroccan Dirham
+    'JPY': 0.0067,     # Japanese Yen
+    'CNY': 0.14,       # Chinese Yuan
+    'INR': 0.012,      # Indian Rupee
+    'SGD': 0.74,       # Singapore Dollar
+    'MYR': 0.22,       # Malaysian Ringgit
+    'VND': 0.000039,   # Vietnamese Dong
+}
+
+def convert_to_usd(amount: float, from_currency: str) -> float:
+    """Convert amount from given currency to USD"""
+    if from_currency not in CURRENCY_RATES:
+        # Default to THB if currency not found
+        return amount * CURRENCY_RATES['THB']
+    return amount * CURRENCY_RATES[from_currency]
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
