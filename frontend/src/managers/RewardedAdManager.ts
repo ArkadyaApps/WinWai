@@ -66,16 +66,6 @@ class RewardedAdManager {
         }
       );
 
-      const unsubscribeFailed = this.rewardedInterstitial.addAdEventListener(
-        RewardedAdEventType.ERROR,
-        (error: any) => {
-          console.error('❌❌❌ AdMob: Ad FAILED to load:', error);
-          console.error('Error details:', JSON.stringify(error, null, 2));
-          this.adReady = false;
-          Alert.alert('Ad Loading Failed', `Error: ${error.message || 'Unknown error'}`);
-        }
-      );
-
       const unsubscribeEarned = this.rewardedInterstitial.addAdEventListener(
         RewardedAdEventType.EARNED_REWARD,
         async (reward: any) => {
