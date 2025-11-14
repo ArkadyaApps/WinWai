@@ -1645,6 +1645,17 @@ async def delete_raffle(raffle_id: str, authorization: Optional[str] = Header(No
     
     return {"message": "Raffle deleted successfully"}
 
+# Serve static legal pages
+@app.get("/terms", response_class=FileResponse)
+async def terms_of_service():
+    """Serve Terms of Service page"""
+    return FileResponse("static/terms.html", media_type="text/html")
+
+@app.get("/privacy", response_class=FileResponse)
+async def privacy_policy():
+    """Serve Privacy Policy page"""
+    return FileResponse("static/privacy.html", media_type="text/html")
+
 app.include_router(api_router)
 
 app.add_middleware(
