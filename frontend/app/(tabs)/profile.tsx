@@ -21,6 +21,15 @@ export default function ProfileScreen() {
   const { signOut, changePassword } = useAuth();
   const router = useRouter();
 
+  const isAdmin = user?.role === 'admin';
+  
+  // Debug logging
+  console.log('ProfileScreen - User data:', {
+    email: user?.email,
+    role: user?.role,
+    isAdmin: isAdmin
+  });
+
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
@@ -30,8 +39,6 @@ export default function ProfileScreen() {
 
   useEffect(() => { initializeAdminMode(); initializeLanguage(); }, []);
   useEffect(() => { if (user) setFormData({ name: user.name, email: user.email, phone: user.phone || '' }); }, [user]);
-
-  const isAdmin = user?.role === 'admin';
 
   const handleSignOut = () => {
     Alert.alert(t.signOut, t.areYouSure, [
