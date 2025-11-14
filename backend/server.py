@@ -206,8 +206,88 @@ async def get_current_user(authorization: Optional[str] = Header(None), session_
     return User(**user)
 
 # Auth Endpoints
+@api_router.post("/auth/google")
+async def google_signin(request: Request):
+    """Native Google OAuth sign-in - verifies ID token directly"""
+    body = await request.json()
+    id_token = body.get("id_token")
+    
+    if not id_token:
+        raise HTTPException(status_code=400, detail="id_token required")
+    
+    # Verify Google ID token by calling Google's tokeninfo endpoint
+    try:
+        response = requests.get(
+            f"https://oauth2.googleapis.com/tokeninfo?id_token={id_token}",
+            timeout=10
+        )
+        response.raise_for_status()
+        token_info = response.json()
+        
+        # Verify the token is valid
+        if "error" in token_info:
+            raise HTTPException(status_code=401, detail="Invalid Google ID token")
+        
+        # Extract user info from token
+        email = token_info.get("email")
+        name = token_info.get("name", email.split("@")[0] if email else "User")
+        picture = token_info.get("picture")
+        
+        if not email:
+            raise HTTPException(status_code=401, detail="Email not found in token")
+            
+    except requests.exceptions.RequestException as e:
+        logging.error(f"Failed to verify Google token: {e}")
+        raise HTTPException(status_code=401, detail=f"Failed to verify Google token: {str(e)}")
+    
+    # Check if user exists
+    user = await db.users.find_one({"email": email})
+    
+    if not user:
+        # Create new user
+        # Check if email should be admin
+        admin_emails = ["artteabnc@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
+        user_role = "admin" if email.lower() in admin_emails else "user"
+        
+        new_user = User(
+            email=email,
+            name=name,
+            picture=picture,
+            tickets=100,  # Welcome bonus
+            role=user_role,
+            lastLogin=datetime.now(timezone.utc)
+        )
+        await db.users.insert_one(new_user.dict())
+        user = new_user.dict()
+        logging.info(f"Created new user: {email} with role: {user_role}")
+    else:
+        # Update last login
+        await db.users.update_one(
+            {"id": user["id"]},
+            {"$set": {"lastLogin": datetime.now(timezone.utc)}}
+        )
+        logging.info(f"User logged in: {email}")
+    
+    # Create session
+    session_token = str(uuid.uuid4())
+    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
+    
+    user_session = UserSession(
+        userId=user["id"],
+        sessionToken=session_token,
+        expiresAt=expires_at
+    )
+    
+    await db.user_sessions.insert_one(user_session.dict())
+    
+    return {
+        "user": User(**user).dict(),
+        "session_token": session_token
+    }
+
 @api_router.post("/auth/session")
 async def process_session(request: Request):
+    """Legacy Emergent Auth endpoint - kept for backwards compatibility"""
     body = await request.json()
     session_id = body.get("session_id")
     
