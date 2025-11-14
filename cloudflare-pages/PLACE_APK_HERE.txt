@@ -1,0 +1,17 @@
+📱 APK PLACEMENT INSTRUCTIONS
+============================
+
+Place your built APK file here with the exact name:
+👉 WinWaiRaffle.apk
+
+Steps:
+1. Build APK: cd /app/frontend && eas build --platform android --profile preview
+2. Download the APK from EAS
+3. Rename it to: WinWaiRaffle.apk
+4. Place it in this folder (/app/cloudflare-pages/)
+5. Deploy to Cloudflare Pages
+
+The download page (index.html) expects the APK to be named:
+WinWaiRaffle.apk
+
+⚠️ Important: The filename is case-sensitive!
