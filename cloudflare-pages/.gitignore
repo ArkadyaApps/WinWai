@@ -1,0 +1,6 @@
+# Don't commit the APK to git (too large)
+# Upload directly to Cloudflare Pages instead
+*.apk
+
+# Optional: Create a placeholder
+!.gitkeep
