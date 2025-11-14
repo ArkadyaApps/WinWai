@@ -1,0 +1,151 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>QR Code Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            max-width: 600px;
+            margin: 50px auto;
+            padding: 20px;
+            text-align: center;
+        }
+        #qrcode {
+            margin: 30px auto;
+            padding: 20px;
+            background: #f5f5f5;
+            border-radius: 10px;
+            display: inline-block;
+        }
+        .input-group {
+            margin: 20px 0;
+        }
+        input {
+            width: 100%;
+            padding: 10px;
+            font-size: 16px;
+            border: 2px solid #667eea;
+            border-radius: 5px;
+        }
+        button {
+            background: #667eea;
+            color: white;
+            border: none;
+            padding: 12px 30px;
+            font-size: 16px;
+            border-radius: 5px;
+            cursor: pointer;
+            margin: 10px;
+        }
+        button:hover {
+            background: #5568d3;
+        }
+        .status {
+            margin: 20px 0;
+            padding: 10px;
+            border-radius: 5px;
+        }
+        .success {
+            background: #d4edda;
+            color: #155724;
+        }
+        .error {
+            background: #f8d7da;
+            color: #721c24;
+        }
+    </style>
+</head>
+<body>
+    <h1>🎟️ QR Code Generator Test</h1>
+    <p>Test the QR code generation before deploying</p>
+    
+    <div class="input-group">
+        <label for="urlInput"><strong>Enter APK URL:</strong></label>
+        <input 
+            type="text" 
+            id="urlInput" 
+            placeholder="https://your-domain.com/download-apk"
+            value="https://example.com/test-apk.apk"
+        >
+    </div>
+    
+    <button onclick="generateQR()">Generate QR Code</button>
+    <button onclick="clearQR()">Clear</button>
+    
+    <div id="status"></div>
+    <div id="qrcode"></div>
+    <div id="urlDisplay"></div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        function showStatus(message, isError = false) {
+            const statusDiv = document.getElementById('status');
+            statusDiv.className = 'status ' + (isError ? 'error' : 'success');
+            statusDiv.textContent = message;
+        }
+        
+        function clearQR() {
+            document.getElementById('qrcode').innerHTML = '';
+            document.getElementById('status').innerHTML = '';
+            document.getElementById('urlDisplay').innerHTML = '';
+        }
+        
+        function generateQR() {
+            const url = document.getElementById('urlInput').value.trim();
+            
+            if (!url) {
+                showStatus('❌ Please enter a URL!', true);
+                return;
+            }
+            
+            // Clear previous QR code
+            clearQR();
+            
+            // Check if QRCode library is loaded
+            if (typeof QRCode === 'undefined') {
+                showStatus('❌ QRCode library not loaded!', true);
+                return;
+            }
+            
+            showStatus('⏳ Generating QR code...');
+            
+            try {
+                QRCode.toCanvas(document.createElement('canvas'), url, {
+                    width: 300,
+                    margin: 2,
+                    color: {
+                        dark: '#667eea',
+                        light: '#ffffff'
+                    }
+                }, function (error, canvas) {
+                    if (error) {
+                        console.error('QR generation error:', error);
+                        showStatus('❌ QR code generation failed: ' + error.message, true);
+                    } else {
+                        document.getElementById('qrcode').appendChild(canvas);
+                        showStatus('✅ QR code generated successfully!');
+                        document.getElementById('urlDisplay').innerHTML = 
+                            '<p style="margin-top: 20px;"><strong>QR Code URL:</strong><br>' + 
+                            '<code style="background: #f5f5f5; padding: 10px; display: inline-block; border-radius: 5px;">' + 
+                            url + '</code></p>';
+                    }
+                });
+            } catch (e) {
+                console.error('QR generation exception:', e);
+                showStatus('❌ Error: ' + e.message, true);
+            }
+        }
+        
+        // Auto-generate on page load with default URL
+        window.addEventListener('load', function() {
+            console.log('✅ Page loaded');
+            console.log('✅ QRCode library available:', typeof QRCode !== 'undefined');
+            
+            // Auto-generate with example URL
+            setTimeout(generateQR, 500);
+        });
+    </script>
+</body>
+</html>
