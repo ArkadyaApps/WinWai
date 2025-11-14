@@ -104,7 +104,7 @@ export default function TicketsScreen() {
 
         <View style={styles.earnSection}>
           <Text style={styles.sectionTitle}>{t.earnMoreTickets}</Text>
-          <TouchableOpacity style={[styles.playButton, (!adReady || loading) && styles.playButtonDisabled]} onPress={handleWatchAd} disabled={!adReady || loading} activeOpacity={0.8}>
+          <TouchableOpacity style={[styles.playButton, loading && styles.playButtonDisabled]} onPress={handleWatchAd} disabled={loading} activeOpacity={0.8}>
             {loading ? (
               <View style={styles.playButtonContent}><ActivityIndicator color="#ffffff" size="large" /><Text style={styles.playButtonTextLoading}>{t.loading}</Text></View>
             ) : (
