@@ -209,14 +209,18 @@ async def get_current_user(authorization: Optional[str] = Header(None), session_
 # Auth Endpoints
 @api_router.get("/auth/google/callback")
 async def google_callback(code: str = None, error: str = None):
-    """OAuth callback endpoint - passes code back to WebBrowser"""
+    """OAuth callback endpoint - redirects back to app with code"""
+    from fastapi.responses import RedirectResponse
+    
     if error:
-        return {"error": error}
+        # Redirect back to app with error
+        return RedirectResponse(url=f"com.winwai.raffle://oauth2redirect?error={error}")
+    
     if code:
-        # WebBrowser.openAuthSessionAsync will detect this response and extract the code
-        # Just return success - the WebBrowser will capture the URL with the code parameter
-        return {"success": True, "code": code}
-    return {"error": "No code received"}
+        # Redirect back to app with code - this is what WebBrowser expects
+        return RedirectResponse(url=f"com.winwai.raffle://oauth2redirect?code={code}")
+    
+    return RedirectResponse(url="com.winwai.raffle://oauth2redirect?error=no_code")
 
 @api_router.post("/auth/google/exchange")
 async def google_exchange_code(request: Request):
