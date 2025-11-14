@@ -24,17 +24,16 @@ The Railway MongoDB has **0 users** because:
 
 ## Solution: Build Production APK with Railway URLs
 
-### Step 1: Update Frontend Environment Variables
+### Step 1: Verify Production Environment Variables
 
-**For Railway production builds, you need to use:**
+**Good news!** The production environment file already exists at `/app/frontend/.env.production` with correct Railway URLs:
 
 ```bash
-# Edit /app/frontend/.env and add these lines for production:
 EXPO_PUBLIC_BACKEND_URL=https://winwai.up.railway.app
-EXPO_PUBLIC_REDIRECT_URL=https://winwai.up.railway.app
+EXPO_PUBLIC_REDIRECT_URL=winwai://
 ```
 
-**⚠️ IMPORTANT:** Do NOT change `EXPO_PACKAGER_HOSTNAME` or `EXPO_PACKAGER_PROXY_URL` - these are for local development.
+✅ **No changes needed** - just use the production profile when building!
 
 ### Step 2: Update app.config.js (if needed)
 
