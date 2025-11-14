@@ -183,10 +183,21 @@
     
     <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script>
-        // Generate QR code with download URL
-        const downloadUrl = 'https://winwai.arkadyaproperties.workers.dev/WinWaiRaffle.apk';
+        // ⚙️ CONFIGURATION - Update this URL to your APK hosting location
+        // Option 1: Railway Backend (Recommended)
+        const APK_URL = 'https://YOUR-RAILWAY-APP.railway.app/download-apk';
         
-        QRCode.toCanvas(document.createElement('canvas'), downloadUrl, {
+        // Option 2: GitHub Releases
+        // const APK_URL = 'https://github.com/YOUR_USERNAME/winwai-raffle/releases/download/v1.0.0/WinWaiRaffle.apk';
+        
+        // Option 3: Google Drive
+        // const APK_URL = 'https://drive.google.com/uc?export=download&id=YOUR_FILE_ID';
+        
+        // Set download button URL
+        document.getElementById('downloadBtn').href = APK_URL;
+        
+        // Generate QR code with download URL
+        QRCode.toCanvas(document.createElement('canvas'), APK_URL, {
             width: 200,
             margin: 2,
             color: {
