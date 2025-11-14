@@ -47,25 +47,44 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     const redirectUrl = process.env.EXPO_PUBLIC_REDIRECT_URL || 'https://winwai-fix.preview.emergentagent.com';
     const authUrl = `https://auth.emergentagent.com/?redirect=${encodeURIComponent(redirectUrl)}`;
     
+    console.log('==================== GOOGLE SIGNIN START ====================');
+    console.log('Redirect URL:', redirectUrl);
+    console.log('Auth URL:', authUrl);
+    
     try {
+      console.log('Opening auth session...');
       const result = await WebBrowser.openAuthSessionAsync(authUrl, redirectUrl);
+      console.log('Auth result:', result);
       
       if (result.type === 'success' && result.url) {
+        console.log('Success! Result URL:', result.url);
         const url = new URL(result.url);
         const hash = url.hash.substring(1);
         const params = new URLSearchParams(hash);
         const sid = params.get('session_id');
         
+        console.log('Session ID extracted:', sid);
+        
         if (sid) {
+          console.log('Calling backend /api/auth/session...');
           const response = await api.post('/api/auth/session', { session_id: sid });
+          console.log('Backend response:', response.data);
+          
           const { session_token, user } = response.data;
           
+          console.log('Saving session token...');
           await AsyncStorage.setItem('session_token', session_token);
+          console.log('Setting user:', user.email);
           setUser(user);
+          console.log('==================== GOOGLE SIGNIN COMPLETE ====================');
+        } else {
+          console.error('No session_id in URL!');
         }
+      } else {
+        console.log('Auth result type:', result.type);
       }
     } catch (error) {
-      console.error('Sign in failed:', error);
+      console.error('!!! Sign in failed:', error);
       throw error;
     }
   };
