@@ -76,5 +76,9 @@ module.exports = {
         projectId: "019dd289-3f32-4930-9048-725d49bcb28a"
       }
     }
+  },
+  "react-native-google-mobile-ads": {
+    "android_app_id": "ca-app-pub-3486145054830108~1319311942",
+    "ios_app_id": "ca-app-pub-3486145054830108~3969526019"
   }
 };
