@@ -165,31 +165,28 @@ export default function ProfileScreen() {
               <Text style={styles.sectionTitle}>{t.adminPanel}</Text>
             </View>
 
-            {adminMode && (
-              <>
-                <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/partners')}>
-                  <LinearGradient colors={["#FF6B6B", "#FF8E53"]} style={styles.adminMenuGradient}>
-                    <Ionicons name="business" size={24} color="#fff" />
-                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.managePartners}</Text><Text style={styles.adminMenuSubtitle}>{t.addEditRemovePartners}</Text></View>
-                    <Ionicons name="chevron-forward" size={20} color="#fff" />
-                  </LinearGradient>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/users')}>
-                  <LinearGradient colors={["#4ECDC4", "#44A08D"]} style={styles.adminMenuGradient}>
-                    <Ionicons name="people" size={24} color="#fff" />
-                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.manageUsers}</Text><Text style={styles.adminMenuSubtitle}>{t.viewManageUsers}</Text></View>
-                    <Ionicons name="chevron-forward" size={20} color="#fff" />
-                  </LinearGradient>
-                </TouchableOpacity>
-                <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/raffles')}>
-                  <LinearGradient colors={["#A8E6CF", "#88D8B0"]} style={styles.adminMenuGradient}>
-                    <Ionicons name="gift" size={24} color="#fff" />
-                    <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.manageRaffles}</Text><Text style={styles.adminMenuSubtitle}>{t.createEditDrawWinners}</Text></View>
-                    <Ionicons name="chevron-forward" size={20} color="#fff" />
-                  </LinearGradient>
-                </TouchableOpacity>
-              </>
-            )}
+            
+            <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/partners')}>
+              <LinearGradient colors={["#FF6B6B", "#FF8E53"]} style={styles.adminMenuGradient}>
+                <Ionicons name="business" size={24} color="#fff" />
+                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.managePartners}</Text><Text style={styles.adminMenuSubtitle}>{t.addEditRemovePartners}</Text></View>
+                <Ionicons name="chevron-forward" size={20} color="#fff" />
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/users')}>
+              <LinearGradient colors={["#4ECDC4", "#44A08D"]} style={styles.adminMenuGradient}>
+                <Ionicons name="people" size={24} color="#fff" />
+                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.manageUsers}</Text><Text style={styles.adminMenuSubtitle}>{t.viewManageUsers}</Text></View>
+                <Ionicons name="chevron-forward" size={20} color="#fff" />
+              </LinearGradient>
+            </TouchableOpacity>
+            <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/raffles')}>
+              <LinearGradient colors={["#A8E6CF", "#88D8B0"]} style={styles.adminMenuGradient}>
+                <Ionicons name="gift" size={24} color="#fff" />
+                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.manageRaffles}</Text><Text style={styles.adminMenuSubtitle}>{t.createEditDrawWinners}</Text></View>
+                <Ionicons name="chevron-forward" size={20} color="#fff" />
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         )}
 
