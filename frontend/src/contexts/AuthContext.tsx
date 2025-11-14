@@ -68,7 +68,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       console.log('ID token received, sending to backend...');
 
       // Send ID token to backend for verification and session creation
-      const response = await api.post('/api/auth/google', { idToken });
+      const response = await api.post('/api/auth/google', { id_token: idToken });
       console.log('Backend response received');
 
       const { session_token, user } = response.data;
