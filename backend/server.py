@@ -226,7 +226,6 @@ async def google_callback(code: str = None, error: str = None):
         </body>
         </html>
         """
-        from fastapi.responses import HTMLResponse
         return HTMLResponse(content=html)
     return {"error": "No code received"}
 
