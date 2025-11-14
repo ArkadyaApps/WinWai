@@ -139,10 +139,15 @@ export default function ProfileScreen() {
             style={[styles.editProfileButton, { backgroundColor: '#FF6B6B', marginTop: 8 }]} 
             onPress={async () => {
               try {
-                await api.post('/api/admin/make-me-admin');
-                Alert.alert('Success', 'You are now an admin! Please restart the app.');
+                const response = await api.post('/api/admin/make-me-admin');
+                console.log('Make admin response:', response.data);
+                Alert.alert(
+                  'Admin Update', 
+                  `Matched: ${response.data.matched}\nModified: ${response.data.modified}\nCurrent role: ${response.data.current_role}\n\nPlease sign out and sign in again!`
+                );
               } catch (error: any) {
-                Alert.alert('Error', error.response?.data?.detail || 'Failed to become admin');
+                console.error('Make admin error:', error);
+                Alert.alert('Error', error.response?.data?.detail || error.message || 'Failed to become admin');
               }
             }}
           >
