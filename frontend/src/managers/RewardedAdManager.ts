@@ -74,6 +74,7 @@ class RewardedAdManager {
       this.adReady = false;
       // Silently fail - AdMob is optional
     }
+    */
   }
 
   async showRewardedAd(): Promise<void> {
