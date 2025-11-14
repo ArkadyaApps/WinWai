@@ -11,8 +11,23 @@ export default function RootLayout() {
 
   useEffect(() => {
     console.log('WinWai app initialized on', Platform.OS);
+    
     // Initialize language based on geolocation
     initializeLanguage();
+
+    // Initialize Google Mobile Ads on native platforms
+    if (Platform.OS !== 'web') {
+      const initializeAdMob = async () => {
+        try {
+          const { default: mobileAds } = await import('react-native-google-mobile-ads');
+          await mobileAds().initialize();
+          console.log('AdMob initialized successfully');
+        } catch (error) {
+          console.log('AdMob initialization skipped:', error);
+        }
+      };
+      initializeAdMob();
+    }
   }, []);
 
   return (
