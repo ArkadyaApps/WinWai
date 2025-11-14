@@ -42,65 +42,54 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async () => {
-    // Use app deep link as redirect URI
-    const clientId = '581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com';
-    const redirectUri = 'https://winwai.up.railway.app/auth/google/callback';
-    const appScheme = 'com.winwai.raffle://oauth2redirect';
-    
-    const authUrl = `https://accounts.google.com/o/oauth2/v2/auth?` + 
-      `client_id=${clientId}&` +
-      `redirect_uri=${encodeURIComponent(redirectUri)}&` +
-      `response_type=code&` +
-      `scope=openid email profile&` +
-      `access_type=offline&` +
-      `prompt=consent`;
-    
-    console.log('==================== GOOGLE SIGNIN START ====================');
-    console.log('OAuth URL:', authUrl);
-    console.log('Expecting redirect to:', appScheme);
+    console.log('==================== NATIVE GOOGLE SIGNIN START ====================');
     
     try {
-      // The second parameter tells WebBrowser what URL pattern to look for when redirecting back
-      const result = await WebBrowser.openAuthSessionAsync(authUrl, appScheme);
-      console.log('Auth result type:', result.type);
-      
-      if (result.type === 'success' && result.url) {
-        console.log('Success! Result URL:', result.url);
-        
-        // Extract authorization code from deep link URL
-        const url = new URL(result.url);
-        const code = url.searchParams.get('code');
-        const error = url.searchParams.get('error');
-        
-        if (error) {
-          console.error('OAuth error:', error);
-          throw new Error(`OAuth failed: ${error}`);
-        }
-        
-        console.log('Auth code extracted:', code ? 'YES' : 'NO');
-        
-        if (code) {
-          console.log('Exchanging code for token...');
-          const response = await api.post('/api/auth/google/exchange', { code });
-          console.log('Backend response received');
-          
-          const { session_token, user } = response.data;
-          
-          console.log('Saving session token...');
-          await AsyncStorage.setItem('session_token', session_token);
-          console.log('Setting user:', user.email);
-          setUser(user);
-          console.log('==================== GOOGLE SIGNIN COMPLETE ====================');
-        } else {
-          console.error('No authorization code in redirect URL!');
-          throw new Error('Failed to get Google authorization code');
-        }
-      } else {
-        console.log('Auth cancelled or failed, result type:', result.type);
-        throw new Error('Sign in was cancelled');
+      // Configure Google Sign-In
+      GoogleSignin.configure({
+        webClientId: '581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com',
+        offlineAccess: false,
+      });
+
+      // Check if Google Play Services is available
+      await GoogleSignin.hasPlayServices();
+      console.log('Google Play Services available');
+
+      // Sign in with native Google Sign-In UI
+      const userInfo = await GoogleSignin.signIn();
+      console.log('Native sign-in successful, user:', userInfo.user.email);
+
+      // Get the ID token
+      const { idToken } = userInfo;
+      if (!idToken) {
+        throw new Error('No ID token received from Google');
       }
-    } catch (error) {
-      console.error('!!! Sign in failed:', error);
+
+      console.log('ID token received, sending to backend...');
+
+      // Send ID token to backend for verification and session creation
+      const response = await api.post('/api/auth/google', { idToken });
+      console.log('Backend response received');
+
+      const { session_token, user } = response.data;
+
+      console.log('Saving session token...');
+      await AsyncStorage.setItem('session_token', session_token);
+      console.log('Setting user:', user.email);
+      setUser(user);
+      console.log('==================== NATIVE GOOGLE SIGNIN COMPLETE ====================');
+    } catch (error: any) {
+      console.error('!!! Native Google Sign in failed:', error);
+      
+      // Handle specific error codes
+      if (error.code === 'SIGN_IN_CANCELLED') {
+        console.log('User cancelled sign in');
+      } else if (error.code === 'IN_PROGRESS') {
+        console.log('Sign in already in progress');
+      } else if (error.code === 'PLAY_SERVICES_NOT_AVAILABLE') {
+        console.error('Google Play Services not available');
+      }
+      
       throw error;
     }
   };
