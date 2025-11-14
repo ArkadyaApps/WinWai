@@ -106,11 +106,14 @@ export default function TicketsScreen() {
           <Text style={styles.sectionTitle}>{t.earnMoreTickets}</Text>
           <TouchableOpacity style={[styles.playButton, loading && styles.playButtonDisabled]} onPress={handleWatchAd} disabled={loading} activeOpacity={0.8}>
             {loading ? (
-              <View style={styles.playButtonContent}><ActivityIndicator color="#ffffff" size="large" /><Text style={styles.playButtonTextLoading}>{t.loading}</Text></View>
+              <View style={styles.playButtonContent}><ActivityIndicator color="#ffffff" size="large" /><Text style={styles.playButtonTextLoading}>Loading ad...</Text></View>
             ) : (
               <View style={styles.playButtonContent}>
                 <View style={styles.playIconContainer}><Text style={styles.playIcon}>▶</Text></View>
-                <View style={styles.playButtonTextContainer}><Text style={styles.playButtonTitle}>Watch Ad & Earn Ticket</Text><Text style={styles.playButtonSubtitle}>Tap to start • Earn 1 ticket per ad</Text></View>
+                <View style={styles.playButtonTextContainer}>
+                  <Text style={styles.playButtonTitle}>Watch Ad for 1 Ticket</Text>
+                  <Text style={styles.playButtonSubtitle}>{adReady ? 'Ad ready! Tap to watch' : 'Loading ad...'}</Text>
+                </View>
               </View>
             )}
           </TouchableOpacity>
