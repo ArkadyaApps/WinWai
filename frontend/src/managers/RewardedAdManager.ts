@@ -106,7 +106,7 @@ class RewardedAdManager {
       const rewardEvent: RewardEvent = {
         userId: this.currentUserId,
         rewardType: reward.type || 'tickets',
-        rewardAmount: reward.amount || 10,
+        rewardAmount: 1, // 1 ticket per ad
         transactionId,
         timestamp: Date.now(),
       };
