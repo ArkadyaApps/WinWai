@@ -472,6 +472,150 @@ export const translations = {
     bothGetTickets: 'Vous recevez tous les deux des billets!',
     bothGetDescription: 'Vous recevez tous les deux 1 billet gratuit instantanément',
   },
+  ar: {
+    // Header
+    filter: 'تصفية',
+    tickets: 'تذاكر',
+    
+    // Home
+    nearbyIn: 'قريب في',
+    raffles: 'السحوبات',
+    clearFilters: 'مسح المرشحات',
+    noRafflesFound: 'لم يتم العثور على سحوبات',
+    tryAdjustingFilters: 'حاول تعديل المرشحات الخاصة بك',
+    
+    // Filter Menu
+    searchFilter: 'البحث والتصفية',
+    yourLocation: 'موقعك',
+    category: 'الفئة',
+    location: 'الموقع',
+    applyFilters: 'تطبيق المرشحات',
+    allCategories: 'جميع الفئات',
+    foodDining: 'الطعام والمطاعم',
+    hotelsResorts: 'الفنادق والمنتجعات',
+    spaWellness: 'السبا والعافية',
+    allLocations: 'جميع المواقع',
+    bangkok: 'بانكوك',
+    chiangMai: 'شيانغ ماي',
+    phuket: 'فوكيت',
+    pattaya: 'باتايا',
+    krabi: 'كرابي',
+    
+    // Detail Page
+    prizesLeft: 'الجوائز المتبقية',
+    totalEntries: 'إجمالي المشاركات',
+    drawDate: 'تاريخ السحب',
+    aboutThisPrize: 'حول هذه الجائزة',
+    partner: 'الشريك',
+    drawDetails: 'تفاصيل السحب',
+    entryCost: 'تكلفة الدخول',
+    totalPrizes: 'إجمالي الجوائز',
+    enterRaffle: 'ادخل السحب',
+    
+    // Tabs
+    home: 'الرئيسية',
+    allRaffles: 'السحوبات',
+    myTickets: 'تذاكري',
+    myRewards: 'مكافآتي',
+    profile: 'الملف الشخصي',
+    
+    // Common
+    loading: 'جار التحميل...',
+    error: 'خطأ',
+    success: 'نجاح',
+    confirm: 'تأكيد',
+    cancel: 'إلغاء',
+    save: 'حفظ',
+    delete: 'حذف',
+    edit: 'تعديل',
+    close: 'إغلاق',
+    back: 'رجوع',
+    next: 'التالي',
+    submit: 'إرسال',
+    search: 'بحث',
+    
+    // Auth
+    signIn: 'تسجيل الدخول',
+    signUp: 'إنشاء حساب',
+    signOut: 'تسجيل الخروج',
+    email: 'البريد الإلكتروني',
+    password: 'كلمة المرور',
+    forgotPassword: 'نسيت كلمة المرور؟',
+    dontHaveAccount: 'ليس لديك حساب؟',
+    alreadyHaveAccount: 'هل لديك حساب بالفعل؟',
+    continueWithGoogle: 'تسجيل الدخول باستخدام Google',
+    
+    // Profile
+    language: 'اللغة',
+    notifications: 'الإشعارات',
+    settings: 'الإعدادات',
+    help: 'مساعدة',
+    about: 'حول',
+    termsOfService: 'شروط الخدمة',
+    privacyPolicy: 'سياسة الخصوصية',
+    contactUs: 'اتصل بنا',
+    version: 'الإصدار',
+    
+    // Tickets
+    availableTickets: 'التذاكر المتاحة',
+    earnMoreTickets: 'احصل على المزيد من التذاكر',
+    watchAdForTickets: 'شاهد إعلانًا للحصول على تذاكر',
+    inviteFriends: 'ادعُ الأصدقاء',
+    completeProfile: 'أكمل الملف الشخصي',
+    
+    // Rewards
+    myEntries: 'مشاركاتي',
+    activeEntries: 'المشاركات النشطة',
+    pastEntries: 'المشاركات السابقة',
+    won: 'فزت',
+    pending: 'قيد الانتظار',
+    lost: 'خسرت',
+    
+    // Raffle Card
+    ticket: 'تذكرة',
+    tickets_plural: 'تذاكر',
+    enter: 'ادخل',
+    joined: 'انضممت',
+    endsIn: 'ينتهي في',
+    days: 'أيام',
+    hours: 'ساعات',
+    minutes: 'دقائق',
+    
+    // Confirmation
+    confirmEntry: 'تأكيد المشاركة',
+    confirmEntryMessage: 'هل تريد المشاركة في هذا السحب؟',
+    ticketsRequired: 'التذاكر المطلوبة',
+    yourTickets: 'تذاكرك',
+    notEnoughTickets: 'ليس لديك تذاكر كافية',
+    
+    // Success Messages
+    entrySuccessful: 'المشاركة ناجحة!',
+    youEnteredRaffle: 'لقد دخلت السحب بنجاح',
+    goodLuck: 'حظ سعيد!',
+    ticketsEarned: 'تم الحصول على التذاكر!',
+    
+    // Error Messages
+    errorLoadingRaffles: 'خطأ في تحميل السحوبات',
+    errorEnteringRaffle: 'خطأ في الدخول إلى السحب',
+    errorLoadingTickets: 'خطأ في تحميل التذاكر',
+    pleaseTryAgain: 'يرجى المحاولة مرة أخرى',
+    
+    // Referral
+    inviteGetTickets: 'ادعُ الأصدقاء، احصل على تذاكر!',
+    referralSubtitle: 'شارك رابط الإحالة الخاص بك وستحصل أنت وصديقك على تذكرة مجانية عند التسجيل!',
+    yourReferralCode: 'رمز الإحالة الخاص بك',
+    yourReferralLink: 'رابط الإحالة الخاص بك',
+    copyLink: 'نسخ الرابط',
+    copied: 'تم النسخ!',
+    shareVia: 'مشاركة عبر...',
+    howItWorks: 'كيف يعمل',
+    shareYourLink: 'شارك رابطك',
+    shareDescription: 'أرسل رابط الإحالة الخاص بك إلى الأصدقاء',
+    theySignUp: 'يقومون بالتسجيل',
+    signUpDescription: 'يقوم صديقك بإنشاء حساب باستخدام رابطك',
+    bothGetTickets: 'تحصلان كلاكما على تذاكر!',
+    bothGetDescription: 'تحصلان كلاكما على تذكرة مجانية على الفور',
+  },
 };
 
 export type TranslationKey = keyof typeof translations.en;
