@@ -81,6 +81,44 @@ export default function AdminRafflesScreen() {
     Alert.alert('Draw Winner', `Draw a winner for "${raffle.title}"?`, [ { text: 'Cancel', style: 'cancel' }, { text: 'Draw Winner', onPress: async () => { try { const response = await api.post('/api/admin/draw-winner', { raffleId: raffle.id }); Alert.alert('Success', response.data.message); fetchAll(); } catch (error: any) { Alert.alert('Error', error.response?.data?.detail || 'Failed to draw winner'); } } } ]);
   };
 
+  const openSecretCodeModal = (raffle: Raffle) => {
+    setSelectedRaffleForCodes(raffle);
+    setSecretCodesText('');
+    setSecretCodeModalVisible(true);
+  };
+
+  const handleUploadSecretCodes = async () => {
+    if (!selectedRaffleForCodes) return;
+    
+    // Parse secret codes from text (one per line)
+    const codes = secretCodesText
+      .split('\n')
+      .map(code => code.trim())
+      .filter(code => code.length > 0);
+    
+    if (codes.length === 0) {
+      Alert.alert('Error', 'Please enter at least one secret code');
+      return;
+    }
+
+    try {
+      setUploadingCodes(true);
+      const response = await api.post('/api/admin/raffles/upload-secret-codes', {
+        raffleId: selectedRaffleForCodes.id,
+        secretCodes: codes
+      });
+      
+      Alert.alert('Success', `Uploaded ${response.data.codesCount} secret codes`);
+      setSecretCodeModalVisible(false);
+      setSecretCodesText('');
+      fetchAll();
+    } catch (error: any) {
+      Alert.alert('Error', error.response?.data?.detail || 'Failed to upload secret codes');
+    } finally {
+      setUploadingCodes(false);
+    }
+  };
+
   const getCategoryIcon = (category: string) => category === 'food' ? '🍽️' : category === 'hotel' ? '🏨' : category === 'spa' ? '💆' : '🎁';
   const formatDate = (date: Date) => date.toLocaleString();
 
