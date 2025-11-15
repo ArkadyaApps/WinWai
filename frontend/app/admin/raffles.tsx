@@ -9,6 +9,7 @@ import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 
 export default function AdminRafflesScreen() {
+  console.log('==================== ADMIN RAFFLES SCREEN MOUNTED ====================');
   const router = useRouter();
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [partners, setPartners] = useState<Partner[]>([]);
