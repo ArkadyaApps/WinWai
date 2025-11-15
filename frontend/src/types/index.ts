@@ -55,23 +55,27 @@ export interface Raffle {
 
 export interface Voucher {
   id: string;
-  voucherCode: string;
+  voucherRef: string;
   userId: string;
   userName: string;
   userEmail: string;
   raffleId: string;
   raffleTitle: string;
-  prizeDetails: string;
   partnerId: string;
   partnerName: string;
-  category: string;
-  issuedAt: string;
-  expiresAt: string;
-  isRedeemed: boolean;
+  prizeValue: number;
+  currency: string;
+  isDigitalPrize: boolean;
+  secretCode?: string;
+  verificationCode: string;
+  status: string;
+  validUntil: string;
   redeemedAt?: string;
-  location?: string;
-  address?: string;
-  terms?: string;
+  createdAt: string;
+  partnerEmail?: string;
+  partnerWhatsapp?: string;
+  partnerLine?: string;
+  partnerAddress?: string;
 }
 
 export interface Reward {
