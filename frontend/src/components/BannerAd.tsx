@@ -51,6 +51,12 @@ const BannerAdComponent: React.FC<BannerAdComponentProps> = ({ position = 'botto
         requestOptions={{
           requestNonPersonalizedAdsOnly: false,
         }}
+        onAdLoaded={() => {
+          console.log('✅ Banner Ad loaded successfully');
+        }}
+        onAdFailedToLoad={(error) => {
+          console.error('❌ Banner Ad failed to load:', error);
+        }}
       />
     </View>
   );
