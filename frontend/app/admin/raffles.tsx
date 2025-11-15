@@ -354,8 +354,41 @@ export default function AdminRafflesScreen() {
                   ))
                 )}
               </View>
-              <Text style={styles.label}>Prizes Available *</Text>
-              <TextInput style={styles.input} value={String(formData.prizesAvailable)} onChangeText={(text) => setFormData({ ...formData, prizesAvailable: parseInt(text) || 0 })} placeholder="Number of prizes" placeholderTextColor="#999" keyboardType="numeric" />
+              {isDigitalPrize ? (
+                <>
+                  <Text style={styles.label}>Secret Codes * (One code per prize)</Text>
+                  <Text style={styles.helperText}>Add unique codes for each prize. Number of codes = prizes available</Text>
+                  {secretCodes.map((code, index) => (
+                    <View key={index} style={styles.secretCodeRow}>
+                      <TextInput
+                        style={[styles.input, styles.secretCodeInput]}
+                        value={code}
+                        onChangeText={(text) => updateSecretCode(index, text)}
+                        placeholder={`Code #${index + 1}`}
+                        placeholderTextColor="#999"
+                      />
+                      {secretCodes.length > 1 && (
+                        <TouchableOpacity
+                          style={styles.removeCodeButton}
+                          onPress={() => removeSecretCodeField(index)}
+                        >
+                          <Ionicons name="remove-circle" size={24} color="#FF6B6B" />
+                        </TouchableOpacity>
+                      )}
+                    </View>
+                  ))}
+                  <TouchableOpacity style={styles.addCodeButton} onPress={addSecretCodeField}>
+                    <Ionicons name="add-circle" size={24} color="#4ECDC4" />
+                    <Text style={styles.addCodeText}>Add Another Code</Text>
+                  </TouchableOpacity>
+                  <Text style={styles.helperText}>Prizes Available: {secretCodes.filter(c => c.trim()).length}</Text>
+                </>
+              ) : (
+                <>
+                  <Text style={styles.label}>Prizes Available *</Text>
+                  <TextInput style={styles.input} value={String(formData.prizesAvailable)} onChangeText={(text) => setFormData({ ...formData, prizesAvailable: parseInt(text) || 0 })} placeholder="Number of prizes" placeholderTextColor="#999" keyboardType="numeric" />
+                </>
+              )}
               <Text style={styles.label}>Ticket Cost *</Text>
               <TextInput style={styles.input} value={String(formData.ticketCost)} onChangeText={(text) => setFormData({ ...formData, ticketCost: parseInt(text) || 0 })} placeholder="Tickets per entry" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.helperText}>Number of tickets required to enter this raffle</Text>
