@@ -207,28 +207,6 @@ class Reward(BaseModel):
     wonAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     claimedAt: Optional[datetime] = None
 
-class Voucher(BaseModel):
-    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
-    voucherCode: str  # Unique voucher code
-    userId: str
-    userName: str
-    userEmail: str
-    raffleId: str
-    raffleTitle: str
-    prizeDetails: str
-    partnerId: str
-    partnerName: str
-    category: str
-    # Validity and redemption
-    issuedAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
-    expiresAt: datetime  # Calculated based on validityMonths
-    isRedeemed: bool = Field(default=False)
-    redeemedAt: Optional[datetime] = None
-    # Additional info
-    location: Optional[str] = None
-    address: Optional[str] = None
-    terms: Optional[str] = None
-
 class UserSession(BaseModel):
     userId: str
     sessionToken: str
