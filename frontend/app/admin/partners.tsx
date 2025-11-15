@@ -24,7 +24,6 @@ export default function AdminPartnersScreen() {
   const [formData, setFormData] = useState({ 
     name: '', 
     description: '', 
-    category: 'food', 
     contactInfo: '', 
     sponsored: false,
     email: '',
