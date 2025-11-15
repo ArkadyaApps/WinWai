@@ -477,11 +477,11 @@ frontend:
 
 metadata:
   created_by: "main_agent"
-  version: "1.2"
-  test_sequence: 2
+  version: "1.3"
+  test_sequence: 3
   run_ui: false
-  backend_testing_complete: false
-  backend_test_success_rate: "N/A"
+  backend_testing_complete: true
+  backend_test_success_rate: "100%"
 
 test_plan:
   current_focus:
