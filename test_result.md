@@ -118,11 +118,11 @@ user_problem_statement: |
 backend:
   - task: "Automatic draw system endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -135,6 +135,14 @@ backend:
           5. Updates raffle drawStatus to 'drawn' or 'extended'
           6. Handles secret code assignment from raffle's secretCodes list and marks as used
           Returns summary of processed, drawn, and extended raffles with details.
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ TESTED: Automatic draw system working perfectly. Successfully processed raffles, selected winners, created vouchers with secret codes for digital prizes, and extended raffles when threshold not met. All scenarios tested:
+          - Threshold met: Drew winner, created voucher WW-2025-58197 with secret code
+          - Threshold not met: Extended raffle from 5/100 tickets to new draw date
+          - Secret code assignment from uploaded codes working correctly
+          - Winner and Voucher records created with proper relationships
 
   - task: "User voucher endpoints"
     implemented: true
