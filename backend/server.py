@@ -1985,6 +1985,43 @@ async def update_raffle(raffle_id: str, raffle: Raffle, authorization: Optional[
     
     return raffle
 
+class UploadSecretCodesRequest(BaseModel):
+    raffleId: str
+    secretCodes: List[str]
+
+@api_router.post("/admin/raffles/upload-secret-codes")
+async def upload_secret_codes(request: UploadSecretCodesRequest, authorization: Optional[str] = Header(None)):
+    """Upload secret codes for digital prize raffles"""
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    # Get raffle to verify it exists
+    raffle = await db.raffles.find_one({"id": request.raffleId})
+    if not raffle:
+        raise HTTPException(status_code=404, detail="Raffle not found")
+    
+    # Filter out empty codes and duplicates
+    cleaned_codes = list(set([code.strip() for code in request.secretCodes if code.strip()]))
+    
+    if not cleaned_codes:
+        raise HTTPException(status_code=400, detail="No valid codes provided")
+    
+    # Update raffle with secret codes
+    result = await db.raffles.update_one(
+        {"id": request.raffleId},
+        {"$set": {
+            "secretCodes": cleaned_codes,
+            "isDigitalPrize": True
+        }}
+    )
+    
+    return {
+        "success": True,
+        "message": f"Uploaded {len(cleaned_codes)} secret codes",
+        "codesCount": len(cleaned_codes)
+    }
+
 @api_router.delete("/admin/raffles/{raffle_id}")
 async def delete_raffle(raffle_id: str, authorization: Optional[str] = Header(None)):
     user = await get_current_user(authorization=authorization)
