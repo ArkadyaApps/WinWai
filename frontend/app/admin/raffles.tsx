@@ -149,6 +149,10 @@ export default function AdminRafflesScreen() {
                 <View style={styles.statItem}><Text style={styles.statLabel}>Draw Date</Text><Text style={styles.statValue}>{formatDate(new Date(raffle.drawDate))}</Text></View>
               </View>
               <View style={styles.actionButtons}>
+                <TouchableOpacity style={styles.uploadCodeButton} onPress={() => openSecretCodeModal(raffle)}>
+                  <Ionicons name="code-outline" size={18} color="#fff" />
+                  <Text style={styles.uploadCodeText}>Codes</Text>
+                </TouchableOpacity>
                 <TouchableOpacity style={styles.drawButton} onPress={() => handleDrawWinner(raffle)} disabled={!raffle.active || raffle.totalEntries === 0}>
                   <Ionicons name="trophy-outline" size={20} color="#fff" />
                   <Text style={styles.drawButtonText}>Draw Winner</Text>
