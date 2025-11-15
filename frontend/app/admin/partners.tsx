@@ -324,14 +324,6 @@ export default function AdminPartnersScreen() {
               <TextInput style={styles.input} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} placeholder="Partner name" placeholderTextColor="#999" />
               <Text style={styles.label}>Description *</Text>
               <TextInput style={[styles.input, styles.textArea]} value={formData.description} onChangeText={(text) => setFormData({ ...formData, description: text })} placeholder="Partner description" placeholderTextColor="#999" multiline numberOfLines={3} />
-              <Text style={styles.label}>Category *</Text>
-              <View style={styles.categoryButtons}>
-                {['food', 'hotel', 'spa'].map((cat) => (
-                  <TouchableOpacity key={cat} style={[styles.categoryButton, formData.category === cat && styles.categoryButtonActive]} onPress={() => setFormData({ ...formData, category: cat })}>
-                    <Text style={[styles.categoryButtonText, formData.category === cat && styles.categoryButtonTextActive]}>{getCategoryIcon(cat)} {cat}</Text>
-                  </TouchableOpacity>
-                ))}
-              </View>
               <Text style={styles.label}>Contact Info (Legacy)</Text>
               <TextInput style={styles.input} value={formData.contactInfo} onChangeText={(text) => setFormData({ ...formData, contactInfo: text })} placeholder="Phone or email" placeholderTextColor="#999" />
               
