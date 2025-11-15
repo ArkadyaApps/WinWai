@@ -940,8 +940,19 @@ async def get_my_winners(authorization: Optional[str] = Header(None)):
     # Enrich with voucher and raffle details
     enriched_winners = []
     for winner in winners:
+        # Remove MongoDB internal fields
+        winner.pop("_id", None)
+        
         voucher = await db.vouchers.find_one({"id": winner["voucherId"]})
         raffle = await db.raffles.find_one({"id": winner["raffleId"]})
+        
+        # Clean voucher data
+        if voucher:
+            voucher.pop("_id", None)
+        
+        # Clean raffle data
+        if raffle:
+            raffle.pop("_id", None)
         
         enriched_winners.append({
             **winner,
