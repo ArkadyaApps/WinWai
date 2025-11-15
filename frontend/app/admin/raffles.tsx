@@ -1,7 +1,9 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Platform, Modal, TextInput, KeyboardAvoidingView, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Alert, ActivityIndicator, Platform, Modal, TextInput, KeyboardAvoidingView, RefreshControl, Image } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import * as ImagePicker from 'expo-image-picker';
+import { Picker } from '@react-native-picker/picker';
 import api from '../../src/utils/api';
 import { Raffle, Partner } from '../../src/types';
 import DateTimePicker from '@react-native-community/datetimepicker';
