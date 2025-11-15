@@ -76,6 +76,27 @@ def generate_verification_code(length: int = 8) -> str:
     chars = string.ascii_uppercase + string.digits
     return ''.join(random.choice(chars) for _ in range(length))
 
+def fix_mongodb_dates(data: dict) -> dict:
+    """
+    Convert MongoDB date format {'$date': '...'} to ISO string
+    This fixes Pydantic validation errors for datetime fields
+    """
+    if not isinstance(data, dict):
+        return data
+    
+    for key, value in data.items():
+        # Convert MongoDB date format to string
+        if isinstance(value, dict) and "$date" in value:
+            data[key] = value["$date"]
+        # Recursively fix nested dicts
+        elif isinstance(value, dict):
+            data[key] = fix_mongodb_dates(value)
+        # Fix dates in lists
+        elif isinstance(value, list):
+            data[key] = [fix_mongodb_dates(item) if isinstance(item, dict) else item for item in value]
+    
+    return data
+
 # MongoDB connection
 mongo_url = os.environ.get('MONGO_URL')
 db_name = os.environ.get('DB_NAME', 'winwai')
