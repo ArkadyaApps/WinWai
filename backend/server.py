@@ -918,6 +918,43 @@ async def get_my_entries(authorization: Optional[str] = Header(None)):
     entries = await db.entries.find({"userId": user.id}).sort("timestamp", -1).to_list(100)
     return [Entry(**entry) for entry in entries]
 
+@api_router.get("/users/me/vouchers")
+async def get_my_vouchers(authorization: Optional[str] = Header(None)):
+    """Get all vouchers (prizes won) for the current user"""
+    user = await get_current_user(authorization=authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    vouchers = await db.vouchers.find({"userId": user.id}).sort("createdAt", -1).to_list(100)
+    return [Voucher(**voucher) for voucher in vouchers]
+
+@api_router.get("/users/me/winners")
+async def get_my_winners(authorization: Optional[str] = Header(None)):
+    """Get all winning records for the current user with voucher details"""
+    user = await get_current_user(authorization=authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    winners = await db.winners.find({"userId": user.id}).sort("createdAt", -1).to_list(100)
+    
+    # Enrich with voucher and raffle details
+    enriched_winners = []
+    for winner in winners:
+        voucher = await db.vouchers.find_one({"id": winner["voucherId"]})
+        raffle = await db.raffles.find_one({"id": winner["raffleId"]})
+        
+        enriched_winners.append({
+            **winner,
+            "voucher": voucher,
+            "raffle": {
+                "title": raffle.get("title") if raffle else None,
+                "category": raffle.get("category") if raffle else None,
+                "image": raffle.get("image") if raffle else None
+            } if raffle else None
+        })
+    
+    return enriched_winners
+
 class UpdateProfileRequest(BaseModel):
     name: Optional[str] = None
     email: Optional[str] = None
