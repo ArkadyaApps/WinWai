@@ -14,7 +14,6 @@ import { useRouter } from 'expo-router';
 import { translations, getLanguageFromCountry } from '../../src/utils/translations';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
-import { interstitialAdManager } from '../../src/managers/InterstitialAdManager';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
