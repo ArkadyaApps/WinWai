@@ -1665,29 +1665,46 @@ async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[s
         
         # Calculate expiry date based on validityMonths
         validity_months = raffle.get("validityMonths", 3)
-        issued_at = datetime.now(timezone.utc)
-        expires_at = issued_at + timedelta(days=validity_months * 30)  # Approximate months to days
+        now = datetime.now(timezone.utc)
+        valid_until = now + timedelta(days=validity_months * 30)  # Approximate months to days
+        
+        # Handle secret code for digital prizes
+        secret_code = None
+        if raffle.get("isDigitalPrize", False):
+            secret_codes = raffle.get("secretCodes", [])
+            used_codes = raffle.get("usedSecretCodes", [])
+            available_codes = [code for code in secret_codes if code not in used_codes]
+            if available_codes:
+                secret_code = available_codes[0]
+                # Mark code as used
+                await db.raffles.update_one(
+                    {"id": draw_request.raffleId},
+                    {"$push": {"usedSecretCodes": secret_code}}
+                )
         
         # Generate voucher
         voucher = Voucher(
-            voucherCode=generate_voucher_code(),
+            voucherRef=generate_voucher_reference(),
             userId=winner_entry["userId"],
             userName=winner_user.get("name", "User"),
             userEmail=winner_user.get("email", ""),
             raffleId=draw_request.raffleId,
             raffleTitle=raffle["title"],
-            prizeDetails=raffle["description"],
             partnerId=raffle.get("partnerId", ""),
             partnerName=raffle.get("partnerName", "WinWai"),
-            category=raffle.get("category", "general"),
-            issuedAt=issued_at,
-            expiresAt=expires_at,
-            location=raffle.get("location"),
-            address=raffle.get("address"),
-            terms=f"Valid for {validity_months} months from issue date. Present this voucher at {raffle.get('partnerName', 'partner location')}."
+            prizeValue=raffle.get("prizeValue", 0),
+            currency=raffle.get("currency", "THB"),
+            isDigitalPrize=raffle.get("isDigitalPrize", False),
+            secretCode=secret_code,
+            verificationCode=generate_verification_code(),
+            validUntil=valid_until,
+            partnerEmail=partner.get("email") if partner else None,
+            partnerWhatsapp=partner.get("whatsapp") if partner else None,
+            partnerLine=partner.get("line") if partner else None,
+            partnerAddress=partner.get("address") if partner else None
         )
         await db.vouchers.insert_one(voucher.dict())
-        vouchers_created.append(voucher.voucherCode)
+        vouchers_created.append(voucher.voucherRef)
     
     # Update raffle
     await db.raffles.update_one(
