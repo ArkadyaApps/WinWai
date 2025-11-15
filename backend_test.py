@@ -143,6 +143,8 @@ class BackendTester:
             headers = {"Authorization": f"Bearer {self.admin_token}"}
             
             # Create raffle with digital prize
+            # Use a past createdAt to ensure minimum draw date is in the past
+            past_time = datetime.now(timezone.utc) - timedelta(days=3)
             raffle_data = {
                 "title": "Test Digital Prize Raffle",
                 "description": "Testing automatic draw system with digital prizes",
@@ -155,7 +157,8 @@ class BackendTester:
                 "prizeValue": 10.0,  # 10 THB (very small to minimize minimum draw date)
                 "currency": "THB",
                 "gamePrice": 10.0,  # Need 10 tickets total to trigger draw
-                "drawDate": (datetime.now(timezone.utc) - timedelta(days=2)).isoformat(),  # 2 days ago - definitely past minimum
+                "drawDate": (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat(),  # Past due for testing
+                "createdAt": past_time.isoformat(),  # Created 3 days ago
                 "isDigitalPrize": True,
                 "active": True
             }
