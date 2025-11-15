@@ -301,6 +301,74 @@ export default function AdminRafflesScreen() {
           </View>
         </KeyboardAvoidingView>
       </Modal>
+
+      {/* Secret Code Upload Modal */}
+      <Modal visible={secretCodeModalVisible} animationType="slide" transparent onRequestClose={() => setSecretCodeModalVisible(false)}>
+        <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>Upload Secret Codes</Text>
+              <TouchableOpacity onPress={() => setSecretCodeModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#000" />
+              </TouchableOpacity>
+            </View>
+            
+            <ScrollView style={styles.formContainer}>
+              <View style={styles.codeInfoBox}>
+                <Ionicons name="information-circle-outline" size={24} color={theme.colors.primaryGold} />
+                <View style={{ flex: 1, marginLeft: 12 }}>
+                  <Text style={styles.codeInfoTitle}>Digital Prize Codes</Text>
+                  <Text style={styles.codeInfoText}>
+                    Enter secret codes for digital prizes (e.g., Netflix codes, gift card PINs).
+                    One code per line. Duplicates will be automatically removed.
+                  </Text>
+                </View>
+              </View>
+
+              {selectedRaffleForCodes && (
+                <View style={styles.selectedRaffleBox}>
+                  <Text style={styles.selectedRaffleLabel}>Raffle:</Text>
+                  <Text style={styles.selectedRaffleTitle}>{selectedRaffleForCodes.title}</Text>
+                </View>
+              )}
+
+              <Text style={styles.label}>Secret Codes *</Text>
+              <Text style={styles.helperText}>Enter one code per line</Text>
+              <TextInput
+                style={[styles.input, styles.codeTextArea]}
+                value={secretCodesText}
+                onChangeText={setSecretCodesText}
+                placeholder="CODE1&#10;CODE2&#10;CODE3&#10;..."
+                placeholderTextColor="#999"
+                multiline
+                numberOfLines={10}
+                textAlignVertical="top"
+              />
+              
+              <View style={styles.codeStats}>
+                <Text style={styles.codeStatsText}>
+                  {secretCodesText.split('\n').filter(code => code.trim().length > 0).length} codes entered
+                </Text>
+              </View>
+
+              <TouchableOpacity 
+                style={styles.uploadButton} 
+                onPress={handleUploadSecretCodes} 
+                disabled={uploadingCodes || secretCodesText.trim().length === 0}
+              >
+                {uploadingCodes ? (
+                  <ActivityIndicator color="#fff" />
+                ) : (
+                  <>
+                    <Ionicons name="cloud-upload-outline" size={20} color="#fff" />
+                    <Text style={styles.uploadButtonText}>Upload Codes</Text>
+                  </>
+                )}
+              </TouchableOpacity>
+            </ScrollView>
+          </View>
+        </KeyboardAvoidingView>
+      </Modal>
     </View>
   );
 }
