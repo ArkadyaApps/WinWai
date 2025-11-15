@@ -155,8 +155,7 @@ class BackendTester:
                 "prizeValue": 10.0,  # 10 THB (very small to minimize minimum draw date)
                 "currency": "THB",
                 "gamePrice": 10.0,  # Need 10 tickets total to trigger draw
-                "drawDate": (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat(),  # Past due for testing
-                "minimumDrawDate": (datetime.now(timezone.utc) - timedelta(minutes=10)).isoformat(),  # Also in past
+                "drawDate": (datetime.now(timezone.utc) - timedelta(days=2)).isoformat(),  # 2 days ago - definitely past minimum
                 "isDigitalPrize": True,
                 "active": True
             }
