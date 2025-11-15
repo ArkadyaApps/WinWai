@@ -837,12 +837,22 @@ async def get_raffle(raffle_id: str):
         raise HTTPException(status_code=404, detail="Raffle not found")
     return Raffle(**raffle)
 
+@api_router.get("/partners")
+async def get_all_public_partners():
+    """Public endpoint to get all partners"""
+    partners = await db.partners.find({}).sort("createdAt", -1).to_list(1000)
+    # Remove MongoDB _id field from each partner
+    for p in partners:
+        p.pop("_id", None)
+    return [Partner(**p) for p in partners]
+
 @api_router.get("/partners/{partner_id}", response_model=Partner)
 async def get_partner(partner_id: str):
     """Get partner details by ID (public endpoint)"""
     partner = await db.partners.find_one({"id": partner_id})
     if not partner:
         raise HTTPException(status_code=404, detail="Partner not found")
+    partner.pop("_id", None)
     return Partner(**partner)
 
 @api_router.post("/raffles/enter")
