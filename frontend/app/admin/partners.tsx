@@ -214,7 +214,6 @@ export default function AdminPartnersScreen() {
       setFormData({ 
         name: '', 
         description: '', 
-        category: 'food', 
         contactInfo: '', 
         sponsored: false,
         email: '',
