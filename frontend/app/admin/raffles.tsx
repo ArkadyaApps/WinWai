@@ -311,13 +311,29 @@ export default function AdminRafflesScreen() {
               </View>
               <Text style={styles.helperText}>Users from selected countries can participate. Default: Thailand only.</Text>
               <Text style={styles.label}>Category *</Text>
-              <View style={styles.categoryButtons}>
-                {['food', 'hotel', 'spa'].map((cat) => (
-                  <TouchableOpacity key={cat} style={[styles.categoryButton, formData.category === cat && styles.categoryButtonActive]} onPress={() => setFormData({ ...formData, category: cat })}>
-                    <Text style={[styles.categoryButtonText, formData.category === cat && styles.categoryButtonTextActive]}>{getCategoryIcon(cat)} {cat}</Text>
-                  </TouchableOpacity>
-                ))}
+              <View style={styles.pickerContainer}>
+                <Picker
+                  selectedValue={formData.category}
+                  onValueChange={(value) => setFormData({ ...formData, category: value })}
+                  style={styles.picker}
+                >
+                  {CATEGORIES.map((cat) => (
+                    <Picker.Item key={cat.value} label={`${getCategoryIcon(cat.value)} ${cat.label}`} value={cat.value} />
+                  ))}
+                </Picker>
               </View>
+
+              <Text style={styles.label}>Raffle Image *</Text>
+              <TouchableOpacity style={styles.imageUploadButton} onPress={pickImage}>
+                {selectedImage || formData.image ? (
+                  <Image source={{ uri: selectedImage || formData.image }} style={styles.imagePreview} />
+                ) : (
+                  <View style={styles.imageUploadPlaceholder}>
+                    <Ionicons name="image" size={40} color="#999" />
+                    <Text style={styles.imageUploadText}>Tap to upload image</Text>
+                  </View>
+                )}
+              </TouchableOpacity>
               <Text style={styles.label}>Partner * (Searchable)</Text>
               <TextInput 
                 style={styles.input} 
