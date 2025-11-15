@@ -117,6 +117,41 @@ class Raffle(BaseModel):
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     drawnAt: Optional[datetime] = None  # When the draw was performed
 
+class Voucher(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    voucherRef: str  # Unique reference like #WW-2024-001
+    userId: str
+    userName: str
+    userEmail: str
+    raffleId: str
+    raffleTitle: str
+    partnerId: str
+    partnerName: str
+    prizeValue: float
+    currency: str
+    isDigitalPrize: bool
+    secretCode: Optional[str] = None  # For digital prizes (Netflix code, PIN, etc)
+    verificationCode: str  # Random code for physical prizes or backup verification
+    status: str = Field(default='active')  # active, redeemed, expired, cancelled
+    validUntil: datetime  # Expiry date
+    redeemedAt: Optional[datetime] = None
+    createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    # Partner contact info for redemption
+    partnerEmail: Optional[str] = None
+    partnerWhatsapp: Optional[str] = None
+    partnerLine: Optional[str] = None
+    partnerAddress: Optional[str] = None
+
+class Winner(BaseModel):
+    id: str = Field(default_factory=lambda: str(uuid.uuid4()))
+    userId: str
+    raffleId: str
+    entryId: str  # Which entry won
+    voucherId: str  # Reference to voucher
+    drawDate: datetime
+    notified: bool = Field(default=False)
+    createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+
 class Entry(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
     userId: str
