@@ -154,6 +154,25 @@ const styles = StyleSheet.create({
     marginBottom: 6,
     fontWeight: '600',
   },
+  prizeValueRow: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    alignItems: 'center',
+    marginTop: 8,
+    paddingTop: 8,
+    borderTopWidth: 1,
+    borderTopColor: '#f0f0f0',
+  },
+  prizeLabel: {
+    fontSize: 13,
+    color: '#999',
+    fontWeight: '600',
+  },
+  prizeValue: {
+    fontSize: 16,
+    color: theme.colors.primaryGold,
+    fontWeight: '700',
+  },
   codeBox: {
     flexDirection: 'row',
     alignItems: 'center',
