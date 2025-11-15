@@ -1941,6 +1941,10 @@ async def get_all_partners(authorization: Optional[str] = Header(None), page: in
 
     cursor = db.partners.find(query).sort("createdAt", -1).skip(skip).limit(limit)
     partners = await cursor.to_list(length=limit)
+    # Fix MongoDB dates and remove _id for all partners
+    for p in partners:
+        p.pop("_id", None)
+        fix_mongodb_dates(p)
     return [Partner(**p) for p in partners]
 
 @api_router.post("/admin/partners", response_model=Partner)
