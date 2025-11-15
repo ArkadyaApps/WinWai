@@ -103,12 +103,17 @@
 #====================================================================================================
 
 user_problem_statement: |
-  Critical fixes for WinWai Raffle Rewards app:
-  1. Lock Expo SDK to version ~51.0.0 to prevent auto-upgrade to 54.x (causes build failures)
-  2. Replace all hardcoded text with translatable keys (most screens not translated)
-  3. Add stock images to raffles (currently have no images)
-  4. Fix Tickets page crash (AdMob/RewardedAdManager issue)
-  5. Grant admin access to netcorez13@gmail.com (currently not showing admin panel)
+  NEW TASK: Implement automatic raffle draw and voucher generation system
+  
+  Phase 1: Backend Automatic Draw System
+  1. Create endpoint to process raffles due for drawing
+  2. Check ticket sales threshold (gamePrice)
+  3. Extend draw if threshold not met
+  4. Select winner and generate voucher with secret codes
+  5. Create Winner records
+  
+  Phase 2: Admin Voucher Upload (Next)
+  Phase 3: User Winner/Voucher Display (Next)
 
 backend:
   - task: "Email/Password Signup endpoint"
