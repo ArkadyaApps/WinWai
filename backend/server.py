@@ -547,6 +547,8 @@ async def process_session(request: Request):
         await db.users.insert_one(new_user.dict())
         user = new_user.dict()
     else:
+        # Remove MongoDB _id field
+        user.pop("_id", None)
         # Update last login
         await db.users.update_one(
             {"id": user["id"]},
