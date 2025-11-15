@@ -193,17 +193,25 @@ backend:
 
   - task: "Raffle creation with draw system fields"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "medium"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
         comment: |
           Updated POST /api/admin/raffles endpoint to calculate minimumDrawDate based on prizeValueUSD tier when creating raffles.
           Uses calculate_minimum_draw_date() helper function: 1-15 USD = next day, 16-25 USD = 3 days, 26+ USD = 1 week.
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ TESTED: Raffle creation with draw system fields working perfectly. Successfully tested:
+          - Automatic prizeValueUSD conversion (10 THB → 0.28 USD)
+          - Automatic minimumDrawDate calculation based on prize value tier
+          - Currency conversion rates working correctly (THB to USD)
+          - All new fields properly saved and retrieved in raffle creation
 
   - task: "Voucher model consolidation"
     implemented: true
