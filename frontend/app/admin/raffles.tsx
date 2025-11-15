@@ -82,15 +82,61 @@ export default function AdminRafflesScreen() {
 
   const handleSave = async () => {
     if (!formData.title || !formData.description || !formData.partnerId || !formData.drawDate) { Alert.alert('Error', 'Please fill in all required fields'); return; }
+    if (!formData.image && !selectedImage) { Alert.alert('Error', 'Please upload an image'); return; }
+    
+    // Validate secret codes for digital prizes
+    if (isDigitalPrize) {
+      const validCodes = secretCodes.filter(c => c.trim());
+      if (validCodes.length === 0) {
+        Alert.alert('Error', 'Please add at least one secret code for digital prizes');
+        return;
+      }
+      // Check for duplicate codes
+      const uniqueCodes = new Set(validCodes);
+      if (uniqueCodes.size !== validCodes.length) {
+        Alert.alert('Error', 'Duplicate codes found. Each code must be unique.');
+        return;
+      }
+    }
+
     const now = new Date(); if (formData.drawDate instanceof Date && formData.drawDate <= now) { Alert.alert('Invalid Date', 'Draw date/time must be in the future.'); return; }
     try {
       setSaving(true);
       const drawDateISO = formData.drawDate instanceof Date ? formData.drawDate.toISOString() : String(formData.drawDate);
+      
+      // For digital prizes, set prizesAvailable to number of valid codes
+      const validSecretCodes = secretCodes.filter(c => c.trim());
+      const finalPrizesAvailable = isDigitalPrize ? validSecretCodes.length : formData.prizesAvailable;
+      
       if (editingRaffle) {
-        const payload: Raffle = { id: editingRaffle.id, title: formData.title, description: formData.description, image: formData.image || undefined, category: formData.category, partnerId: formData.partnerId, partnerName: partners.find(p => p.id === formData.partnerId)?.name, prizesAvailable: formData.prizesAvailable, prizesRemaining: editingRaffle.prizesRemaining, ticketCost: formData.ticketCost, prizeValue: formData.prizeValue, gamePrice: formData.gamePrice, drawDate: drawDateISO, validityMonths: formData.validityMonths, active: formData.active, totalEntries: editingRaffle.totalEntries, createdAt: editingRaffle.createdAt };
+        const payload: Raffle = { id: editingRaffle.id, title: formData.title, description: formData.description, image: formData.image || undefined, category: formData.category, partnerId: formData.partnerId, partnerName: partners.find(p => p.id === formData.partnerId)?.name, prizesAvailable: finalPrizesAvailable, prizesRemaining: editingRaffle.prizesRemaining, ticketCost: formData.ticketCost, prizeValue: formData.prizeValue, gamePrice: formData.gamePrice, drawDate: drawDateISO, validityMonths: formData.validityMonths, active: formData.active, totalEntries: editingRaffle.totalEntries, createdAt: editingRaffle.createdAt };
         await api.put(`/api/admin/raffles/${editingRaffle.id}`, payload); Alert.alert('Success', 'Raffle updated');
       } else {
-        const payload: Partial<Raffle> = { title: formData.title, description: formData.description, image: formData.image || undefined, category: formData.category, partnerId: formData.partnerId, partnerName: partners.find(p => p.id === formData.partnerId)?.name, prizesAvailable: formData.prizesAvailable, ticketCost: formData.ticketCost, prizeValue: formData.prizeValue, gamePrice: formData.gamePrice, drawDate: drawDateISO, validityMonths: formData.validityMonths, active: formData.active } as any;
+        const payload: any = { 
+          title: formData.title, 
+          description: formData.description, 
+          image: selectedImage || formData.image, 
+          category: formData.category, 
+          partnerId: formData.partnerId, 
+          partnerName: partners.find(p => p.id === formData.partnerId)?.name, 
+          prizesAvailable: finalPrizesAvailable, 
+          ticketCost: formData.ticketCost, 
+          prizeValue: formData.prizeValue, 
+          gamePrice: formData.gamePrice, 
+          drawDate: drawDateISO, 
+          validityMonths: formData.validityMonths, 
+          active: formData.active,
+          language: formData.language,
+          allowedCountries: formData.allowedCountries,
+          currency: formData.currency
+        };
+        
+        // Add secret codes for digital prizes
+        if (isDigitalPrize) {
+          payload.isDigitalPrize = true;
+          payload.secretCodes = validSecretCodes;
+        }
+        
         await api.post('/api/admin/raffles', payload); Alert.alert('Success', 'Raffle created');
       }
       setModalVisible(false); fetchAll();
