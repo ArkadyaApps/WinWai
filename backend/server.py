@@ -77,12 +77,40 @@ def generate_verification_code(length: int = 8) -> str:
     return ''.join(random.choice(chars) for _ in range(length))
 
 # MongoDB connection
-mongo_url = os.environ['MONGO_URL']
+mongo_url = os.environ.get('MONGO_URL')
+db_name = os.environ.get('DB_NAME', 'winwai')
+
+if not mongo_url:
+    raise ValueError("MONGO_URL environment variable is not set!")
+
+logging.info(f"Connecting to MongoDB: {mongo_url[:20]}...")
+logging.info(f"Database name: {db_name}")
+
 client = AsyncIOMotorClient(mongo_url)
-db = client[os.environ['DB_NAME']]
+db = client[db_name]
 
 app = FastAPI()
 api_router = APIRouter(prefix="/api")
+
+# Health check endpoint
+@app.get("/health")
+async def health_check():
+    try:
+        # Ping MongoDB
+        await client.admin.command('ping')
+        return {
+            "status": "healthy",
+            "database": "connected",
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
+    except Exception as e:
+        logging.error(f"Health check failed: {e}")
+        return {
+            "status": "unhealthy",
+            "database": "disconnected",
+            "error": str(e),
+            "timestamp": datetime.now(timezone.utc).isoformat()
+        }
 
 # Models
 class User(BaseModel):
