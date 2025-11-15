@@ -156,6 +156,7 @@ class BackendTester:
                 "currency": "THB",
                 "gamePrice": 10.0,  # Need 10 tickets total to trigger draw
                 "drawDate": (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat(),  # Past due for testing
+                "minimumDrawDate": (datetime.now(timezone.utc) - timedelta(minutes=10)).isoformat(),  # Also in past
                 "isDigitalPrize": True,
                 "active": True
             }
