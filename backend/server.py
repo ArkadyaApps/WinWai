@@ -1837,6 +1837,8 @@ async def create_raffle(raffle: Raffle, authorization: Optional[str] = Header(No
     raffle.prizesRemaining = raffle.prizesAvailable
     # Convert prize value to USD for automatic raffle drawer
     raffle.prizeValueUSD = convert_to_usd(raffle.prizeValue, raffle.currency)
+    # Calculate minimum draw date based on prize value tier
+    raffle.minimumDrawDate = calculate_minimum_draw_date(raffle.prizeValueUSD, raffle.createdAt)
     await db.raffles.insert_one(raffle.dict())
     return raffle
 
