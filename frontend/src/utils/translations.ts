@@ -476,13 +476,18 @@ export const translations = {
 
 export type TranslationKey = keyof typeof translations.en;
 
-export const getLanguageFromCountry = (countryCode: string): 'en' | 'th' | 'fr' => {
-  const countryLanguageMap: { [key: string]: 'en' | 'th' | 'fr' } = {
+export const getLanguageFromCountry = (countryCode: string): 'en' | 'th' | 'fr' | 'ar' => {
+  const countryLanguageMap: { [key: string]: 'en' | 'th' | 'fr' | 'ar' } = {
     TH: 'th', // Thailand
     FR: 'fr', // France
     BE: 'fr', // Belgium
     CH: 'fr', // Switzerland (partially)
     CA: 'fr', // Canada (partially)
+    MA: 'ar', // Morocco
+    DZ: 'ar', // Algeria
+    EG: 'ar', // Egypt
+    SA: 'ar', // Saudi Arabia
+    AE: 'ar', // UAE
     // Default to English for other countries
   };
   
