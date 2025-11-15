@@ -169,11 +169,11 @@ backend:
 
   - task: "Secret code upload endpoint"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -181,6 +181,15 @@ backend:
           Created POST /api/admin/raffles/upload-secret-codes endpoint for uploading secret codes to digital prize raffles.
           Accepts raffleId and secretCodes array, cleans and deduplicates codes, updates raffle with secretCodes and sets isDigitalPrize=true.
           Returns count of uploaded codes.
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ TESTED: Secret code upload endpoint working perfectly. Successfully tested:
+          - Uploaded 5 test codes (including duplicates and whitespace)
+          - Properly cleaned and deduplicated codes (stored 4 unique codes)
+          - Correctly set isDigitalPrize=true flag on raffle
+          - Secret codes properly assigned to winners during automatic draw
+          - Codes marked as used after assignment to prevent reuse
 
   - task: "Raffle creation with draw system fields"
     implemented: true
