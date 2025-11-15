@@ -89,25 +89,33 @@ class Raffle(BaseModel):
     title: str
     description: str
     image: Optional[str] = None
-    category: str  # food, hotel, spa
+    category: str  # food, hotel, spa, shopping, entertainment
     partnerId: str
     partnerName: Optional[str] = None
-    location: Optional[str] = None  # bangkok, chiang-mai, phuket, etc
+    location: Optional[str] = None  # bangkok, chiang-mai, phuket, online, etc
     address: Optional[str] = None
     prizesAvailable: int
     prizesRemaining: int
     ticketCost: int = Field(default=10)  # Tickets required to enter
-    prizeValue: float = Field(default=0.0)  # Total value of prize in local currency
+    prizeValue: float = Field(default=0.0)  # Total value of prize in local currency (shown publicly)
     prizeValueUSD: float = Field(default=0.0)  # Prize value converted to USD (for raffle drawer)
     currency: str = Field(default='THB')  # Currency code: THB, USD, EUR, MAD, etc
-    gamePrice: float = Field(default=0.0)  # Cost per ticket/game in local currency
-    drawDate: datetime
+    gamePrice: float = Field(default=0.0)  # Minimum total tickets needed to trigger draw
+    drawDate: datetime  # Initial planned draw date
+    minimumDrawDate: Optional[datetime] = None  # Earliest possible draw date (based on value tier)
+    lastExtensionDate: Optional[datetime] = None  # Last time draw was extended
     validityMonths: int = Field(default=3)  # Prize validity in months (default 3)
     active: bool = Field(default=True)
     totalEntries: int = Field(default=0)
+    totalTicketsCollected: int = Field(default=0)  # Total tickets spent on entries
+    drawStatus: str = Field(default='pending')  # pending, eligible, drawn, cancelled
+    isDigitalPrize: bool = Field(default=False)  # True for gift cards, recharge, streaming, etc
+    secretCodes: List[str] = Field(default_factory=list)  # Secret codes for digital prizes (admin uploaded)
+    usedSecretCodes: List[str] = Field(default_factory=list)  # Track which codes have been assigned
     language: str = Field(default='en')  # Content language: en, th, fr, ar
     allowedCountries: List[str] = Field(default_factory=lambda: ['TH'])  # Country codes allowed to play (default: Thailand only)
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
+    drawnAt: Optional[datetime] = None  # When the draw was performed
 
 class Entry(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
