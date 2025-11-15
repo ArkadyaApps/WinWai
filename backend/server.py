@@ -1427,6 +1427,198 @@ def generate_voucher_code() -> str:
     code = ''.join(rand.choice(chars) for _ in range(12))
     return f"WW-{code[:4]}-{code[4:8]}-{code[8:]}"
 
+@api_router.post("/admin/process-automatic-draws")
+async def process_automatic_draws(authorization: Optional[str] = Header(None)):
+    """
+    Automatic draw system that processes all raffles due for drawing.
+    Can be called manually by admin or via scheduled task.
+    """
+    user = await get_current_user(authorization=authorization)
+    if not user or user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
+    
+    now = datetime.now(timezone.utc)
+    results = {
+        "processedRaffles": [],
+        "drawnRaffles": [],
+        "extendedRaffles": [],
+        "errors": []
+    }
+    
+    # Find all raffles that are due for drawing and not yet drawn
+    raffles_due = await db.raffles.find({
+        "drawStatus": {"$in": ["pending", "eligible"]},
+        "drawDate": {"$lte": now},
+        "active": True
+    }).to_list(1000)
+    
+    for raffle in raffles_due:
+        raffle_id = raffle["id"]
+        raffle_title = raffle["title"]
+        
+        try:
+            # Check if minimum draw date has passed
+            minimum_draw_date = raffle.get("minimumDrawDate")
+            if minimum_draw_date and now < minimum_draw_date.replace(tzinfo=timezone.utc):
+                results["errors"].append({
+                    "raffleId": raffle_id,
+                    "title": raffle_title,
+                    "error": "Minimum draw date not yet reached"
+                })
+                continue
+            
+            # Calculate total tickets collected
+            total_tickets = raffle.get("totalTicketsCollected", 0)
+            game_price = raffle.get("gamePrice", 0)
+            
+            # Check if threshold is met
+            if total_tickets >= game_price:
+                # Eligible for draw - proceed with drawing
+                # Get all entries for this raffle
+                entries = await db.entries.find({"raffleId": raffle_id}).to_list(10000)
+                
+                if not entries:
+                    results["errors"].append({
+                        "raffleId": raffle_id,
+                        "title": raffle_title,
+                        "error": "No entries found despite ticket count"
+                    })
+                    continue
+                
+                # Randomly select a winner
+                winner_entry = random.choice(entries)
+                winner_user = await db.users.find_one({"id": winner_entry["userId"]})
+                
+                if not winner_user:
+                    results["errors"].append({
+                        "raffleId": raffle_id,
+                        "title": raffle_title,
+                        "error": "Winner user not found"
+                    })
+                    continue
+                
+                # Get partner info for voucher
+                partner = await db.partners.find_one({"id": raffle.get("partnerId")})
+                
+                # Create Voucher
+                validity_months = raffle.get("validityMonths", 3)
+                valid_until = now + timedelta(days=validity_months * 30)
+                
+                # Handle secret code for digital prizes
+                secret_code = None
+                if raffle.get("isDigitalPrize", False):
+                    # Get an unused secret code
+                    secret_codes = raffle.get("secretCodes", [])
+                    used_codes = raffle.get("usedSecretCodes", [])
+                    available_codes = [code for code in secret_codes if code not in used_codes]
+                    
+                    if available_codes:
+                        secret_code = available_codes[0]
+                        # Mark code as used
+                        await db.raffles.update_one(
+                            {"id": raffle_id},
+                            {"$push": {"usedSecretCodes": secret_code}}
+                        )
+                    else:
+                        # No codes available - this is an error condition
+                        results["errors"].append({
+                            "raffleId": raffle_id,
+                            "title": raffle_title,
+                            "error": "Digital prize but no secret codes available"
+                        })
+                        continue
+                
+                # Create voucher
+                voucher = Voucher(
+                    voucherRef=generate_voucher_reference(),
+                    userId=winner_user["id"],
+                    userName=winner_user.get("name", "User"),
+                    userEmail=winner_user.get("email", ""),
+                    raffleId=raffle_id,
+                    raffleTitle=raffle_title,
+                    partnerId=raffle.get("partnerId", ""),
+                    partnerName=raffle.get("partnerName", "WinWai"),
+                    prizeValue=raffle.get("prizeValue", 0),
+                    currency=raffle.get("currency", "THB"),
+                    isDigitalPrize=raffle.get("isDigitalPrize", False),
+                    secretCode=secret_code,
+                    verificationCode=generate_verification_code(),
+                    validUntil=valid_until,
+                    partnerEmail=partner.get("email") if partner else None,
+                    partnerWhatsapp=partner.get("whatsapp") if partner else None,
+                    partnerLine=partner.get("line") if partner else None,
+                    partnerAddress=partner.get("address") if partner else None
+                )
+                await db.vouchers.insert_one(voucher.dict())
+                
+                # Create Winner record
+                winner = Winner(
+                    userId=winner_user["id"],
+                    raffleId=raffle_id,
+                    entryId=winner_entry["id"],
+                    voucherId=voucher.id,
+                    drawDate=now
+                )
+                await db.winners.insert_one(winner.dict())
+                
+                # Update raffle status
+                await db.raffles.update_one(
+                    {"id": raffle_id},
+                    {"$set": {
+                        "drawStatus": "drawn",
+                        "drawnAt": now,
+                        "prizesRemaining": raffle["prizesRemaining"] - 1,
+                        "active": raffle["prizesRemaining"] - 1 > 0
+                    }}
+                )
+                
+                results["drawnRaffles"].append({
+                    "raffleId": raffle_id,
+                    "title": raffle_title,
+                    "winnerId": winner_user["id"],
+                    "winnerName": winner_user.get("name"),
+                    "voucherId": voucher.id,
+                    "voucherRef": voucher.voucherRef
+                })
+                
+            else:
+                # Threshold not met - extend the draw
+                prize_value_usd = raffle.get("prizeValueUSD", 0)
+                extension_period = get_extension_period(prize_value_usd)
+                new_draw_date = now + extension_period
+                
+                await db.raffles.update_one(
+                    {"id": raffle_id},
+                    {"$set": {
+                        "drawDate": new_draw_date,
+                        "lastExtensionDate": now,
+                        "drawStatus": "extended"
+                    }}
+                )
+                
+                results["extendedRaffles"].append({
+                    "raffleId": raffle_id,
+                    "title": raffle_title,
+                    "currentTickets": total_tickets,
+                    "requiredTickets": game_price,
+                    "newDrawDate": new_draw_date.isoformat()
+                })
+            
+            results["processedRaffles"].append(raffle_id)
+            
+        except Exception as e:
+            results["errors"].append({
+                "raffleId": raffle_id,
+                "title": raffle.get("title", "Unknown"),
+                "error": str(e)
+            })
+    
+    return {
+        "success": True,
+        "message": f"Processed {len(results['processedRaffles'])} raffles",
+        "results": results
+    }
+
 @api_router.post("/admin/draw-winner")
 async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[str] = Header(None)):
     user = await get_current_user(authorization=authorization)
