@@ -146,11 +146,11 @@ backend:
 
   - task: "User voucher endpoints"
     implemented: true
-    working: "NA"
+    working: true
     file: "/app/backend/server.py"
     stuck_count: 0
     priority: "high"
-    needs_retesting: true
+    needs_retesting: false
     status_history:
       - working: "NA"
         agent: "main"
@@ -158,6 +158,14 @@ backend:
           Created GET /api/users/me/vouchers endpoint to list all user's vouchers (prizes won).
           Created GET /api/users/me/winners endpoint to list all winning records with enriched voucher and raffle details.
           Both endpoints return sorted by createdAt descending.
+      - working: true
+        agent: "testing"
+        comment: |
+          ✅ TESTED: User voucher endpoints working perfectly. Both endpoints return correct data:
+          - GET /api/users/me/vouchers: Returns user's vouchers with digital prize details, secret codes, and verification codes
+          - GET /api/users/me/winners: Returns enriched winner records with full voucher and raffle details
+          - Fixed MongoDB ObjectId serialization issue in winners endpoint
+          - All voucher fields properly populated: digital=True, has_secret_code=True, has_verification_code=True
 
   - task: "Secret code upload endpoint"
     implemented: true
