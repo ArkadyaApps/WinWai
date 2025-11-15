@@ -25,13 +25,13 @@ export default function RewardsScreen() {
     // Apply filter
     switch (filter) {
       case 'active':
-        setFilteredVouchers(vouchers.filter(v => !v.isRedeemed && !isPast(new Date(v.expiresAt))));
+        setFilteredVouchers(vouchers.filter(v => v.status === 'active' && !isPast(new Date(v.validUntil))));
         break;
       case 'redeemed':
-        setFilteredVouchers(vouchers.filter(v => v.isRedeemed));
+        setFilteredVouchers(vouchers.filter(v => v.status === 'redeemed'));
         break;
       case 'expired':
-        setFilteredVouchers(vouchers.filter(v => !v.isRedeemed && isPast(new Date(v.expiresAt))));
+        setFilteredVouchers(vouchers.filter(v => v.status !== 'redeemed' && isPast(new Date(v.validUntil))));
         break;
       default:
         setFilteredVouchers(vouchers);
@@ -40,7 +40,7 @@ export default function RewardsScreen() {
 
   const loadVouchers = async () => {
     try { 
-      const response = await api.get('/api/vouchers'); 
+      const response = await api.get('/api/users/me/vouchers'); 
       setVouchers(response.data); 
     }
     catch (error) { 
@@ -59,9 +59,9 @@ export default function RewardsScreen() {
   };
 
   // Count vouchers by status
-  const activeCount = vouchers.filter(v => !v.isRedeemed && !isPast(new Date(v.expiresAt))).length;
-  const redeemedCount = vouchers.filter(v => v.isRedeemed).length;
-  const expiredCount = vouchers.filter(v => !v.isRedeemed && isPast(new Date(v.expiresAt))).length;
+  const activeCount = vouchers.filter(v => v.status === 'active' && !isPast(new Date(v.validUntil))).length;
+  const redeemedCount = vouchers.filter(v => v.status === 'redeemed').length;
+  const expiredCount = vouchers.filter(v => v.status !== 'redeemed' && isPast(new Date(v.validUntil))).length;
 
   if (loading) {
     return (<View style={styles.centered}><ActivityIndicator size="large" color={theme.colors.primaryGold} /></View>);
