@@ -75,8 +75,8 @@ module.exports = {
       eas: {
         projectId: "019dd289-3f32-4930-9048-725d49bcb28a"
       },
-      backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL || "https://lucky-draw-82.preview.emergentagent.com",
-      googlePlacesApiKey: process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY || "AIzaSyABPgpsqHXCBwTv6BGUnOjk7WYzrNw24Ws"
+      backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL,
+      googlePlacesApiKey: process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY
     }
   },
   "react-native-google-mobile-ads": {
