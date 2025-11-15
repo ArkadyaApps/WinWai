@@ -32,6 +32,21 @@ export default function AdminRafflesScreen() {
     title: '', description: '', image: '', category: 'food', partnerId: '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, drawDate: new Date(), validityMonths: 3, active: true, language: 'en', allowedCountries: ['TH'], currency: 'THB',
   });
   const [partnerSearch, setPartnerSearch] = useState('');
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
+  const [secretCodes, setSecretCodes] = useState<string[]>(['']);
+  const [showPartnerDropdown, setShowPartnerDropdown] = useState(false);
+
+  const CATEGORIES = [
+    { value: 'food', label: 'Food & Dining' },
+    { value: 'hotel', label: 'Hotels & Accommodation' },
+    { value: 'spa', label: 'Spa & Wellness' },
+    { value: 'gift-cards', label: 'Gift Cards' },
+    { value: 'electronics', label: 'Electronics' },
+    { value: 'voucher', label: 'Vouchers' },
+  ];
+
+  const DIGITAL_CATEGORIES = ['gift-cards', 'electronics', 'voucher'];
+  const isDigitalPrize = DIGITAL_CATEGORIES.includes(formData.category);
 
   const [showDatePicker, setShowDatePicker] = useState(false);
   const minDate = useMemo(() => new Date(Date.now() + 60 * 60 * 1000), []); // +1 hour
