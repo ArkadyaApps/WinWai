@@ -286,6 +286,8 @@ async def get_current_user(authorization: Optional[str] = Header(None), session_
     if not user:
         return None
     
+    # Remove MongoDB _id field
+    user.pop("_id", None)
     return User(**user)
 
 # Auth Endpoints
