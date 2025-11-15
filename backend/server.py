@@ -1853,6 +1853,10 @@ async def get_all_users(authorization: Optional[str] = Header(None), page: int =
 
     cursor = db.users.find(query).sort("createdAt", -1).skip(skip).limit(limit)
     users = await cursor.to_list(length=limit)
+    # Fix MongoDB dates and remove _id for all users
+    for u in users:
+        u.pop("_id", None)
+        fix_mongodb_dates(u)
     return [User(**u) for u in users]
 
 class CreateUserRequest(BaseModel):
