@@ -200,11 +200,6 @@ export default function ProfileScreen() {
               <Ionicons name="chevron-forward" size={20} color="#999" />
             </TouchableOpacity>
           )}
-          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/vouchers')}>
-            <Ionicons name="trophy" size={24} color="#FFD700" />
-            <Text style={styles.menuText}>My Vouchers</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
-          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/referral')}>
             <Ionicons name="gift-outline" size={24} color={theme.colors.primaryGold} />
             <Text style={styles.menuText}>{t.inviteFriends}</Text>
