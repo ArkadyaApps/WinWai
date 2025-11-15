@@ -41,6 +41,40 @@ def convert_to_usd(amount: float, from_currency: str) -> float:
         return amount * CURRENCY_RATES['THB']
     return amount * CURRENCY_RATES[from_currency]
 
+def calculate_minimum_draw_date(prize_value_usd: float, created_at: datetime) -> datetime:
+    """Calculate minimum draw date based on prize value tier"""
+    if prize_value_usd <= 15:
+        # 1-15 USD: next day
+        return created_at + timedelta(days=1)
+    elif prize_value_usd <= 25:
+        # 16-25 USD: 3 days
+        return created_at + timedelta(days=3)
+    else:
+        # 26+ USD: 1 week
+        return created_at + timedelta(days=7)
+
+def get_extension_period(prize_value_usd: float) -> timedelta:
+    """Get extension period based on prize value tier"""
+    if prize_value_usd <= 15:
+        return timedelta(days=1)
+    elif prize_value_usd <= 25:
+        return timedelta(days=3)
+    else:
+        return timedelta(days=7)
+
+def generate_voucher_reference() -> str:
+    """Generate unique voucher reference like #WW-2024-12345"""
+    year = datetime.now().year
+    # Random 5-digit number
+    random_num = random.randint(10000, 99999)
+    return f"WW-{year}-{random_num}"
+
+def generate_verification_code(length: int = 8) -> str:
+    """Generate random verification code for physical prizes"""
+    # Mix of uppercase letters and numbers
+    chars = string.ascii_uppercase + string.digits
+    return ''.join(random.choice(chars) for _ in range(length))
+
 # MongoDB connection
 mongo_url = os.environ['MONGO_URL']
 client = AsyncIOMotorClient(mongo_url)
