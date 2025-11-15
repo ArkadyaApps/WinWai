@@ -1,17 +1,18 @@
 #!/usr/bin/env python3
 """
-Backend API Testing Script for Raffle prizeValue and gamePrice fields
-Tests the enhanced raffle creation with new prizeValue and gamePrice fields
+Backend Testing Suite for WinWai Raffle Rewards App
+Testing automatic raffle draw and voucher generation system
 """
 
 import requests
 import json
-import sys
+import time
 from datetime import datetime, timedelta, timezone
-from typing import Dict, Any, Optional
+import random
+import string
 
 # Configuration
-BACKEND_URL = "https://lucky-draw-82.preview.emergentagent.com/api"
+BASE_URL = "https://lucky-draw-82.preview.emergentagent.com/api"
 ADMIN_EMAIL = "artteabnc@gmail.com"
 ADMIN_PASSWORD = "winwanadmin"
 
