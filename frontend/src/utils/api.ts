@@ -2,11 +2,11 @@ import axios from 'axios';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
 
-// Get API URL from multiple sources for reliability
+// Get API URL from environment variables
 const API_URL = 
   Constants.expoConfig?.extra?.backendUrl || 
   process.env.EXPO_PUBLIC_BACKEND_URL || 
-  'https://lucky-draw-82.preview.emergentagent.com';
+  'http://localhost:8001';
 
 console.log('API_URL configured as:', API_URL);
 
