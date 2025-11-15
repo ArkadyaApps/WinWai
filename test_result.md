@@ -484,11 +484,7 @@ metadata:
   backend_test_success_rate: "100%"
 
 test_plan:
-  current_focus:
-    - "Automatic draw system endpoint"
-    - "User voucher endpoints"
-    - "Secret code upload endpoint"
-    - "Raffle creation with draw system fields"
+  current_focus: []
   completed_backend_tasks:
     - "Add profile update endpoint"
     - "Admin Partner CRUD endpoints"
@@ -500,6 +496,10 @@ test_plan:
     - "Change Password endpoint"
     - "Forgot Password endpoint"
     - "Reset Password endpoint"
+    - "Automatic draw system endpoint"
+    - "User voucher endpoints"
+    - "Secret code upload endpoint"
+    - "Raffle creation with draw system fields"
   stuck_tasks: []
   test_all: false
   test_priority: "high_first"
