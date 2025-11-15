@@ -15,6 +15,7 @@ const languages = [
   { code: 'en', name: 'English', flag: '🇬🇧', nativeName: 'English' },
   { code: 'th', name: 'Thai', flag: '🇹🇭', nativeName: 'ไทย' },
   { code: 'fr', name: 'French', flag: '🇫🇷', nativeName: 'Français' },
+  { code: 'ar', name: 'Arabic', flag: '🇲🇦', nativeName: 'العربية' },
 ];
 
 const LanguageSelector: React.FC = () => {
