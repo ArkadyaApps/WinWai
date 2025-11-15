@@ -18,20 +18,31 @@ ADMIN_PASSWORD = "winwanadmin"
 
 class BackendTester:
     def __init__(self):
-        self.session_token = None
-        self.test_results = []
+        self.session = requests.Session()
+        self.admin_token = None
+        self.test_user_token = None
+        self.test_raffle_id = None
+        self.test_partner_id = None
+        self.test_user_id = None
+        self.results = []
         
-    def log_test(self, test_name: str, success: bool, details: str = ""):
+    def log_result(self, test_name, success, details="", error=""):
         """Log test result"""
+        result = {
+            "test": test_name,
+            "success": success,
+            "details": details,
+            "error": error,
+            "timestamp": datetime.now().isoformat()
+        }
+        self.results.append(result)
         status = "✅ PASS" if success else "❌ FAIL"
         print(f"{status}: {test_name}")
         if details:
             print(f"   Details: {details}")
-        self.test_results.append({
-            "test": test_name,
-            "success": success,
-            "details": details
-        })
+        if error:
+            print(f"   Error: {error}")
+        print()
         
     def authenticate_admin(self) -> bool:
         """Authenticate as admin user"""
