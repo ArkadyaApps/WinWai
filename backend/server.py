@@ -2048,6 +2048,10 @@ async def get_all_raffles_admin(authorization: Optional[str] = Header(None)):
         raise HTTPException(status_code=403, detail="Admin access required")
     
     raffles = await db.raffles.find().sort("createdAt", -1).to_list(1000)
+    # Fix MongoDB dates and remove _id for all raffles
+    for r in raffles:
+        r.pop("_id", None)
+        fix_mongodb_dates(r)
     return [Raffle(**r) for r in raffles]
 
 @api_router.put("/admin/raffles/{raffle_id}", response_model=Raffle)
