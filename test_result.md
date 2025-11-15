@@ -576,6 +576,43 @@ agent_communication:
       ALL RAFFLE PRIZEVALUE AND GAMEPRICE FIELDS ARE FULLY FUNCTIONAL AND PRODUCTION-READY.
 
   - agent: "main"
+    message: |
+      NEW TASK: Automatic raffle draw and voucher generation system - Phase 1 Backend Complete
+      
+      COMPLETED BACKEND IMPLEMENTATION:
+      1. ✅ Automatic Draw Endpoint (POST /api/admin/process-automatic-draws):
+         - Processes all raffles due for drawing
+         - Checks ticket threshold (gamePrice)
+         - Extends draw if threshold not met
+         - Selects winner and creates Voucher + Winner records
+         - Handles secret codes for digital prizes
+         
+      2. ✅ User Voucher Endpoints:
+         - GET /api/users/me/vouchers - list all user's vouchers
+         - GET /api/users/me/winners - list winners with enriched details
+         
+      3. ✅ Secret Code Upload Endpoint (POST /api/admin/raffles/upload-secret-codes):
+         - Upload secret codes for digital prizes
+         - Cleans and deduplicates codes
+         - Sets isDigitalPrize flag
+         
+      4. ✅ Raffle Creation Enhancement:
+         - Auto-calculates minimumDrawDate based on prize value tier
+         - Converts prize value to USD for draw scheduler
+         
+      5. ✅ Voucher Model Consolidation:
+         - Removed duplicate Voucher model
+         - Updated old draw-winner endpoint to use new schema
+         
+      READY FOR TESTING:
+      - Backend: All automatic draw system endpoints
+      - Test automatic draw flow end-to-end
+      - Test secret code upload and assignment
+      - Test voucher creation and retrieval
+      
+      NEXT STEPS:
+      - Phase 2: Admin UI for secret code upload
+      - Phase 3: User UI for viewing won vouchers
 
   - agent: "main"
     message: |
