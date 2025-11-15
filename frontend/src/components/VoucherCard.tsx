@@ -11,9 +11,9 @@ interface VoucherCardProps {
 }
 
 export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
-  const expiryDate = new Date(voucher.expiresAt);
+  const expiryDate = new Date(voucher.validUntil);
   const isExpired = isPast(expiryDate);
-  const isRedeemed = voucher.isRedeemed;
+  const isRedeemed = voucher.status === 'redeemed';
   
   // Determine status
   let status: 'active' | 'redeemed' | 'expired' = 'active';
@@ -33,17 +33,15 @@ export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
     statusLabel = 'Expired';
   }
   
-  // Get category icon and color
-  const getCategoryIcon = (category: string) => {
-    switch (category) {
-      case 'food': return { icon: 'restaurant', color: '#FF6B6B' };
-      case 'hotel': return { icon: 'bed', color: '#4ECDC4' };
-      case 'spa': return { icon: 'fitness', color: '#FFD700' };
-      default: return { icon: 'gift', color: '#999' };
+  // Get prize type icon and color
+  const getPrizeIcon = () => {
+    if (voucher.isDigitalPrize) {
+      return { icon: 'code-slash', color: '#9C27B0' };
     }
+    return { icon: 'gift', color: theme.colors.primaryGold };
   };
   
-  const categoryInfo = getCategoryIcon(voucher.category);
+  const categoryInfo = getPrizeIcon();
   
   return (
     <TouchableOpacity style={styles.card} onPress={onPress} activeOpacity={0.7}>
