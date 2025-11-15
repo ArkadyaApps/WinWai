@@ -406,6 +406,8 @@ class BackendTester:
             headers = {"Authorization": f"Bearer {self.admin_token}"}
             
             # Create another raffle with higher gamePrice threshold
+            # Use past createdAt to ensure minimum draw date is in the past
+            past_time = datetime.now(timezone.utc) - timedelta(days=3)
             raffle_data = {
                 "title": "Test Extension Raffle",
                 "description": "Testing draw extension when threshold not met",
@@ -419,6 +421,7 @@ class BackendTester:
                 "currency": "THB",
                 "gamePrice": 100.0,  # Need 100 tickets total (high threshold)
                 "drawDate": (datetime.now(timezone.utc) - timedelta(minutes=1)).isoformat(),  # Past due
+                "createdAt": past_time.isoformat(),  # Created 3 days ago
                 "totalTicketsCollected": 5,  # Only 5 tickets (below threshold)
                 "active": True
             }
