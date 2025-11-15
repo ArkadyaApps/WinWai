@@ -25,7 +25,7 @@ const LanguageSelector: React.FC = () => {
   const currentLanguage = languages.find(l => l.code === language) || languages[0];
 
   const handleSelectLanguage = async (code: string) => {
-    await setLanguage(code as 'en' | 'th' | 'fr');
+    await setLanguage(code as 'en' | 'th' | 'fr' | 'ar');
     setModalVisible(false);
   };
 
