@@ -152,7 +152,7 @@ class BackendTester:
                 "prizesAvailable": 1,
                 "prizesRemaining": 1,
                 "ticketCost": 10,
-                "prizeValue": 100.0,  # 100 THB
+                "prizeValue": 10.0,  # 10 THB (very small to minimize minimum draw date)
                 "currency": "THB",
                 "gamePrice": 10.0,  # Need 10 tickets total to trigger draw
                 "drawDate": (datetime.now(timezone.utc) - timedelta(minutes=5)).isoformat(),  # Past due for testing
