@@ -335,16 +335,9 @@ async def get_current_user(authorization: Optional[str] = Header(None), session_
     if not user:
         return None
     
-    # Remove MongoDB _id field
+    # Remove MongoDB _id field and fix date formats
     user.pop("_id", None)
-    
-    # Fix MongoDB date format: Convert {'$date': '...'} to datetime string
-    if isinstance(user.get("createdAt"), dict) and "$date" in user["createdAt"]:
-        user["createdAt"] = user["createdAt"]["$date"]
-    
-    # Fix lastLogin date format if present
-    if isinstance(user.get("lastLogin"), dict) and "$date" in user["lastLogin"]:
-        user["lastLogin"] = user["lastLogin"]["$date"]
+    user = fix_mongodb_dates(user)
     
     return User(**user)
 
