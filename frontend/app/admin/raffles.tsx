@@ -137,8 +137,65 @@ export default function AdminRafflesScreen() {
     }
   };
 
-  const getCategoryIcon = (category: string) => category === 'food' ? '🍽️' : category === 'hotel' ? '🏨' : category === 'spa' ? '💆' : '🎁';
+  const getCategoryIcon = (category: string) => {
+    switch(category) {
+      case 'food': return '🍽️';
+      case 'hotel': return '🏨';
+      case 'spa': return '💆';
+      case 'gift-cards': return '🎁';
+      case 'electronics': return '📱';
+      case 'voucher': return '🎫';
+      default: return '🎁';
+    }
+  };
   const formatDate = (date: Date) => date.toLocaleString();
+
+  // Image Picker Handler
+  const pickImage = async () => {
+    try {
+      const { status } = await ImagePicker.requestMediaLibraryPermissionsAsync();
+      
+      if (status !== 'granted') {
+        Alert.alert('Permission Required', 'Please allow access to your photos');
+        return;
+      }
+      
+      const result = await ImagePicker.launchImageLibraryAsync({
+        mediaTypes: ImagePicker.MediaTypeOptions.Images,
+        allowsEditing: true,
+        aspect: [16, 9],
+        quality: 0.7,
+        base64: true,
+      });
+      
+      if (!result.canceled && result.assets[0]) {
+        const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+        setSelectedImage(base64Image);
+        setFormData({ ...formData, image: base64Image });
+      }
+    } catch (error) {
+      console.error('Error picking image:', error);
+      Alert.alert('Error', 'Failed to pick image');
+    }
+  };
+
+  // Secret Codes Management
+  const addSecretCodeField = () => {
+    setSecretCodes([...secretCodes, '']);
+  };
+
+  const removeSecretCodeField = (index: number) => {
+    if (secretCodes.length > 1) {
+      const newCodes = secretCodes.filter((_, i) => i !== index);
+      setSecretCodes(newCodes);
+    }
+  };
+
+  const updateSecretCode = (index: number, value: string) => {
+    const newCodes = [...secretCodes];
+    newCodes[index] = value;
+    setSecretCodes(newCodes);
+  };
 
   if (loading) { return (<View style={styles.centerContainer}><ActivityIndicator size="large" color={theme.colors.primaryGold} /></View>); }
 
