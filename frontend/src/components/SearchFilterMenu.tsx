@@ -29,6 +29,8 @@ const categories = [
   { id: 'food', name: 'Food & Dining', icon: 'restaurant' },
   { id: 'hotel', name: 'Hotels & Resorts', icon: 'bed' },
   { id: 'spa', name: 'Spa & Wellness', icon: 'fitness' },
+  { id: 'shopping', name: 'Shopping & Gifts', icon: 'gift' },
+  { id: 'entertainment', name: 'Entertainment', icon: 'game-controller' },
 ];
 
 const SearchFilterMenu: React.FC<SearchFilterMenuProps> = ({
