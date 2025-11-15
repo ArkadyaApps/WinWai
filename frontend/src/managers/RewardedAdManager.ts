@@ -63,6 +63,7 @@ class RewardedAdManager {
         () => {
           console.log('✅✅✅ AdMob: Rewarded ad LOADED successfully! ✅✅✅');
           this.adReady = true;
+          this.isLoading = false;
         }
       );
 
@@ -71,6 +72,31 @@ class RewardedAdManager {
         async (reward: any) => {
           console.log('🎉 AdMob: User earned reward:', reward);
           await this.handleRewardEarned(reward);
+        }
+      );
+
+      // Add error listener
+      const unsubscribeError = this.rewardedInterstitial.addAdEventListener(
+        'error',
+        (error: any) => {
+          console.error('❌ Ad Error Event:', error);
+          this.adReady = false;
+          this.isLoading = false;
+        }
+      );
+
+      // Add closed listener
+      const unsubscribeClosed = this.rewardedInterstitial.addAdEventListener(
+        'closed',
+        () => {
+          console.log('📱 Ad closed by user');
+          this.adReady = false;
+          // Reload next ad
+          setTimeout(() => {
+            if (this.currentUserId) {
+              this.loadRewardedAd(this.currentUserId);
+            }
+          }, 1000);
         }
       );
 
