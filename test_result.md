@@ -116,6 +116,86 @@ user_problem_statement: |
   Phase 3: User Winner/Voucher Display (Next)
 
 backend:
+  - task: "Automatic draw system endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Created POST /api/admin/process-automatic-draws endpoint that:
+          1. Finds all raffles due for drawing (drawStatus pending/eligible, drawDate <= now)
+          2. Checks if totalTicketsCollected >= gamePrice threshold
+          3. If threshold met: selects random winner, creates Winner record, creates Voucher with secret code (for digital) or verification code
+          4. If threshold not met: extends drawDate by extension period based on prize value tier
+          5. Updates raffle drawStatus to 'drawn' or 'extended'
+          6. Handles secret code assignment from raffle's secretCodes list and marks as used
+          Returns summary of processed, drawn, and extended raffles with details.
+
+  - task: "User voucher endpoints"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Created GET /api/users/me/vouchers endpoint to list all user's vouchers (prizes won).
+          Created GET /api/users/me/winners endpoint to list all winning records with enriched voucher and raffle details.
+          Both endpoints return sorted by createdAt descending.
+
+  - task: "Secret code upload endpoint"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Created POST /api/admin/raffles/upload-secret-codes endpoint for uploading secret codes to digital prize raffles.
+          Accepts raffleId and secretCodes array, cleans and deduplicates codes, updates raffle with secretCodes and sets isDigitalPrize=true.
+          Returns count of uploaded codes.
+
+  - task: "Raffle creation with draw system fields"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: true
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Updated POST /api/admin/raffles endpoint to calculate minimumDrawDate based on prizeValueUSD tier when creating raffles.
+          Uses calculate_minimum_draw_date() helper function: 1-15 USD = next day, 16-25 USD = 3 days, 26+ USD = 1 week.
+
+  - task: "Voucher model consolidation"
+    implemented: true
+    working: "NA"
+    file: "/app/backend/server.py"
+    stuck_count: 0
+    priority: "medium"
+    needs_retesting: false
+    status_history:
+      - working: "NA"
+        agent: "main"
+        comment: |
+          Removed duplicate Voucher model definition. Now using single comprehensive Voucher model with fields:
+          voucherRef, userId, userName, userEmail, raffleId, raffleTitle, partnerId, partnerName, prizeValue, currency,
+          isDigitalPrize, secretCode, verificationCode, status, validUntil, partner contact info.
+          Updated old /api/admin/draw-winner endpoint to use new Voucher schema with secret code handling.
+
   - task: "Email/Password Signup endpoint"
     implemented: true
     working: true
