@@ -59,12 +59,16 @@ export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
         </View>
       </View>
       
-      {/* Voucher Code */}
+      {/* Voucher Reference & Prize Value */}
       <View style={styles.codeContainer}>
-        <Text style={styles.codeLabel}>Voucher Code</Text>
+        <Text style={styles.codeLabel}>Voucher Reference</Text>
         <View style={styles.codeBox}>
-          <Text style={styles.codeText}>{voucher.voucherCode}</Text>
+          <Text style={styles.codeText}>{voucher.voucherRef}</Text>
           <Ionicons name="copy-outline" size={20} color={theme.colors.primaryGold} />
+        </View>
+        <View style={styles.prizeValueRow}>
+          <Text style={styles.prizeLabel}>Prize Value:</Text>
+          <Text style={styles.prizeValue}>{voucher.prizeValue} {voucher.currency}</Text>
         </View>
       </View>
       
@@ -74,15 +78,15 @@ export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
           <Ionicons name="calendar-outline" size={14} color="#999" />
           <Text style={styles.footerText}>
             {isRedeemed 
-              ? `Redeemed ${format(new Date(voucher.redeemedAt!), 'MMM dd, yyyy')}`
+              ? `Redeemed ${voucher.redeemedAt ? format(new Date(voucher.redeemedAt), 'MMM dd, yyyy') : 'Recently'}`
               : `Expires ${format(expiryDate, 'MMM dd, yyyy')}`
             }
           </Text>
         </View>
-        {voucher.location && (
+        {voucher.isDigitalPrize && (
           <View style={styles.footerItem}>
-            <Ionicons name="location-outline" size={14} color="#999" />
-            <Text style={styles.footerText}>{voucher.location}</Text>
+            <Ionicons name="code-slash" size={14} color="#9C27B0" />
+            <Text style={[styles.footerText, { color: '#9C27B0' }]}>Digital Prize</Text>
           </View>
         )}
       </View>
