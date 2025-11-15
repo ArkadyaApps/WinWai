@@ -2,7 +2,7 @@ import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { Platform } from 'react-native';
-import { interstitialAdManager } from '../src/managers/InterstitialAdManager';
+import { interstitialAdManager } from '../src/managers/InterstitialAdManager.ts';
 
 export default function RootLayout() {
   useEffect(() => {
