@@ -427,7 +427,7 @@ async def google_exchange_code(request: Request):
             email=email,
             name=name,
             picture=picture,
-            tickets=100,
+            tickets=0,  # New users start with 0 tickets
             role=user_role,
             lastLogin=datetime.now(timezone.utc)
         )
