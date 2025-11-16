@@ -92,13 +92,13 @@ export default function RafflesScreen() {
             selectedValue={selectedLocation}
             onValueChange={(value) => setSelectedLocation(value)}
             style={styles.picker}
+            enabled={!loadingLocations}
           >
             <Picker.Item label="All Locations" value="all" />
             <Picker.Item label="📍 Near Me" value="nearme" />
-            <Picker.Item label="Bangkok" value="Bangkok" />
-            <Picker.Item label="Chiang Mai" value="Chiang Mai" />
-            <Picker.Item label="Phuket" value="Phuket" />
-            <Picker.Item label="Pattaya" value="Pattaya" />
+            {locations.map((location) => (
+              <Picker.Item key={location} label={location} value={location} />
+            ))}
           </Picker>
         </View>
       </View>
