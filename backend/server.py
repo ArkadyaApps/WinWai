@@ -1076,8 +1076,8 @@ async def verify_ad_reward(reward_request: AdRewardRequest):
     if abs(current_timestamp - reward_request.timestamp) > 300000:
         raise HTTPException(status_code=400, detail="Reward expired")
     
-    # Award tickets (10 tickets per ad)
-    tickets_to_award = 10
+    # Award tickets (1 ticket per ad)
+    tickets_to_award = 1
     
     result = await db.users.update_one(
         {"id": reward_request.userId},
