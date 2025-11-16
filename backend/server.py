@@ -652,7 +652,7 @@ async def email_signup(signup_request: EmailSignUpRequest):
     
     # Create new user
     password_hash = hash_password(signup_request.password)
-    welcome_tickets = 100  # Base welcome bonus
+    welcome_tickets = 0  # New users start with 0 tickets
     
     # Process referral code if provided
     referrer_id = None
@@ -661,7 +661,7 @@ async def email_signup(signup_request: EmailSignUpRequest):
         referrer = await db.users.find_one({"id": {"$regex": f"^{signup_request.referralCode.lower()}"}})
         if referrer:
             referrer_id = referrer["id"]
-            welcome_tickets += 1  # Bonus ticket for being referred
+            welcome_tickets = 1  # Get 1 ticket when using referral code
     
     # Check if email should be admin
     admin_emails = ["artteabnc@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
