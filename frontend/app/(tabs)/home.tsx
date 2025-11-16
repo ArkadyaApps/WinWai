@@ -64,7 +64,6 @@ export default function HomeScreen() {
   };
 
   useEffect(() => { initialize(); }, []);
-  useEffect(() => { loadRaffles(); }, [selectedCategory, selectedLocation]);
 
   const initialize = async () => { await initializeLanguage(); await detectLocation(); loadRaffles(); };
 
