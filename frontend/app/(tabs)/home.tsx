@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, Dimensions, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, Dimensions, TouchableOpacity, Modal } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserStore } from '../../src/store/userStore';
 import { useLanguageStore } from '../../src/store/languageStore';
 import { Raffle } from '../../src/types';
