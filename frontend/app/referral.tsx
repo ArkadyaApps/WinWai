@@ -41,7 +41,7 @@ export default function ReferralScreen() {
         showDivider
       />
       
-      <View style={styles.content}>
+      <ScrollView style={styles.scrollView} contentContainerStyle={styles.content}>
         <View style={styles.hero}>
           <View style={styles.iconContainer}>
             <Ionicons name="gift" size={60} color={theme.colors.primaryGold} />
