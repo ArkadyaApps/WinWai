@@ -1,4 +1,4 @@
-export const TERMS_OF_SERVICE = `WinWai – Terms of Service
+const TERMS_EN = `WinWai – Terms of Service
 
 Last updated: [Insert Date]
 Operated by: Arkadya App, Morocco
