@@ -23,7 +23,6 @@ export default function Index() {
   const { signIn, signInWithEmail, isLoading: authLoading } = useAuth();
   const { isAuthenticated, isLoading: userLoading } = useUserStore();
   const { t } = useTranslation();
-  const { setLanguage } = useLanguageStore();
   
   const [authMode, setAuthMode] = useState<'google' | 'email'>('email');
   const [email, setEmail] = useState('');
