@@ -114,7 +114,7 @@ user_problem_statement: |
   - Just need to add translations to referral.tsx
 
 backend:
-  - task: "Automatic draw system endpoint"
+  - task: "Dynamic location list endpoint"
     implemented: true
     working: true
     file: "/app/backend/server.py"
@@ -122,25 +122,12 @@ backend:
     priority: "high"
     needs_retesting: false
     status_history:
-      - working: "NA"
+      - working: true
         agent: "main"
         comment: |
-          Created POST /api/admin/process-automatic-draws endpoint that:
-          1. Finds all raffles due for drawing (drawStatus pending/eligible, drawDate <= now)
-          2. Checks if totalTicketsCollected >= gamePrice threshold
-          3. If threshold met: selects random winner, creates Winner record, creates Voucher with secret code (for digital) or verification code
-          4. If threshold not met: extends drawDate by extension period based on prize value tier
-          5. Updates raffle drawStatus to 'drawn' or 'extended'
-          6. Handles secret code assignment from raffle's secretCodes list and marks as used
-          Returns summary of processed, drawn, and extended raffles with details.
-      - working: true
-        agent: "testing"
-        comment: |
-          ✅ TESTED: Automatic draw system working perfectly. Successfully processed raffles, selected winners, created vouchers with secret codes for digital prizes, and extended raffles when threshold not met. All scenarios tested:
-          - Threshold met: Drew winner, created voucher WW-2025-58197 with secret code
-          - Threshold not met: Extended raffle from 5/100 tickets to new draw date
-          - Secret code assignment from uploaded codes working correctly
-          - Winner and Voucher records created with proper relationships
+          Endpoint GET /api/raffles/locations/list already exists and working.
+          Returns unique locations from all active raffles, sorted alphabetically.
+          Frontend LocationFilter component already using this endpoint.
 
   - task: "User voucher endpoints"
     implemented: true
