@@ -31,34 +31,8 @@ export default function Index() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
 
-  // Request geolocation on landing to set language (non-blocking)
-  useEffect(() => {
-    const detectLanguageFromLocation = async () => {
-      try {
-        const location = await getUserLocation();
-        if (location?.countryCode) {
-          // Map country codes to languages
-          const languageMap: { [key: string]: string } = {
-            'TH': 'th', 'FR': 'fr', 'BE': 'fr', 'CH': 'fr', 'CA': 'fr',
-            'MA': 'ar', 'DZ': 'ar', 'EG': 'ar', 'SA': 'ar', 'AE': 'ar',
-          };
-          const detectedLanguage = languageMap[location.countryCode] || 'en';
-          console.log(`Detected country: ${location.country} (${location.countryCode}), setting language to: ${detectedLanguage}`);
-          await setLanguage(detectedLanguage as any);
-        }
-      } catch (error) {
-        console.log('Could not detect location for language, using default');
-      }
-    };
-    
-    // Run in background, don't await - this won't block sign-in
-    detectLanguageFromLocation();
-  }, []);
-
-  // Navigation now happens immediately in handleGoogleSignIn - no waiting for state
   useEffect(() => {
     if (!userLoading && isAuthenticated) {
-      // Backup navigation for app restarts or if already logged in
       router.replace('/(tabs)/home');
     }
   }, [isAuthenticated, userLoading]);
