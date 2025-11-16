@@ -362,7 +362,7 @@ export default function ProfileScreen() {
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.legalTextContainer}>
-              <Text style={styles.legalText}>{TERMS_OF_SERVICE}</Text>
+              <Text style={styles.legalText}>{getTermsForLanguage(language)}</Text>
             </ScrollView>
           </View>
         </View>
