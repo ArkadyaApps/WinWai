@@ -1,11 +1,11 @@
 import React, { useState } from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Share, Alert, Clipboard } from 'react-native';
+import { View, Text, StyleSheet, TouchableOpacity, Share, Alert, Clipboard, ScrollView } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import { useUserStore } from '../src/store/userStore';
 import AppHeader from '../src/components/AppHeader';
 import { theme } from '../src/theme/tokens';
 
-const LOGO_URI = 'https://customer-assets.emergentagent.com/job_6d67ebdc-f06e-4f07-9190-b403aee951d6/artifacts/qob3yald_icon.png';
+const LOGO_URI = 'https://customer-assets.emergentagent.com/job_prize-raffle-2/artifacts/3cr2n9os_icon.png';
 
 export default function ReferralScreen() {
   const { user } = useUserStore();
