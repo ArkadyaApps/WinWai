@@ -69,7 +69,8 @@ export default function Index() {
     try {
       setLoading(true);
       await signIn();
-      // Navigate immediately after successful sign-in
+      // Force immediate navigation - don't wait for state updates
+      setLoading(false);
       router.replace('/(tabs)/home');
     } catch (error) {
       console.error('Sign in error:', error);
