@@ -83,8 +83,8 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   logo: {
-    width: 360,
-    height: 144,
+    width: 288,
+    height: 115,
   },
   controlsRow: {
     flexDirection: 'row',
