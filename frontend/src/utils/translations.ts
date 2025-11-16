@@ -111,6 +111,13 @@ export const translations = {
     howToEarnTickets: 'How to Earn Tickets',
     watchRewardedAds: 'Watch rewarded ads (+10 tickets)',
     referFriends: 'Refer a friend (+2 tickets)',
+    // First-time popup
+    howItWorks: 'How It Works',
+    earnTicketsStep: 'Earn Tickets',
+    watchAdsStep: 'Watch Ads',
+    enterRafflesStep: 'Enter Raffles',
+    winPrizesStep: 'Win Real Prizes',
+    gotIt: 'Got It!',
     ticketUsage: 'Ticket Usage',
     ticketUsageDescription: 'Use your tickets to enter raffles and win amazing prizes! Each raffle entry typically costs 10 tickets.',
     
