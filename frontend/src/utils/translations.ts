@@ -280,6 +280,12 @@ export const translations = {
     howToEarnTickets: 'วิธีรับตั๋ว',
     watchRewardedAds: 'ดูโฆษณาที่ให้รางวัล (+10 ตั๋ว)',
     referFriends: 'แนะนำเพื่อน (+2 ตั๋ว)',
+    howItWorks: 'วิธีการทำงาน',
+    earnTicketsStep: 'รับตั๋ว',
+    watchAdsStep: 'ดูโฆษณา',
+    enterRafflesStep: 'เข้าร่วมการจับรางวัล',
+    winPrizesStep: 'ชนะรางวัลจริง',
+    gotIt: 'เข้าใจแล้ว!',
     ticketUsage: 'การใช้ตั๋ว',
     ticketUsageDescription: 'ใช้ตั๋วของคุณเพื่อเข้าร่วมการจับรางวัลและชนะรางวัลที่น่าตื่นตาตื่นใจ! การเข้าร่วมแต่ละครั้งมักใช้ 10 ตั๋ว',
     
