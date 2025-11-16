@@ -49,9 +49,9 @@ class RewardedAdManager {
       console.log('🎯 Using test ads:', __DEV__ ? 'YES' : 'NO');
 
       console.log('📝 Creating rewarded ad instance...');
-      this.rewardedInterstitial = RewardedInterstitialAd.createForAdRequest(adUnitId, {
+      this.rewardedInterstitial = RewardedAd.createForAdRequest(adUnitId, {
         requestNonPersonalizedAdsOnly: false,
-        keywords: ['game', 'raffle', 'prize', 'reward'],
+        keywords: ['gaming', 'rewards', 'raffle'],
       });
       console.log('✅ Rewarded ad instance created');
 
