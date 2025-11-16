@@ -380,45 +380,58 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
   },
-  locationList: {
-    gap: 8,
+  locationSelectionContainer: {
+    gap: 12,
   },
-  locationItem: {
+  locationButton: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     alignItems: 'center',
     padding: 16,
     backgroundColor: '#F8F9FA',
     borderRadius: 12,
     borderWidth: 2,
     borderColor: 'transparent',
+    gap: 12,
   },
-  myLocationItem: {
+  myLocationButton: {
     borderColor: '#4ECDC4',
     borderWidth: 1.5,
   },
-  locationItemSelected: {
+  locationButtonSelected: {
     backgroundColor: '#FFF9E6',
     borderColor: '#FFD700',
   },
-  locationItemContent: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 12,
-    flex: 1,
-  },
-  locationItemText: {
+  locationButtonText: {
     fontSize: 15,
     fontWeight: '600',
     color: '#2C3E50',
     flex: 1,
   },
-  myLocationText: {
+  myLocationButtonText: {
     color: '#4ECDC4',
   },
-  locationItemTextSelected: {
+  locationButtonTextSelected: {
     color: '#000',
     fontWeight: '700',
+  },
+  pickerContainer: {
+    marginTop: 8,
+  },
+  pickerLabel: {
+    fontSize: 14,
+    fontWeight: '600',
+    color: '#7F8C8D',
+    marginBottom: 8,
+  },
+  pickerWrapper: {
+    backgroundColor: '#F8F9FA',
+    borderRadius: 12,
+    borderWidth: 1.5,
+    borderColor: '#E1E8ED',
+    overflow: 'hidden',
+  },
+  picker: {
+    height: 50,
   },
   applyButton: {
     marginTop: 24,
