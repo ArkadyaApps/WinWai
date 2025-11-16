@@ -105,13 +105,13 @@ export default function RafflesScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.cloud },
-  categoryContainer: { backgroundColor: '#ffffff', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#E8E8E8' },
+  categoryContainer: { backgroundColor: '#ffffff', paddingVertical: 16, borderBottomWidth: 1, borderBottomColor: '#E8E8E8' },
   categoryScroll: { paddingHorizontal: 16, gap: 10 },
-  categoryButton: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 24, backgroundColor: '#F5F5F5', gap: 8 },
-  categoryButtonActive: { backgroundColor: theme.colors.primaryGold },
-  categoryEmoji: { fontSize: 18 },
-  categoryText: { fontSize: 15, fontWeight: '600', color: '#666' },
-  categoryTextActive: { color: '#000', fontWeight: '700' },
+  categoryButton: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 12, borderRadius: 24, backgroundColor: '#F8F9FA', gap: 8, borderWidth: 2, borderColor: '#E1E8ED', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2 },
+  categoryButtonActive: { backgroundColor: theme.colors.primaryGold, borderColor: theme.colors.primaryGold, shadowColor: theme.colors.primaryGold, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
+  categoryEmoji: { fontSize: 20 },
+  categoryText: { fontSize: 15, fontWeight: '600', color: theme.colors.slate },
+  categoryTextActive: { color: '#fff', fontWeight: '800' },
 
   locationContainer: { backgroundColor: theme.colors.cloud, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#EDEDED' },
   locationScroll: { paddingHorizontal: 16, gap: 8 },
