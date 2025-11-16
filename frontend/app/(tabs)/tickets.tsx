@@ -123,8 +123,10 @@ export default function TicketsScreen() {
           <View style={styles.infoCard}>
             <Text style={styles.infoTitle}>{t.howToEarnTickets}</Text>
             <View style={styles.infoItem}><Text style={styles.infoBullet}>🎥</Text><Text style={styles.infoText}>{t.watchRewardedAds}</Text></View>
-            <View style={styles.infoItem}><Text style={styles.infoBullet}>🎁</Text><Text style={styles.infoText}>{t.dailyLoginBonus}</Text></View>
-            <View style={styles.infoItem}><Text style={styles.infoBullet}>👥</Text><Text style={styles.infoText}>{t.referFriends}</Text></View>
+            <TouchableOpacity style={styles.infoItem} onPress={() => require('expo-router').router.push('/referral')}>
+              <Text style={styles.infoBullet}>👥</Text>
+              <Text style={[styles.infoText, styles.infoTextLink]}>{t.referFriends}</Text>
+            </TouchableOpacity>
           </View>
         </View>
 
