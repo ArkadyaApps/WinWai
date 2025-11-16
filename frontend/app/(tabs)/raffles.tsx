@@ -49,7 +49,7 @@ export default function RafflesScreen() {
 
   const loadLocations = async () => {
     try {
-      const response = await api.get('/api/raffles/locations');
+      const response = await api.get('/api/raffles/locations/list');
       setLocations(response.data.locations || []);
     } catch (error) {
       console.error('Failed to load locations:', error);
