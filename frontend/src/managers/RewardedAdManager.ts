@@ -34,7 +34,7 @@ class RewardedAdManager {
     try {
       console.log('📦 Importing AdMob module...');
       // Import AdMob module
-      const { RewardedInterstitialAd, RewardedAdEventType, TestIds } = await import('react-native-google-mobile-ads');
+      const { RewardedAd, RewardedAdEventType, TestIds } = await import('react-native-google-mobile-ads');
       console.log('✅ AdMob module imported successfully');
       
       // Use test ads in development, real ads in production
