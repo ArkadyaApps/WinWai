@@ -111,7 +111,7 @@ export default function TicketsScreen() {
               <View style={styles.playButtonContent}>
                 <View style={styles.playIconContainer}><Text style={styles.playIcon}>▶</Text></View>
                 <View style={styles.playButtonTextContainer}>
-                  <Text style={styles.playButtonTitle}>Watch Ad for 1 Ticket</Text>
+                  <Text style={styles.playButtonTitle}>{t.watchAdPlus1 || 'Watch Ad for 1 Ticket'}</Text>
                   <Text style={styles.playButtonSubtitle}>{adReady ? 'Ad ready! Tap to watch' : 'Loading ad...'}</Text>
                 </View>
               </View>
