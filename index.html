@@ -1,0 +1,388 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Download WinWai Raffle Rewards - Free raffle app for Thailand users">
+    <meta name="keywords" content="WinWai, Raffle, Rewards, Thailand, Free App">
+    <meta property="og:title" content="WinWai Raffle Rewards">
+    <meta property="og:description" content="Download the app and start winning!">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://winwai.arkadyaproperties.workers.dev">
+    <title>Download WinWai Raffle Rewards</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .container {
+            background: white;
+            border-radius: 20px;
+            padding: 40px;
+            max-width: 500px;
+            width: 100%;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+            text-align: center;
+        }
+        
+        .logo {
+            width: 80px;
+            height: 80px;
+            margin: 0 auto 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 40px;
+        }
+        
+        h1 {
+            color: #333;
+            margin-bottom: 10px;
+            font-size: 28px;
+        }
+        
+        .subtitle {
+            color: #666;
+            margin-bottom: 30px;
+            font-size: 16px;
+        }
+        
+        .qr-container {
+            background: #f8f9fa;
+            border-radius: 15px;
+            padding: 30px;
+            margin-bottom: 30px;
+        }
+        
+        #qrcode {
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+            min-height: 200px;
+        }
+        
+        .qr-text {
+            color: #666;
+            font-size: 14px;
+        }
+        
+        .download-btn {
+            display: inline-block;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 15px 40px;
+            border-radius: 50px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 18px;
+            transition: transform 0.2s, box-shadow 0.2s;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.4);
+            margin-bottom: 20px;
+        }
+        
+        .download-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6);
+        }
+        
+        .download-btn:active {
+            transform: translateY(0);
+        }
+        
+        .info {
+            margin-top: 30px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            color: #666;
+            font-size: 14px;
+            line-height: 1.8;
+            text-align: left;
+        }
+        
+        .info strong {
+            display: block;
+            margin-bottom: 10px;
+            color: #333;
+            text-align: center;
+        }
+        
+        .version {
+            margin-top: 20px;
+            color: #999;
+            font-size: 12px;
+        }
+        
+        .badge {
+            display: inline-block;
+            background: #667eea;
+            color: white;
+            padding: 5px 15px;
+            border-radius: 20px;
+            font-size: 12px;
+            margin-top: 10px;
+        }
+        
+        .terms-section {
+            margin-top: 30px;
+            text-align: left;
+        }
+        
+        .terms-toggle {
+            background: #667eea;
+            color: white;
+            padding: 12px 20px;
+            border: none;
+            border-radius: 10px;
+            width: 100%;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            transition: background 0.3s;
+        }
+        
+        .terms-toggle:hover {
+            background: #5568d3;
+        }
+        
+        .terms-content {
+            display: none;
+            margin-top: 20px;
+            padding: 20px;
+            background: #f8f9fa;
+            border-radius: 10px;
+            max-height: 400px;
+            overflow-y: auto;
+            font-size: 13px;
+            line-height: 1.6;
+            color: #333;
+        }
+        
+        .terms-content.show {
+            display: block;
+        }
+        
+        .terms-content h3 {
+            color: #667eea;
+            margin-top: 20px;
+            margin-bottom: 10px;
+            font-size: 16px;
+        }
+        
+        .terms-content h3:first-child {
+            margin-top: 0;
+        }
+        
+        .terms-content p {
+            margin-bottom: 10px;
+        }
+        
+        .terms-content ol, .terms-content ul {
+            margin-left: 20px;
+            margin-bottom: 10px;
+        }
+        
+        .terms-content li {
+            margin-bottom: 8px;
+        }
+        
+        @media (max-width: 600px) {
+            .container {
+                padding: 30px 20px;
+            }
+            
+            h1 {
+                font-size: 24px;
+            }
+            
+            .download-btn {
+                padding: 12px 30px;
+                font-size: 16px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="logo">🎟️</div>
+        <h1>WinWai Raffle Rewards</h1>
+        <p class="subtitle">Download the app and start winning!</p>
+        
+        <div class="qr-container">
+            <div id="qrcode"></div>
+            <p class="qr-text">📱 Scan QR code to download</p>
+        </div>
+        
+        <a href="#" id="downloadBtn" class="download-btn">
+            📱 Download APK
+        </a>
+        
+        <div class="badge">🇹🇭 Made for Thailand</div>
+        
+        <div class="info">
+            <strong>📋 Installation Instructions:</strong>
+            1. Download the APK file<br>
+            2. Enable "Install from Unknown Sources" in your device settings<br>
+            3. Open the downloaded APK and install<br>
+            4. Sign in with your Google account and enjoy!
+        </div>
+        
+        <div class="terms-section">
+            <button class="terms-toggle" onclick="toggleTerms()">
+                <span>📄 Terms & Conditions</span>
+                <span id="termsArrow">▼</span>
+            </button>
+            <div id="termsContent" class="terms-content">
+                <h3>WinWai – Terms of Service</h3>
+                <p><strong>Last updated:</strong> June 2025<br>
+                <strong>Operated by:</strong> Arkadya App, Morocco<br>
+                <strong>Contact:</strong> contact@winwai.online</p>
+
+                <h3>1. Introduction</h3>
+                <p>These Terms of Service ("Terms") govern the access and use of the WinWai mobile application and related services (collectively, the "Service") operated by Arkadya App, a company registered under the laws of the Kingdom of Morocco.</p>
+                <p>By accessing or using WinWai, you agree to be bound by these Terms. If you do not agree, you must not use the Service.</p>
+
+                <h3>2. Eligibility</h3>
+                <p>Use of the Service is restricted to individuals who are at least 18 years old. By creating an account, you represent that you meet this age requirement and are legally capable of entering into binding contracts.</p>
+
+                <h3>3. Description of Service</h3>
+                <p>WinWai provides users with access to raffle games in which participation is entirely free of charge. Users may obtain raffle tickets by watching advertising content within the app. Each prize is associated with a specific ticket threshold, and raffles are conducted once the required number of tickets has been reached.</p>
+
+                <h3>4. Raffle Participation</h3>
+                <ol>
+                    <li>Participation in raffles is free; no purchase or payment of any kind is required.</li>
+                    <li>Users earn tickets by watching advertisements through the app.</li>
+                    <li>There is no limitation on the number of tickets a user may obtain.</li>
+                    <li>Once the ticket threshold is reached, WinWai will automatically conduct a random draw using an internal algorithm to determine the winner.</li>
+                    <li>The draw results are final and cannot be contested.</li>
+                </ol>
+
+                <h3>5. Prizes</h3>
+                <ol>
+                    <li>Prizes are offered and managed by WinWai, and may include but are not limited to hotel stays, meals, spa or massage sessions, and similar experiences.</li>
+                    <li>Prizes are delivered in the form of vouchers valid for three (3) months from the date of issue.</li>
+                    <li>Prizes may be used personally by the winner or transferred to another person at the winner's discretion.</li>
+                    <li>WinWai shall not be liable for lost, stolen, or expired vouchers.</li>
+                    <li>Prizes have no cash value and cannot be exchanged or redeemed for money.</li>
+                    <li>WinWai reserves the right to substitute a prize with one of equal or greater value if necessary.</li>
+                </ol>
+
+                <h3>6. Winner Notification</h3>
+                <ol>
+                    <li>Winners will be notified via email and in-app notification.</li>
+                    <li>If a winner does not claim their prize within the specified time period, WinWai reserves the right to forfeit the prize.</li>
+                    <li>By participating, winners consent to WinWai using their first name and city for promotional purposes.</li>
+                </ol>
+
+                <h3>7. User Accounts</h3>
+                <ol>
+                    <li>Users must register with a valid email address or Google account to participate.</li>
+                    <li>Users are responsible for maintaining the confidentiality of their account credentials.</li>
+                    <li>WinWai reserves the right to suspend or terminate any account found to be engaging in fraudulent or abusive activity.</li>
+                    <li>Users may request account deletion by contacting contact@winwai.online.</li>
+                </ol>
+
+                <h3>8. Prohibited Conduct</h3>
+                <p>Users agree not to:</p>
+                <ul>
+                    <li>Attempt to manipulate or interfere with the raffle process.</li>
+                    <li>Use bots, automation, or multiple accounts for unfair advantage.</li>
+                    <li>Post or transmit any unlawful, misleading, or harmful content.</li>
+                    <li>Attempt to reverse engineer or exploit any part of the Service.</li>
+                </ul>
+
+                <h3>9. Limitation of Liability</h3>
+                <p>To the fullest extent permitted by law, WinWai and Arkadya App shall not be liable for any indirect, incidental, or consequential damages arising from the use or inability to use the Service.</p>
+
+                <h3>10. Governing Law</h3>
+                <p>These Terms are governed by and construed in accordance with the laws of the Kingdom of Morocco. Any disputes arising from these Terms shall be subject to the exclusive jurisdiction of the competent courts in Morocco.</p>
+
+                <h3>11. Contact</h3>
+                <p>For questions or concerns regarding these Terms, please contact us at:<br>
+                📧 contact@winwai.online</p>
+            </div>
+        </div>
+        
+        <p class="version">Version 1.0.0 • Android • Free</p>
+    </div>
+    
+    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
+    <script>
+        // ⚙️ CONFIGURATION - APK hosted on GitHub Releases
+        const APK_URL = 'https://github.com/ArkadyaApps/WinWai/releases/download/v1.0.0/WinWaiRaffle.apk';
+        
+        // Toggle Terms & Conditions
+        function toggleTerms() {
+            const content = document.getElementById('termsContent');
+            const arrow = document.getElementById('termsArrow');
+            
+            if (content.classList.contains('show')) {
+                content.classList.remove('show');
+                arrow.textContent = '▼';
+            } else {
+                content.classList.add('show');
+                arrow.textContent = '▲';
+            }
+        }
+        
+        // Wait for page to fully load and QRCode library to be available
+        window.addEventListener('load', function() {
+            console.log('Page loaded, initializing QR code...');
+            
+            // Set download button URL
+            const downloadBtn = document.getElementById('downloadBtn');
+            if (downloadBtn) {
+                downloadBtn.href = APK_URL;
+                console.log('Download button URL set to:', APK_URL);
+            }
+            
+            // Check if QRCode library is loaded
+            if (typeof QRCode === 'undefined') {
+                console.error('QRCode library not loaded!');
+                document.getElementById('qrcode').innerHTML = '<p style="color: #999;">QR code library failed to load</p>';
+                return;
+            }
+            
+            // Generate QR code with download URL
+            try {
+                QRCode.toCanvas(document.createElement('canvas'), APK_URL, {
+                    width: 200,
+                    margin: 2,
+                    color: {
+                        dark: '#667eea',
+                        light: '#ffffff'
+                    }
+                }, function (error, canvas) {
+                    if (error) {
+                        console.error('QR code generation error:', error);
+                        document.getElementById('qrcode').innerHTML = '<p style="color: #999;">QR code generation failed</p>';
+                    } else {
+                        console.log('QR code generated successfully');
+                        document.getElementById('qrcode').appendChild(canvas);
+                    }
+                });
+            } catch (e) {
+                console.error('QR code generation exception:', e);
+                document.getElementById('qrcode').innerHTML = '<p style="color: #999;">Error: ' + e.message + '</p>';
+            }
+        });
+    </script>
+</body>
+</html>
