@@ -145,7 +145,6 @@ export default function HomeScreen() {
         <View style={{ height: 100 }} />
       </ScrollView>
       <BannerAdComponent position="bottom" />
-      <SearchFilterMenu visible={filterVisible} onClose={() => setFilterVisible(false)} selectedCategory={selectedCategory} selectedLocation={selectedLocation} onCategoryChange={setSelectedCategory} onLocationChange={setSelectedLocation} userCity={userCity || undefined} />
       
       {/* First-Time Welcome Popup */}
       <Modal
