@@ -4,7 +4,7 @@ import { useUserStore } from '../../src/store/userStore';
 import { useAdminStore } from '../../src/store/adminStore';
 import { useLanguageStore } from '../../src/store/languageStore';
 import { translations } from '../../src/utils/translations';
-import { TERMS_OF_SERVICE, PRIVACY_POLICY } from '../../src/utils/legalContent';
+import { getTermsForLanguage, PRIVACY_POLICY } from '../../src/utils/legalContent';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
