@@ -328,7 +328,6 @@
         <p class="version">Version 1.0.0 • Android • Free</p>
     </div>
     
-    <script src="https://cdn.jsdelivr.net/npm/qrcode@1.5.3/build/qrcode.min.js"></script>
     <script>
         // ⚙️ CONFIGURATION - APK hosted on GitHub Releases
         const APK_URL = 'https://github.com/ArkadyaApps/WinWai/releases/download/v1.0.0/WinWaiRaffle.apk';
@@ -347,9 +346,9 @@
             }
         }
         
-        // Wait for page to fully load and QRCode library to be available
+        // Wait for page to fully load
         window.addEventListener('load', function() {
-            console.log('Page loaded, initializing QR code...');
+            console.log('Page loaded, initializing...');
             
             // Set download button URL
             const downloadBtn = document.getElementById('downloadBtn');
@@ -358,34 +357,32 @@
                 console.log('Download button URL set to:', APK_URL);
             }
             
-            // Check if QRCode library is loaded
-            if (typeof QRCode === 'undefined') {
-                console.error('QRCode library not loaded!');
-                document.getElementById('qrcode').innerHTML = '<p style="color: #999;">QR code library failed to load</p>';
-                return;
-            }
-            
-            // Generate QR code with download URL
+            // Generate QR code using API
             try {
-                QRCode.toCanvas(document.createElement('canvas'), APK_URL, {
-                    width: 200,
-                    margin: 2,
-                    color: {
-                        dark: '#667eea',
-                        light: '#ffffff'
-                    }
-                }, function (error, canvas) {
-                    if (error) {
-                        console.error('QR code generation error:', error);
-                        document.getElementById('qrcode').innerHTML = '<p style="color: #999;">QR code generation failed</p>';
-                    } else {
-                        console.log('QR code generated successfully');
-                        document.getElementById('qrcode').appendChild(canvas);
-                    }
-                });
+                const qrcodeDiv = document.getElementById('qrcode');
+                const encodedURL = encodeURIComponent(APK_URL);
+                
+                // Using QR Server API (reliable, free, no libraries needed)
+                const qrImage = document.createElement('img');
+                qrImage.src = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodedURL}&color=667eea&bgcolor=ffffff`;
+                qrImage.alt = 'QR Code to download WinWai APK';
+                qrImage.style.maxWidth = '200px';
+                qrImage.style.height = 'auto';
+                qrImage.style.borderRadius = '10px';
+                
+                qrImage.onerror = function() {
+                    console.error('QR code image failed to load');
+                    qrcodeDiv.innerHTML = '<p style="color: #999;">⚠️ QR code temporarily unavailable<br>Please use the download button below</p>';
+                };
+                
+                qrImage.onload = function() {
+                    console.log('QR code loaded successfully');
+                };
+                
+                qrcodeDiv.appendChild(qrImage);
             } catch (e) {
                 console.error('QR code generation exception:', e);
-                document.getElementById('qrcode').innerHTML = '<p style="color: #999;">Error: ' + e.message + '</p>';
+                document.getElementById('qrcode').innerHTML = '<p style="color: #999;">⚠️ QR code unavailable<br>Please use download button</p>';
             }
         });
     </script>
