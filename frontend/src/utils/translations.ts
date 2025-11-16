@@ -421,7 +421,8 @@ export const translations = {
     winPrizesStep: 'Gagner de vrais prix',
     gotIt: 'Compris !',
     ticketUsage: 'Utilisation des billets',
-    ticketUsageDescription: 'Utilisez vos billets pour participer aux tirages et gagner des prix incroyables! Chaque participation coûte généralement 10 billets.',
+    ticketUsageDescription: 'Utilisez vos billets pour participer aux tirages et gagner des prix incroyables! Chaque participation coûte généralement 2 à 5 billets.',
+    watchAdPlus1: 'Regarder une pub pour 1 billet',
     
     // Profile Screen
     signOut: 'Se déconnecter',
