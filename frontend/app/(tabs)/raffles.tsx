@@ -121,14 +121,13 @@ export default function RafflesScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.cloud },
-  filterChipsScroll: { marginTop: 12, backgroundColor: '#fff', paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: '#E8E8E8' },
-  filterChipsContainer: { paddingHorizontal: 16, gap: 8, paddingVertical: 4 },
-  filterChip: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 8, backgroundColor: '#fff', borderRadius: 20, borderWidth: 1.5, borderColor: theme.colors.line, gap: 6, marginRight: 8 },
-  filterChipActive: { backgroundColor: theme.colors.primaryGold, borderColor: theme.colors.primaryGold },
-  filterChipText: { fontSize: 13, fontWeight: '600', color: theme.colors.onyx },
-  filterChipTextActive: { color: '#fff', fontWeight: '700' },
-  filterChipMore: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 8, backgroundColor: '#FFF9E6', borderRadius: 20, borderWidth: 1.5, borderColor: theme.colors.primaryGold, gap: 6, marginRight: 16 },
-  filterChipMoreText: { fontSize: 13, fontWeight: '700', color: theme.colors.primaryGold },
+  filterRow: { flexDirection: 'row', padding: 12, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#E8E8E8', gap: 8, alignItems: 'center' },
+  filterButton: { paddingHorizontal: 16, paddingVertical: 10, borderRadius: 8, backgroundColor: '#F5F5F5', borderWidth: 1, borderColor: '#E0E0E0' },
+  filterButtonActive: { backgroundColor: theme.colors.primaryGold, borderColor: theme.colors.primaryGold },
+  filterButtonText: { fontSize: 14, fontWeight: '600', color: theme.colors.onyx },
+  filterButtonTextActive: { color: '#fff', fontWeight: '700' },
+  pickerContainer: { flex: 1, borderRadius: 8, backgroundColor: '#F5F5F5', borderWidth: 1, borderColor: '#E0E0E0', overflow: 'hidden' },
+  picker: { height: 40 },
 
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   scrollView: { flex: 1 },
