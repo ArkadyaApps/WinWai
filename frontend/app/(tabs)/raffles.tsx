@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Dimensions } from 'react-native';
+import { Ionicons } from '@expo/vector-icons';
 import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import AppHeader from '../../src/components/AppHeader';
-import LocationFilter from '../../src/components/LocationFilter';
+import SearchFilterMenu from '../../src/components/SearchFilterMenu';
 import { theme } from '../../src/theme/tokens';
 import { useRouter } from 'expo-router';
 
@@ -13,13 +14,6 @@ const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
 const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
 const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
-
-const categories = [
-  { id: 'all', name: 'All', emoji: '🎉' },
-  { id: 'food', name: 'Food', emoji: '🍽️' },
-  { id: 'hotel', name: 'Hotels', emoji: '🏨' },
-  { id: 'spa', name: 'Spa', emoji: '💆' },
-];
 
 export default function RafflesScreen() {
   const router = useRouter();
