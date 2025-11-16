@@ -1,12 +1,11 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Dimensions } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import { Picker } from '@react-native-picker/picker';
 import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import AppHeader from '../../src/components/AppHeader';
-import SearchFilterMenu from '../../src/components/SearchFilterMenu';
 import { theme } from '../../src/theme/tokens';
 import { useRouter } from 'expo-router';
 
