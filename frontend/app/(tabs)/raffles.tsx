@@ -71,40 +71,49 @@ export default function RafflesScreen() {
           style={[styles.filterButton, selectedCategory === 'all' && selectedLocation === 'all' && styles.filterButtonActive]}
           onPress={() => { setSelectedCategory('all'); setSelectedLocation('all'); }}
         >
-          <Text style={[styles.filterButtonText, selectedCategory === 'all' && selectedLocation === 'all' && styles.filterButtonTextActive]}>All</Text>
+          <Ionicons name="apps" size={16} color={selectedCategory === 'all' && selectedLocation === 'all' ? '#fff' : theme.colors.onyx} />
+          <Text style={[styles.filterButtonText, selectedCategory === 'all' && selectedLocation === 'all' && styles.filterButtonTextActive]}>{t.allCategories?.split(' ')[0] || 'All'}</Text>
         </TouchableOpacity>
 
         {/* Category Dropdown */}
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedCategory}
-            onValueChange={(value) => setSelectedCategory(value)}
-            style={styles.picker}
-          >
-            <Picker.Item label="All Categories" value="all" />
-            <Picker.Item label="Food & Dining" value="food" />
-            <Picker.Item label="Hotels" value="hotel" />
-            <Picker.Item label="Spa & Wellness" value="spa" />
-            <Picker.Item label="Gift Cards" value="gift-cards" />
-            <Picker.Item label="Electronics" value="electronics" />
-            <Picker.Item label="Vouchers" value="voucher" />
-          </Picker>
+        <View style={styles.pickerWrapper}>
+          <Ionicons name="grid-outline" size={16} color={theme.colors.primaryGold} style={styles.pickerIcon} />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={selectedCategory}
+              onValueChange={(value) => setSelectedCategory(value)}
+              style={styles.picker}
+            >
+              <Picker.Item label={t.allCategories} value="all" />
+              <Picker.Item label={t.foodDining} value="food" />
+              <Picker.Item label={t.hotelsResorts} value="hotel" />
+              <Picker.Item label={t.spaWellness} value="spa" />
+              <Picker.Item label={t.giftCards} value="gift-cards" />
+              <Picker.Item label={t.electronics} value="electronics" />
+              <Picker.Item label={t.vouchers} value="voucher" />
+            </Picker>
+          </View>
+          <Ionicons name="chevron-down" size={14} color={theme.colors.slate} style={styles.pickerChevron} />
         </View>
 
         {/* Location Dropdown */}
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedLocation}
-            onValueChange={(value) => setSelectedLocation(value)}
-            style={styles.picker}
-            enabled={!loadingLocations}
-          >
-            <Picker.Item label="All Locations" value="all" />
-            <Picker.Item label="📍 Near Me" value="nearme" />
-            {locations.map((location) => (
-              <Picker.Item key={location} label={location} value={location} />
-            ))}
-          </Picker>
+        <View style={styles.pickerWrapper}>
+          <Ionicons name="location-outline" size={16} color={theme.colors.primaryGold} style={styles.pickerIcon} />
+          <View style={styles.pickerContainer}>
+            <Picker
+              selectedValue={selectedLocation}
+              onValueChange={(value) => setSelectedLocation(value)}
+              style={styles.picker}
+              enabled={!loadingLocations}
+            >
+              <Picker.Item label={t.allLocations} value="all" />
+              <Picker.Item label={`📍 ${t.nearMe}`} value="nearme" />
+              {locations.map((location) => (
+                <Picker.Item key={location} label={location} value={location} />
+              ))}
+            </Picker>
+          </View>
+          <Ionicons name="chevron-down" size={14} color={theme.colors.slate} style={styles.pickerChevron} />
         </View>
       </View>
 
