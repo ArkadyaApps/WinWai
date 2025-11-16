@@ -17,9 +17,6 @@ import { useAuth } from '../src/contexts/AuthContext';
 import { useUserStore } from '../src/store/userStore';
 import { validateEmail, validatePassword } from '../src/utils/validation';
 import { useTranslation } from '../src/i18n/useTranslation';
-import { getUserLocation } from '../src/utils/locationService';
-import { useLanguageStore } from '../src/store/languageStore';
-import { getLanguageFromCountry } from '../src/utils/translations';
 
 export default function Index() {
   const router = useRouter();
