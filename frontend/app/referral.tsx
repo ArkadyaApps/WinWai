@@ -110,7 +110,7 @@ export default function ReferralScreen() {
             </View>
           </View>
         </View>
-      </View>
+      </ScrollView>
     </View>
   );
 }
