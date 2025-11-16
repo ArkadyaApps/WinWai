@@ -163,6 +163,7 @@ const styles = StyleSheet.create({
   infoItem: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 10 },
   infoBullet: { fontSize: 20 },
   infoText: { fontSize: 14, color: '#555', flex: 1 },
+  infoTextLink: { color: theme.colors.primaryGold, fontWeight: '600', textDecorationLine: 'underline' },
   usageSection: { backgroundColor: '#fff', padding: 16, borderRadius: 12 },
   usageText: { fontSize: 14, color: theme.colors.slate, lineHeight: 20 },
 });
