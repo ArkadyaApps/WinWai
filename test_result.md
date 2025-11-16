@@ -103,17 +103,15 @@
 #====================================================================================================
 
 user_problem_statement: |
-  NEW TASK: Implement automatic raffle draw and voucher generation system
+  NEW TASK: Simple UI updates for referral page and location filter
   
-  Phase 1: Backend Automatic Draw System
-  1. Create endpoint to process raffles due for drawing
-  2. Check ticket sales threshold (gamePrice)
-  3. Extend draw if threshold not met
-  4. Select winner and generate voucher with secret codes
-  5. Create Winner records
+  1. Add multi-language translations to referral page (EN, FR, TH, AR)
+  2. Verify dynamic location dropdown is working (fetching from actual raffles)
   
-  Phase 2: Admin Voucher Upload (Next)
-  Phase 3: User Winner/Voucher Display (Next)
+  Notes:
+  - Location filter already implemented via LocationFilter component
+  - Backend endpoint /api/raffles/locations/list already exists
+  - Just need to add translations to referral.tsx
 
 backend:
   - task: "Automatic draw system endpoint"
