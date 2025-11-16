@@ -508,7 +508,29 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
-      CURRENT TASK (NEW SESSION): Critical fixes for WinWai Raffle Rewards app.
+      CURRENT TASK: Simple UI updates - Referral page translations and location filter verification.
+      
+      COMPLETED CHANGES:
+      1. ✅ Referral Page Multi-Language Support:
+         - Added useTranslation hook import to referral.tsx
+         - Replaced all hardcoded text with translation keys (t() function)
+         - All text now displays in user's selected language (EN, FR, TH, AR)
+         - Updated: title, subtitle, code/link labels, buttons, "How it works" section
+         
+      2. ✅ Dynamic Location Filter (Already Working):
+         - LocationFilter component already implemented
+         - Fetches unique locations from GET /api/raffles/locations/list backend endpoint
+         - Backend returns distinct locations from active raffles, sorted alphabetically
+         - Shows "All", "Use My Location", then dynamic list
+         - No changes needed, feature already complete
+      
+      READY FOR TESTING:
+      - Frontend: Test referral page displays correctly in all 4 languages
+      - Frontend: Test location filter shows dynamic locations from raffles
+      
+  - agent: "main"
+    message: |
+      PREVIOUS TASK: Critical fixes for WinWai Raffle Rewards app.
       
       COMPLETED CHANGES:
       1. ✅ Locked Expo SDK to version ~51.0.0 in package.json with resolutions field
