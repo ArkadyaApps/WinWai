@@ -47,87 +47,49 @@ export default function RafflesScreen() {
     <View style={styles.container}>
       <AppHeader variant="mint" logoUri={LOGO_URI} showDivider />
 
-      {/* Category Filter Chips */}
-      <ScrollView 
-        horizontal 
-        showsHorizontalScrollIndicator={false} 
-        contentContainerStyle={styles.filterChipsContainer}
-        style={styles.filterChipsScroll}
-      >
+      {/* Simple Filter Row */}
+      <View style={styles.filterRow}>
+        {/* All Button */}
         <TouchableOpacity 
-          style={[styles.filterChip, selectedCategory === 'all' && styles.filterChipActive]}
-          onPress={() => setSelectedCategory('all')}
+          style={[styles.filterButton, selectedCategory === 'all' && selectedLocation === 'all' && styles.filterButtonActive]}
+          onPress={() => { setSelectedCategory('all'); setSelectedLocation('all'); }}
         >
-          <Ionicons name="apps" size={16} color={selectedCategory === 'all' ? '#fff' : theme.colors.onyx} />
-          <Text style={[styles.filterChipText, selectedCategory === 'all' && styles.filterChipTextActive]}>All</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.filterChip, selectedCategory === 'food' && styles.filterChipActive]}
-          onPress={() => setSelectedCategory('food')}
-        >
-          <Ionicons name="restaurant" size={16} color={selectedCategory === 'food' ? '#fff' : theme.colors.onyx} />
-          <Text style={[styles.filterChipText, selectedCategory === 'food' && styles.filterChipTextActive]}>Food</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.filterChip, selectedCategory === 'hotel' && styles.filterChipActive]}
-          onPress={() => setSelectedCategory('hotel')}
-        >
-          <Ionicons name="bed" size={16} color={selectedCategory === 'hotel' ? '#fff' : theme.colors.onyx} />
-          <Text style={[styles.filterChipText, selectedCategory === 'hotel' && styles.filterChipTextActive]}>Hotels</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.filterChip, selectedCategory === 'spa' && styles.filterChipActive]}
-          onPress={() => setSelectedCategory('spa')}
-        >
-          <Ionicons name="fitness" size={16} color={selectedCategory === 'spa' ? '#fff' : theme.colors.onyx} />
-          <Text style={[styles.filterChipText, selectedCategory === 'spa' && styles.filterChipTextActive]}>Spa</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.filterChip, selectedCategory === 'gift-cards' && styles.filterChipActive]}
-          onPress={() => setSelectedCategory('gift-cards')}
-        >
-          <Ionicons name="card" size={16} color={selectedCategory === 'gift-cards' ? '#fff' : theme.colors.onyx} />
-          <Text style={[styles.filterChipText, selectedCategory === 'gift-cards' && styles.filterChipTextActive]}>Gift Cards</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.filterChip, selectedCategory === 'electronics' && styles.filterChipActive]}
-          onPress={() => setSelectedCategory('electronics')}
-        >
-          <Ionicons name="phone-portrait" size={16} color={selectedCategory === 'electronics' ? '#fff' : theme.colors.onyx} />
-          <Text style={[styles.filterChipText, selectedCategory === 'electronics' && styles.filterChipTextActive]}>Electronics</Text>
-        </TouchableOpacity>
-        
-        <TouchableOpacity 
-          style={[styles.filterChip, selectedCategory === 'voucher' && styles.filterChipActive]}
-          onPress={() => setSelectedCategory('voucher')}
-        >
-          <Ionicons name="ticket" size={16} color={selectedCategory === 'voucher' ? '#fff' : theme.colors.onyx} />
-          <Text style={[styles.filterChipText, selectedCategory === 'voucher' && styles.filterChipTextActive]}>Vouchers</Text>
+          <Text style={[styles.filterButtonText, selectedCategory === 'all' && selectedLocation === 'all' && styles.filterButtonTextActive]}>All</Text>
         </TouchableOpacity>
 
-        <TouchableOpacity 
-          style={styles.filterChipMore}
-          onPress={() => setFilterVisible(true)}
-        >
-          <Ionicons name="options" size={16} color={theme.colors.primaryGold} />
-          <Text style={styles.filterChipMoreText}>More Filters</Text>
-        </TouchableOpacity>
-      </ScrollView>
+        {/* Category Dropdown */}
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={selectedCategory}
+            onValueChange={(value) => setSelectedCategory(value)}
+            style={styles.picker}
+          >
+            <Picker.Item label="All Categories" value="all" />
+            <Picker.Item label="Food & Dining" value="food" />
+            <Picker.Item label="Hotels" value="hotel" />
+            <Picker.Item label="Spa & Wellness" value="spa" />
+            <Picker.Item label="Gift Cards" value="gift-cards" />
+            <Picker.Item label="Electronics" value="electronics" />
+            <Picker.Item label="Vouchers" value="voucher" />
+          </Picker>
+        </View>
 
-      {/* Advanced Filter Modal */}
-      <SearchFilterMenu
-        visible={filterVisible}
-        onClose={() => setFilterVisible(false)}
-        selectedCategory={selectedCategory}
-        selectedLocation={selectedLocation}
-        onCategoryChange={setSelectedCategory}
-        onLocationChange={setSelectedLocation}
-      />
+        {/* Location Dropdown */}
+        <View style={styles.pickerContainer}>
+          <Picker
+            selectedValue={selectedLocation}
+            onValueChange={(value) => setSelectedLocation(value)}
+            style={styles.picker}
+          >
+            <Picker.Item label="All Locations" value="all" />
+            <Picker.Item label="📍 Near Me" value="nearme" />
+            <Picker.Item label="Bangkok" value="Bangkok" />
+            <Picker.Item label="Chiang Mai" value="Chiang Mai" />
+            <Picker.Item label="Phuket" value="Phuket" />
+            <Picker.Item label="Pattaya" value="Pattaya" />
+          </Picker>
+        </View>
+      </View>
 
       {loading ? (
         <View style={styles.centered}>
