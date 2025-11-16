@@ -591,7 +591,7 @@ async def process_session(request: Request):
             email=session_data["email"],
             name=session_data.get("name", session_data["email"].split("@")[0]),
             picture=session_data.get("picture"),
-            tickets=100,  # Welcome bonus
+            tickets=0,  # New users start with 0 tickets
             role=user_role,
             lastLogin=datetime.now(timezone.utc)
         )
