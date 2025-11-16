@@ -40,10 +40,15 @@ export default function Index() {
     const detectLanguageFromLocation = async () => {
       try {
         const location = await getUserLocation();
-        if (location?.country) {
-          const detectedLanguage = getLanguageFromCountry(location.country);
-          console.log(`Detected country: ${location.country}, setting language to: ${detectedLanguage}`);
-          setLanguage(detectedLanguage);
+        if (location?.countryCode) {
+          // Map country codes to languages
+          const languageMap: { [key: string]: string } = {
+            'TH': 'th', 'FR': 'fr', 'BE': 'fr', 'CH': 'fr', 'CA': 'fr',
+            'MA': 'ar', 'DZ': 'ar', 'EG': 'ar', 'SA': 'ar', 'AE': 'ar',
+          };
+          const detectedLanguage = languageMap[location.countryCode] || 'en';
+          console.log(`Detected country: ${location.country} (${location.countryCode}), setting language to: ${detectedLanguage}`);
+          await setLanguage(detectedLanguage as any);
         }
       } catch (error) {
         console.log('Could not detect location for language, using default');
