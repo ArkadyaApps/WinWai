@@ -17,12 +17,16 @@ import { useAuth } from '../src/contexts/AuthContext';
 import { useUserStore } from '../src/store/userStore';
 import { validateEmail, validatePassword } from '../src/utils/validation';
 import { useTranslation } from '../src/i18n/useTranslation';
+import { getUserLocation } from '../src/utils/locationService';
+import { useLanguageStore } from '../src/store/languageStore';
+import { getLanguageFromCountry } from '../src/utils/translations';
 
 export default function Index() {
   const router = useRouter();
   const { signIn, signInWithEmail, isLoading: authLoading } = useAuth();
   const { isAuthenticated, isLoading: userLoading } = useUserStore();
   const { t } = useTranslation();
+  const { setLanguage } = useLanguageStore();
   
   const [authMode, setAuthMode] = useState<'google' | 'email'>('email');
   const [email, setEmail] = useState('');
@@ -30,6 +34,24 @@ export default function Index() {
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+
+  // Request geolocation on landing to set language before sign-in
+  useEffect(() => {
+    const detectLanguageFromLocation = async () => {
+      try {
+        const location = await getUserLocation();
+        if (location?.country) {
+          const detectedLanguage = getLanguageFromCountry(location.country);
+          console.log(`Detected country: ${location.country}, setting language to: ${detectedLanguage}`);
+          setLanguage(detectedLanguage);
+        }
+      } catch (error) {
+        console.log('Could not detect location for language, using default');
+      }
+    };
+    
+    detectLanguageFromLocation();
+  }, []);
 
   useEffect(() => {
     if (!userLoading && isAuthenticated) {
