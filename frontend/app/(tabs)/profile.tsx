@@ -351,6 +351,72 @@ export default function ProfileScreen() {
         </KeyboardAvoidingView>
       </Modal>
 
+      {/* Terms Modal */}
+      <Modal visible={termsModalVisible} animationType="slide" transparent onRequestClose={() => setTermsModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.legalModalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t.termsConditions}</Text>
+              <TouchableOpacity onPress={() => setTermsModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#000" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.legalTextContainer}>
+              <Text style={styles.legalText}>{TERMS_OF_SERVICE}</Text>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Privacy Policy Modal */}
+      <Modal visible={privacyModalVisible} animationType="slide" transparent onRequestClose={() => setPrivacyModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.legalModalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t.privacyPolicy}</Text>
+              <TouchableOpacity onPress={() => setPrivacyModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#000" />
+              </TouchableOpacity>
+            </View>
+            <ScrollView style={styles.legalTextContainer}>
+              <Text style={styles.legalText}>{PRIVACY_POLICY}</Text>
+            </ScrollView>
+          </View>
+        </View>
+      </Modal>
+
+      {/* Help Center Modal */}
+      <Modal visible={helpModalVisible} animationType="slide" transparent onRequestClose={() => setHelpModalVisible(false)}>
+        <View style={styles.modalOverlay}>
+          <View style={styles.modalContent}>
+            <View style={styles.modalHeader}>
+              <Text style={styles.modalTitle}>{t.helpCenter}</Text>
+              <TouchableOpacity onPress={() => setHelpModalVisible(false)}>
+                <Ionicons name="close" size={28} color="#000" />
+              </TouchableOpacity>
+            </View>
+            <View style={styles.helpContent}>
+              <Ionicons name="mail" size={60} color={theme.colors.primaryGold} style={{ alignSelf: 'center', marginBottom: 20 }} />
+              <Text style={styles.helpTitle}>Need Assistance?</Text>
+              <Text style={styles.helpText}>Our support team is here to help! Send us an email and we'll get back to you as soon as possible.</Text>
+              <TouchableOpacity 
+                style={styles.emailButton} 
+                onPress={() => {
+                  Linking.openURL('mailto:support@winwai.online?subject=WinWai Support Request');
+                }}
+              >
+                <Ionicons name="mail-outline" size={20} color="#fff" />
+                <Text style={styles.emailButtonText}>Email support@winwai.online</Text>
+              </TouchableOpacity>
+              <View style={styles.helpInfo}>
+                <Text style={styles.helpInfoText}>📧 support@winwai.online</Text>
+                <Text style={styles.helpInfoText}>⏰ Response time: 24-48 hours</Text>
+              </View>
+            </View>
+          </View>
+        </View>
+      </Modal>
+
       <BannerAdComponent position="bottom" />
     </View>
   );
