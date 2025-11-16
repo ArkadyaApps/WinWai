@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Switch, Platform, TextInput, Modal, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Switch, Platform, TextInput, Modal, KeyboardAvoidingView, ActivityIndicator, Linking } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useAdminStore } from '../../src/store/adminStore';
 import { useLanguageStore } from '../../src/store/languageStore';
 import { translations } from '../../src/utils/translations';
+import { TERMS_OF_SERVICE, PRIVACY_POLICY } from '../../src/utils/legalContent';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
