@@ -7,7 +7,6 @@ import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
-import SearchFilterMenu from '../../src/components/SearchFilterMenu';
 import LanguageSelector from '../../src/components/LanguageSelector';
 import { Ionicons } from '@expo/vector-icons';
 import { getUserLocation } from '../../src/utils/locationService';
