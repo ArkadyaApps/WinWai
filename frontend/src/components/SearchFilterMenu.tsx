@@ -164,100 +164,88 @@ const SearchFilterMenu: React.FC<SearchFilterMenuProps> = ({
                   <ActivityIndicator size="small" color="#FFD700" />
                 </View>
               ) : (
-                <View style={styles.locationList}>
-                  {/* All Locations */}
+                <View style={styles.locationSelectionContainer}>
+                  {/* All Locations Button */}
                   <TouchableOpacity
                     style={[
-                      styles.locationItem,
-                      selectedLocation === 'all' && styles.locationItemSelected,
+                      styles.locationButton,
+                      selectedLocation === 'all' && styles.locationButtonSelected,
                     ]}
                     onPress={() => onLocationChange('all')}
                   >
-                    <View style={styles.locationItemContent}>
-                      <Ionicons
-                        name="apps-outline"
-                        size={20}
-                        color={selectedLocation === 'all' ? '#FFD700' : '#7F8C8D'}
-                      />
-                      <Text
-                        style={[
-                          styles.locationItemText,
-                          selectedLocation === 'all' && styles.locationItemTextSelected,
-                        ]}
-                      >
-                        All Locations
-                      </Text>
-                    </View>
+                    <Ionicons
+                      name="apps-outline"
+                      size={22}
+                      color={selectedLocation === 'all' ? '#FFD700' : '#7F8C8D'}
+                    />
+                    <Text
+                      style={[
+                        styles.locationButtonText,
+                        selectedLocation === 'all' && styles.locationButtonTextSelected,
+                      ]}
+                    >
+                      All Locations
+                    </Text>
                     {selectedLocation === 'all' && (
-                      <Ionicons name="checkmark-circle" size={24} color="#FFD700" />
+                      <Ionicons name="checkmark-circle" size={20} color="#FFD700" />
                     )}
                   </TouchableOpacity>
 
-                  {/* Use My Location */}
+                  {/* Use My Location Button */}
                   <TouchableOpacity
                     style={[
-                      styles.locationItem,
-                      styles.myLocationItem,
-                      selectedLocation === detectedLocation && styles.locationItemSelected,
+                      styles.locationButton,
+                      styles.myLocationButton,
+                      selectedLocation === detectedLocation && styles.locationButtonSelected,
                     ]}
                     onPress={handleUseMyLocation}
                     disabled={detectingLocation}
                   >
-                    <View style={styles.locationItemContent}>
-                      {detectingLocation ? (
-                        <ActivityIndicator size="small" color="#4ECDC4" />
-                      ) : (
-                        <Ionicons
-                          name="navigate"
-                          size={20}
-                          color={selectedLocation === detectedLocation ? '#FFD700' : '#4ECDC4'}
-                        />
-                      )}
-                      <Text
-                        style={[
-                          styles.locationItemText,
-                          styles.myLocationText,
-                          selectedLocation === detectedLocation && styles.locationItemTextSelected,
-                        ]}
-                      >
-                        Use My Location {detectedLocation && `(${detectedLocation})`}
-                      </Text>
-                    </View>
+                    {detectingLocation ? (
+                      <ActivityIndicator size="small" color="#4ECDC4" />
+                    ) : (
+                      <Ionicons
+                        name="navigate"
+                        size={22}
+                        color={selectedLocation === detectedLocation ? '#FFD700' : '#4ECDC4'}
+                      />
+                    )}
+                    <Text
+                      style={[
+                        styles.locationButtonText,
+                        styles.myLocationButtonText,
+                        selectedLocation === detectedLocation && styles.locationButtonTextSelected,
+                      ]}
+                    >
+                      Use My Location {detectedLocation && `(${detectedLocation})`}
+                    </Text>
                     {selectedLocation === detectedLocation && (
-                      <Ionicons name="checkmark-circle" size={24} color="#FFD700" />
+                      <Ionicons name="checkmark-circle" size={20} color="#FFD700" />
                     )}
                   </TouchableOpacity>
 
-                  {/* Dynamic Locations */}
-                  {locations.map((location) => (
-                    <TouchableOpacity
-                      key={location}
-                      style={[
-                        styles.locationItem,
-                        selectedLocation === location && styles.locationItemSelected,
-                      ]}
-                      onPress={() => onLocationChange(location)}
-                    >
-                      <View style={styles.locationItemContent}>
-                        <Ionicons
-                          name="location-outline"
-                          size={20}
-                          color={selectedLocation === location ? '#FFD700' : '#7F8C8D'}
-                        />
-                        <Text
-                          style={[
-                            styles.locationItemText,
-                            selectedLocation === location && styles.locationItemTextSelected,
-                          ]}
+                  {/* Location Picker Dropdown */}
+                  {locations.length > 0 && (
+                    <View style={styles.pickerContainer}>
+                      <Text style={styles.pickerLabel}>Or select a specific location:</Text>
+                      <View style={styles.pickerWrapper}>
+                        <Picker
+                          selectedValue={selectedLocation !== 'all' && selectedLocation !== detectedLocation ? selectedLocation : ''}
+                          onValueChange={(value) => {
+                            if (value) {
+                              onLocationChange(value);
+                            }
+                          }}
+                          style={styles.picker}
                         >
-                          {location}
-                        </Text>
+                          <Picker.Item label="Select a location..." value="" />
+                          {locations.map((location) => (
+                            <Picker.Item key={location} label={location} value={location} />
+                          ))}
+                        </Picker>
                       </View>
-                      {selectedLocation === location && (
-                        <Ionicons name="checkmark-circle" size={24} color="#FFD700" />
-                      )}
-                    </TouchableOpacity>
-                  ))}
+                    </View>
+                  )}
                 </View>
               )}
             </View>
