@@ -22,6 +22,7 @@ export default function RafflesScreen() {
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
+  const [filterVisible, setFilterVisible] = useState(false);
 
   useEffect(() => { loadRaffles(); }, [selectedCategory, selectedLocation]);
 
