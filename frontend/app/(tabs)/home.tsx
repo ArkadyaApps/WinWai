@@ -64,7 +64,11 @@ export default function HomeScreen() {
 
   useEffect(() => { initialize(); }, []);
 
-  const initialize = async () => { await initializeLanguage(); await detectLocation(); loadRaffles(); };
+  const initialize = async () => { 
+    await initializeLanguage(); 
+    detectLocation(); // Don't await - runs in background
+    loadRaffles(); 
+  };
 
   const detectLocation = async () => {
     const location = await getUserLocation();
