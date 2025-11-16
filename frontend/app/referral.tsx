@@ -120,9 +120,12 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: theme.colors.cloud,
   },
-  content: {
+  scrollView: {
     flex: 1,
+  },
+  content: {
     padding: 20,
+    paddingBottom: 100,
   },
   hero: {
     alignItems: 'center',
