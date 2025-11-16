@@ -39,11 +39,11 @@ class RewardedAdManager {
       
       // Use test ads in development, real ads in production
       const adUnitId = __DEV__ 
-        ? TestIds.REWARDED_INTERSTITIAL 
+        ? TestIds.REWARDED 
         : Platform.select({
-            ios: 'ca-app-pub-3486145054830108/9341557600',
+            ios: 'ca-app-pub-3486145054830108/7527526800',
             android: 'ca-app-pub-3486145054830108/3753903590',
-          }) || TestIds.REWARDED_INTERSTITIAL;
+          }) || TestIds.REWARDED;
 
       console.log('🎯 Ad Unit ID:', adUnitId);
       console.log('🎯 Using test ads:', __DEV__ ? 'YES' : 'NO');
