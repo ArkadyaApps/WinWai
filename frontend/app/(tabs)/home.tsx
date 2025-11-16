@@ -32,8 +32,39 @@ export default function HomeScreen() {
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [userCity, setUserCity] = useState<string | null>(null);
+  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
 
   const t = translations[language];
+
+  // Check if this is the first time user visits after sign-in
+  useEffect(() => {
+    checkFirstTimeUser();
+  }, [user]);
+
+  const checkFirstTimeUser = async () => {
+    if (!user) return;
+    
+    try {
+      const hasSeenWelcome = await AsyncStorage.getItem('has_seen_welcome');
+      if (!hasSeenWelcome) {
+        // Show popup after a short delay for better UX
+        setTimeout(() => {
+          setShowWelcomePopup(true);
+        }, 500);
+      }
+    } catch (error) {
+      console.error('Error checking first time user:', error);
+    }
+  };
+
+  const handleCloseWelcomePopup = async () => {
+    try {
+      await AsyncStorage.setItem('has_seen_welcome', 'true');
+      setShowWelcomePopup(false);
+    } catch (error) {
+      console.error('Error saving welcome popup state:', error);
+    }
+  };
 
   useEffect(() => { initialize(); }, []);
   useEffect(() => { loadRaffles(); }, [selectedCategory, selectedLocation]);
