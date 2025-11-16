@@ -42,6 +42,17 @@ export default function RafflesScreen() {
     }
   };
 
+  const loadLocations = async () => {
+    try {
+      const response = await api.get('/api/raffles/locations');
+      setLocations(response.data.locations || []);
+    } catch (error) {
+      console.error('Failed to load locations:', error);
+    } finally {
+      setLoadingLocations(false);
+    }
+  };
+
   const onRefresh = () => { setRefreshing(true); loadRaffles(); };
 
   return (
