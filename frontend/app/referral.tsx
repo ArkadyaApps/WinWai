@@ -49,19 +49,19 @@ export default function ReferralScreen() {
             <Ionicons name="gift" size={60} color={theme.colors.primaryGold} />
           </View>
           
-          <Text style={styles.title}>Invite Friends, Get Tickets!</Text>
+          <Text style={styles.title}>{t('inviteGetTickets')}</Text>
           <Text style={styles.subtitle}>
-            Share your referral link and both you and your friend get 1 free ticket when they sign up!
+            {t('referralSubtitle')}
           </Text>
         </View>
         
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>Your Referral Code</Text>
+          <Text style={styles.cardTitle}>{t('yourReferralCode')}</Text>
           <View style={styles.codeContainer}>
             <Text style={styles.code}>{referralCode}</Text>
           </View>
           
-          <Text style={styles.cardTitle} style={{ marginTop: 20 }}>Your Referral Link</Text>
+          <Text style={styles.cardTitle} style={{ marginTop: 20 }}>{t('yourReferralLink')}</Text>
           <View style={styles.linkContainer}>
             <Text style={styles.link} numberOfLines={1}>{referralLink}</Text>
           </View>
@@ -69,26 +69,26 @@ export default function ReferralScreen() {
           <TouchableOpacity style={styles.copyButton} onPress={handleCopyLink}>
             <Ionicons name={copied ? "checkmark-circle" : "copy"} size={20} color="#fff" />
             <Text style={styles.copyButtonText}>
-              {copied ? "Copied!" : "Copy Link"}
+              {copied ? t('copied') : t('copyLink')}
             </Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
             <Ionicons name="share-social" size={20} color={theme.colors.primaryGold} />
-            <Text style={styles.shareButtonText}>Share via...</Text>
+            <Text style={styles.shareButtonText}>{t('shareVia')}</Text>
           </TouchableOpacity>
         </View>
         
         <View style={styles.howItWorks}>
-          <Text style={styles.howTitle}>How it works</Text>
+          <Text style={styles.howTitle}>{t('howItWorks')}</Text>
           
           <View style={styles.step}>
             <View style={styles.stepNumber}>
               <Text style={styles.stepNumberText}>1</Text>
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>Share your link</Text>
-              <Text style={styles.stepText}>Send your referral link to friends</Text>
+              <Text style={styles.stepTitle}>{t('shareYourLink')}</Text>
+              <Text style={styles.stepText}>{t('shareDescription')}</Text>
             </View>
           </View>
           
@@ -97,8 +97,8 @@ export default function ReferralScreen() {
               <Text style={styles.stepNumberText}>2</Text>
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>They sign up</Text>
-              <Text style={styles.stepText}>Your friend creates an account using your link</Text>
+              <Text style={styles.stepTitle}>{t('theySignUp')}</Text>
+              <Text style={styles.stepText}>{t('signUpDescription')}</Text>
             </View>
           </View>
           
@@ -107,8 +107,8 @@ export default function ReferralScreen() {
               <Text style={styles.stepNumberText}>3</Text>
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>You both get tickets!</Text>
-              <Text style={styles.stepText}>Both of you receive 1 free ticket instantly</Text>
+              <Text style={styles.stepTitle}>{t('bothGetTickets')}</Text>
+              <Text style={styles.stepText}>{t('bothGetDescription')}</Text>
             </View>
           </View>
         </View>
