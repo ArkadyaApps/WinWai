@@ -398,8 +398,7 @@ export const translations = {
     adsOnlyMobile: '📱 Note: Les publicités ne fonctionnent que sur appareils mobiles (iOS/Android). Utilisez Expo Go ou la version de production.',
     howToEarnTickets: 'Comment gagner des billets',
     watchRewardedAds: 'Regarder des publicités (+10 billets)',
-    dailyLoginBonus: 'Bonus de connexion quotidien (+5 billets)',
-    referFriends: 'Parrainer des amis (+20 billets)',
+    referFriends: 'Parrainer un ami (+2 billets)',
     ticketUsage: 'Utilisation des billets',
     ticketUsageDescription: 'Utilisez vos billets pour participer aux tirages et gagner des prix incroyables! Chaque participation coûte généralement 10 billets.',
     
