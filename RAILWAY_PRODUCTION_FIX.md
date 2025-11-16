@@ -4,8 +4,8 @@
 
 ### 1. **Root Cause: APK Environment Variables**
 Your APK was built with **development URLs** baked in:
-- `EXPO_PUBLIC_BACKEND_URL=https://prize-raffle-2.preview.emergentagent.com`
-- `EXPO_PUBLIC_REDIRECT_URL=https://prize-raffle-2.preview.emergentagent.com`
+- `EXPO_PUBLIC_BACKEND_URL=https://winticket-2.preview.emergentagent.com`
+- `EXPO_PUBLIC_REDIRECT_URL=https://winticket-2.preview.emergentagent.com`
 
 This means your APK is calling the **local development backend**, NOT the Railway backend!
 
