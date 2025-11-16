@@ -10,6 +10,7 @@ const LOGO_URI = 'https://customer-assets.emergentagent.com/job_prize-raffle-2/a
 
 export default function ReferralScreen() {
   const { user } = useUserStore();
+  const { t } = useTranslation();
   const [copied, setCopied] = useState(false);
   
   // Generate referral code from user ID
@@ -20,7 +21,7 @@ export default function ReferralScreen() {
     Clipboard.setString(referralLink);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    Alert.alert('Copied!', 'Referral link copied to clipboard');
+    Alert.alert(t('copied'), 'Referral link copied to clipboard');
   };
   
   const handleShare = async () => {
