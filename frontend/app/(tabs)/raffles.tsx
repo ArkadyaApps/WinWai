@@ -1,36 +1,35 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Dimensions } from 'react-native';
-import { Picker } from '@react-native-picker/picker';
-import { Ionicons } from '@expo/vector-icons';
 import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import AppHeader from '../../src/components/AppHeader';
+import LocationFilter from '../../src/components/LocationFilter';
 import { theme } from '../../src/theme/tokens';
 import { useRouter } from 'expo-router';
-import { useLanguageStore } from '../../src/store/languageStore';
-import { translations } from '../../src/utils/translations';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
 const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
 const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
 
+const categories = [
+  { id: 'all', name: 'All', emoji: '🎉' },
+  { id: 'food', name: 'Food', emoji: '🍽️' },
+  { id: 'hotel', name: 'Hotels', emoji: '🏨' },
+  { id: 'spa', name: 'Spa', emoji: '💆' },
+];
+
 export default function RafflesScreen() {
   const router = useRouter();
-  const language = useLanguageStore((state) => state.language);
-  const t = translations[language];
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [locations, setLocations] = useState<string[]>([]);
-  const [loadingLocations, setLoadingLocations] = useState(true);
 
   useEffect(() => { loadRaffles(); }, [selectedCategory, selectedLocation]);
-  useEffect(() => { loadLocations(); }, []);
 
   const loadRaffles = async () => {
     try {
@@ -47,66 +46,29 @@ export default function RafflesScreen() {
     }
   };
 
-  const loadLocations = async () => {
-    try {
-      const response = await api.get('/api/raffles/locations/list');
-      setLocations(response.data.locations || []);
-    } catch (error) {
-      console.error('Failed to load locations:', error);
-    } finally {
-      setLoadingLocations(false);
-    }
-  };
-
   const onRefresh = () => { setRefreshing(true); loadRaffles(); };
 
   return (
     <View style={styles.container}>
       <AppHeader variant="mint" logoUri={LOGO_URI} showDivider />
 
-      {/* Simple Filter Row */}
-      <View style={styles.filterRow}>
-        {/* All Button */}
-        <TouchableOpacity 
-          style={[styles.filterButton, selectedCategory === 'all' && selectedLocation === 'all' && styles.filterButtonActive]}
-          onPress={() => { setSelectedCategory('all'); setSelectedLocation('all'); }}
-        >
-          <Text style={[styles.filterButtonText, selectedCategory === 'all' && selectedLocation === 'all' && styles.filterButtonTextActive]}>{t.allCategories?.split(' ')[0] || 'All'}</Text>
-        </TouchableOpacity>
-
-        {/* Category Dropdown */}
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedCategory}
-            onValueChange={(value) => setSelectedCategory(value)}
-            style={styles.picker}
-          >
-            <Picker.Item label={t.allCategories} value="all" />
-            <Picker.Item label={t.foodDining} value="food" />
-            <Picker.Item label={t.hotelsResorts} value="hotel" />
-            <Picker.Item label={t.spaWellness} value="spa" />
-            <Picker.Item label={t.giftCards} value="gift-cards" />
-            <Picker.Item label={t.electronics} value="electronics" />
-            <Picker.Item label={t.vouchers} value="voucher" />
-          </Picker>
-        </View>
-
-        {/* Location Dropdown */}
-        <View style={styles.pickerContainer}>
-          <Picker
-            selectedValue={selectedLocation}
-            onValueChange={(value) => setSelectedLocation(value)}
-            style={styles.picker}
-            enabled={!loadingLocations}
-          >
-            <Picker.Item label={t.allLocations} value="all" />
-            <Picker.Item label={`📍 ${t.nearMe}`} value="nearme" />
-            {locations.map((location) => (
-              <Picker.Item key={location} label={location} value={location} />
-            ))}
-          </Picker>
-        </View>
+      {/* Category Filter */}
+      <View style={styles.categoryContainer}>
+        <ScrollView horizontal showsHorizontalScrollIndicator={false} contentContainerStyle={styles.categoryScroll}>
+          {categories.map((cat) => (
+            <TouchableOpacity key={cat.id} style={[styles.categoryButton, selectedCategory === cat.id && styles.categoryButtonActive]} onPress={() => setSelectedCategory(cat.id)}>
+              <Text style={styles.categoryEmoji}>{cat.emoji}</Text>
+              <Text style={[styles.categoryText, selectedCategory === cat.id && styles.categoryTextActive]}>{cat.name}</Text>
+            </TouchableOpacity>
+          ))}
+        </ScrollView>
       </View>
+
+      {/* Location Filter */}
+      <LocationFilter 
+        selectedLocation={selectedLocation} 
+        onLocationChange={setSelectedLocation} 
+      />
 
       {loading ? (
         <View style={styles.centered}>
@@ -140,13 +102,20 @@ export default function RafflesScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.cloud },
-  filterRow: { flexDirection: 'row', padding: 16, backgroundColor: '#fff', borderBottomWidth: 1, borderBottomColor: '#E8E8E8', gap: 12, alignItems: 'center' },
-  filterButton: { paddingHorizontal: 20, paddingVertical: 14, borderRadius: 12, backgroundColor: '#F8F9FA', borderWidth: 2, borderColor: '#E1E8ED', shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.05, shadowRadius: 4, elevation: 2 },
-  filterButtonActive: { backgroundColor: theme.colors.primaryGold, borderColor: theme.colors.primaryGold, shadowColor: theme.colors.primaryGold, shadowOpacity: 0.3, shadowRadius: 8, elevation: 4 },
-  filterButtonText: { fontSize: 15, fontWeight: '700', color: theme.colors.slate },
-  filterButtonTextActive: { color: '#fff', fontWeight: '800' },
-  pickerContainer: { flex: 1, backgroundColor: '#FFFFFF', borderRadius: 12, borderWidth: 2, borderColor: theme.colors.primaryGold, shadowColor: theme.colors.primaryGold, shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.15, shadowRadius: 6, elevation: 3 },
-  picker: { height: 50, width: '100%', color: theme.colors.onyx, fontWeight: '600' },
+  categoryContainer: { backgroundColor: '#ffffff', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#E8E8E8' },
+  categoryScroll: { paddingHorizontal: 16, gap: 10 },
+  categoryButton: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 24, backgroundColor: '#F5F5F5', gap: 8 },
+  categoryButtonActive: { backgroundColor: theme.colors.primaryGold },
+  categoryEmoji: { fontSize: 18 },
+  categoryText: { fontSize: 15, fontWeight: '600', color: '#666' },
+  categoryTextActive: { color: '#000', fontWeight: '700' },
+
+  locationContainer: { backgroundColor: theme.colors.cloud, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#EDEDED' },
+  locationScroll: { paddingHorizontal: 16, gap: 8 },
+  locationPill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 18, backgroundColor: '#ECEFF1' },
+  locationPillActive: { backgroundColor: theme.colors.emeraldA },
+  locationText: { color: theme.colors.onyx, fontWeight: '600' },
+  locationTextActive: { color: '#fff' },
 
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   scrollView: { flex: 1 },
