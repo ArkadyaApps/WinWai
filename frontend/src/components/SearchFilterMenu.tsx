@@ -27,10 +27,11 @@ interface SearchFilterMenuProps {
 const categories = [
   { id: 'all', name: 'All Categories', icon: 'apps' },
   { id: 'food', name: 'Food & Dining', icon: 'restaurant' },
-  { id: 'hotel', name: 'Hotels & Resorts', icon: 'bed' },
+  { id: 'hotel', name: 'Hotels & Accommodation', icon: 'bed' },
   { id: 'spa', name: 'Spa & Wellness', icon: 'fitness' },
-  { id: 'shopping', name: 'Shopping & Gifts', icon: 'gift' },
-  { id: 'entertainment', name: 'Entertainment', icon: 'game-controller' },
+  { id: 'gift-cards', name: 'Gift Cards', icon: 'card' },
+  { id: 'electronics', name: 'Electronics', icon: 'phone-portrait' },
+  { id: 'voucher', name: 'Vouchers', icon: 'ticket' },
 ];
 
 const SearchFilterMenu: React.FC<SearchFilterMenuProps> = ({
