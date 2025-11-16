@@ -521,7 +521,7 @@ async def google_signin(request: Request):
             email=email,
             name=name,
             picture=picture,
-            tickets=100,  # Welcome bonus
+            tickets=0,  # New users start with 0 tickets
             role=user_role,
             lastLogin=datetime.now(timezone.utc)
         )
