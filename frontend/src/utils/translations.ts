@@ -119,7 +119,8 @@ export const translations = {
     winPrizesStep: 'Win Real Prizes',
     gotIt: 'Got It!',
     ticketUsage: 'Ticket Usage',
-    ticketUsageDescription: 'Use your tickets to enter raffles and win amazing prizes! Each raffle entry typically costs 10 tickets.',
+    ticketUsageDescription: 'Use your tickets to enter raffles and win amazing prizes! Each raffle entry typically costs 2 to 5 tickets.',
+    watchAdPlus1: 'Watch Ad for 1 Ticket',
     
     // Profile Screen
     signOut: 'Sign Out',
