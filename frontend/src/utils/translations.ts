@@ -109,8 +109,8 @@ export const translations = {
     earnTicketsInstantly: 'Earn +10 tickets instantly',
     adsOnlyMobile: '📱 Note: Ads only work on mobile devices (iOS/Android). Use Expo Go or production build.',
     howToEarnTickets: 'How to Earn Tickets',
-    watchRewardedAds: 'Watch rewarded ads (+10 tickets)',
-    referFriends: 'Refer a friend (+2 tickets)',
+    watchRewardedAds: 'Watch rewarded ads (+1 ticket)',
+    referFriends: 'Refer a friend (+1 ticket)',
     // First-time popup
     howItWorks: 'How It Works',
     earnTicketsStep: 'Earn Tickets',
