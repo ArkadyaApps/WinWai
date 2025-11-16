@@ -158,6 +158,52 @@ export default function HomeScreen() {
       </ScrollView>
       <BannerAdComponent position="bottom" />
       <SearchFilterMenu visible={filterVisible} onClose={() => setFilterVisible(false)} selectedCategory={selectedCategory} selectedLocation={selectedLocation} onCategoryChange={setSelectedCategory} onLocationChange={setSelectedLocation} userCity={userCity || undefined} />
+      
+      {/* First-Time Welcome Popup */}
+      <Modal
+        visible={showWelcomePopup}
+        transparent={true}
+        animationType="fade"
+        onRequestClose={handleCloseWelcomePopup}
+      >
+        <View style={styles.modalOverlay}>
+          <View style={styles.welcomePopup}>
+            <View style={styles.welcomeHeader}>
+              <Ionicons name="information-circle" size={50} color={theme.colors.primaryGold} />
+              <Text style={styles.welcomeTitle}>{t.howItWorks}</Text>
+            </View>
+            
+            <View style={styles.welcomeSteps}>
+              <View style={styles.welcomeStep}>
+                <Text style={styles.stepIcon}>🎫</Text>
+                <Text style={styles.stepText}>{t.earnTicketsStep}</Text>
+              </View>
+              <Text style={styles.stepArrow}>→</Text>
+              
+              <View style={styles.welcomeStep}>
+                <Text style={styles.stepIcon}>🎥</Text>
+                <Text style={styles.stepText}>{t.watchAdsStep}</Text>
+              </View>
+              <Text style={styles.stepArrow}>→</Text>
+              
+              <View style={styles.welcomeStep}>
+                <Text style={styles.stepIcon}>🎰</Text>
+                <Text style={styles.stepText}>{t.enterRafflesStep}</Text>
+              </View>
+              <Text style={styles.stepArrow}>→</Text>
+              
+              <View style={styles.welcomeStep}>
+                <Text style={styles.stepIcon}>🎁</Text>
+                <Text style={styles.stepText}>{t.winPrizesStep}</Text>
+              </View>
+            </View>
+            
+            <TouchableOpacity style={styles.welcomeButton} onPress={handleCloseWelcomePopup}>
+              <Text style={styles.welcomeButtonText}>{t.gotIt}</Text>
+            </TouchableOpacity>
+          </View>
+        </View>
+      </Modal>
     </View>
   );
 }
