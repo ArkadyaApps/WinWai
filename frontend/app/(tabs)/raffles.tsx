@@ -19,6 +19,8 @@ const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1
 
 export default function RafflesScreen() {
   const router = useRouter();
+  const language = useLanguageStore((state) => state.language);
+  const t = translations[language];
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
