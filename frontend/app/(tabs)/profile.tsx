@@ -226,17 +226,17 @@ export default function ProfileScreen() {
         {/* Support Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitleGray}>{t.support}</Text>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.helpCenter, t.needHelp)}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => setHelpModalVisible(true)}>
             <Ionicons name="help-circle-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t.helpCenter}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.termsConditions, t.viewTerms)}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => setTermsModalVisible(true)}>
             <Ionicons name="document-text-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t.termsConditions}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.privacyPolicy, t.viewPrivacy)}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => setPrivacyModalVisible(true)}>
             <Ionicons name="shield-checkmark-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t.privacyPolicy}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
