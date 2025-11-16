@@ -9,6 +9,7 @@ import {
   Platform,
   ActivityIndicator,
 } from 'react-native';
+import { Picker } from '@react-native-picker/picker';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 import api from '../utils/api';
