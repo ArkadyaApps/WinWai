@@ -440,10 +440,10 @@ frontend:
         agent: "main"
         comment: "Added phone field to User type and created Partner interface"
 
-  - task: "Enhanced Admin Raffles form with searchable partner dropdown and new fields"
+  - task: "Add multi-language support to referral page"
     implemented: true
     working: "NA"
-    file: "/app/frontend/app/admin/raffles.tsx"
+    file: "/app/frontend/app/referral.tsx"
     stuck_count: 0
     priority: "high"
     needs_retesting: true
@@ -451,14 +451,30 @@ frontend:
       - working: "NA"
         agent: "main"
         comment: |
-          Major updates to raffle creation form:
-          1. Removed location and address fields from the form
-          2. Implemented searchable partner dropdown with live filtering
-          3. Added Prize Value (฿) field - total value of prize in Thai Baht
-          4. Added Game Price (฿) field - cost per ticket/game in Thai Baht
-          5. Updated form state and save handlers to include prizeValue and gamePrice
-          6. Added helper text for better UX on all new fields
-          7. Partners can now be searched/filtered by name for easier selection
+          Updated referral page with translation support:
+          - Imported useTranslation hook
+          - Replaced all hardcoded text with t() translation function
+          - Translations already exist in translations.ts for EN, FR, TH, AR
+          - All text now displays in user's selected language
+          - Includes: title, subtitle, referral code/link labels, buttons, and "How it works" section
+  
+  - task: "Dynamic location filter in raffles page"
+    implemented: true
+    working: true
+    file: "/app/frontend/src/components/LocationFilter.tsx"
+    stuck_count: 0
+    priority: "high"
+    needs_retesting: false
+    status_history:
+      - working: true
+        agent: "main"
+        comment: |
+          Location filter already implemented and working:
+          - LocationFilter component fetches dynamic locations from GET /api/raffles/locations/list
+          - Shows "All" and "Use My Location" options first
+          - Then displays all unique locations from active raffles, sorted alphabetically
+          - Backend endpoint returns distinct locations from database
+          - No changes needed, feature already complete
 
 metadata:
   created_by: "main_agent"
