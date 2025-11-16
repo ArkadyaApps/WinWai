@@ -59,8 +59,10 @@ export default function Index() {
     detectLanguageFromLocation();
   }, []);
 
+  // Navigation now happens immediately in handleGoogleSignIn - no waiting for state
   useEffect(() => {
     if (!userLoading && isAuthenticated) {
+      // Backup navigation for app restarts or if already logged in
       router.replace('/(tabs)/home');
     }
   }, [isAuthenticated, userLoading]);
