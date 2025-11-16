@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Dimensions } from 'react-native';
 import { Picker } from '@react-native-picker/picker';
+import { Ionicons } from '@expo/vector-icons';
 import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
@@ -8,6 +9,8 @@ import BannerAdComponent from '../../src/components/BannerAd';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 import { useRouter } from 'expo-router';
+import { useLanguageStore } from '../../src/store/languageStore';
+import { translations } from '../../src/utils/translations';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
