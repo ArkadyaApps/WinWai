@@ -113,9 +113,6 @@ export default function HomeScreen() {
               <Text style={styles.ticketText}>{user?.tickets || 0}</Text>
             </TouchableOpacity>
             <LanguageSelector />
-            <TouchableOpacity style={styles.filterButton} onPress={() => setFilterVisible(true)}>
-              <Ionicons name="options" size={20} color="#000" />
-            </TouchableOpacity>
           </View>
         )}
       />
