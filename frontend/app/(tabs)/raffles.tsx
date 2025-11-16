@@ -161,20 +161,14 @@ export default function RafflesScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.cloud },
-  categoryContainer: { backgroundColor: '#ffffff', paddingVertical: 14, borderBottomWidth: 1, borderBottomColor: '#E8E8E8' },
-  categoryScroll: { paddingHorizontal: 16, gap: 10 },
-  categoryButton: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 10, borderRadius: 24, backgroundColor: '#F5F5F5', gap: 8 },
-  categoryButtonActive: { backgroundColor: theme.colors.primaryGold },
-  categoryEmoji: { fontSize: 18 },
-  categoryText: { fontSize: 15, fontWeight: '600', color: '#666' },
-  categoryTextActive: { color: '#000', fontWeight: '700' },
-
-  locationContainer: { backgroundColor: theme.colors.cloud, paddingVertical: 10, borderBottomWidth: 1, borderBottomColor: '#EDEDED' },
-  locationScroll: { paddingHorizontal: 16, gap: 8 },
-  locationPill: { paddingHorizontal: 14, paddingVertical: 8, borderRadius: 18, backgroundColor: '#ECEFF1' },
-  locationPillActive: { backgroundColor: theme.colors.emeraldA },
-  locationText: { color: theme.colors.onyx, fontWeight: '600' },
-  locationTextActive: { color: '#fff' },
+  filterChipsScroll: { marginTop: 12, backgroundColor: '#fff', paddingBottom: 12, borderBottomWidth: 1, borderBottomColor: '#E8E8E8' },
+  filterChipsContainer: { paddingHorizontal: 16, gap: 8, paddingVertical: 4 },
+  filterChip: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 8, backgroundColor: '#fff', borderRadius: 20, borderWidth: 1.5, borderColor: theme.colors.line, gap: 6, marginRight: 8 },
+  filterChipActive: { backgroundColor: theme.colors.primaryGold, borderColor: theme.colors.primaryGold },
+  filterChipText: { fontSize: 13, fontWeight: '600', color: theme.colors.onyx },
+  filterChipTextActive: { color: '#fff', fontWeight: '700' },
+  filterChipMore: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 8, backgroundColor: '#FFF9E6', borderRadius: 20, borderWidth: 1.5, borderColor: theme.colors.primaryGold, gap: 6, marginRight: 16 },
+  filterChipMoreText: { fontSize: 13, fontWeight: '700', color: theme.colors.primaryGold },
 
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
   scrollView: { flex: 1 },
