@@ -19,6 +19,9 @@ const categories = [
   { id: 'food', name: 'Food', emoji: '🍽️' },
   { id: 'hotel', name: 'Hotels', emoji: '🏨' },
   { id: 'spa', name: 'Spa', emoji: '💆' },
+  { id: 'gift-cards', name: 'Gift Cards', emoji: '🎁' },
+  { id: 'electronics', name: 'Electronics', emoji: '📱' },
+  { id: 'voucher', name: 'Vouchers', emoji: '🎟️' },
 ];
 
 export default function RafflesScreen() {
