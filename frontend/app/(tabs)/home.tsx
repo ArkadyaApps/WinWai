@@ -81,9 +81,9 @@ export default function HomeScreen() {
 
   const loadRaffles = async () => {
     try {
+      // Only show raffles near user's location on home page
       const params: any = {};
-      if (selectedCategory !== 'all') params.category = selectedCategory;
-      if (selectedLocation !== 'all') params.location = selectedLocation;
+      if (userCity) params.location = userCity;
       const response = await api.get('/api/raffles', { params });
       setRaffles(response.data);
     } catch (error) {
