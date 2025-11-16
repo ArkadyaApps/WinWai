@@ -129,6 +129,78 @@ export default function HomeScreen() {
           <View style={styles.locationBanner}><Ionicons name="location" size={18} color={theme.colors.emeraldA} /><Text style={styles.locationText}>{t.nearbyIn} {userCity}</Text></View>
         )}
 
+        {/* Quick Filter Chips */}
+        <ScrollView 
+          horizontal 
+          showsHorizontalScrollIndicator={false} 
+          contentContainerStyle={styles.filterChipsContainer}
+          style={styles.filterChipsScroll}
+        >
+          <TouchableOpacity 
+            style={[styles.filterChip, selectedCategory === 'all' && styles.filterChipActive]}
+            onPress={() => setSelectedCategory('all')}
+          >
+            <Ionicons name="apps" size={16} color={selectedCategory === 'all' ? '#fff' : theme.colors.onyx} />
+            <Text style={[styles.filterChipText, selectedCategory === 'all' && styles.filterChipTextActive]}>All</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.filterChip, selectedCategory === 'food' && styles.filterChipActive]}
+            onPress={() => setSelectedCategory('food')}
+          >
+            <Ionicons name="restaurant" size={16} color={selectedCategory === 'food' ? '#fff' : theme.colors.onyx} />
+            <Text style={[styles.filterChipText, selectedCategory === 'food' && styles.filterChipTextActive]}>Food</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.filterChip, selectedCategory === 'hotel' && styles.filterChipActive]}
+            onPress={() => setSelectedCategory('hotel')}
+          >
+            <Ionicons name="bed" size={16} color={selectedCategory === 'hotel' ? '#fff' : theme.colors.onyx} />
+            <Text style={[styles.filterChipText, selectedCategory === 'hotel' && styles.filterChipTextActive]}>Hotels</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.filterChip, selectedCategory === 'spa' && styles.filterChipActive]}
+            onPress={() => setSelectedCategory('spa')}
+          >
+            <Ionicons name="fitness" size={16} color={selectedCategory === 'spa' ? '#fff' : theme.colors.onyx} />
+            <Text style={[styles.filterChipText, selectedCategory === 'spa' && styles.filterChipTextActive]}>Spa</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.filterChip, selectedCategory === 'gift-cards' && styles.filterChipActive]}
+            onPress={() => setSelectedCategory('gift-cards')}
+          >
+            <Ionicons name="card" size={16} color={selectedCategory === 'gift-cards' ? '#fff' : theme.colors.onyx} />
+            <Text style={[styles.filterChipText, selectedCategory === 'gift-cards' && styles.filterChipTextActive]}>Gift Cards</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.filterChip, selectedCategory === 'electronics' && styles.filterChipActive]}
+            onPress={() => setSelectedCategory('electronics')}
+          >
+            <Ionicons name="phone-portrait" size={16} color={selectedCategory === 'electronics' ? '#fff' : theme.colors.onyx} />
+            <Text style={[styles.filterChipText, selectedCategory === 'electronics' && styles.filterChipTextActive]}>Electronics</Text>
+          </TouchableOpacity>
+          
+          <TouchableOpacity 
+            style={[styles.filterChip, selectedCategory === 'voucher' && styles.filterChipActive]}
+            onPress={() => setSelectedCategory('voucher')}
+          >
+            <Ionicons name="ticket" size={16} color={selectedCategory === 'voucher' ? '#fff' : theme.colors.onyx} />
+            <Text style={[styles.filterChipText, selectedCategory === 'voucher' && styles.filterChipTextActive]}>Vouchers</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity 
+            style={styles.filterChipMore}
+            onPress={() => setFilterVisible(true)}
+          >
+            <Ionicons name="options" size={16} color={theme.colors.primaryGold} />
+            <Text style={styles.filterChipMoreText}>More Filters</Text>
+          </TouchableOpacity>
+        </ScrollView>
+
         <View style={styles.resultsHeader}>
           <Text style={styles.resultsCount}>{raffles.length} {t.raffles}</Text>
           {(selectedCategory !== 'all' || selectedLocation !== 'all') && (
