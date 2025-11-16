@@ -309,4 +309,12 @@ const styles = StyleSheet.create({
   stepArrow: { fontSize: 20, color: theme.colors.primaryGold, marginHorizontal: 4 },
   welcomeButton: { backgroundColor: theme.colors.primaryGold, padding: 16, borderRadius: 12, alignItems: 'center' },
   welcomeButtonText: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
+  filterChipsScroll: { marginTop: 12 },
+  filterChipsContainer: { paddingHorizontal: 16, gap: 8, paddingVertical: 4 },
+  filterChip: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 8, backgroundColor: '#fff', borderRadius: 20, borderWidth: 1.5, borderColor: theme.colors.line, gap: 6, marginRight: 8 },
+  filterChipActive: { backgroundColor: theme.colors.primaryGold, borderColor: theme.colors.primaryGold },
+  filterChipText: { fontSize: 13, fontWeight: '600', color: theme.colors.onyx },
+  filterChipTextActive: { color: '#fff', fontWeight: '700' },
+  filterChipMore: { flexDirection: 'row', alignItems: 'center', paddingHorizontal: 14, paddingVertical: 8, backgroundColor: '#FFF9E6', borderRadius: 20, borderWidth: 1.5, borderColor: theme.colors.primaryGold, gap: 6, marginRight: 16 },
+  filterChipMoreText: { fontSize: 13, fontWeight: '700', color: theme.colors.primaryGold },
 });
