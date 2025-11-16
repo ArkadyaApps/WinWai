@@ -124,11 +124,6 @@ export default function HomeScreen() {
 
         <View style={styles.resultsHeader}>
           <Text style={styles.resultsCount}>{raffles.length} {t.raffles}</Text>
-          {(selectedCategory !== 'all' || selectedLocation !== 'all') && (
-            <TouchableOpacity onPress={() => { setSelectedCategory('all'); setSelectedLocation('all'); }} style={styles.clearButton}>
-              <Text style={styles.clearText}>{t.clearFilters}</Text>
-            </TouchableOpacity>
-          )}
         </View>
 
         <View style={styles.gridContainer}>
