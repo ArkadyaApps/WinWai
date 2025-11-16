@@ -110,8 +110,7 @@ export const translations = {
     adsOnlyMobile: '📱 Note: Ads only work on mobile devices (iOS/Android). Use Expo Go or production build.',
     howToEarnTickets: 'How to Earn Tickets',
     watchRewardedAds: 'Watch rewarded ads (+10 tickets)',
-    dailyLoginBonus: 'Daily login bonus (+5 tickets)',
-    referFriends: 'Refer friends (+20 tickets)',
+    referFriends: 'Refer a friend (+2 tickets)',
     ticketUsage: 'Ticket Usage',
     ticketUsageDescription: 'Use your tickets to enter raffles and win amazing prizes! Each raffle entry typically costs 10 tickets.',
     
