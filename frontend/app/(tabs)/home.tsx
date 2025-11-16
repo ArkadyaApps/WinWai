@@ -28,9 +28,6 @@ export default function HomeScreen() {
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [filterVisible, setFilterVisible] = useState(false);
-  const [selectedCategory, setSelectedCategory] = useState('all');
-  const [selectedLocation, setSelectedLocation] = useState('all');
   const [userCity, setUserCity] = useState<string | null>(null);
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
 
