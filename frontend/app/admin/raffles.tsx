@@ -221,6 +221,71 @@ export default function AdminRafflesScreen() {
   };
   const formatDate = (date: Date) => date.toLocaleString();
 
+  // Google Places Search Handler
+  const searchPlaces = async (query: string) => {
+    setPlaceSearchQuery(query);
+    
+    if (query.length < 3) {
+      setPlaceSuggestions([]);
+      return;
+    }
+    
+    setSearchingPlaces(true);
+    try {
+      const response = await api.get('/api/places/autocomplete', {
+        params: { input: query, country: 'th' }
+      });
+      const data = response.data;
+      
+      if (data.status === 'OK') {
+        setPlaceSuggestions(data.predictions || []);
+      } else {
+        console.error('Places API error:', data.status);
+        setPlaceSuggestions([]);
+      }
+    } catch (error) {
+      console.error('Error searching places:', error);
+      setPlaceSuggestions([]);
+    } finally {
+      setSearchingPlaces(false);
+    }
+  };
+
+  const selectPlace = async (placeId: string) => {
+    try {
+      const response = await api.get('/api/places/details', {
+        params: { place_id: placeId }
+      });
+      const data = response.data;
+      
+      if (data.status === 'OK' && data.result) {
+        const place = data.result;
+        
+        // Extract city from address components
+        let city = '';
+        if (place.address_components) {
+          const cityComponent = place.address_components.find(
+            (comp: any) => comp.types.includes('locality') || comp.types.includes('administrative_area_level_1')
+          );
+          city = cityComponent ? cityComponent.long_name : '';
+        }
+        
+        setFormData({
+          ...formData,
+          address: place.formatted_address || '',
+          location: city,
+        });
+        
+        setPlaceSearchQuery('');
+        setPlaceSuggestions([]);
+        Alert.alert('Success', 'Location details filled!');
+      }
+    } catch (error) {
+      console.error('Error fetching place details:', error);
+      Alert.alert('Error', 'Failed to fetch place details');
+    }
+  };
+
   // Image Picker Handler
   const pickImage = async () => {
     try {
