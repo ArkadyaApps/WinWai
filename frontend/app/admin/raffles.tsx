@@ -400,6 +400,13 @@ export default function AdminRafflesScreen() {
                   ))
                 )}
               </View>
+              
+              <Text style={styles.label}>Location/City</Text>
+              <TextInput style={styles.input} value={formData.location} onChangeText={(text) => setFormData({ ...formData, location: text })} placeholder="Bangkok, Chiang Mai, Online..." placeholderTextColor="#999" />
+              
+              <Text style={styles.label}>Address</Text>
+              <TextInput style={[styles.input, styles.textArea]} value={formData.address} onChangeText={(text) => setFormData({ ...formData, address: text })} placeholder="Partner address or redemption location" placeholderTextColor="#999" multiline numberOfLines={2} />
+              
               {isDigitalPrize ? (
                 <>
                   <Text style={styles.label}>Secret Codes * (One code per prize)</Text>
