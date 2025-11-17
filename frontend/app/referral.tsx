@@ -17,17 +17,17 @@ export default function ReferralScreen() {
   const referralCode = user?.id?.substring(0, 8).toUpperCase() || 'WINWAI00';
   const referralLink = `https://winwai.app/invite/${referralCode}`;
   
-  const handleCopyLink = () => {
-    Clipboard.setString(referralLink);
+  const handleCopyCode = () => {
+    Clipboard.setString(referralCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    Alert.alert(t('copied'), 'Referral link copied to clipboard');
+    Alert.alert(t('copied'), t('referralCodeCopied'));
   };
   
   const handleShare = async () => {
     try {
       await Share.share({
-        message: `Join WinWai and get 1 FREE ticket! Use my referral code: ${referralCode}\n\n${referralLink}`,
+        message: t('referralShareMessage').replace('{code}', referralCode),
         title: 'Join WinWai - Free Raffle App',
       });
     } catch (error) {
