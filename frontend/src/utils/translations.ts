@@ -262,6 +262,20 @@ export const translations = {
     privacyPolicy: 'นโยบายความเป็นส่วนตัว',
     signOut: 'ออกจากระบบ',
     
+    // Partner Inquiry
+    promoteHere: 'ต้องการโปรโมทแบรนด์หรือสินค้าของคุณที่นี่?',
+    partnerModalTitle: 'เป็นพาร์ทเนอร์',
+    partnerModalSubtitle: 'โปรโมทแบรนด์หรือผลิตภัณฑ์ของคุณให้กับผู้เข้าร่วมจับรางวัลหลายพันคน!',
+    brandName: 'ชื่อแบรนด์ / ธุรกิจ',
+    productService: 'ผลิตภัณฑ์ / บริการ',
+    contactName: 'ชื่อผู้ติดต่อ',
+    phoneNumber: 'หมายเลขโทรศัพท์',
+    sendInquiry: 'ส่งคำถาม',
+    cancel: 'ยกเลิก',
+    allFieldsRequired: 'กรุณากรอกข้อมูลให้ครบทุกช่อง',
+    inquirySent: 'ขอบคุณ! เราจะติดต่อคุณเร็วๆ นี้',
+    inquiryFailed: 'ส่งคำถามไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    
     // Tickets Page
     earnTickets: 'รับตั๋ว',
     watchAd: 'ดูโฆษณา',
