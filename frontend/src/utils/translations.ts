@@ -524,6 +524,9 @@ export const translations = {
     clearFilters: 'مسح المرشحات',
     noRafflesFound: 'لم يتم العثور على سحوبات',
     tryAdjustingFilters: 'حاول تعديل المرشحات الخاصة بك',
+    noLocalRaffles: 'لا توجد سحوبات في منطقتك',
+    noLocalRafflesSubtext: 'لا تقلق! لدينا سحوبات في مواقع أخرى. تحقق منها في صفحة السحوبات.',
+    viewAllRaffles: 'عرض جميع السحوبات',
     
     // Filter Menu
     searchFilter: 'البحث والتصفية',
