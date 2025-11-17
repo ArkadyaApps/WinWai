@@ -75,10 +75,30 @@ export default function AdminRafflesScreen() {
 
   const openCreateModal = () => { 
     setEditingRaffle(null); 
-    setFormData({ title: '', description: '', image: '', category: 'food', partnerId: partners[0]?.id || '', location: '', address: '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, drawDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), validityMonths: 3, active: true, language: 'en', allowedCountries: ['TH'], currency: 'THB' }); 
+    const firstPartner = partners[0];
+    setFormData({ 
+      title: '', 
+      description: '', 
+      image: '', 
+      category: 'food', 
+      partnerId: firstPartner?.id || '', 
+      location: firstPartner?.location || '', 
+      address: firstPartner?.address || '', 
+      prizesAvailable: 1, 
+      ticketCost: 10, 
+      prizeValue: 0, 
+      gamePrice: 0, 
+      drawDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 
+      validityMonths: 3, 
+      active: true, 
+      language: 'en', 
+      allowedCountries: ['TH'], 
+      currency: 'THB' 
+    }); 
     setPartnerSearch(''); 
     setSelectedImage(null);
     setSecretCodes(['']);
+    setUsePartnerLocation(true); // Reset to use partner location by default
     setModalVisible(true); 
   };
 
