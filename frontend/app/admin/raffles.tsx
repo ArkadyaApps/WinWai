@@ -484,11 +484,91 @@ export default function AdminRafflesScreen() {
                 )}
               </View>
               
-              <Text style={styles.label}>Location/City</Text>
-              <TextInput style={styles.input} value={formData.location} onChangeText={(text) => setFormData({ ...formData, location: text })} placeholder="Bangkok, Chiang Mai, Online..." placeholderTextColor="#999" />
-              
-              <Text style={styles.label}>Address</Text>
-              <TextInput style={[styles.input, styles.textArea]} value={formData.address} onChangeText={(text) => setFormData({ ...formData, address: text })} placeholder="Partner address or redemption location" placeholderTextColor="#999" multiline numberOfLines={2} />
+              {/* Location Section */}
+              <View style={styles.locationSection}>
+                <View style={styles.checkboxRow}>
+                  <TouchableOpacity 
+                    style={styles.checkbox} 
+                    onPress={() => {
+                      const newValue = !usePartnerLocation;
+                      setUsePartnerLocation(newValue);
+                      if (newValue) {
+                        // Auto-fill partner location
+                        const selectedPartner = partners.find(p => p.id === formData.partnerId);
+                        if (selectedPartner) {
+                          setFormData({
+                            ...formData,
+                            location: selectedPartner.location || '',
+                            address: selectedPartner.address || '',
+                          });
+                        }
+                      }
+                    }}
+                  >
+                    <Ionicons 
+                      name={usePartnerLocation ? "checkbox" : "square-outline"} 
+                      size={24} 
+                      color={usePartnerLocation ? "#4ECDC4" : "#999"} 
+                    />
+                  </TouchableOpacity>
+                  <Text style={styles.checkboxLabel}>Use Partner's Location</Text>
+                </View>
+
+                {usePartnerLocation ? (
+                  <View style={styles.partnerLocationDisplay}>
+                    <Text style={styles.label}>Location (from partner)</Text>
+                    <Text style={styles.readOnlyText}>{formData.location || 'No location set for partner'}</Text>
+                    <Text style={styles.label}>Address (from partner)</Text>
+                    <Text style={styles.readOnlyText}>{formData.address || 'No address set for partner'}</Text>
+                  </View>
+                ) : (
+                  <View>
+                    <Text style={styles.label}>📍 Search Google Places</Text>
+                    <TextInput
+                      style={styles.input}
+                      value={placeSearchQuery}
+                      onChangeText={searchPlaces}
+                      placeholder="Search for a location..."
+                      placeholderTextColor="#999"
+                    />
+                    {searchingPlaces && <ActivityIndicator size="small" color="#4ECDC4" style={{ marginTop: 8 }} />}
+                    {placeSuggestions.length > 0 && (
+                      <View style={styles.suggestionsContainer}>
+                        {placeSuggestions.map((suggestion, index) => (
+                          <TouchableOpacity
+                            key={index}
+                            style={styles.suggestionItem}
+                            onPress={() => selectPlace(suggestion.place_id)}
+                          >
+                            <Ionicons name="location" size={16} color="#666" />
+                            <Text style={styles.suggestionText}>{suggestion.description}</Text>
+                          </TouchableOpacity>
+                        ))}
+                      </View>
+                    )}
+                    
+                    <Text style={styles.label}>Location/City</Text>
+                    <TextInput 
+                      style={styles.input} 
+                      value={formData.location} 
+                      onChangeText={(text) => setFormData({ ...formData, location: text })} 
+                      placeholder="Bangkok, Chiang Mai, Online..." 
+                      placeholderTextColor="#999" 
+                    />
+                    
+                    <Text style={styles.label}>Address</Text>
+                    <TextInput 
+                      style={[styles.input, styles.textArea]} 
+                      value={formData.address} 
+                      onChangeText={(text) => setFormData({ ...formData, address: text })} 
+                      placeholder="Full address or redemption location" 
+                      placeholderTextColor="#999" 
+                      multiline 
+                      numberOfLines={2} 
+                    />
+                  </View>
+                )}
+              </View>
               
               {isDigitalPrize ? (
                 <>
