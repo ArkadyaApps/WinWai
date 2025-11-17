@@ -188,6 +188,9 @@ export const translations = {
     clearFilters: 'ล้างตัวกรอง',
     noRafflesFound: 'ไม่พบการจับรางวัล',
     tryAdjustingFilters: 'ลองปรับตัวกรอง',
+    noLocalRaffles: 'ไม่มีรางวัลในพื้นที่ของคุณ',
+    noLocalRafflesSubtext: 'ไม่ต้องกังวล! เรามีรางวัลในสถานที่อื่น ดูที่หน้ารางวัล',
+    viewAllRaffles: 'ดูรางวัลทั้งหมด',
     
     // Filter Menu
     searchFilter: 'ค้นหาและกรอง',
