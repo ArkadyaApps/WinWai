@@ -617,17 +617,22 @@ const styles = StyleSheet.create({
   partnerHeaderText: {
     flex: 1,
   },
+  partnerNameRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 6,
+  },
   partnerName: {
     fontSize: 18,
     fontWeight: '700',
     color: '#000',
-    marginBottom: 4,
   },
   partnerCategory: {
     fontSize: 12,
     fontWeight: '600',
     color: '#FFD700',
     letterSpacing: 1,
+    marginTop: 4,
   },
   partnerDescription: {
     fontSize: 14,
