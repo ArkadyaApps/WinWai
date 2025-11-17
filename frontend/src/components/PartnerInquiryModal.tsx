@@ -33,7 +33,7 @@ const PartnerInquiryModal: React.FC<PartnerInquiryModalProps> = ({ visible, onCl
         phone: phone.trim(),
       });
 
-      Alert.alert('Success! 🎉', response.data.message || 'Thank you! We\'ll contact you soon.');
+      Alert.alert('Success! 🎉', response.data.message || t.inquirySent);
       
       // Reset form
       setBrand('');
@@ -42,7 +42,7 @@ const PartnerInquiryModal: React.FC<PartnerInquiryModalProps> = ({ visible, onCl
       setPhone('');
       onClose();
     } catch (error: any) {
-      const errorMsg = error.response?.data?.detail || 'Failed to send inquiry. Please try again.';
+      const errorMsg = error.response?.data?.detail || t.inquiryFailed;
       Alert.alert('Error', errorMsg);
     } finally {
       setIsSubmitting(false);
