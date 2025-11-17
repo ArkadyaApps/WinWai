@@ -166,7 +166,6 @@ export const translations = {
     needHelp: 'Need help? Contact support at support@winwai.com',
     viewTerms: 'View our terms at www.winwai.com/terms',
     viewPrivacy: 'View our privacy policy at www.winwai.com/privacy',
-    tickets: 'Tickets',
     dayStreak: 'Day Streak',
     selectLanguage: 'Select Language',
     currentPassword: 'Current Password',
