@@ -119,7 +119,10 @@ export default function AdminRafflesScreen() {
           category: formData.category, 
           partnerId: formData.partnerId, 
           partnerName: partners.find(p => p.id === formData.partnerId)?.name, 
+          location: formData.location || '',
+          address: formData.address || '',
           prizesAvailable: finalPrizesAvailable, 
+          prizesRemaining: finalPrizesAvailable,
           ticketCost: formData.ticketCost, 
           prizeValue: formData.prizeValue, 
           gamePrice: formData.gamePrice, 
@@ -140,7 +143,18 @@ export default function AdminRafflesScreen() {
         await api.post('/api/admin/raffles', payload); Alert.alert('Success', 'Raffle created');
       }
       setModalVisible(false); fetchAll();
-    } catch (error: any) { Alert.alert('Error', error.response?.data?.detail || 'Failed to save raffle'); }
+    } catch (error: any) { 
+      // Fix: Properly format error message
+      let errorMessage = 'Failed to save raffle';
+      if (error.response?.data?.detail) {
+        if (Array.isArray(error.response.data.detail)) {
+          errorMessage = error.response.data.detail.map((e: any) => e.msg || JSON.stringify(e)).join('\n');
+        } else if (typeof error.response.data.detail === 'string') {
+          errorMessage = error.response.data.detail;
+        }
+      }
+      Alert.alert('Error', errorMessage); 
+    }
     finally { setSaving(false); }
   };
 
