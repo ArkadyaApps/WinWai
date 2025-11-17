@@ -10,6 +10,7 @@ import PartnerInquiryModal from '../../src/components/PartnerInquiryModal';
 import { theme } from '../../src/theme/tokens';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import { useTranslation } from '../../src/i18n/useTranslation';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
