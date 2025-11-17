@@ -237,6 +237,40 @@ export default function ProfileScreen() {
             <Text style={styles.menuText}>{t.inviteFriends}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
+          
+          {/* Referral Code Input - Only show if user hasn't used one yet */}
+          {!user?.usedReferralCode && (
+            <View style={styles.referralCodeSection}>
+              <View style={styles.referralHeader}>
+                <Ionicons name="ticket-outline" size={20} color={theme.colors.primaryGold} />
+                <Text style={styles.referralTitle}>{t.haveReferralCode || 'Have a referral code?'}</Text>
+              </View>
+              <Text style={styles.referralSubtext}>{t.enterCodeEarnTicket || 'Enter your friend\'s code and you both get 1 ticket!'}</Text>
+              <View style={styles.referralInputRow}>
+                <TextInput
+                  style={styles.referralInput}
+                  value={referralCode}
+                  onChangeText={setReferralCode}
+                  placeholder="ABC12345"
+                  placeholderTextColor="#999"
+                  autoCapitalize="characters"
+                  maxLength={8}
+                />
+                <TouchableOpacity 
+                  style={[styles.redeemButton, isRedeeming && styles.redeemButtonDisabled]}
+                  onPress={handleRedeemReferral}
+                  disabled={isRedeeming}
+                >
+                  {isRedeeming ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.redeemButtonText}>{t.redeem || 'Redeem'}</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          )}
+          
           <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.notifications, 'Notification settings coming soon!')}>
             <Ionicons name="notifications-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t.notifications}</Text>
