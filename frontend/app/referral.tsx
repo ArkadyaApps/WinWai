@@ -61,15 +61,15 @@ export default function ReferralScreen() {
             <Text style={styles.code}>{referralCode}</Text>
           </View>
           
-          <Text style={styles.cardTitle} style={{ marginTop: 20 }}>{t('yourReferralLink')}</Text>
-          <View style={styles.linkContainer}>
-            <Text style={styles.link} numberOfLines={1}>{referralLink}</Text>
+          <View style={styles.infoBox}>
+            <Ionicons name="information-circle" size={20} color={theme.colors.primaryGold} />
+            <Text style={styles.infoText}>{t('shareCodeManually')}</Text>
           </View>
           
-          <TouchableOpacity style={styles.copyButton} onPress={handleCopyLink}>
+          <TouchableOpacity style={styles.copyButton} onPress={handleCopyCode}>
             <Ionicons name={copied ? "checkmark-circle" : "copy"} size={20} color="#fff" />
             <Text style={styles.copyButtonText}>
-              {copied ? t('copied') : t('copyLink')}
+              {copied ? t('copied') : t('copyCode')}
             </Text>
           </TouchableOpacity>
           
