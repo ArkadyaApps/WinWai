@@ -525,6 +525,24 @@ export const translations = {
     changePassword: 'Changer le mot de passe',
     notifications: 'Notifications',
     language: 'Langue',
+    helpCenter: 'Centre d\'aide',
+    termsConditions: 'Conditions Générales',
+    privacyPolicy: 'Politique de Confidentialité',
+    signOut: 'Se déconnecter',
+    
+    // Partner Inquiry
+    promoteHere: 'Vous voulez promouvoir votre marque ou vos produits ici?',
+    partnerModalTitle: 'Devenir partenaire',
+    partnerModalSubtitle: 'Promouvez votre marque ou vos produits auprès de milliers de participants aux tirages!',
+    brandName: 'Nom de la marque / entreprise',
+    productService: 'Produit / Service',
+    contactName: 'Nom du contact',
+    phoneNumber: 'Numéro de téléphone',
+    sendInquiry: 'Envoyer la demande',
+    cancel: 'Annuler',
+    allFieldsRequired: 'Veuillez remplir tous les champs',
+    inquirySent: 'Merci! Nous vous contacterons bientôt.',
+    inquiryFailed: 'Échec de l\'envoi de la demande. Veuillez réessayer.',
     
     // Referral Page
     inviteGetTickets: 'Invitez des amis, obtenez des billets!',
