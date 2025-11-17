@@ -613,7 +613,6 @@ export const translations = {
     // Auth
     signIn: 'تسجيل الدخول',
     signUp: 'إنشاء حساب',
-    signOut: 'تسجيل الخروج',
     email: 'البريد الإلكتروني',
     password: 'كلمة المرور',
     forgotPassword: 'نسيت كلمة المرور؟',
