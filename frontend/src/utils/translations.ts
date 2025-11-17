@@ -67,6 +67,20 @@ export const translations = {
     privacyPolicy: 'Privacy Policy',
     signOut: 'Sign Out',
     
+    // Partner Inquiry
+    promoteHere: 'Want to promote your Brand or Goods here?',
+    partnerModalTitle: 'Become a Partner',
+    partnerModalSubtitle: 'Promote your brand or products to thousands of raffle participants!',
+    brandName: 'Brand / Business Name',
+    productService: 'Product / Service',
+    contactName: 'Contact Name',
+    phoneNumber: 'Phone Number',
+    sendInquiry: 'Send Inquiry',
+    cancel: 'Cancel',
+    allFieldsRequired: 'Please fill in all fields',
+    inquirySent: 'Thank you! We\'ll contact you soon.',
+    inquiryFailed: 'Failed to send inquiry. Please try again.',
+    
     // Tickets Page
     earnTickets: 'Earn Tickets',
     watchAd: 'Watch an Ad',
