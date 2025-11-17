@@ -101,6 +101,32 @@ export default function ProfileScreen() {
 
   const handleLanguageChange = async (lang: 'en' | 'th' | 'fr' | 'ar') => { await setLanguage(lang); setLanguageModalVisible(false); Alert.alert(t.language, `${getLanguageName(lang)}`); };
 
+  const handleRedeemReferral = async () => {
+    const code = referralCode.trim().toUpperCase();
+    if (!code) {
+      Alert.alert('Error', 'Please enter a referral code');
+      return;
+    }
+    
+    setIsRedeeming(true);
+    try {
+      const response = await api.post('/api/users/redeem-referral', { code });
+      
+      // Update user tickets
+      if (user) {
+        setUser({ ...user, tickets: (user.tickets || 0) + 1, usedReferralCode: true });
+      }
+      
+      Alert.alert('Success! 🎉', response.data.message || 'Referral code redeemed successfully!');
+      setReferralCode('');
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.detail || 'Failed to redeem referral code';
+      Alert.alert('Error', errorMsg);
+    } finally {
+      setIsRedeeming(false);
+    }
+  };
+
   const getLanguageName = (lang: string) => lang === 'th' ? 'ภาษาไทย (Thai)' : lang === 'fr' ? 'Français (French)' : lang === 'ar' ? 'العربية (Arabic)' : 'English';
   const getLanguageFlag = (lang: string) => lang === 'th' ? '🇹🇭' : lang === 'fr' ? '🇫🇷' : lang === 'ar' ? '🇲🇦' : '🇺🇸';
 
