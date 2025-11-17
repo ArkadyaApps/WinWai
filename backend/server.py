@@ -1946,6 +1946,9 @@ async def places_autocomplete(input: str, country: str = "th"):
         response = requests.post(url, json=payload, headers=headers, timeout=10)
         data = response.json()
         
+        # Debug: print response
+        print(f"Google Places API response: {data}")
+        
         # Transform new API response to match old format for frontend compatibility
         if "suggestions" in data:
             predictions = []
