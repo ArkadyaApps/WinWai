@@ -335,7 +335,6 @@ export const translations = {
     watchAdPlus1: 'ดูโฆษณารับ 1 ตั๋ว',
     
     // Profile Screen
-    signOut: 'ออกจากระบบ',
     areYouSure: 'คุณแน่ใจหรือไม่ว่าต้องการออกจากระบบ?',
     cancel: 'ยกเลิก',
     adminPanel: 'แผงผู้ดูแลระบบ',
