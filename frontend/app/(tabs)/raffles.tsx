@@ -29,6 +29,7 @@ const categories = [
 
 export default function RafflesScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [selectedCategory, setSelectedCategory] = useState('all');
   const [selectedLocation, setSelectedLocation] = useState('all');
