@@ -508,24 +508,32 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
-      CURRENT TASK: Fix critical Profile page crash and complete translation system.
+      ✅ PHASE 1 COMPLETE: Fixed critical Profile page crash and translation system
       
-      ISSUE IDENTIFIED:
-      1. ❌ Profile.tsx is importing from WRONG translation file:
-         - Currently: import { translations } from '../../src/utils/translations';
-         - Should use: useTranslation() hook from '../../src/i18n/useTranslation';
-         - This mismatch is causing the TypeError: Object is not a function crash
+      COMPLETED FIXES:
+      1. ✅ Fixed profile.tsx translation crash:
+         - Changed from: import { translations } from '../../src/utils/translations';
+         - Changed to: import { useTranslation } from '../../src/i18n/useTranslation';
+         - Updated all translation calls from t.key to t('namespace.key')
+         - Profile page now using correct i18n translation system
       
-      2. ⚠️ Rewards page has hardcoded English text (no translations)
+      2. ✅ Added comprehensive profile translations to /src/i18n/translations.ts:
+         - Added profile namespace with 40+ keys (editProfile, adminPanel, account, support, etc.)
+         - Added rewards namespace with filter and empty state keys
+         - All translations complete for EN, TH, FR, AR
       
-      3. ⚠️ French and Arabic translations incomplete
+      3. ✅ Fixed Rewards page translations:
+         - Added useTranslation hook
+         - Replaced hardcoded text with translation keys
+         - Filter tabs now translated (All, Active, Redeemed, Expired)
+         - Empty states now translated
       
-      PLAN:
-      1. Fix profile.tsx to use correct translation system (useTranslation hook)
-      2. Add missing translations for Rewards page to /src/i18n/translations.ts
-      3. Update Rewards page to use translation system
-      4. Complete French and Arabic translations
-      5. Test all changes
+      4. ✅ Frontend service restarted to apply all changes
+      
+      READY FOR TESTING:
+      - Profile page should now load without crashes
+      - All profile UI text should display in selected language
+      - Rewards page filters and messages should be translated
       
   - agent: "main"
     message: |
