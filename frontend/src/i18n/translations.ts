@@ -94,6 +94,43 @@ export const translations = {
     },
   },
   th: {
+    // Referral
+    referral: {
+      inviteGetTickets: 'เชิญเพื่อน รับตั๋ว!',
+      referralSubtitle: 'แชร์รหัสแนะนำและทั้งคุณและเพื่อนจะได้รับ 1 ตั๋วฟรีเมื่อสมัครสมาชิก!',
+      yourReferralCode: 'รหัสแนะนำของคุณ',
+      copyCode: 'คัดลอกรหัส',
+      copied: 'คัดลอกแล้ว!',
+      shareVia: 'แชร์ผ่าน...',
+      howItWorks: 'วิธีการทำงาน',
+      shareYourLink: 'แชร์รหัสของคุณ',
+      shareDescription: 'แชร์รหัสแนะนำไปยังเพื่อน',
+      theySignUp: 'พวกเขาสมัคร',
+      signUpDescription: 'เพื่อนของคุณสร้างบัญชี',
+      bothGetTickets: 'ทั้งคู่ได้ตั๋ว!',
+      bothGetDescription: 'ทั้งคู่จะได้รับ 1 ตั๋วฟรีทันที',
+      shareCodeManually: 'แชร์รหัสนี้กับเพื่อนเมื่อพวกเขาสมัครในแอป',
+      referralCodeCopied: 'คัดลอกรหัสแนะนำแล้ว',
+      referralShareMessage: 'เข้าร่วม WinWai และรับ 1 ตั๋วฟรี! ใช้รหัสแนะนำของฉัน: {code}',
+      haveReferralCode: 'มีรหัสแนะนำหรือไม่?',
+      enterCodeEarnTicket: 'ใส่รหัสของเพื่อนและทั้งคู่จะได้ 1 ตั๋ว!',
+      redeem: 'แลก',
+    },
+    // Partner
+    partner: {
+      becomePartner: 'เป็นพาร์ทเนอร์',
+      promoteHere: 'ต้องการโปรโมทแบรนด์หรือสินค้าของคุณที่นี่?',
+      partnerModalTitle: 'เป็นพาร์ทเนอร์',
+      partnerModalSubtitle: 'โปรโมทแบรนด์หรือผลิตภัณฑ์ของคุณให้กับผู้เข้าร่วมจับรางวัลหลายพันคน!',
+      brandName: 'ชื่อแบรนด์ / ธุรกิจ',
+      productService: 'ผลิตภัณฑ์ / บริการ',
+      contactName: 'ชื่อผู้ติดต่อ',
+      phoneNumber: 'เบอร์โทรศัพท์',
+      sendInquiry: 'ส่งคำถาม',
+      allFieldsRequired: 'กรุณากรอกข้อมูลให้ครบทุกช่อง',
+      inquirySent: 'ขอบคุณ! เราจะติดต่อคุณเร็วๆ นี้',
+      inquiryFailed: 'ส่งคำถามไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
+    },
     // Landing page
     landing: {
       title: 'ชนะรางวัลสุดพิเศษในประเทศไทย!',
