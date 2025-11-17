@@ -1,10 +1,9 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Switch, Platform, TextInput, Modal, KeyboardAvoidingView, ActivityIndicator, Linking } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Switch, Platform, TextInput, Modal, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useAdminStore } from '../../src/store/adminStore';
 import { useLanguageStore } from '../../src/store/languageStore';
 import { translations } from '../../src/utils/translations';
-import { getTermsForLanguage, PRIVACY_POLICY } from '../../src/utils/legalContent';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -13,7 +12,6 @@ import { LinearGradient } from 'expo-linear-gradient';
 import api from '../../src/utils/api';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
-import PartnerInquiryModal from '../../src/components/PartnerInquiryModal';
 
 export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
@@ -36,12 +34,6 @@ export default function ProfileScreen() {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
-  const [termsModalVisible, setTermsModalVisible] = useState(false);
-  const [privacyModalVisible, setPrivacyModalVisible] = useState(false);
-  const [helpModalVisible, setHelpModalVisible] = useState(false);
-  const [referralCode, setReferralCode] = useState('');
-  const [isRedeeming, setIsRedeeming] = useState(false);
-  const [partnerInquiryVisible, setPartnerInquiryVisible] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
@@ -102,32 +94,6 @@ export default function ProfileScreen() {
   const hasPassword = user && !user.picture?.includes('google');
 
   const handleLanguageChange = async (lang: 'en' | 'th' | 'fr' | 'ar') => { await setLanguage(lang); setLanguageModalVisible(false); Alert.alert(t.language, `${getLanguageName(lang)}`); };
-
-  const handleRedeemReferral = async () => {
-    const code = referralCode.trim().toUpperCase();
-    if (!code) {
-      Alert.alert('Error', 'Please enter a referral code');
-      return;
-    }
-    
-    setIsRedeeming(true);
-    try {
-      const response = await api.post('/api/users/redeem-referral', { code });
-      
-      // Update user tickets
-      if (user) {
-        setUser({ ...user, tickets: (user.tickets || 0) + 1, usedReferralCode: true });
-      }
-      
-      Alert.alert('Success! 🎉', response.data.message || 'Referral code redeemed successfully!');
-      setReferralCode('');
-    } catch (error: any) {
-      const errorMsg = error.response?.data?.detail || 'Failed to redeem referral code';
-      Alert.alert('Error', errorMsg);
-    } finally {
-      setIsRedeeming(false);
-    }
-  };
 
   const getLanguageName = (lang: string) => lang === 'th' ? 'ภาษาไทย (Thai)' : lang === 'fr' ? 'Français (French)' : lang === 'ar' ? 'العربية (Arabic)' : 'English';
   const getLanguageFlag = (lang: string) => lang === 'th' ? '🇹🇭' : lang === 'fr' ? '🇫🇷' : lang === 'ar' ? '🇲🇦' : '🇺🇸';
@@ -239,40 +205,6 @@ export default function ProfileScreen() {
             <Text style={styles.menuText}>{t.inviteFriends}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          
-          {/* Referral Code Input - Only show if user hasn't used one yet */}
-          {!user?.usedReferralCode && (
-            <View style={styles.referralCodeSection}>
-              <View style={styles.referralHeader}>
-                <Ionicons name="ticket-outline" size={20} color={theme.colors.primaryGold} />
-                <Text style={styles.referralTitle}>{t('referral.haveReferralCode') || 'Have a referral code?'}</Text>
-              </View>
-              <Text style={styles.referralSubtext}>{t('referral.enterCodeEarnTicket') || 'Enter your friend\'s code and you both get 1 ticket!'}</Text>
-              <View style={styles.referralInputRow}>
-                <TextInput
-                  style={styles.referralInput}
-                  value={referralCode}
-                  onChangeText={setReferralCode}
-                  placeholder="ABC12345"
-                  placeholderTextColor="#999"
-                  autoCapitalize="characters"
-                  maxLength={8}
-                />
-                <TouchableOpacity 
-                  style={[styles.redeemButton, isRedeeming && styles.redeemButtonDisabled]}
-                  onPress={handleRedeemReferral}
-                  disabled={isRedeeming}
-                >
-                  {isRedeeming ? (
-                    <ActivityIndicator size="small" color="#fff" />
-                  ) : (
-                    <Text style={styles.redeemButtonText}>{t('referral.redeem') || 'Redeem'}</Text>
-                  )}
-                </TouchableOpacity>
-              </View>
-            </View>
-          )}
-          
           <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.notifications, 'Notification settings coming soon!')}>
             <Ionicons name="notifications-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t.notifications}</Text>
@@ -291,22 +223,17 @@ export default function ProfileScreen() {
         {/* Support Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitleGray}>{t.support}</Text>
-          <TouchableOpacity style={styles.menuItem} onPress={() => setPartnerInquiryVisible(true)}>
-            <Ionicons name="business-outline" size={24} color={theme.colors.primaryGold} />
-            <Text style={styles.menuText}>{t('partner.becomePartner') || 'Become a Partner'}</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
-          </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => setHelpModalVisible(true)}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.helpCenter, t.needHelp)}>
             <Ionicons name="help-circle-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t.helpCenter}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => setTermsModalVisible(true)}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.termsConditions, t.viewTerms)}>
             <Ionicons name="document-text-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t.termsConditions}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => setPrivacyModalVisible(true)}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.privacyPolicy, t.viewPrivacy)}>
             <Ionicons name="shield-checkmark-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t.privacyPolicy}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
@@ -419,77 +346,6 @@ export default function ProfileScreen() {
           </View>
         </KeyboardAvoidingView>
       </Modal>
-
-      {/* Terms Modal */}
-      <Modal visible={termsModalVisible} animationType="slide" transparent onRequestClose={() => setTermsModalVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.legalModalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t.termsConditions}</Text>
-              <TouchableOpacity onPress={() => setTermsModalVisible(false)}>
-                <Ionicons name="close" size={28} color="#000" />
-              </TouchableOpacity>
-            </View>
-            <ScrollView style={styles.legalTextContainer}>
-              <Text style={styles.legalText}>{getTermsForLanguage(language)}</Text>
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Privacy Policy Modal */}
-      <Modal visible={privacyModalVisible} animationType="slide" transparent onRequestClose={() => setPrivacyModalVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.legalModalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t.privacyPolicy}</Text>
-              <TouchableOpacity onPress={() => setPrivacyModalVisible(false)}>
-                <Ionicons name="close" size={28} color="#000" />
-              </TouchableOpacity>
-            </View>
-            <ScrollView style={styles.legalTextContainer}>
-              <Text style={styles.legalText}>{PRIVACY_POLICY}</Text>
-            </ScrollView>
-          </View>
-        </View>
-      </Modal>
-
-      {/* Help Center Modal */}
-      <Modal visible={helpModalVisible} animationType="slide" transparent onRequestClose={() => setHelpModalVisible(false)}>
-        <View style={styles.modalOverlay}>
-          <View style={styles.modalContent}>
-            <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t.helpCenter}</Text>
-              <TouchableOpacity onPress={() => setHelpModalVisible(false)}>
-                <Ionicons name="close" size={28} color="#000" />
-              </TouchableOpacity>
-            </View>
-            <View style={styles.helpContent}>
-              <Ionicons name="mail" size={60} color={theme.colors.primaryGold} style={{ alignSelf: 'center', marginBottom: 20 }} />
-              <Text style={styles.helpTitle}>Need Assistance?</Text>
-              <Text style={styles.helpText}>Our support team is here to help! Send us an email and we'll get back to you as soon as possible.</Text>
-              <TouchableOpacity 
-                style={styles.emailButton} 
-                onPress={() => {
-                  Linking.openURL('mailto:support@winwai.online?subject=WinWai Support Request');
-                }}
-              >
-                <Ionicons name="mail-outline" size={20} color="#fff" />
-                <Text style={styles.emailButtonText}>Email support@winwai.online</Text>
-              </TouchableOpacity>
-              <View style={styles.helpInfo}>
-                <Text style={styles.helpInfoText}>📧 support@winwai.online</Text>
-                <Text style={styles.helpInfoText}>⏰ Response time: 24-48 hours</Text>
-              </View>
-            </View>
-          </View>
-        </View>
-      </Modal>
-
-      <PartnerInquiryModal 
-        visible={partnerInquiryVisible} 
-        onClose={() => setPartnerInquiryVisible(false)} 
-      />
 
       <BannerAdComponent position="bottom" />
     </View>
@@ -639,23 +495,4 @@ const styles = StyleSheet.create({
   languageOptionActive: { backgroundColor: '#E8F8F7', borderWidth: 2, borderColor: '#4ECDC4' },
   languageFlag: { fontSize: 32 },
   languageText: { flex: 1, fontSize: 16, fontWeight: '600', color: theme.colors.onyx },
-  legalModalContent: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, height: '90%', paddingBottom: Platform.OS === 'ios' ? 40 : 20 },
-  legalTextContainer: { padding: 20 },
-  legalText: { fontSize: 13, lineHeight: 20, color: theme.colors.onyx },
-  helpContent: { padding: 24 },
-  helpTitle: { fontSize: 22, fontWeight: '700', color: theme.colors.onyx, marginBottom: 12, textAlign: 'center' },
-  helpText: { fontSize: 15, color: theme.colors.slate, marginBottom: 24, textAlign: 'center', lineHeight: 22 },
-  emailButton: { backgroundColor: theme.colors.primaryGold, flexDirection: 'row', alignItems: 'center', justifyContent: 'center', padding: 16, borderRadius: 12, gap: 8, marginBottom: 20 },
-  emailButtonText: { fontSize: 16, fontWeight: '700', color: '#fff' },
-  helpInfo: { backgroundColor: '#F8F9FA', padding: 16, borderRadius: 12, gap: 8 },
-  helpInfoText: { fontSize: 14, color: theme.colors.onyx, textAlign: 'center' },
-  referralCodeSection: { backgroundColor: '#FFF9E6', padding: 16, borderRadius: 12, marginHorizontal: 16, marginBottom: 12, borderWidth: 1, borderColor: '#FFD700' },
-  referralHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
-  referralTitle: { fontSize: 16, fontWeight: '600', color: theme.colors.onyx },
-  referralSubtext: { fontSize: 13, color: '#666', marginBottom: 12, lineHeight: 18 },
-  referralInputRow: { flexDirection: 'row', gap: 8 },
-  referralInput: { flex: 1, backgroundColor: '#fff', borderWidth: 1, borderColor: '#FFD700', borderRadius: 8, padding: 12, fontSize: 16, fontWeight: '600', letterSpacing: 1 },
-  redeemButton: { backgroundColor: theme.colors.primaryGold, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 8, justifyContent: 'center', alignItems: 'center', minWidth: 90 },
-  redeemButtonDisabled: { opacity: 0.6 },
-  redeemButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 });
