@@ -81,7 +81,7 @@ export default function RewardsScreen() {
             onPress={() => setFilter('all')}
           >
             <Text style={[styles.filterText, filter === 'all' && styles.filterTextActive]}>
-              All ({vouchers.length})
+              {t('rewards.all')} ({vouchers.length})
             </Text>
           </TouchableOpacity>
           <TouchableOpacity 
@@ -89,7 +89,7 @@ export default function RewardsScreen() {
             onPress={() => setFilter('active')}
           >
             <Text style={[styles.filterText, filter === 'active' && styles.filterTextActive]}>
-              Active ({activeCount})
+              {t('rewards.active')} ({activeCount})
             </Text>
           </TouchableOpacity>
           <TouchableOpacity 
@@ -97,7 +97,7 @@ export default function RewardsScreen() {
             onPress={() => setFilter('redeemed')}
           >
             <Text style={[styles.filterText, filter === 'redeemed' && styles.filterTextActive]}>
-              Redeemed ({redeemedCount})
+              {t('rewards.redeemed')} ({redeemedCount})
             </Text>
           </TouchableOpacity>
           <TouchableOpacity 
@@ -105,7 +105,7 @@ export default function RewardsScreen() {
             onPress={() => setFilter('expired')}
           >
             <Text style={[styles.filterText, filter === 'expired' && styles.filterTextActive]}>
-              Expired ({expiredCount})
+              {t('rewards.expired')} ({expiredCount})
             </Text>
           </TouchableOpacity>
         </ScrollView>
