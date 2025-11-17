@@ -248,6 +248,18 @@ export const translations = {
     changePassword: 'เปลี่ยนรหัสผ่าน',
     notifications: 'การแจ้งเตือน',
     language: 'ภาษา',
+    
+    // Partner Inquiry
+    promoteHere: 'ต้องการโปรโมทแบรนด์หรือสินค้าของคุณที่นี่?',
+    partnerModalTitle: 'เป็นพาร์ทเนอร์',
+    partnerModalSubtitle: 'โปรโมทแบรนด์หรือผลิตภัณฑ์ของคุณให้กับผู้เข้าร่วมจับรางวัลหลายพันคน!',
+    brandName: 'ชื่อแบรนด์ / ธุรกิจ',
+    productService: 'ผลิตภัณฑ์ / บริการ',
+    contactName: 'ชื่อผู้ติดต่อ',
+    sendInquiry: 'ส่งคำถาม',
+    allFieldsRequired: 'กรุณากรอกข้อมูลให้ครบทุกช่อง',
+    inquirySent: 'ขอบคุณ! เราจะติดต่อคุณเร็วๆ นี้',
+    inquiryFailed: 'ส่งคำถามไม่สำเร็จ กรุณาลองใหม่อีกครั้ง',
     helpCenter: 'ศูนย์ช่วยเหลือ',
     termsConditions: 'ข้อกำหนดและเงื่อนไข',
     privacyPolicy: 'นโยบายความเป็นส่วนตัว',
