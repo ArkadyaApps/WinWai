@@ -13,6 +13,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import api from '../../src/utils/api';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
+import PartnerInquiryModal from '../../src/components/PartnerInquiryModal';
 
 export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
