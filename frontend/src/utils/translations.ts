@@ -10,6 +10,9 @@ export const translations = {
     clearFilters: 'Clear Filters',
     noRafflesFound: 'No raffles found',
     tryAdjustingFilters: 'Try adjusting your filters',
+    noLocalRaffles: 'No raffles in your area',
+    noLocalRafflesSubtext: 'Don\'t worry! We have raffles in other locations. Check them out on the Raffles page.',
+    viewAllRaffles: 'View All Raffles',
     
     // Filter Menu
     searchFilter: 'Search & Filter',
