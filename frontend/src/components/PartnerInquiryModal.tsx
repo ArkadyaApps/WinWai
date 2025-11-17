@@ -59,70 +59,32 @@ const PartnerInquiryModal: React.FC<PartnerInquiryModalProps> = ({ visible, onCl
               <View style={styles.iconContainer}>
                 <Ionicons name="business" size={40} color={theme.colors.primaryGold} />
               </View>
-              <Text style={styles.title}>Become a Partner</Text>
-              <Text style={styles.subtitle}>
-                Promote your brand or products to thousands of raffle participants!
-              </Text>
+              <Text style={styles.title}>{t.partnerModalTitle}</Text>
+              <Text style={styles.subtitle}>{t.partnerModalSubtitle}</Text>
             </View>
 
             {/* Form */}
             <View style={styles.form}>
-              <Text style={styles.label}>Brand / Business Name *</Text>
-              <TextInput
-                style={styles.input}
-                value={brand}
-                onChangeText={setBrand}
-                placeholder="e.g., My Restaurant"
-                placeholderTextColor="#999"
-              />
+              <Text style={styles.label}>{t.brandName} *</Text>
+              <TextInput style={styles.input} value={brand} onChangeText={setBrand} placeholder="e.g., My Restaurant" placeholderTextColor="#999" />
 
-              <Text style={styles.label}>Product / Service *</Text>
-              <TextInput
-                style={styles.input}
-                value={product}
-                onChangeText={setProduct}
-                placeholder="e.g., Food vouchers, Spa services"
-                placeholderTextColor="#999"
-              />
+              <Text style={styles.label}>{t.productService} *</Text>
+              <TextInput style={styles.input} value={product} onChangeText={setProduct} placeholder="e.g., Food vouchers, Spa services" placeholderTextColor="#999" />
 
-              <Text style={styles.label}>Contact Name *</Text>
-              <TextInput
-                style={styles.input}
-                value={name}
-                onChangeText={setName}
-                placeholder="Your full name"
-                placeholderTextColor="#999"
-              />
+              <Text style={styles.label}>{t.contactName} *</Text>
+              <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Your full name" placeholderTextColor="#999" />
 
-              <Text style={styles.label}>Phone Number *</Text>
-              <TextInput
-                style={styles.input}
-                value={phone}
-                onChangeText={setPhone}
-                placeholder="+66 XX XXX XXXX"
-                placeholderTextColor="#999"
-                keyboardType="phone-pad"
-              />
+              <Text style={styles.label}>{t.phoneNumber} *</Text>
+              <TextInput style={styles.input} value={phone} onChangeText={setPhone} placeholder="+66 XX XXX XXXX" placeholderTextColor="#999" keyboardType="phone-pad" />
             </View>
 
             {/* Buttons */}
-            <TouchableOpacity
-              style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]}
-              onPress={handleSubmit}
-              disabled={isSubmitting}
-            >
-              {isSubmitting ? (
-                <ActivityIndicator size="small" color="#fff" />
-              ) : (
-                <>
-                  <Ionicons name="send" size={20} color="#fff" />
-                  <Text style={styles.submitButtonText}>Send Inquiry</Text>
-                </>
-              )}
+            <TouchableOpacity style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]} onPress={handleSubmit} disabled={isSubmitting}>
+              {isSubmitting ? <ActivityIndicator size="small" color="#fff" /> : (<><Ionicons name="send" size={20} color="#fff" /><Text style={styles.submitButtonText}>{t.sendInquiry}</Text></>)}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-              <Text style={styles.cancelButtonText}>Cancel</Text>
+              <Text style={styles.cancelButtonText}>{t.cancel}</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
