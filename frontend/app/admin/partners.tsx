@@ -137,10 +137,10 @@ export default function AdminPartnersScreen() {
 
   const selectPlace = async (placeId: string) => {
     try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/details/json?place_id=${placeId}&key=${GOOGLE_API_KEY}&fields=name,formatted_address,geometry,address_components`
-      );
-      const data = await response.json();
+      const response = await api.get('/api/places/details', {
+        params: { place_id: placeId }
+      });
+      const data = response.data;
       
       if (data.status === 'OK' && data.result) {
         const place = data.result;
