@@ -381,6 +381,9 @@ export default function AdminPartnersScreen() {
               <Text style={styles.label}>Address</Text>
               <TextInput style={[styles.input, styles.textArea]} value={formData.address} onChangeText={(text) => setFormData({ ...formData, address: text })} placeholder="123 Street Name, City, Province, Postal Code" placeholderTextColor="#999" multiline numberOfLines={2} />
               
+              <Text style={styles.label}>Location/City</Text>
+              <TextInput style={styles.input} value={formData.location} onChangeText={(text) => setFormData({ ...formData, location: text })} placeholder="Bangkok, Chiang Mai, Phuket..." placeholderTextColor="#999" />
+              
               <Text style={styles.label}>Latitude (Optional)</Text>
               <TextInput style={styles.input} value={formData.latitude} onChangeText={(text) => setFormData({ ...formData, latitude: text })} placeholder="13.7563" placeholderTextColor="#999" keyboardType="numeric" />
               
