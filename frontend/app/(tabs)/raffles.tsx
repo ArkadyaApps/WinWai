@@ -6,8 +6,10 @@ import RaffleGridCard from '../../src/components/RaffleGridCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import AppHeader from '../../src/components/AppHeader';
 import LocationFilter from '../../src/components/LocationFilter';
+import PartnerInquiryModal from '../../src/components/PartnerInquiryModal';
 import { theme } from '../../src/theme/tokens';
 import { useRouter } from 'expo-router';
+import { Ionicons } from '@expo/vector-icons';
 
 const { width } = Dimensions.get('window');
 const CARD_MARGIN = 8;
