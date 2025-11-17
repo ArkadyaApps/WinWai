@@ -261,8 +261,12 @@ export default function RaffleDetailScreen() {
             <View style={styles.section}>
               <Text style={styles.sectionTitle}>Partner Information</Text>
               
-              {/* Partner Header */}
-              <View style={styles.partnerHeader}>
+              {/* Partner Header - Clickable */}
+              <TouchableOpacity 
+                style={styles.partnerHeader}
+                onPress={openMap}
+                activeOpacity={0.7}
+              >
                 {partner.logo || partner.photo ? (
                   <Image 
                     source={{ uri: partner.logo || partner.photo }} 
@@ -274,12 +278,15 @@ export default function RaffleDetailScreen() {
                   </View>
                 )}
                 <View style={styles.partnerHeaderText}>
-                  <Text style={styles.partnerName}>{partner.name}</Text>
+                  <View style={styles.partnerNameRow}>
+                    <Text style={styles.partnerName}>{partner.name}</Text>
+                    <Ionicons name="location" size={16} color="#FF6B6B" />
+                  </View>
                   {partner.category && (
                     <Text style={styles.partnerCategory}>{partner.category.toUpperCase()}</Text>
                   )}
                 </View>
-              </View>
+              </TouchableOpacity>
 
               {/* Partner Description */}
               {partner.description && (
