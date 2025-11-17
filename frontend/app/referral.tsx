@@ -193,6 +193,23 @@ const styles = StyleSheet.create({
     fontSize: 14,
     color: theme.colors.onyx,
   },
+  infoBox: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    backgroundColor: '#FFF9E6',
+    padding: 12,
+    borderRadius: 8,
+    marginBottom: 16,
+    gap: 8,
+    borderWidth: 1,
+    borderColor: '#FFD700',
+  },
+  infoText: {
+    flex: 1,
+    fontSize: 13,
+    color: '#666',
+    lineHeight: 18,
+  },
   copyButton: {
     flexDirection: 'row',
     alignItems: 'center',
