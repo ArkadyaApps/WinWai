@@ -148,4 +148,23 @@ const styles = StyleSheet.create({
   emptyIcon: { fontSize: 72, marginBottom: 16 },
   emptyText: { fontSize: 18, fontWeight: '700', color: theme.colors.onyx, marginBottom: 8 },
   emptySubtext: { fontSize: 14, color: '#95A5A6', textAlign: 'center' },
+  partnerInquiryButton: { 
+    backgroundColor: '#FFF9E6', 
+    marginHorizontal: 16, 
+    marginTop: 24, 
+    marginBottom: 16, 
+    padding: 16, 
+    borderRadius: 12, 
+    flexDirection: 'row', 
+    alignItems: 'center', 
+    gap: 12,
+    borderWidth: 1, 
+    borderColor: theme.colors.primaryGold 
+  },
+  partnerInquiryText: { 
+    flex: 1, 
+    fontSize: 15, 
+    fontWeight: '600', 
+    color: theme.colors.onyx 
+  },
 });
