@@ -135,7 +135,6 @@ export const translations = {
     watchRewardedAds: 'Watch rewarded ads (+1 ticket)',
     referFriends: 'Refer a friend (+1 ticket)',
     // First-time popup
-    howItWorks: 'How It Works',
     earnTicketsStep: 'Earn Tickets',
     watchAdsStep: 'Watch Ads',
     enterRafflesStep: 'Enter Raffles',
