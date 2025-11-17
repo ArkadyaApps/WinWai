@@ -1121,6 +1121,52 @@ async def redeem_referral_code(request: dict, authorization: Optional[str] = Hea
         "ticketsEarned": 1
     }
 
+# Partner Inquiry Endpoint
+@api_router.post("/partner-inquiry")
+async def send_partner_inquiry(request: dict):
+    """Send partner inquiry email via Resend"""
+    brand = request.get("brand", "").strip()
+    product = request.get("product", "").strip()
+    name = request.get("name", "").strip()
+    phone = request.get("phone", "").strip()
+    
+    if not all([brand, product, name, phone]):
+        raise HTTPException(status_code=400, detail="All fields are required")
+    
+    # Initialize Resend
+    resend_api_key = os.getenv("RESEND_API_KEY")
+    if not resend_api_key or resend_api_key == "re_placeholder_key":
+        raise HTTPException(status_code=500, detail="Email service not configured")
+    
+    resend.api_key = resend_api_key
+    
+    try:
+        # Send email using Resend
+        params = {
+            "from": "WinWai Partner Inquiry <noreply@winwai.online>",
+            "to": ["Contact@winwai.online"],
+            "subject": f"New Partner Inquiry: {brand}",
+            "html": f"""
+            <h2>New Partner Inquiry</h2>
+            <p><strong>Brand/Business:</strong> {brand}</p>
+            <p><strong>Product/Service:</strong> {product}</p>
+            <p><strong>Contact Name:</strong> {name}</p>
+            <p><strong>Phone Number:</strong> {phone}</p>
+            <br>
+            <p><em>Sent from WinWai Raffle App</em></p>
+            """
+        }
+        
+        email = resend.Emails.send(params)
+        
+        return {
+            "success": True,
+            "message": "Thank you! We'll contact you soon."
+        }
+    except Exception as e:
+        print(f"Error sending partner inquiry email: {e}")
+        raise HTTPException(status_code=500, detail="Failed to send inquiry. Please try again.")
+
 # Rewards Endpoints
 @api_router.post("/rewards/verify-ad")
 async def verify_ad_reward(reward_request: AdRewardRequest):
