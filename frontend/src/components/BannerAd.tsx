@@ -81,9 +81,13 @@ const BannerAdComponent: React.FC<BannerAdComponentProps> = ({ position = 'botto
           requestNonPersonalizedAdsOnly: false,
         }}
         onAdLoaded={() => {
+          isAdLoading = false;
+          lastAdLoadTime = Date.now();
           console.log('✅ Banner Ad loaded successfully');
         }}
         onAdFailedToLoad={(error) => {
+          isAdLoading = false;
+          lastAdLoadTime = Date.now();
           console.error('❌ Banner Ad failed to load:', error);
         }}
       />
