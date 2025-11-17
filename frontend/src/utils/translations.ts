@@ -364,6 +364,9 @@ export const translations = {
     clearFilters: 'Effacer les filtres',
     noRafflesFound: 'Aucun tirage trouvé',
     tryAdjustingFilters: 'Essayez d\'ajuster vos filtres',
+    noLocalRaffles: 'Aucun tirage dans votre région',
+    noLocalRafflesSubtext: 'Pas de souci ! Nous avons des tirages dans d\'autres endroits. Consultez-les sur la page Tirages.',
+    viewAllRaffles: 'Voir tous les tirages',
     
     // Filter Menu
     searchFilter: 'Recherche et filtre',
