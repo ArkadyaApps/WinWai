@@ -486,6 +486,11 @@ export default function ProfileScreen() {
         </View>
       </Modal>
 
+      <PartnerInquiryModal 
+        visible={partnerInquiryVisible} 
+        onClose={() => setPartnerInquiryVisible(false)} 
+      />
+
       <BannerAdComponent position="bottom" />
     </View>
   );
