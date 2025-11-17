@@ -1,14 +1,21 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { StyleSheet, View, Platform } from 'react-native';
 
 interface BannerAdComponentProps {
   position?: 'top' | 'bottom';
 }
 
+// Global flag to track if an ad is currently loading to prevent multiple simultaneous requests
+let isAdLoading = false;
+let lastAdLoadTime = 0;
+const AD_LOAD_COOLDOWN = 2000; // 2 seconds between ad requests
+
 const BannerAdComponent: React.FC<BannerAdComponentProps> = ({ position = 'bottom' }) => {
   const [BannerAd, setBannerAd] = useState<any>(null);
   const [BannerAdSize, setBannerAdSize] = useState<any>(null);
   const [TestIds, setTestIds] = useState<any>(null);
+  const [shouldLoad, setShouldLoad] = useState(false);
+  const mountedRef = useRef(true);
 
   // Don't show ads on web - just return null
   if (Platform.OS === 'web') {
@@ -16,22 +23,44 @@ const BannerAdComponent: React.FC<BannerAdComponentProps> = ({ position = 'botto
   }
 
   useEffect(() => {
+    mountedRef.current = true;
+    
     // Dynamically import AdMob components on native platforms
     const loadAdMob = async () => {
       try {
         const admobModule = await import('react-native-google-mobile-ads');
-        setBannerAd(() => admobModule.BannerAd);
-        setBannerAdSize(() => admobModule.BannerAdSize);
-        setTestIds(admobModule.TestIds);
+        if (mountedRef.current) {
+          setBannerAd(() => admobModule.BannerAd);
+          setBannerAdSize(() => admobModule.BannerAdSize);
+          setTestIds(admobModule.TestIds);
+          
+          // Add delay before allowing ad to load to prevent rate limiting
+          const now = Date.now();
+          const timeSinceLastLoad = now - lastAdLoadTime;
+          
+          if (timeSinceLastLoad < AD_LOAD_COOLDOWN) {
+            setTimeout(() => {
+              if (mountedRef.current && !isAdLoading) {
+                setShouldLoad(true);
+              }
+            }, AD_LOAD_COOLDOWN - timeSinceLastLoad);
+          } else if (!isAdLoading) {
+            setShouldLoad(true);
+          }
+        }
       } catch (error) {
         console.log('Banner Ad: AdMob module not available');
       }
     };
     loadAdMob();
+    
+    return () => {
+      mountedRef.current = false;
+    };
   }, []);
 
-  // Wait for AdMob module to load
-  if (!BannerAd || !BannerAdSize || !TestIds) {
+  // Wait for AdMob module to load and cooldown period
+  if (!BannerAd || !BannerAdSize || !TestIds || !shouldLoad) {
     return null;
   }
 
