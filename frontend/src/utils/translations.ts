@@ -458,7 +458,6 @@ export const translations = {
     howToEarnTickets: 'Comment gagner des billets',
     watchRewardedAds: 'Regarder des publicités (+10 billets)',
     referFriends: 'Parrainer un ami (+2 billets)',
-    howItWorks: 'Comment ça marche',
     earnTicketsStep: 'Gagner des billets',
     watchAdsStep: 'Regarder des publicités',
     enterRafflesStep: 'Participer aux tirages',
