@@ -1922,6 +1922,48 @@ async def create_raffle(raffle: Raffle, authorization: Optional[str] = Header(No
     await db.raffles.insert_one(raffle.dict())
     return raffle
 
+# Google Places API Proxy Endpoints
+GOOGLE_PLACES_API_KEY = os.getenv("GOOGLE_PLACES_API_KEY", "")
+
+@api_router.get("/places/autocomplete")
+async def places_autocomplete(input: str, country: str = "th"):
+    """Proxy for Google Places Autocomplete API"""
+    if not GOOGLE_PLACES_API_KEY:
+        raise HTTPException(status_code=500, detail="Google Places API key not configured")
+    
+    try:
+        url = f"https://maps.googleapis.com/maps/api/place/autocomplete/json"
+        params = {
+            "input": input,
+            "key": GOOGLE_PLACES_API_KEY,
+            "components": f"country:{country}",
+            "language": "en"
+        }
+        response = requests.get(url, params=params, timeout=10)
+        return response.json()
+    except Exception as e:
+        print(f"Error calling Google Places API: {e}")
+        raise HTTPException(status_code=500, detail="Failed to search places")
+
+@api_router.get("/places/details")
+async def places_details(place_id: str):
+    """Proxy for Google Places Details API"""
+    if not GOOGLE_PLACES_API_KEY:
+        raise HTTPException(status_code=500, detail="Google Places API key not configured")
+    
+    try:
+        url = f"https://maps.googleapis.com/maps/api/place/details/json"
+        params = {
+            "place_id": place_id,
+            "key": GOOGLE_PLACES_API_KEY,
+            "fields": "name,formatted_address,geometry,address_components"
+        }
+        response = requests.get(url, params=params, timeout=10)
+        return response.json()
+    except Exception as e:
+        print(f"Error calling Google Places API: {e}")
+        raise HTTPException(status_code=500, detail="Failed to fetch place details")
+
 # Admin Partner Management
 @api_router.get("/admin/partners", response_model=List[Partner])
 async def get_all_partners(authorization: Optional[str] = Header(None), page: int = 1, limit: int = 20, q: Optional[str] = None, category: Optional[str] = None):
