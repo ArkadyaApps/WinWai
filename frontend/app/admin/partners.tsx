@@ -116,10 +116,10 @@ export default function AdminPartnersScreen() {
     
     setSearchingPlaces(true);
     try {
-      const response = await fetch(
-        `https://maps.googleapis.com/maps/api/place/autocomplete/json?input=${encodeURIComponent(query)}&key=${GOOGLE_API_KEY}&components=country:th&language=en`
-      );
-      const data = await response.json();
+      const response = await api.get('/api/places/autocomplete', {
+        params: { input: query, country: 'th' }
+      });
+      const data = response.data;
       
       if (data.status === 'OK') {
         setPlaceSuggestions(data.predictions || []);
