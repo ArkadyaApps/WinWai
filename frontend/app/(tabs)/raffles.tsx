@@ -103,7 +103,7 @@ export default function RafflesScreen() {
             onPress={() => setPartnerInquiryVisible(true)}
           >
             <Ionicons name="business" size={24} color={theme.colors.primaryGold} />
-            <Text style={styles.partnerInquiryText}>Want to promote your Brand or Goods here?</Text>
+            <Text style={styles.partnerInquiryText}>{t.promoteHere || 'Want to promote your Brand or Goods here?'}</Text>
             <Ionicons name="arrow-forward" size={20} color={theme.colors.primaryGold} />
           </TouchableOpacity>
           
