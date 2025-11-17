@@ -21,13 +21,13 @@ export default function ReferralScreen() {
     Clipboard.setString(referralCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    Alert.alert(t('copied'), t('referralCodeCopied'));
+    Alert.alert(t.copied, t.referralCodeCopied);
   };
   
   const handleShare = async () => {
     try {
       await Share.share({
-        message: t('referralShareMessage').replace('{code}', referralCode),
+        message: t.referralShareMessage.replace('{code}', referralCode),
         title: 'Join WinWai - Free Raffle App',
       });
     } catch (error) {
