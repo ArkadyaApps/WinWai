@@ -291,6 +291,11 @@ export default function ProfileScreen() {
         {/* Support Section */}
         <View style={styles.section}>
           <Text style={styles.sectionTitleGray}>{t.support}</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => setPartnerInquiryVisible(true)}>
+            <Ionicons name="business-outline" size={24} color={theme.colors.primaryGold} />
+            <Text style={styles.menuText}>Become a Partner</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => setHelpModalVisible(true)}>
             <Ionicons name="help-circle-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t.helpCenter}</Text>
