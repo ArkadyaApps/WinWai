@@ -11,6 +11,7 @@ interface PartnerInquiryModalProps {
 }
 
 const PartnerInquiryModal: React.FC<PartnerInquiryModalProps> = ({ visible, onClose }) => {
+  const { t } = useTranslation();
   const [brand, setBrand] = useState('');
   const [product, setProduct] = useState('');
   const [name, setName] = useState('');
@@ -19,7 +20,7 @@ const PartnerInquiryModal: React.FC<PartnerInquiryModalProps> = ({ visible, onCl
 
   const handleSubmit = async () => {
     if (!brand.trim() || !product.trim() || !name.trim() || !phone.trim()) {
-      Alert.alert('Error', 'Please fill in all fields');
+      Alert.alert('Error', t.allFieldsRequired);
       return;
     }
 
