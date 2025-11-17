@@ -12,7 +12,7 @@ import random
 import string
 
 # Configuration
-BASE_URL = "https://winticket-2.preview.emergentagent.com/api"
+BASE_URL = "https://winwai-fix-1.preview.emergentagent.com/api"
 ADMIN_EMAIL = "artteabnc@gmail.com"
 ADMIN_PASSWORD = "winwanadmin"
 
