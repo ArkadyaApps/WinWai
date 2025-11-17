@@ -245,9 +245,9 @@ export default function ProfileScreen() {
             <View style={styles.referralCodeSection}>
               <View style={styles.referralHeader}>
                 <Ionicons name="ticket-outline" size={20} color={theme.colors.primaryGold} />
-                <Text style={styles.referralTitle}>{t.haveReferralCode || 'Have a referral code?'}</Text>
+                <Text style={styles.referralTitle}>{t('referral.haveReferralCode') || 'Have a referral code?'}</Text>
               </View>
-              <Text style={styles.referralSubtext}>{t.enterCodeEarnTicket || 'Enter your friend\'s code and you both get 1 ticket!'}</Text>
+              <Text style={styles.referralSubtext}>{t('referral.enterCodeEarnTicket') || 'Enter your friend\'s code and you both get 1 ticket!'}</Text>
               <View style={styles.referralInputRow}>
                 <TextInput
                   style={styles.referralInput}
@@ -266,7 +266,7 @@ export default function ProfileScreen() {
                   {isRedeeming ? (
                     <ActivityIndicator size="small" color="#fff" />
                   ) : (
-                    <Text style={styles.redeemButtonText}>{t.redeem || 'Redeem'}</Text>
+                    <Text style={styles.redeemButtonText}>{t('referral.redeem') || 'Redeem'}</Text>
                   )}
                 </TouchableOpacity>
               </View>
@@ -293,7 +293,7 @@ export default function ProfileScreen() {
           <Text style={styles.sectionTitleGray}>{t.support}</Text>
           <TouchableOpacity style={styles.menuItem} onPress={() => setPartnerInquiryVisible(true)}>
             <Ionicons name="business-outline" size={24} color={theme.colors.primaryGold} />
-            <Text style={styles.menuText}>{t.becomePartner || 'Become a Partner'}</Text>
+            <Text style={styles.menuText}>{t('partner.becomePartner') || 'Become a Partner'}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => setHelpModalVisible(true)}>
