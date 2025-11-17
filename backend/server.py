@@ -1066,6 +1066,60 @@ async def update_profile(profile_update: UpdateProfileRequest, authorization: Op
     updated_user = await db.users.find_one({"id": user.id})
     return User(**updated_user)
 
+# Referral Code Redemption
+@api_router.post("/users/redeem-referral")
+async def redeem_referral_code(request: dict, authorization: Optional[str] = Header(None)):
+    """Redeem a referral code - credit both users with tickets"""
+    user = await get_current_user(authorization=authorization)
+    if not user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+    
+    referral_code = request.get("code", "").strip().upper()
+    
+    if not referral_code:
+        raise HTTPException(status_code=400, detail="Referral code is required")
+    
+    # Check if user has already used a referral code
+    if user.usedReferralCode:
+        raise HTTPException(status_code=400, detail="You have already redeemed a referral code")
+    
+    # Find the referrer by matching the code to user ID prefix (first 8 chars)
+    referrer = await db.users.find_one({
+        "id": {"$regex": f"^{referral_code[:8]}", "$options": "i"}
+    })
+    
+    if not referrer:
+        raise HTTPException(status_code=404, detail="Invalid referral code")
+    
+    referrer_id = referrer.get("id")
+    
+    # Can't refer yourself
+    if referrer_id == user.id:
+        raise HTTPException(status_code=400, detail="You cannot use your own referral code")
+    
+    # Credit both users with 1 ticket
+    await db.users.update_one(
+        {"id": user.id},
+        {
+            "$inc": {"tickets": 1},
+            "$set": {
+                "usedReferralCode": True,
+                "referredBy": referrer_id
+            }
+        }
+    )
+    
+    await db.users.update_one(
+        {"id": referrer_id},
+        {"$inc": {"tickets": 1}}
+    )
+    
+    return {
+        "success": True,
+        "message": "Referral code redeemed! You both earned 1 ticket",
+        "ticketsEarned": 1
+    }
+
 # Rewards Endpoints
 @api_router.post("/rewards/verify-ad")
 async def verify_ad_reward(reward_request: AdRewardRequest):
