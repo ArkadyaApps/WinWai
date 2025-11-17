@@ -164,6 +164,7 @@ class Partner(BaseModel):
     line: Optional[str] = None  # LINE ID
     # Location details
     address: Optional[str] = None
+    location: Optional[str] = None  # City/location name (e.g., Bangkok, Chiang Mai)
     latitude: Optional[float] = None
     longitude: Optional[float] = None
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
