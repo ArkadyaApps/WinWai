@@ -58,6 +58,7 @@ export const translations = {
     // Profile
     editProfile: 'Edit Profile',
     inviteFriends: 'Invite Friends (Get 1 Ticket)',
+    becomePartner: 'Become a Partner',
     changePassword: 'Change Password',
     notifications: 'Notifications',
     language: 'Language',
