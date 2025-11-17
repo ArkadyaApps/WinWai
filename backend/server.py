@@ -148,6 +148,8 @@ class User(BaseModel):
     createdAt: datetime = Field(default_factory=lambda: datetime.now(timezone.utc))
     resetToken: Optional[str] = None  # For password reset
     resetTokenExpiry: Optional[datetime] = None
+    usedReferralCode: Optional[bool] = Field(default=False)  # Track if user has redeemed a referral
+    referredBy: Optional[str] = None  # ID of user who referred them
 
 class Partner(BaseModel):
     id: str = Field(default_factory=lambda: str(uuid.uuid4()))
