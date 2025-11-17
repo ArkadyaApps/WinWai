@@ -293,7 +293,7 @@ export default function ProfileScreen() {
           <Text style={styles.sectionTitleGray}>{t.support}</Text>
           <TouchableOpacity style={styles.menuItem} onPress={() => setPartnerInquiryVisible(true)}>
             <Ionicons name="business-outline" size={24} color={theme.colors.primaryGold} />
-            <Text style={styles.menuText}>Become a Partner</Text>
+            <Text style={styles.menuText}>{t.becomePartner || 'Become a Partner'}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => setHelpModalVisible(true)}>
