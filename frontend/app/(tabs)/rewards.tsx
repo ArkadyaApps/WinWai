@@ -119,13 +119,13 @@ export default function RewardsScreen() {
           <View style={styles.emptyState}>
             <Text style={styles.emptyIcon}>🎟️</Text>
             <Text style={styles.emptyTitle}>
-              {filter === 'all' ? 'No Vouchers Yet' : 
-               filter === 'active' ? 'No Active Vouchers' :
-               filter === 'redeemed' ? 'No Redeemed Vouchers' :
-               'No Expired Vouchers'}
+              {filter === 'all' ? t('rewards.noVouchersYet') : 
+               filter === 'active' ? t('rewards.noActiveVouchers') :
+               filter === 'redeemed' ? t('rewards.noRedeemedVouchers') :
+               t('rewards.noExpiredVouchers')}
             </Text>
             <Text style={styles.emptyText}>
-              {filter === 'all' ? 'Win raffles to get vouchers!' : 'Try a different filter'}
+              {filter === 'all' ? t('rewards.winRafflesGetVouchers') : t('rewards.tryDifferentFilter')}
             </Text>
           </View>
         ) : (
