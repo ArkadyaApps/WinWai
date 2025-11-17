@@ -35,6 +35,10 @@ export default function AdminRafflesScreen() {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const [secretCodes, setSecretCodes] = useState<string[]>(['']);
   const [showPartnerDropdown, setShowPartnerDropdown] = useState(false);
+  const [usePartnerLocation, setUsePartnerLocation] = useState(true);
+  const [placeSearchQuery, setPlaceSearchQuery] = useState('');
+  const [placeSuggestions, setPlaceSuggestions] = useState<any[]>([]);
+  const [searchingPlaces, setSearchingPlaces] = useState(false);
 
   const CATEGORIES = [
     { value: 'food', label: 'Food & Dining' },
