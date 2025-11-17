@@ -326,6 +326,22 @@ export default function AdminPartnersScreen() {
             <ScrollView style={styles.formContainer}>
               <Text style={styles.label}>Name *</Text>
               <TextInput style={styles.input} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} placeholder="Partner name" placeholderTextColor="#999" />
+              
+              <Text style={styles.label}>Category *</Text>
+              <View style={styles.categoryButtons}>
+                {['food', 'hotel', 'spa'].map((cat) => (
+                  <TouchableOpacity
+                    key={cat}
+                    style={[styles.categoryBtn, formData.category === cat && styles.categoryBtnActive]}
+                    onPress={() => setFormData({ ...formData, category: cat })}
+                  >
+                    <Text style={[styles.categoryBtnText, formData.category === cat && styles.categoryBtnTextActive]}>
+                      {cat === 'food' ? '🍽️ Food' : cat === 'hotel' ? '🏨 Hotel' : '💆 Spa'}
+                    </Text>
+                  </TouchableOpacity>
+                ))}
+              </View>
+              
               <Text style={styles.label}>Description *</Text>
               <TextInput style={[styles.input, styles.textArea]} value={formData.description} onChangeText={(text) => setFormData({ ...formData, description: text })} placeholder="Partner description" placeholderTextColor="#999" multiline numberOfLines={3} />
               <Text style={styles.label}>Contact Info (Legacy)</Text>
