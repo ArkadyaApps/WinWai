@@ -603,6 +603,7 @@ export const translations = {
     earnMoreTickets: 'احصل على المزيد من التذاكر',
     watchAdForTickets: 'شاهد إعلانًا للحصول على تذاكر',
     inviteFriends: 'ادعُ الأصدقاء',
+    becomePartner: 'كن شريكًا',
     completeProfile: 'أكمل الملف الشخصي',
     
     // Rewards
