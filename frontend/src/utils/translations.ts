@@ -326,7 +326,6 @@ export const translations = {
     howToEarnTickets: 'วิธีรับตั๋ว',
     watchRewardedAds: 'ดูโฆษณาที่ให้รางวัล (+1 ตั๋ว)',
     referFriends: 'แนะนำเพื่อน (+1 ตั๋ว)',
-    howItWorks: 'วิธีการทำงาน',
     earnTicketsStep: 'รับตั๋ว',
     watchAdsStep: 'ดูโฆษณา',
     enterRafflesStep: 'เข้าร่วมการจับรางวัล',
