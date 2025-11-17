@@ -1,5 +1,5 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Pressable, Platform } from 'react-native';
+import { View, Text, StyleSheet, Image, Pressable, Platform, Linking, TouchableOpacity } from 'react-native';
 import { Raffle } from '../types';
 import { format } from 'date-fns';
 import { Ionicons } from '@expo/vector-icons';
