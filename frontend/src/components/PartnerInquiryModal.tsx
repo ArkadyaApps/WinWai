@@ -20,7 +20,7 @@ const PartnerInquiryModal: React.FC<PartnerInquiryModalProps> = ({ visible, onCl
 
   const handleSubmit = async () => {
     if (!brand.trim() || !product.trim() || !name.trim() || !phone.trim()) {
-      Alert.alert('Error', t.allFieldsRequired);
+      Alert.alert('Error', t('partner.allFieldsRequired'));
       return;
     }
 
@@ -33,7 +33,7 @@ const PartnerInquiryModal: React.FC<PartnerInquiryModalProps> = ({ visible, onCl
         phone: phone.trim(),
       });
 
-      Alert.alert('Success! 🎉', response.data.message || t.inquirySent);
+      Alert.alert('Success! 🎉', response.data.message || t('partner.inquirySent'));
       
       // Reset form
       setBrand('');
@@ -42,7 +42,7 @@ const PartnerInquiryModal: React.FC<PartnerInquiryModalProps> = ({ visible, onCl
       setPhone('');
       onClose();
     } catch (error: any) {
-      const errorMsg = error.response?.data?.detail || t.inquiryFailed;
+      const errorMsg = error.response?.data?.detail || t('partner.inquiryFailed');
       Alert.alert('Error', errorMsg);
     } finally {
       setIsSubmitting(false);
@@ -59,32 +59,32 @@ const PartnerInquiryModal: React.FC<PartnerInquiryModalProps> = ({ visible, onCl
               <View style={styles.iconContainer}>
                 <Ionicons name="business" size={40} color={theme.colors.primaryGold} />
               </View>
-              <Text style={styles.title}>{t.partnerModalTitle}</Text>
-              <Text style={styles.subtitle}>{t.partnerModalSubtitle}</Text>
+              <Text style={styles.title}>{t('partner.partnerModalTitle')}</Text>
+              <Text style={styles.subtitle}>{t('partner.partnerModalSubtitle')}</Text>
             </View>
 
             {/* Form */}
             <View style={styles.form}>
-              <Text style={styles.label}>{t.brandName} *</Text>
+              <Text style={styles.label}>{t('partner.brandName')} *</Text>
               <TextInput style={styles.input} value={brand} onChangeText={setBrand} placeholder="e.g., My Restaurant" placeholderTextColor="#999" />
 
-              <Text style={styles.label}>{t.productService} *</Text>
+              <Text style={styles.label}>{t('partner.productService')} *</Text>
               <TextInput style={styles.input} value={product} onChangeText={setProduct} placeholder="e.g., Food vouchers, Spa services" placeholderTextColor="#999" />
 
-              <Text style={styles.label}>{t.contactName} *</Text>
+              <Text style={styles.label}>{t('partner.contactName')} *</Text>
               <TextInput style={styles.input} value={name} onChangeText={setName} placeholder="Your full name" placeholderTextColor="#999" />
 
-              <Text style={styles.label}>{t.phoneNumber} *</Text>
+              <Text style={styles.label}>{t('partner.phoneNumber')} *</Text>
               <TextInput style={styles.input} value={phone} onChangeText={setPhone} placeholder="+66 XX XXX XXXX" placeholderTextColor="#999" keyboardType="phone-pad" />
             </View>
 
             {/* Buttons */}
             <TouchableOpacity style={[styles.submitButton, isSubmitting && styles.submitButtonDisabled]} onPress={handleSubmit} disabled={isSubmitting}>
-              {isSubmitting ? <ActivityIndicator size="small" color="#fff" /> : (<><Ionicons name="send" size={20} color="#fff" /><Text style={styles.submitButtonText}>{t.sendInquiry}</Text></>)}
+              {isSubmitting ? <ActivityIndicator size="small" color="#fff" /> : (<><Ionicons name="send" size={20} color="#fff" /><Text style={styles.submitButtonText}>{t('partner.sendInquiry')}</Text></>)}
             </TouchableOpacity>
 
             <TouchableOpacity style={styles.cancelButton} onPress={onClose}>
-              <Text style={styles.cancelButtonText}>{t.cancel}</Text>
+              <Text style={styles.cancelButtonText}>{t('common.cancel')}</Text>
             </TouchableOpacity>
           </ScrollView>
         </View>
