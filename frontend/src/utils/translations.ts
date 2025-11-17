@@ -239,6 +239,7 @@ export const translations = {
     // Profile
     editProfile: 'แก้ไขโปรไฟล์',
     inviteFriends: 'เชิญเพื่อน (ได้ 1 ตั๋ว)',
+    becomePartner: 'เป็นพาร์ทเนอร์',
     changePassword: 'เปลี่ยนรหัสผ่าน',
     notifications: 'การแจ้งเตือน',
     language: 'ภาษา',
