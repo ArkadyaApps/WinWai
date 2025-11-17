@@ -145,7 +145,6 @@ export const translations = {
     watchAdPlus1: 'Watch Ad for 1 Ticket',
     
     // Profile Screen
-    signOut: 'Sign Out',
     areYouSure: 'Are you sure you want to sign out?',
     cancel: 'Cancel',
     adminPanel: 'Admin Panel',
