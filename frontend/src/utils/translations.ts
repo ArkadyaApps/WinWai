@@ -634,15 +634,36 @@ export const translations = {
     continueWithGoogle: 'تسجيل الدخول باستخدام Google',
     
     // Profile
-    language: 'اللغة',
+    editProfile: 'تعديل الملف الشخصي',
+    inviteFriends: 'ادعُ الأصدقاء (احصل على تذكرة)',
+    becomePartner: 'كن شريكًا',
+    changePassword: 'تغيير كلمة المرور',
     notifications: 'الإشعارات',
+    language: 'اللغة',
+    helpCenter: 'مركز المساعدة',
+    termsConditions: 'الشروط والأحكام',
+    privacyPolicy: 'سياسة الخصوصية',
+    signOut: 'تسجيل الخروج',
     settings: 'الإعدادات',
     help: 'مساعدة',
     about: 'حول',
     termsOfService: 'شروط الخدمة',
-    privacyPolicy: 'سياسة الخصوصية',
     contactUs: 'اتصل بنا',
     version: 'الإصدار',
+    
+    // Partner Inquiry
+    promoteHere: 'هل تريد الترويج لعلامتك التجارية أو منتجاتك هنا؟',
+    partnerModalTitle: 'كن شريكًا',
+    partnerModalSubtitle: 'روج لعلامتك التجارية أو منتجاتك لآلاف المشاركين في السحوبات!',
+    brandName: 'اسم العلامة التجارية / الشركة',
+    productService: 'المنتج / الخدمة',
+    contactName: 'اسم جهة الاتصال',
+    phoneNumber: 'رقم الهاتف',
+    sendInquiry: 'إرسال الاستفسار',
+    cancel: 'إلغاء',
+    allFieldsRequired: 'يرجى ملء جميع الحقول',
+    inquirySent: 'شكرًا لك! سنتواصل معك قريبًا.',
+    inquiryFailed: 'فشل في إرسال الاستفسار. يرجى المحاولة مرة أخرى.',
     
     // Tickets
     availableTickets: 'التذاكر المتاحة',
