@@ -508,7 +508,6 @@ export const translations = {
     reenterNewPassword: 'Confirmez le nouveau mot de passe',
     yourName: 'Votre nom',
     emailAddress: 'Adresse e-mail',
-    phoneNumber: 'Numéro de téléphone',
     editProfile: 'Modifier le profil',
     inviteFriends: 'Inviter des amis (Obtenez 1 billet)',
     becomePartner: 'Devenir partenaire',
