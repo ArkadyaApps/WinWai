@@ -3,6 +3,7 @@ import { Modal, View, Text, TextInput, TouchableOpacity, ScrollView, StyleSheet,
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../theme/tokens';
 import api from '../utils/api';
+import { useTranslation } from '../i18n/useTranslation';
 
 interface PartnerInquiryModalProps {
   visible: boolean;
