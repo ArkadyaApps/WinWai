@@ -21,13 +21,13 @@ export default function ReferralScreen() {
     Clipboard.setString(referralCode);
     setCopied(true);
     setTimeout(() => setCopied(false), 2000);
-    Alert.alert(t.copied, t.referralCodeCopied);
+    Alert.alert(t('referral.copied'), t('referral.referralCodeCopied'));
   };
   
   const handleShare = async () => {
     try {
       await Share.share({
-        message: t.referralShareMessage.replace('{code}', referralCode),
+        message: t('referral.referralShareMessage').replace('{code}', referralCode),
         title: 'Join WinWai - Free Raffle App',
       });
     } catch (error) {
@@ -49,42 +49,42 @@ export default function ReferralScreen() {
             <Ionicons name="gift" size={60} color={theme.colors.primaryGold} />
           </View>
           
-          <Text style={styles.title}>{t.inviteGetTickets}</Text>
-          <Text style={styles.subtitle}>{t.referralSubtitle}</Text>
+          <Text style={styles.title}>{t('referral.inviteGetTickets')}</Text>
+          <Text style={styles.subtitle}>{t('referral.referralSubtitle')}</Text>
         </View>
         
         <View style={styles.card}>
-          <Text style={styles.cardTitle}>{t.yourReferralCode}</Text>
+          <Text style={styles.cardTitle}>{t('referral.yourReferralCode')}</Text>
           <View style={styles.codeContainer}>
             <Text style={styles.code}>{referralCode}</Text>
           </View>
           
           <View style={styles.infoBox}>
             <Ionicons name="information-circle" size={20} color={theme.colors.primaryGold} />
-            <Text style={styles.infoText}>{t.shareCodeManually}</Text>
+            <Text style={styles.infoText}>{t('referral.shareCodeManually')}</Text>
           </View>
           
           <TouchableOpacity style={styles.copyButton} onPress={handleCopyCode}>
             <Ionicons name={copied ? "checkmark-circle" : "copy"} size={20} color="#fff" />
-            <Text style={styles.copyButtonText}>{copied ? t.copied : t.copyCode}</Text>
+            <Text style={styles.copyButtonText}>{copied ? t('referral.copied') : t('referral.copyCode')}</Text>
           </TouchableOpacity>
           
           <TouchableOpacity style={styles.shareButton} onPress={handleShare}>
             <Ionicons name="share-social" size={20} color={theme.colors.primaryGold} />
-            <Text style={styles.shareButtonText}>{t.shareVia}</Text>
+            <Text style={styles.shareButtonText}>{t('referral.shareVia')}</Text>
           </TouchableOpacity>
         </View>
         
         <View style={styles.howItWorks}>
-          <Text style={styles.howTitle}>{t.howItWorks}</Text>
+          <Text style={styles.howTitle}>{t('referral.howItWorks')}</Text>
           
           <View style={styles.step}>
             <View style={styles.stepNumber}>
               <Text style={styles.stepNumberText}>1</Text>
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>{t.shareYourLink}</Text>
-              <Text style={styles.stepText}>{t.shareDescription}</Text>
+              <Text style={styles.stepTitle}>{t('referral.shareYourLink')}</Text>
+              <Text style={styles.stepText}>{t('referral.shareDescription')}</Text>
             </View>
           </View>
           
@@ -93,8 +93,8 @@ export default function ReferralScreen() {
               <Text style={styles.stepNumberText}>2</Text>
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>{t.theySignUp}</Text>
-              <Text style={styles.stepText}>{t.signUpDescription}</Text>
+              <Text style={styles.stepTitle}>{t('referral.theySignUp')}</Text>
+              <Text style={styles.stepText}>{t('referral.signUpDescription')}</Text>
             </View>
           </View>
           
@@ -103,8 +103,8 @@ export default function ReferralScreen() {
               <Text style={styles.stepNumberText}>3</Text>
             </View>
             <View style={styles.stepContent}>
-              <Text style={styles.stepTitle}>{t.bothGetTickets}</Text>
-              <Text style={styles.stepText}>{t.bothGetDescription}</Text>
+              <Text style={styles.stepTitle}>{t('referral.bothGetTickets')}</Text>
+              <Text style={styles.stepText}>{t('referral.bothGetDescription')}</Text>
             </View>
           </View>
         </View>
