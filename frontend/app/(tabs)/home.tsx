@@ -135,9 +135,16 @@ export default function HomeScreen() {
 
         {raffles.length === 0 && (
           <View style={styles.emptyState}>
-            <Ionicons name="search" size={80} color={theme.colors.line} />
-            <Text style={styles.emptyText}>{t.noRafflesFound}</Text>
-            <Text style={styles.emptySubtext}>{t.tryAdjustingFilters}</Text>
+            <Ionicons name="gift-outline" size={80} color={theme.colors.primaryGold} />
+            <Text style={styles.emptyText}>{t.noLocalRaffles}</Text>
+            <Text style={styles.emptySubtext}>{t.noLocalRafflesSubtext}</Text>
+            <TouchableOpacity 
+              style={styles.viewAllButton}
+              onPress={() => router.push('/(tabs)/raffles')}
+            >
+              <Text style={styles.viewAllButtonText}>{t.viewAllRaffles}</Text>
+              <Ionicons name="arrow-forward" size={20} color="#fff" />
+            </TouchableOpacity>
           </View>
         )}
 
