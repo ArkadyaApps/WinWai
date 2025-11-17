@@ -1922,44 +1922,103 @@ async def create_raffle(raffle: Raffle, authorization: Optional[str] = Header(No
     await db.raffles.insert_one(raffle.dict())
     return raffle
 
-# Google Places API Proxy Endpoints
+# Google Places API Proxy Endpoints (New API)
 GOOGLE_PLACES_API_KEY = os.getenv("GOOGLE_PLACES_API_KEY", "")
 
 @api_router.get("/places/autocomplete")
 async def places_autocomplete(input: str, country: str = "th"):
-    """Proxy for Google Places Autocomplete API"""
+    """Proxy for Google Places Autocomplete API (New)"""
     if not GOOGLE_PLACES_API_KEY:
         raise HTTPException(status_code=500, detail="Google Places API key not configured")
     
     try:
-        url = f"https://maps.googleapis.com/maps/api/place/autocomplete/json"
-        params = {
-            "input": input,
-            "key": GOOGLE_PLACES_API_KEY,
-            "components": f"country:{country}",
-            "language": "en"
+        # Using new Places API (New) - Text Search
+        url = "https://places.googleapis.com/v1/places:autocomplete"
+        headers = {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": GOOGLE_PLACES_API_KEY
         }
-        response = requests.get(url, params=params, timeout=10)
-        return response.json()
+        payload = {
+            "input": input,
+            "includedRegionCodes": [country.upper()],
+            "languageCode": "en"
+        }
+        response = requests.post(url, json=payload, headers=headers, timeout=10)
+        data = response.json()
+        
+        # Transform new API response to match old format for frontend compatibility
+        if "suggestions" in data:
+            predictions = []
+            for suggestion in data.get("suggestions", []):
+                if "placePrediction" in suggestion:
+                    pred = suggestion["placePrediction"]
+                    predictions.append({
+                        "description": pred.get("text", {}).get("text", ""),
+                        "place_id": pred.get("placeId", ""),
+                        "structured_formatting": {
+                            "main_text": pred.get("structuredFormat", {}).get("mainText", {}).get("text", ""),
+                            "secondary_text": pred.get("structuredFormat", {}).get("secondaryText", {}).get("text", "")
+                        }
+                    })
+            return {"status": "OK", "predictions": predictions}
+        else:
+            return {"status": "ZERO_RESULTS", "predictions": []}
     except Exception as e:
         print(f"Error calling Google Places API: {e}")
         raise HTTPException(status_code=500, detail="Failed to search places")
 
 @api_router.get("/places/details")
 async def places_details(place_id: str):
-    """Proxy for Google Places Details API"""
+    """Proxy for Google Places Details API (New)"""
     if not GOOGLE_PLACES_API_KEY:
         raise HTTPException(status_code=500, detail="Google Places API key not configured")
     
     try:
-        url = f"https://maps.googleapis.com/maps/api/place/details/json"
-        params = {
-            "place_id": place_id,
-            "key": GOOGLE_PLACES_API_KEY,
-            "fields": "name,formatted_address,geometry,address_components"
+        # Using new Places API (New) - Place Details
+        url = f"https://places.googleapis.com/v1/places/{place_id}"
+        headers = {
+            "Content-Type": "application/json",
+            "X-Goog-Api-Key": GOOGLE_PLACES_API_KEY,
+            "X-Goog-FieldMask": "displayName,formattedAddress,location,addressComponents"
         }
-        response = requests.get(url, params=params, timeout=10)
-        return response.json()
+        response = requests.get(url, headers=headers, timeout=10)
+        data = response.json()
+        
+        # Transform new API response to match old format
+        if "displayName" in data or "formattedAddress" in data:
+            # Extract city from address components
+            city = ""
+            if "addressComponents" in data:
+                for comp in data.get("addressComponents", []):
+                    types = comp.get("types", [])
+                    if "locality" in types or "administrative_area_level_1" in types:
+                        city = comp.get("longText", "")
+                        break
+            
+            result = {
+                "name": data.get("displayName", {}).get("text", ""),
+                "formatted_address": data.get("formattedAddress", ""),
+                "geometry": {
+                    "location": {
+                        "lat": data.get("location", {}).get("latitude", 0),
+                        "lng": data.get("location", {}).get("longitude", 0)
+                    }
+                },
+                "address_components": []
+            }
+            
+            # Add address components for city extraction
+            if "addressComponents" in data:
+                for comp in data.get("addressComponents", []):
+                    result["address_components"].append({
+                        "long_name": comp.get("longText", ""),
+                        "short_name": comp.get("shortText", ""),
+                        "types": comp.get("types", [])
+                    })
+            
+            return {"status": "OK", "result": result}
+        else:
+            return {"status": "NOT_FOUND", "result": None}
     except Exception as e:
         print(f"Error calling Google Places API: {e}")
         raise HTTPException(status_code=500, detail="Failed to fetch place details")
