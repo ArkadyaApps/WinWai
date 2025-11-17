@@ -637,4 +637,13 @@ const styles = StyleSheet.create({
   emailButtonText: { fontSize: 16, fontWeight: '700', color: '#fff' },
   helpInfo: { backgroundColor: '#F8F9FA', padding: 16, borderRadius: 12, gap: 8 },
   helpInfoText: { fontSize: 14, color: theme.colors.onyx, textAlign: 'center' },
+  referralCodeSection: { backgroundColor: '#FFF9E6', padding: 16, borderRadius: 12, marginHorizontal: 16, marginBottom: 12, borderWidth: 1, borderColor: '#FFD700' },
+  referralHeader: { flexDirection: 'row', alignItems: 'center', gap: 8, marginBottom: 8 },
+  referralTitle: { fontSize: 16, fontWeight: '600', color: theme.colors.onyx },
+  referralSubtext: { fontSize: 13, color: '#666', marginBottom: 12, lineHeight: 18 },
+  referralInputRow: { flexDirection: 'row', gap: 8 },
+  referralInput: { flex: 1, backgroundColor: '#fff', borderWidth: 1, borderColor: '#FFD700', borderRadius: 8, padding: 12, fontSize: 16, fontWeight: '600', letterSpacing: 1 },
+  redeemButton: { backgroundColor: theme.colors.primaryGold, paddingHorizontal: 20, paddingVertical: 12, borderRadius: 8, justifyContent: 'center', alignItems: 'center', minWidth: 90 },
+  redeemButtonDisabled: { opacity: 0.6 },
+  redeemButtonText: { color: '#fff', fontSize: 14, fontWeight: '700' },
 });
