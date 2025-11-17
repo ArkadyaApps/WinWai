@@ -2,8 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Switch, Platform, TextInput, Modal, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useAdminStore } from '../../src/store/adminStore';
-import { useLanguageStore } from '../../src/store/languageStore';
-import { translations } from '../../src/utils/translations';
+import { useTranslation } from '../../src/i18n/useTranslation';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
@@ -16,8 +15,7 @@ import { theme } from '../../src/theme/tokens';
 export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
   const { adminMode, setAdminMode, initializeAdminMode } = useAdminStore();
-  const { language, setLanguage, initializeLanguage } = useLanguageStore();
-  const t = translations[language];
+  const { t } = useTranslation();
   const { signOut, changePassword } = useAuth();
   const router = useRouter();
 
@@ -38,43 +36,43 @@ export default function ProfileScreen() {
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
 
-  useEffect(() => { initializeAdminMode(); initializeLanguage(); }, []);
+  useEffect(() => { initializeAdminMode(); }, []);
   useEffect(() => { if (user) setFormData({ name: user.name, email: user.email, phone: user.phone || '' }); }, [user]);
 
   const handleSignOut = () => {
-    Alert.alert(t.signOut, t.areYouSure, [
-      { text: t.cancel, style: 'cancel' },
-      { text: t.signOut, style: 'destructive', onPress: async () => {
-        try { await signOut(); setTimeout(() => { router.push('/'); }, 100); } catch (e) { Alert.alert(t.error, 'Failed to sign out. Please try again.'); }
+    Alert.alert(t('common.signOut'), t('profile.areYouSure'), [
+      { text: t('common.cancel'), style: 'cancel' },
+      { text: t('common.signOut'), style: 'destructive', onPress: async () => {
+        try { await signOut(); setTimeout(() => { router.push('/'); }, 100); } catch (e) { Alert.alert(t('common.error'), 'Failed to sign out. Please try again.'); }
       }}
     ]);
   };
 
   const handleAdminToggle = async (value: boolean) => {
     await setAdminMode(value);
-    Alert.alert(value ? t.adminModeEnabled : t.adminModeDisabled, value ? t.adminAccessMessage : t.adminFeaturesHidden);
+    Alert.alert(value ? t('profile.adminModeEnabled') : t('profile.adminModeDisabled'), value ? t('profile.adminAccessMessage') : t('profile.adminFeaturesHidden'));
   };
 
   const handleEditProfile = () => setEditModalVisible(true);
 
   const handleSaveProfile = async () => {
-    if (!formData.name || !formData.email) { Alert.alert(t.error, t.nameEmailRequired); return; }
-    try { setSaving(true); const response = await api.put('/api/users/me/profile', formData); setUser(response.data); setEditModalVisible(false); Alert.alert(t.success, t.profileUpdated); }
-    catch (error: any) { Alert.alert(t.error, error.response?.data?.detail || 'Failed to update profile'); }
+    if (!formData.name || !formData.email) { Alert.alert(t('common.error'), t('profile.nameEmailRequired')); return; }
+    try { setSaving(true); const response = await api.put('/api/users/me/profile', formData); setUser(response.data); setEditModalVisible(false); Alert.alert(t('common.success'), t('profile.profileUpdated')); }
+    catch (error: any) { Alert.alert(t('common.error'), error.response?.data?.detail || 'Failed to update profile'); }
     finally { setSaving(false); }
   };
 
   const handleChangePassword = async () => {
     if (!passwordData.currentPassword || !passwordData.newPassword || !passwordData.confirmPassword) {
-      Alert.alert(t.error, t.allFieldsRequired);
+      Alert.alert(t('common.error'), t('profile.allFieldsRequired'));
       return;
     }
     if (passwordData.newPassword !== passwordData.confirmPassword) {
-      Alert.alert(t.error, t.passwordsDontMatch);
+      Alert.alert(t('common.error'), t('profile.passwordsDontMatch'));
       return;
     }
     if (passwordData.newPassword.length < 6) {
-      Alert.alert(t.error, t.passwordMin6);
+      Alert.alert(t('common.error'), t('profile.passwordMin6'));
       return;
     }
     try {
@@ -82,9 +80,9 @@ export default function ProfileScreen() {
       await changePassword(passwordData.currentPassword, passwordData.newPassword);
       setChangePasswordModalVisible(false);
       setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' });
-      Alert.alert(t.success, t.passwordChanged);
+      Alert.alert(t('common.success'), t('profile.passwordChanged'));
     } catch (error: any) {
-      Alert.alert(t.error, error.message || 'Failed to change password');
+      Alert.alert(t('common.error'), error.message || 'Failed to change password');
     } finally {
       setSaving(false);
     }
@@ -92,8 +90,6 @@ export default function ProfileScreen() {
 
   // Check if user has password (not OAuth-only)
   const hasPassword = user && !user.picture?.includes('google');
-
-  const handleLanguageChange = async (lang: 'en' | 'th' | 'fr' | 'ar') => { await setLanguage(lang); setLanguageModalVisible(false); Alert.alert(t.language, `${getLanguageName(lang)}`); };
 
   const getLanguageName = (lang: string) => lang === 'th' ? 'ภาษาไทย (Thai)' : lang === 'fr' ? 'Français (French)' : lang === 'ar' ? 'العربية (Arabic)' : 'English';
   const getLanguageFlag = (lang: string) => lang === 'th' ? '🇹🇭' : lang === 'fr' ? '🇫🇷' : lang === 'ar' ? '🇲🇦' : '🇺🇸';
@@ -123,14 +119,14 @@ export default function ProfileScreen() {
 
         {/* Stats Card */}
         <View style={styles.statsCard}>
-          <View style={styles.statItem}><Text style={styles.statValue}>{user?.tickets || 0}</Text><Text style={styles.statLabel}>{t.tickets}</Text></View>
+          <View style={styles.statItem}><Text style={styles.statValue}>{user?.tickets || 0}</Text><Text style={styles.statLabel}>{t('profile.tickets')}</Text></View>
           <View style={styles.statDivider} />
-          <View style={styles.statItem}><Text style={styles.statValue}>{user?.dailyStreak || 0}</Text><Text style={styles.statLabel}>{t.dayStreak}</Text></View>
+          <View style={styles.statItem}><Text style={styles.statValue}>{user?.dailyStreak || 0}</Text><Text style={styles.statLabel}>{t('profile.dayStreak')}</Text></View>
         </View>
 
         <TouchableOpacity style={styles.editProfileButton} onPress={handleEditProfile}>
           <Ionicons name="create-outline" size={20} color="#fff" />
-          <Text style={styles.editProfileText}>{t.editProfile}</Text>
+          <Text style={styles.editProfileText}>{t('profile.editProfile')}</Text>
         </TouchableOpacity>
 
         {/* Admin Mode Switch - Only visible to admins */}
@@ -142,9 +138,9 @@ export default function ProfileScreen() {
             <View style={styles.adminToggleContent}>
               <Ionicons name="shield-checkmark" size={24} color={theme.colors.primaryGold} />
               <View style={styles.adminToggleText}>
-                <Text style={styles.adminToggleTitle}>{t.adminMode}</Text>
+                <Text style={styles.adminToggleTitle}>{t('profile.adminMode')}</Text>
                 <Text style={styles.adminToggleSubtitle}>
-                  {adminMode ? t.adminFeaturesEnabled : t.enableAdminFeatures}
+                  {adminMode ? t('profile.adminFeaturesEnabled') : t('profile.enableAdminFeatures')}
                 </Text>
               </View>
             </View>
@@ -162,28 +158,28 @@ export default function ProfileScreen() {
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
               <Ionicons name="shield-checkmark" size={24} color={theme.colors.primaryGold} />
-              <Text style={styles.sectionTitle}>{t.adminPanel}</Text>
+              <Text style={styles.sectionTitle}>{t('profile.adminPanel')}</Text>
             </View>
 
             
             <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/partners')}>
               <LinearGradient colors={["#FF6B6B", "#FF8E53"]} style={styles.adminMenuGradient}>
                 <Ionicons name="business" size={24} color="#fff" />
-                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.managePartners}</Text><Text style={styles.adminMenuSubtitle}>{t.addEditRemovePartners}</Text></View>
+                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t('profile.managePartners')}</Text><Text style={styles.adminMenuSubtitle}>{t('profile.addEditRemovePartners')}</Text></View>
                 <Ionicons name="chevron-forward" size={20} color="#fff" />
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/users')}>
               <LinearGradient colors={["#4ECDC4", "#44A08D"]} style={styles.adminMenuGradient}>
                 <Ionicons name="people" size={24} color="#fff" />
-                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.manageUsers}</Text><Text style={styles.adminMenuSubtitle}>{t.viewManageUsers}</Text></View>
+                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t('profile.manageUsers')}</Text><Text style={styles.adminMenuSubtitle}>{t('profile.viewManageUsers')}</Text></View>
                 <Ionicons name="chevron-forward" size={20} color="#fff" />
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/raffles')}>
               <LinearGradient colors={["#A8E6CF", "#88D8B0"]} style={styles.adminMenuGradient}>
                 <Ionicons name="gift" size={24} color="#fff" />
-                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t.manageRaffles}</Text><Text style={styles.adminMenuSubtitle}>{t.createEditDrawWinners}</Text></View>
+                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t('profile.manageRaffles')}</Text><Text style={styles.adminMenuSubtitle}>{t('profile.createEditDrawWinners')}</Text></View>
                 <Ionicons name="chevron-forward" size={20} color="#fff" />
               </LinearGradient>
             </TouchableOpacity>
@@ -192,29 +188,29 @@ export default function ProfileScreen() {
 
         {/* Account Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitleGray}>{t.account}</Text>
+          <Text style={styles.sectionTitleGray}>{t('profile.account')}</Text>
           {hasPassword && (
             <TouchableOpacity style={styles.menuItem} onPress={() => setChangePasswordModalVisible(true)}>
               <Ionicons name="lock-closed-outline" size={24} color={theme.colors.onyx} />
-              <Text style={styles.menuText}>{t.changePassword}</Text>
+              <Text style={styles.menuText}>{t('auth.changePassword')}</Text>
               <Ionicons name="chevron-forward" size={20} color="#999" />
             </TouchableOpacity>
           )}
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/referral')}>
             <Ionicons name="gift-outline" size={24} color={theme.colors.primaryGold} />
-            <Text style={styles.menuText}>{t.inviteFriends}</Text>
+            <Text style={styles.menuText}>{t('profile.inviteFriends')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.notifications, 'Notification settings coming soon!')}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t('profile.notifications'), 'Notification settings coming soon!')}>
             <Ionicons name="notifications-outline" size={24} color={theme.colors.onyx} />
-            <Text style={styles.menuText}>{t.notifications}</Text>
+            <Text style={styles.menuText}>{t('profile.notifications')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => setLanguageModalVisible(true)}>
             <Ionicons name="language-outline" size={24} color={theme.colors.onyx} />
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
-              <Text style={styles.menuText}>{t.language}</Text>
-              <Text style={styles.currentLanguage}>{getLanguageFlag(language)} {getLanguageName(language)}</Text>
+              <Text style={styles.menuText}>{t('profile.language')}</Text>
+              <Text style={styles.currentLanguage}>{getLanguageFlag('en')} {getLanguageName('en')}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
@@ -222,27 +218,27 @@ export default function ProfileScreen() {
 
         {/* Support Section */}
         <View style={styles.section}>
-          <Text style={styles.sectionTitleGray}>{t.support}</Text>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.helpCenter, t.needHelp)}>
+          <Text style={styles.sectionTitleGray}>{t('profile.support')}</Text>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t('profile.helpCenter'), t('profile.needHelp'))}>
             <Ionicons name="help-circle-outline" size={24} color={theme.colors.onyx} />
-            <Text style={styles.menuText}>{t.helpCenter}</Text>
+            <Text style={styles.menuText}>{t('profile.helpCenter')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.termsConditions, t.viewTerms)}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t('profile.termsConditions'), t('profile.viewTerms'))}>
             <Ionicons name="document-text-outline" size={24} color={theme.colors.onyx} />
-            <Text style={styles.menuText}>{t.termsConditions}</Text>
+            <Text style={styles.menuText}>{t('profile.termsConditions')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t.privacyPolicy, t.viewPrivacy)}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t('profile.privacyPolicy'), t('profile.viewPrivacy'))}>
             <Ionicons name="shield-checkmark-outline" size={24} color={theme.colors.onyx} />
-            <Text style={styles.menuText}>{t.privacyPolicy}</Text>
+            <Text style={styles.menuText}>{t('profile.privacyPolicy')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
         </View>
 
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
           <Ionicons name="log-out-outline" size={24} color={theme.colors.danger} />
-          <Text style={styles.signOutText}>{t.signOut}</Text>
+          <Text style={styles.signOutText}>{t('common.signOut')}</Text>
         </TouchableOpacity>
 
         <Text style={styles.version}>WinWai v1.0.0</Text>
@@ -253,15 +249,15 @@ export default function ProfileScreen() {
       <Modal visible={editModalVisible} animationType="slide" transparent onRequestClose={() => setEditModalVisible(false)}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t.editProfile}</Text><TouchableOpacity onPress={() => setEditModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
+            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t('profile.editProfile')}</Text><TouchableOpacity onPress={() => setEditModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
             <ScrollView style={styles.formContainer}>
-              <Text style={styles.label}>{t.name} *</Text>
-              <TextInput style={styles.input} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} placeholder={t.yourName} placeholderTextColor="#999" />
-              <Text style={styles.label}>{t.email} *</Text>
-              <TextInput style={styles.input} value={formData.email} onChangeText={(text) => setFormData({ ...formData, email: text })} placeholder={t.emailAddress} placeholderTextColor="#999" keyboardType="email-address" autoCapitalize="none" />
-              <Text style={styles.label}>{t.phone}</Text>
-              <TextInput style={styles.input} value={formData.phone} onChangeText={(text) => setFormData({ ...formData, phone: text })} placeholder={t.phoneNumber} placeholderTextColor="#999" keyboardType="phone-pad" />
-              <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile} disabled={saving}>{saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>{t.saveChanges}</Text>)}</TouchableOpacity>
+              <Text style={styles.label}>{t('profile.name')} *</Text>
+              <TextInput style={styles.input} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} placeholder={t('profile.yourName')} placeholderTextColor="#999" />
+              <Text style={styles.label}>{t('profile.email')} *</Text>
+              <TextInput style={styles.input} value={formData.email} onChangeText={(text) => setFormData({ ...formData, email: text })} placeholder={t('profile.emailAddress')} placeholderTextColor="#999" keyboardType="email-address" autoCapitalize="none" />
+              <Text style={styles.label}>{t('profile.phone')}</Text>
+              <TextInput style={styles.input} value={formData.phone} onChangeText={(text) => setFormData({ ...formData, phone: text })} placeholder={t('profile.phoneNumber')} placeholderTextColor="#999" keyboardType="phone-pad" />
+              <TouchableOpacity style={styles.saveButton} onPress={handleSaveProfile} disabled={saving}>{saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>{t('profile.saveChanges')}</Text>)}</TouchableOpacity>
             </ScrollView>
           </View>
         </KeyboardAvoidingView>
@@ -271,27 +267,24 @@ export default function ProfileScreen() {
       <Modal visible={languageModalVisible} animationType="slide" transparent onRequestClose={() => setLanguageModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t.selectLanguage}</Text><TouchableOpacity onPress={() => setLanguageModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
+            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t('profile.selectLanguage')}</Text><TouchableOpacity onPress={() => setLanguageModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
             <View style={styles.languageList}>
-              <TouchableOpacity style={[styles.languageOption, language === 'en' && styles.languageOptionActive]} onPress={() => handleLanguageChange('en')}>
+              <TouchableOpacity style={[styles.languageOption]} onPress={() => { setLanguageModalVisible(false); }}>
                 <Text style={styles.languageFlag}>🇺🇸</Text>
                 <Text style={styles.languageText}>English</Text>
-                {language === 'en' && (<Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />)}
+                <Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.languageOption, language === 'th' && styles.languageOptionActive]} onPress={() => handleLanguageChange('th')}>
+              <TouchableOpacity style={[styles.languageOption]} onPress={() => { setLanguageModalVisible(false); }}>
                 <Text style={styles.languageFlag}>🇹🇭</Text>
                 <Text style={styles.languageText}>ภาษาไทย (Thai)</Text>
-                {language === 'th' && (<Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />)}
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.languageOption, language === 'fr' && styles.languageOptionActive]} onPress={() => handleLanguageChange('fr')}>
+              <TouchableOpacity style={[styles.languageOption]} onPress={() => { setLanguageModalVisible(false); }}>
                 <Text style={styles.languageFlag}>🇫🇷</Text>
                 <Text style={styles.languageText}>Français (French)</Text>
-                {language === 'fr' && (<Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />)}
               </TouchableOpacity>
-              <TouchableOpacity style={[styles.languageOption, language === 'ar' && styles.languageOptionActive]} onPress={() => handleLanguageChange('ar')}>
+              <TouchableOpacity style={[styles.languageOption]} onPress={() => { setLanguageModalVisible(false); }}>
                 <Text style={styles.languageFlag}>🇲🇦</Text>
                 <Text style={styles.languageText}>العربية (Arabic)</Text>
-                {language === 'ar' && (<Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />)}
               </TouchableOpacity>
             </View>
           </View>
@@ -303,44 +296,44 @@ export default function ProfileScreen() {
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
           <View style={styles.modalContent}>
             <View style={styles.modalHeader}>
-              <Text style={styles.modalTitle}>{t.changePassword}</Text>
+              <Text style={styles.modalTitle}>{t('auth.changePassword')}</Text>
               <TouchableOpacity onPress={() => { setChangePasswordModalVisible(false); setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); }}>
                 <Ionicons name="close" size={28} color="#000" />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.formContainer}>
-              <Text style={styles.label}>{t.currentPassword} *</Text>
+              <Text style={styles.label}>{t('auth.currentPassword')} *</Text>
               <TextInput 
                 style={styles.input} 
                 value={passwordData.currentPassword} 
                 onChangeText={(text) => setPasswordData({ ...passwordData, currentPassword: text })} 
-                placeholder={t.enterCurrentPassword} 
+                placeholder={t('profile.enterCurrentPassword')} 
                 placeholderTextColor="#999" 
                 secureTextEntry 
                 autoCapitalize="none" 
               />
-              <Text style={styles.label}>{t.newPassword} *</Text>
+              <Text style={styles.label}>{t('auth.newPassword')} *</Text>
               <TextInput 
                 style={styles.input} 
                 value={passwordData.newPassword} 
                 onChangeText={(text) => setPasswordData({ ...passwordData, newPassword: text })} 
-                placeholder={t.enterNewPassword} 
+                placeholder={t('profile.enterNewPassword')} 
                 placeholderTextColor="#999" 
                 secureTextEntry 
                 autoCapitalize="none" 
               />
-              <Text style={styles.label}>{t.confirmPassword} *</Text>
+              <Text style={styles.label}>{t('auth.confirmPassword')} *</Text>
               <TextInput 
                 style={styles.input} 
                 value={passwordData.confirmPassword} 
                 onChangeText={(text) => setPasswordData({ ...passwordData, confirmPassword: text })} 
-                placeholder={t.reenterNewPassword} 
+                placeholder={t('profile.reenterNewPassword')} 
                 placeholderTextColor="#999" 
                 secureTextEntry 
                 autoCapitalize="none" 
               />
               <TouchableOpacity style={styles.saveButton} onPress={handleChangePassword} disabled={saving}>
-                {saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>{t.changePassword}</Text>)}
+                {saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>{t('auth.changePassword')}</Text>)}
               </TouchableOpacity>
             </ScrollView>
           </View>
