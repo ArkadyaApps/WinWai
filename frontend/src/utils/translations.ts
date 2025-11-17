@@ -466,7 +466,6 @@ export const translations = {
     watchAdPlus1: 'Regarder une pub pour 1 billet',
     
     // Profile Screen
-    signOut: 'Se déconnecter',
     areYouSure: 'Êtes-vous sûr de vouloir vous déconnecter?',
     cancel: 'Annuler',
     adminPanel: 'Panneau Admin',
