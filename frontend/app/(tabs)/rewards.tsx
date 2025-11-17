@@ -8,11 +8,13 @@ import VoucherCard from '../../src/components/VoucherCard';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 import { isPast } from 'date-fns';
+import { useTranslation } from '../../src/i18n/useTranslation';
 
 const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
 
 export default function RewardsScreen() {
   const router = useRouter();
+  const { t } = useTranslation();
   const [vouchers, setVouchers] = useState<Voucher[]>([]);
   const [filteredVouchers, setFilteredVouchers] = useState<Voucher[]>([]);
   const [loading, setLoading] = useState(true);
