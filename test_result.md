@@ -508,7 +508,28 @@ test_plan:
 agent_communication:
   - agent: "main"
     message: |
-      CURRENT TASK: Simple UI updates - Referral page translations and location filter verification.
+      CURRENT TASK: Fix critical Profile page crash and complete translation system.
+      
+      ISSUE IDENTIFIED:
+      1. ❌ Profile.tsx is importing from WRONG translation file:
+         - Currently: import { translations } from '../../src/utils/translations';
+         - Should use: useTranslation() hook from '../../src/i18n/useTranslation';
+         - This mismatch is causing the TypeError: Object is not a function crash
+      
+      2. ⚠️ Rewards page has hardcoded English text (no translations)
+      
+      3. ⚠️ French and Arabic translations incomplete
+      
+      PLAN:
+      1. Fix profile.tsx to use correct translation system (useTranslation hook)
+      2. Add missing translations for Rewards page to /src/i18n/translations.ts
+      3. Update Rewards page to use translation system
+      4. Complete French and Arabic translations
+      5. Test all changes
+      
+  - agent: "main"
+    message: |
+      PREVIOUS TASK: Simple UI updates - Referral page translations and location filter verification.
       
       COMPLETED CHANGES:
       1. ✅ Referral Page Multi-Language Support:
