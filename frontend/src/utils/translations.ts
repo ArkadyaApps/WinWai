@@ -493,6 +493,7 @@ export const translations = {
     phoneNumber: 'Numéro de téléphone',
     editProfile: 'Modifier le profil',
     inviteFriends: 'Inviter des amis (Obtenez 1 billet)',
+    becomePartner: 'Devenir partenaire',
     changePassword: 'Changer le mot de passe',
     notifications: 'Notifications',
     language: 'Langue',
