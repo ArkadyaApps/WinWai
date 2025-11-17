@@ -796,4 +796,13 @@ const styles = StyleSheet.create({
   removeCodeButton: { padding: 8 },
   addCodeButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', backgroundColor: '#E8F8F7', padding: 12, borderRadius: 8, marginBottom: 16, gap: 8 },
   addCodeText: { fontSize: 14, fontWeight: '600', color: '#4ECDC4' },
+  locationSection: { marginTop: 16, marginBottom: 16 },
+  checkboxRow: { flexDirection: 'row', alignItems: 'center', marginBottom: 12 },
+  checkbox: { marginRight: 8 },
+  checkboxLabel: { fontSize: 16, fontWeight: '500', color: '#333' },
+  partnerLocationDisplay: { backgroundColor: '#F5F5F5', padding: 12, borderRadius: 8, marginTop: 8 },
+  readOnlyText: { fontSize: 14, color: '#666', marginBottom: 12, fontStyle: 'italic' },
+  suggestionsContainer: { backgroundColor: '#fff', borderWidth: 1, borderColor: '#ddd', borderRadius: 8, marginTop: 4, maxHeight: 200 },
+  suggestionItem: { flexDirection: 'row', alignItems: 'center', padding: 12, borderBottomWidth: 1, borderBottomColor: '#f0f0f0', gap: 8 },
+  suggestionText: { flex: 1, fontSize: 14, color: '#333' },
 });
