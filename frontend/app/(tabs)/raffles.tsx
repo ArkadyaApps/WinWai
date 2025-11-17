@@ -97,9 +97,24 @@ export default function RafflesScreen() {
               <Text style={styles.emptySubtext}>Try changing category or location</Text>
             </View>
           )}
+          {/* Partner Inquiry Button */}
+          <TouchableOpacity 
+            style={styles.partnerInquiryButton} 
+            onPress={() => setPartnerInquiryVisible(true)}
+          >
+            <Ionicons name="business" size={24} color={theme.colors.primaryGold} />
+            <Text style={styles.partnerInquiryText}>Want to promote your Brand or Goods here?</Text>
+            <Ionicons name="arrow-forward" size={20} color={theme.colors.primaryGold} />
+          </TouchableOpacity>
+          
           <View style={{ height: 100 }} />
         </ScrollView>
       )}
+
+      <PartnerInquiryModal 
+        visible={partnerInquiryVisible} 
+        onClose={() => setPartnerInquiryVisible(false)} 
+      />
 
       <BannerAdComponent position="bottom" />
     </View>
