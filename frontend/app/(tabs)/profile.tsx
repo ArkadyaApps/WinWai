@@ -17,6 +17,7 @@ import PartnerInquiryModal from '../../src/components/PartnerInquiryModal';
 export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
   const { adminMode, setAdminMode, initializeAdminMode } = useAdminStore();
+  const { language, setLanguage } = useLanguageStore();
   const { t } = useTranslation();
   const { signOut, changePassword } = useAuth();
   const router = useRouter();
@@ -34,9 +35,12 @@ export default function ProfileScreen() {
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [languageModalVisible, setLanguageModalVisible] = useState(false);
   const [changePasswordModalVisible, setChangePasswordModalVisible] = useState(false);
+  const [partnerInquiryVisible, setPartnerInquiryVisible] = useState(false);
   const [saving, setSaving] = useState(false);
   const [formData, setFormData] = useState({ name: '', email: '', phone: '' });
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
+  const [referralCode, setReferralCode] = useState('');
+  const [redeeming, setRedeeming] = useState(false);
 
   useEffect(() => { initializeAdminMode(); }, []);
   useEffect(() => { if (user) setFormData({ name: user.name, email: user.email, phone: user.phone || '' }); }, [user]);
