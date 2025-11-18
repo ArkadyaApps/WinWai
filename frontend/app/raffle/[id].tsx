@@ -23,6 +23,7 @@ import { useTranslation } from '../../src/i18n/useTranslation';
 export default function RaffleDetailScreen() {
   const { id } = useLocalSearchParams();
   const router = useRouter();
+  const { t } = useTranslation();
   const { user, updateTickets } = useUserStore();
   const [raffle, setRaffle] = useState<Raffle | null>(null);
   const [partner, setPartner] = useState<Partner | null>(null);
