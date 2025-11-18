@@ -51,7 +51,7 @@ export default function RaffleDetailScreen() {
       }
     } catch (error) {
       console.error('Failed to load raffle:', error);
-      Alert.alert('Error', 'Failed to load raffle details');
+      Alert.alert(t('common.error'), t('raffleDetail.failedToEnter'));
     } finally {
       setLoading(false);
     }
@@ -65,7 +65,7 @@ export default function RaffleDetailScreen() {
       });
       if (url) {
         Linking.openURL(url).catch(() => {
-          Alert.alert('Error', 'Could not open maps');
+          Alert.alert(t('common.error'), t('raffleDetail.couldNotOpenMaps'));
         });
       }
     } else if (partner && partner.address) {
@@ -75,7 +75,7 @@ export default function RaffleDetailScreen() {
       });
       if (url) {
         Linking.openURL(url).catch(() => {
-          Alert.alert('Error', 'Could not open maps');
+          Alert.alert(t('common.error'), t('raffleDetail.couldNotOpenMaps'));
         });
       }
     }
@@ -85,7 +85,7 @@ export default function RaffleDetailScreen() {
     if (partner && partner.whatsapp) {
       const url = `whatsapp://send?phone=${partner.whatsapp}`;
       Linking.openURL(url).catch(() => {
-        Alert.alert('Error', 'WhatsApp is not installed');
+        Alert.alert(t('common.error'), t('raffleDetail.whatsappNotInstalled'));
       });
     }
   };
@@ -94,7 +94,7 @@ export default function RaffleDetailScreen() {
     if (partner && partner.line) {
       const url = `https://line.me/R/ti/p/${partner.line}`;
       Linking.openURL(url).catch(() => {
-        Alert.alert('Error', 'LINE is not installed');
+        Alert.alert(t('common.error'), t('raffleDetail.lineNotInstalled'));
       });
     }
   };
@@ -103,31 +103,31 @@ export default function RaffleDetailScreen() {
     if (partner && partner.email) {
       const url = `mailto:${partner.email}`;
       Linking.openURL(url).catch(() => {
-        Alert.alert('Error', 'Could not open email');
+        Alert.alert(t('common.error'), t('raffleDetail.couldNotOpenEmail'));
       });
     }
   };
 
   const handleEnter = async () => {
     if (!user) {
-      Alert.alert('Login Required', 'Please login to enter raffles');
+      Alert.alert(t('raffleDetail.loginRequired'), t('raffleDetail.pleaseLogin'));
       return;
     }
 
     if (!raffle) return;
 
     if (user.tickets < raffle.ticketCost) {
-      Alert.alert('Insufficient Tickets', `You need ${raffle.ticketCost} tickets to enter this raffle. You have ${user.tickets} tickets.`);
+      Alert.alert(t('raffleDetail.insufficientTickets'), t('raffleDetail.needTickets').replace('{cost}', raffle.ticketCost.toString()).replace('{balance}', user.tickets.toString()));
       return;
     }
 
     Alert.alert(
-      'Enter Raffle',
-      `Use ${raffle.ticketCost} tickets to enter this raffle?`,
+      t('raffleDetail.enterConfirm'),
+      t('raffleDetail.useTicketsConfirm').replace('{cost}', raffle.ticketCost.toString()),
       [
-        { text: 'Cancel', style: 'cancel' },
+        { text: t('common.cancel'), style: 'cancel' },
         {
-          text: 'Enter',
+          text: t('raffleDetail.enter'),
           onPress: async () => {
             setEntering(true);
             try {
@@ -136,10 +136,10 @@ export default function RaffleDetailScreen() {
                 ticketsToUse: raffle.ticketCost,
               });
               updateTickets(response.data.newBalance);
-              Alert.alert('Success!', 'You have entered the raffle. Good luck!');
+              Alert.alert(t('raffleDetail.success'), t('raffleDetail.enteredRaffle'));
               loadRaffle(); // Reload to get updated entry count
             } catch (error: any) {
-              Alert.alert('Error', error.response?.data?.detail || 'Failed to enter raffle');
+              Alert.alert(t('common.error'), error.response?.data?.detail || t('raffleDetail.failedToEnter'));
             } finally {
               setEntering(false);
             }
