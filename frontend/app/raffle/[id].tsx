@@ -227,7 +227,7 @@ export default function RaffleDetailScreen() {
               <Ionicons name="gift" size={20} color="#FF6B6B" />
               <View>
                 <Text style={styles.statValue}>{raffle.prizesRemaining}</Text>
-                <Text style={styles.statLabel}>Prizes Left</Text>
+                <Text style={styles.statLabel}>{t('raffleDetail.prizesLeft')}</Text>
               </View>
             </View>
 
@@ -237,7 +237,7 @@ export default function RaffleDetailScreen() {
               <Ionicons name="people" size={20} color="#4ECDC4" />
               <View>
                 <Text style={styles.statValue}>{raffle.totalEntries}</Text>
-                <Text style={styles.statLabel}>Total Entries</Text>
+                <Text style={styles.statLabel}>{t('raffleDetail.totalEntries')}</Text>
               </View>
             </View>
 
@@ -247,7 +247,7 @@ export default function RaffleDetailScreen() {
               <Ionicons name="calendar" size={20} color="#A8E6CF" />
               <View>
                 <Text style={styles.statValue}>{format(new Date(raffle.drawDate), 'MMM dd')}</Text>
-                <Text style={styles.statLabel}>Draw Date</Text>
+                <Text style={styles.statLabel}>{t('raffleDetail.drawDate')}</Text>
               </View>
             </View>
           </View>
