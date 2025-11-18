@@ -393,7 +393,7 @@ export default function RaffleDetailScreen() {
       {/* Bottom Action Bar */}
       <View style={styles.bottomBar}>
         <View style={styles.priceInfo}>
-          <Text style={styles.priceLabel}>Entry Cost</Text>
+          <Text style={styles.priceLabel}>{t('raffleDetail.entryCost')}</Text>
           <View style={styles.priceRow}>
             <Ionicons name="ticket" size={20} color="#FFD700" />
             <Text style={styles.priceValue}>{raffle.ticketCost}</Text>
@@ -415,7 +415,7 @@ export default function RaffleDetailScreen() {
               <ActivityIndicator color="#000" />
             ) : (
               <>
-                <Text style={styles.enterText}>Enter Raffle</Text>
+                <Text style={styles.enterText}>{t('raffleDetail.enterRaffle')}</Text>
                 <Ionicons name="arrow-forward" size={20} color="#000" />
               </>
             )}
