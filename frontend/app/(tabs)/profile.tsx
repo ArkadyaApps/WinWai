@@ -239,6 +239,11 @@ export default function ProfileScreen() {
             <Text style={styles.menuText}>{t('profile.inviteFriends')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
+          <TouchableOpacity style={styles.menuItem} onPress={() => setPartnerInquiryVisible(true)}>
+            <Ionicons name="business-outline" size={24} color={theme.colors.emeraldA} />
+            <Text style={styles.menuText}>{t('partner.becomePartner')}</Text>
+            <Ionicons name="chevron-forward" size={20} color="#999" />
+          </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t('profile.notifications'), 'Notification settings coming soon!')}>
             <Ionicons name="notifications-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t('profile.notifications')}</Text>
@@ -248,11 +253,43 @@ export default function ProfileScreen() {
             <Ionicons name="language-outline" size={24} color={theme.colors.onyx} />
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
               <Text style={styles.menuText}>{t('profile.language')}</Text>
-              <Text style={styles.currentLanguage}>{getLanguageFlag('en')} {getLanguageName('en')}</Text>
+              <Text style={styles.currentLanguage}>{getLanguageFlag(language)} {getLanguageName(language)}</Text>
             </View>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
         </View>
+
+        {/* Referral Code Redemption - Only show if not used yet */}
+        {!hasUsedReferralCode && (
+          <View style={styles.section}>
+            <Text style={styles.sectionTitleGray}>{t('referral.haveReferralCode')}</Text>
+            <View style={styles.referralRedemption}>
+              <Text style={styles.referralLabel}>{t('referral.enterCodeEarnTicket')}</Text>
+              <View style={styles.referralInputRow}>
+                <TextInput
+                  style={styles.referralInput}
+                  value={referralCode}
+                  onChangeText={setReferralCode}
+                  placeholder="Enter code..."
+                  placeholderTextColor="#999"
+                  autoCapitalize="characters"
+                  maxLength={8}
+                />
+                <TouchableOpacity
+                  style={[styles.redeemButton, redeeming && styles.redeemButtonDisabled]}
+                  onPress={handleRedeemReferral}
+                  disabled={redeeming || !referralCode.trim()}
+                >
+                  {redeeming ? (
+                    <ActivityIndicator size="small" color="#fff" />
+                  ) : (
+                    <Text style={styles.redeemButtonText}>{t('referral.redeem')}</Text>
+                  )}
+                </TouchableOpacity>
+              </View>
+            </View>
+          </View>
+        )}
 
         {/* Support Section */}
         <View style={styles.section}>
