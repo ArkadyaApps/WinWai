@@ -368,19 +368,19 @@ export default function RaffleDetailScreen() {
             <View style={styles.detailsCard}>
               <View style={styles.detailRow}>
                 <Ionicons name="calendar-outline" size={20} color="#7F8C8D" />
-                <Text style={styles.detailLabel}>Draw Date:</Text>
+                <Text style={styles.detailLabel}>{t('raffleDetail.drawDate')}:</Text>
                 <Text style={styles.detailValue}>
                   {format(new Date(raffle.drawDate), 'MMMM dd, yyyy')}
                 </Text>
               </View>
               <View style={styles.detailRow}>
                 <Ionicons name="ticket-outline" size={20} color="#7F8C8D" />
-                <Text style={styles.detailLabel}>Entry Cost:</Text>
-                <Text style={styles.detailValue}>{raffle.ticketCost} tickets</Text>
+                <Text style={styles.detailLabel}>{t('raffleDetail.entryCost')}:</Text>
+                <Text style={styles.detailValue}>{raffle.ticketCost} {raffle.ticketCost === 1 ? t('raffleDetail.ticket') : t('raffleDetail.tickets')}</Text>
               </View>
               <View style={styles.detailRow}>
                 <Ionicons name="trophy-outline" size={20} color="#7F8C8D" />
-                <Text style={styles.detailLabel}>Total Prizes:</Text>
+                <Text style={styles.detailLabel}>{t('raffleDetail.prizesLeft')}:</Text>
                 <Text style={styles.detailValue}>{raffle.prizesAvailable}</Text>
               </View>
             </View>
