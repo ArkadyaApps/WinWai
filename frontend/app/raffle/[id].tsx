@@ -254,14 +254,14 @@ export default function RaffleDetailScreen() {
 
           {/* Description */}
           <View style={styles.section}>
-            <Text style={styles.sectionTitle}>About This Prize</Text>
+            <Text style={styles.sectionTitle}>{t('raffleDetail.aboutThisPrize')}</Text>
             <Text style={styles.description}>{raffle.description}</Text>
           </View>
 
           {/* Partner Info */}
           {partner && (
             <View style={styles.section}>
-              <Text style={styles.sectionTitle}>Partner Information</Text>
+              <Text style={styles.sectionTitle}>{t('partner.becomePartner')}</Text>
               
               {/* Partner Header - Clickable */}
               <TouchableOpacity 
