@@ -97,8 +97,40 @@ export default function ProfileScreen() {
   // Check if user has password (not OAuth-only)
   const hasPassword = user && !user.picture?.includes('google');
 
+  // Check if user has already used a referral code
+  const hasUsedReferralCode = user?.usedReferralCode;
+
   const getLanguageName = (lang: string) => lang === 'th' ? 'ภาษาไทย (Thai)' : lang === 'fr' ? 'Français (French)' : lang === 'ar' ? 'العربية (Arabic)' : 'English';
   const getLanguageFlag = (lang: string) => lang === 'th' ? '🇹🇭' : lang === 'fr' ? '🇫🇷' : lang === 'ar' ? '🇲🇦' : '🇺🇸';
+
+  const handleLanguageSelect = async (lang: 'en' | 'th' | 'fr' | 'ar') => {
+    await setLanguage(lang);
+    setLanguageModalVisible(false);
+  };
+
+  const handleRedeemReferral = async () => {
+    if (!referralCode.trim()) {
+      Alert.alert(t('common.error'), 'Please enter a referral code');
+      return;
+    }
+
+    setRedeeming(true);
+    try {
+      const response = await api.post('/api/users/redeem-referral', {
+        referralCode: referralCode.trim().toUpperCase(),
+      });
+      
+      // Update user data with new ticket balance
+      setUser(response.data.user);
+      Alert.alert(t('common.success'), `You received ${response.data.ticketsEarned} ticket! 🎉`);
+      setReferralCode('');
+    } catch (error: any) {
+      const errorMsg = error.response?.data?.detail || 'Failed to redeem referral code';
+      Alert.alert(t('common.error'), errorMsg);
+    } finally {
+      setRedeeming(false);
+    }
+  };
 
   return (
     <View style={styles.container}>
