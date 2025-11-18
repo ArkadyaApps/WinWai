@@ -18,6 +18,7 @@ import { format } from 'date-fns';
 import api from '../../src/utils/api';
 import { Raffle, Partner } from '../../src/types';
 import { useUserStore } from '../../src/store/userStore';
+import { useTranslation } from '../../src/i18n/useTranslation';
 
 export default function RaffleDetailScreen() {
   const { id } = useLocalSearchParams();
