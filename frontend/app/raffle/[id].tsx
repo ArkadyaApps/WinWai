@@ -169,9 +169,9 @@ export default function RaffleDetailScreen() {
   if (!raffle) {
     return (
       <View style={styles.centered}>
-        <Text style={styles.errorText}>Raffle not found</Text>
+        <Text style={styles.errorText}>{t('raffleDetail.raffleNotFound')}</Text>
         <TouchableOpacity style={styles.backButton} onPress={() => router.back()}>
-          <Text style={styles.backButtonText}>Go Back</Text>
+          <Text style={styles.backButtonText}>{t('raffleDetail.goBack')}</Text>
         </TouchableOpacity>
       </View>
     );
