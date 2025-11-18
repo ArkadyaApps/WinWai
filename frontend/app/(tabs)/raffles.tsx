@@ -105,8 +105,8 @@ export default function RafflesScreen() {
           {raffles.length === 0 && (
             <View style={styles.emptyState}>
               <Text style={styles.emptyIcon}>🎁</Text>
-              <Text style={styles.emptyText}>No raffles matching filters</Text>
-              <Text style={styles.emptySubtext}>Try changing category or location</Text>
+              <Text style={styles.emptyText}>{t('raffles.noRafflesFound')}</Text>
+              <Text style={styles.emptySubtext}>{t('raffles.tryChangingFilters')}</Text>
             </View>
           )}
           {/* Partner Inquiry Button */}
