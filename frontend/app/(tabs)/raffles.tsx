@@ -37,6 +37,16 @@ export default function RafflesScreen() {
   const [refreshing, setRefreshing] = useState(false);
   const [partnerInquiryVisible, setPartnerInquiryVisible] = useState(false);
 
+  const categories = [
+    { id: 'all', name: t('raffles.all'), emoji: '🎉' },
+    { id: 'food', name: t('raffles.food'), emoji: '🍽️' },
+    { id: 'hotel', name: t('raffles.hotels'), emoji: '🏨' },
+    { id: 'spa', name: t('raffles.spa'), emoji: '💆' },
+    { id: 'gift-cards', name: t('raffles.giftCards'), emoji: '🎁' },
+    { id: 'electronics', name: t('raffles.electronics'), emoji: '📱' },
+    { id: 'voucher', name: t('raffles.vouchers'), emoji: '🎟️' },
+  ];
+
   useEffect(() => { loadRaffles(); }, [selectedCategory, selectedLocation]);
 
   const loadRaffles = async () => {
