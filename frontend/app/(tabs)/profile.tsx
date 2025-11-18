@@ -2,6 +2,7 @@ import React, { useEffect, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, TouchableOpacity, Image, Alert, Switch, Platform, TextInput, Modal, KeyboardAvoidingView, ActivityIndicator } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useAdminStore } from '../../src/store/adminStore';
+import { useLanguageStore } from '../../src/store/languageStore';
 import { useTranslation } from '../../src/i18n/useTranslation';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
@@ -11,6 +12,7 @@ import { LinearGradient } from 'expo-linear-gradient';
 import api from '../../src/utils/api';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
+import PartnerInquiryModal from '../../src/components/PartnerInquiryModal';
 
 export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
