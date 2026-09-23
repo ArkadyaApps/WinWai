@@ -1,5 +1,5 @@
 import type { APIRoute } from "astro";
-import { Resend } from "resend";
+import { sendEmail } from "../../lib/resend";
 import { json, handleError, escapeHtml } from "../../lib/respond";
 import { PartnerInquirySchema } from "../../lib/validations/partnerInquiry";
 
@@ -14,9 +14,8 @@ export const POST: APIRoute = async ({ request, locals }) => {
       return json({ error: "Email service not configured" }, 500);
     }
 
-    const resend = new Resend(env.RESEND_API_KEY);
     try {
-      await resend.emails.send({
+      await sendEmail(env.RESEND_API_KEY, {
         from: "WinWai Partner Inquiry <noreply@winwai.online>",
         to: ["Contact@winwai.online"],
         subject: `New Partner Inquiry: ${brand}`,
