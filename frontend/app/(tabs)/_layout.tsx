@@ -3,10 +3,14 @@ import { Tabs, useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { View, ActivityIndicator } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
+import { useLanguageStore } from '../../src/store/languageStore';
+import { translations } from '../../src/utils/translations';
 
 export default function TabLayout() {
   const router = useRouter();
   const { isAuthenticated, isLoading } = useUserStore();
+  const { language } = useLanguageStore();
+  const t = translations[language];
 
   useEffect(() => {
     if (!isLoading && !isAuthenticated) {
@@ -49,7 +53,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="home"
         options={{
-          title: 'Home',
+          title: t.home,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="home" size={size} color={color} />
           ),
@@ -58,7 +62,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="raffles"
         options={{
-          title: 'Raffles',
+          title: t.raffles,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="gift" size={size} color={color} />
           ),
@@ -67,7 +71,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="tickets"
         options={{
-          title: 'Tickets',
+          title: t.tickets,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="ticket" size={size} color={color} />
           ),
@@ -76,7 +80,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="rewards"
         options={{
-          title: 'Rewards',
+          title: t.myRewards,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="trophy" size={size} color={color} />
           ),
@@ -85,7 +89,7 @@ export default function TabLayout() {
       <Tabs.Screen
         name="profile"
         options={{
-          title: 'Profile',
+          title: t.profile,
           tabBarIcon: ({ color, size }) => (
             <Ionicons name="person" size={size} color={color} />
           ),
