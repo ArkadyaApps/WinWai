@@ -10,8 +10,8 @@ export const translations = {
     clearFilters: 'Clear Filters',
     noRafflesFound: 'No raffles found',
     tryAdjustingFilters: 'Try adjusting your filters',
-    noLocalRaffles: 'No raffles in your area',
-    noLocalRafflesSubtext: 'Don\'t worry! We have raffles in other locations. Check them out on the Raffles page.',
+    noLocalRaffles: 'No raffles right now',
+    noLocalRafflesSubtext: 'Check back soon, or browse the Raffles page for more ways to filter.',
     viewAllRaffles: 'View All Raffles',
     
     // Filter Menu
@@ -182,8 +182,8 @@ export const translations = {
     clearFilters: 'ล้างตัวกรอง',
     noRafflesFound: 'ไม่พบการจับรางวัล',
     tryAdjustingFilters: 'ลองปรับตัวกรอง',
-    noLocalRaffles: 'ไม่มีรางวัลในพื้นที่ของคุณ',
-    noLocalRafflesSubtext: 'ไม่ต้องกังวล! เรามีรางวัลในสถานที่อื่น ดูที่หน้ารางวัล',
+    noLocalRaffles: 'ยังไม่มีรางวัลในตอนนี้',
+    noLocalRafflesSubtext: 'กลับมาดูใหม่เร็วๆ นี้ หรือไปที่หน้ารางวัลเพื่อดูตัวกรองเพิ่มเติม',
     viewAllRaffles: 'ดูรางวัลทั้งหมด',
     
     // Filter Menu
@@ -353,8 +353,8 @@ export const translations = {
     clearFilters: 'Effacer les filtres',
     noRafflesFound: 'Aucun tirage trouvé',
     tryAdjustingFilters: 'Essayez d\'ajuster vos filtres',
-    noLocalRaffles: 'Aucun tirage dans votre région',
-    noLocalRafflesSubtext: 'Pas d\'inquiétude ! Nous avons des tirages dans d\'autres lieux. Consultez-les sur la page Tirages.',
+    noLocalRaffles: 'Aucun tirage pour le moment',
+    noLocalRafflesSubtext: 'Revenez bientôt, ou consultez la page Tirages pour plus d\'options de filtrage.',
     viewAllRaffles: 'Voir tous les tirages',
 
     // Filter Menu
@@ -506,8 +506,8 @@ export const translations = {
     clearFilters: 'مسح المرشحات',
     noRafflesFound: 'لم يتم العثور على سحوبات',
     tryAdjustingFilters: 'حاول تعديل المرشحات الخاصة بك',
-    noLocalRaffles: 'لا توجد سحوبات في منطقتك',
-    noLocalRafflesSubtext: 'لا تقلق! لدينا سحوبات في مواقع أخرى. تحقق منها في صفحة السحوبات.',
+    noLocalRaffles: 'لا توجد سحوبات حاليًا',
+    noLocalRafflesSubtext: 'تحقق مرة أخرى قريبًا، أو تصفح صفحة السحوبات لمزيد من خيارات التصفية.',
     viewAllRaffles: 'عرض جميع السحوبات',
 
     // Filter Menu

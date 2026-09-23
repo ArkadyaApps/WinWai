@@ -30,7 +30,6 @@ export default function HomeScreen() {
   const [sponsors, setSponsors] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [userCity, setUserCity] = useState<string | null>(null);
   const [showWelcomePopup, setShowWelcomePopup] = useState(false);
 
   const t = translations[language];
@@ -68,8 +67,9 @@ export default function HomeScreen() {
   // Geolocation (browser permission prompt + GPS/IP lookup) can take
   // several seconds, or hang indefinitely on web if the user ignores the
   // permission prompt. Load raffles immediately so the screen isn't blocked
-  // on it; location/language detection run in the background and refine
-  // what's shown (via the userCity effect below) once they resolve.
+  // on it; location detection runs in the background purely to pick a
+  // default language - Home shows every raffle regardless of location (the
+  // Raffles tab is where per-location filtering lives).
   useEffect(() => {
     loadRaffles();
     loadSponsors();
@@ -77,14 +77,9 @@ export default function HomeScreen() {
     detectLocation();
   }, []);
 
-  useEffect(() => {
-    if (userCity) loadRaffles();
-  }, [userCity]);
-
   const detectLocation = async () => {
     const location = await getUserLocation();
     if (location) {
-      setUserCity(location.city);
       const savedLang = await AsyncStorage.getItem('app_language');
       if (!savedLang) {
         const detectedLang = getLanguageFromCountry(location.country);
@@ -95,10 +90,7 @@ export default function HomeScreen() {
 
   const loadRaffles = async () => {
     try {
-      // Only show raffles near user's location on home page
-      const params: any = {};
-      if (userCity) params.location = userCity;
-      const response = await api.get('/api/raffles', { params });
+      const response = await api.get('/api/raffles');
       setRaffles(response.data);
     } catch (error) {
       console.error('Failed to load raffles:', error);
@@ -186,10 +178,6 @@ export default function HomeScreen() {
       />
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />} showsVerticalScrollIndicator={false}>
-        {userCity && (
-          <View style={styles.locationBanner}><Ionicons name="location" size={18} color={theme.colors.emeraldA} /><Text style={styles.locationText}>{t.nearbyIn} {userCity}</Text></View>
-        )}
-
         <View style={styles.resultsHeader}>
           <Text style={styles.resultsCount}>{raffles.length} {t.raffles}</Text>
         </View>
@@ -295,8 +283,6 @@ const styles = StyleSheet.create({
   ticketBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#fff', paddingHorizontal: 10, paddingVertical: 6, borderRadius: 16, gap: 4 },
   ticketText: { fontSize: 14, fontWeight: '800', color: '#000' },
   filterButton: { backgroundColor: '#fff', width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
-  locationBanner: { flexDirection: 'row', alignItems: 'center', backgroundColor: '#E8F8F5', marginHorizontal: 16, marginTop: 16, padding: 12, borderRadius: 12, gap: 8 },
-  locationText: { fontSize: 14, fontWeight: '600', color: theme.colors.onyx },
   resultsHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16 },
   resultsCount: { fontSize: 20, fontWeight: '800', color: theme.colors.onyx },
   clearButton: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#FFE6E6', borderRadius: 12 },
