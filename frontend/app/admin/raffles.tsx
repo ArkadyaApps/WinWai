@@ -287,13 +287,18 @@ export default function AdminRafflesScreen() {
       if (data.status === 'OK' && data.result) {
         const place = data.result;
         
-        // Extract city from address components
+        // Extract city from address components. Prefer 'locality' (an actual
+        // city, e.g. "Nakhon Si Thammarat") over 'administrative_area_level_1'
+        // (the province, e.g. "Chang Wat Nakhon Si Thammarat" in Thailand) -
+        // .find() with an OR takes whichever type appears first in Google's
+        // component array, which isn't reliably locality-before-province, and
+        // a province name almost never matches what Home's geolocation
+        // detects as the user's city.
         let city = '';
         if (place.address_components) {
-          const cityComponent = place.address_components.find(
-            (comp: any) => comp.types.includes('locality') || comp.types.includes('administrative_area_level_1')
-          );
-          city = cityComponent ? cityComponent.long_name : '';
+          const locality = place.address_components.find((comp: any) => comp.types.includes('locality'));
+          const adminArea = place.address_components.find((comp: any) => comp.types.includes('administrative_area_level_1'));
+          city = locality?.long_name || adminArea?.long_name || '';
         }
         
         setFormData({
