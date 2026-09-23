@@ -42,8 +42,6 @@ export default function AdminPartnersScreen() {
   const [placeSuggestions, setPlaceSuggestions] = useState<any[]>([]);
   const [searchingPlaces, setSearchingPlaces] = useState(false);
 
-  const GOOGLE_API_KEY = process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY;
-
   useEffect(() => { fetchPartners(true); }, []);
 
   // Image Picker Handler

@@ -74,8 +74,7 @@ module.exports = {
       eas: {
         projectId: "019dd289-3f32-4930-9048-725d49bcb28a"
       },
-      backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL,
-      googlePlacesApiKey: process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY
+      backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL
     }
   }
 };
