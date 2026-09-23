@@ -10,6 +10,11 @@ interface SponsorCardProps {
 
 const SponsorCard: React.FC<SponsorCardProps> = ({ partner }) => {
   const [showModal, setShowModal] = useState(false);
+  // The admin partner form only ever writes to `photo` (its one image
+  // picker) - `logo` is a separate, currently unused DB column. Prefer a
+  // dedicated logo if one's ever set, but fall back to the photo that's
+  // actually populated today.
+  const image = partner.logo || partner.photo;
 
   const openWhatsApp = () => {
     if (!partner.whatsapp) return;
@@ -29,8 +34,8 @@ const SponsorCard: React.FC<SponsorCardProps> = ({ partner }) => {
     <>
       <Pressable style={({ pressed }) => [styles.card, pressed && styles.cardPressed]} onPress={() => setShowModal(true)}>
         <View style={styles.logoContainer}>
-          {partner.logo ? (
-            <Image source={{ uri: partner.logo }} style={styles.logo} resizeMode="contain" />
+          {image ? (
+            <Image source={{ uri: image }} style={styles.logo} resizeMode="contain" />
           ) : (
             <LinearGradient colors={['#FFD700', '#FFC200']} style={styles.logoPlaceholder}>
               <Ionicons name="storefront" size={32} color="#fff" />
@@ -53,8 +58,8 @@ const SponsorCard: React.FC<SponsorCardProps> = ({ partner }) => {
               <Ionicons name="close" size={22} color="#2C3E50" />
             </TouchableOpacity>
 
-            {partner.logo ? (
-              <Image source={{ uri: partner.logo }} style={styles.modalLogo} resizeMode="contain" />
+            {image ? (
+              <Image source={{ uri: image }} style={styles.modalLogo} resizeMode="contain" />
             ) : (
               <LinearGradient colors={['#FFD700', '#FFC200']} style={styles.modalLogoPlaceholder}>
                 <Ionicons name="storefront" size={40} color="#fff" />
