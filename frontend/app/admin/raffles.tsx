@@ -240,6 +240,12 @@ export default function AdminRafflesScreen() {
     }
   };
   const formatDate = (date: Date) => date.toLocaleString();
+  // Formats a Date as the local (not UTC) "YYYY-MM-DDTHH:mm" value an
+  // <input type="datetime-local"> expects.
+  const toDatetimeLocalValue = (date: Date) => {
+    const pad = (n: number) => String(n).padStart(2, '0');
+    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
+  };
 
   // Google Places Search Handler
   const searchPlaces = async (query: string) => {
@@ -656,13 +662,37 @@ export default function AdminRafflesScreen() {
               <TextInput style={styles.input} value={String(formData.validityMonths)} onChangeText={(text) => setFormData({ ...formData, validityMonths: parseInt(text) || 3 })} placeholder="3" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.helperText}>How long the prize is valid after winning (default: 3 months)</Text>
               <Text style={styles.label}>Draw Date *</Text>
-              <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
-                <Text style={{ color: theme.colors.onyx, fontSize: 16 }}>{formatDate(formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate))}</Text>
-              </TouchableOpacity>
-              <Text style={styles.helperText}>Must be at least 1 hour in the future.</Text>
-              {showDatePicker && (
-                <DateTimePicker value={formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate)} mode="datetime" minimumDate={minDate} display={Platform.OS === 'ios' ? 'inline' : 'default'} onChange={(_, selectedDate) => { setShowDatePicker(false); if (selectedDate) { if (selectedDate > new Date()) { setFormData({ ...formData, drawDate: selectedDate }); } else { Alert.alert('Invalid Date', 'Please choose a future date/time.'); } } }} />
+              {Platform.OS === 'web' ? (
+                // @react-native-community/datetimepicker has no web implementation
+                // (it renders null with just a console.warn there), so the
+                // TouchableOpacity + native picker below is silently inert on
+                // web. Use a real HTML date input instead.
+                React.createElement('input', {
+                  type: 'datetime-local',
+                  value: toDatetimeLocalValue(formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate)),
+                  min: toDatetimeLocalValue(minDate),
+                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
+                    const selectedDate = new Date(e.target.value);
+                    if (isNaN(selectedDate.getTime())) return;
+                    if (selectedDate > new Date()) {
+                      setFormData({ ...formData, drawDate: selectedDate });
+                    } else {
+                      Alert.alert('Invalid Date', 'Please choose a future date/time.');
+                    }
+                  },
+                  style: { ...styles.input, fontSize: 16, color: theme.colors.onyx, fontFamily: 'inherit', border: '1px solid #ddd' },
+                })
+              ) : (
+                <>
+                  <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
+                    <Text style={{ color: theme.colors.onyx, fontSize: 16 }}>{formatDate(formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate))}</Text>
+                  </TouchableOpacity>
+                  {showDatePicker && (
+                    <DateTimePicker value={formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate)} mode="datetime" minimumDate={minDate} display={Platform.OS === 'ios' ? 'inline' : 'default'} onChange={(_, selectedDate) => { setShowDatePicker(false); if (selectedDate) { if (selectedDate > new Date()) { setFormData({ ...formData, drawDate: selectedDate }); } else { Alert.alert('Invalid Date', 'Please choose a future date/time.'); } } }} />
+                  )}
+                </>
               )}
+              <Text style={styles.helperText}>Must be at least 1 hour in the future.</Text>
               <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={saving}>{saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>{editingRaffle ? 'Update Raffle' : 'Create Raffle'}</Text>)}</TouchableOpacity>
             </ScrollView>
           </View>
