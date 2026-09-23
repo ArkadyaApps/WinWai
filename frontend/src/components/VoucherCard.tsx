@@ -34,7 +34,7 @@ export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
   }
   
   // Get prize type icon and color
-  const getPrizeIcon = () => {
+  const getPrizeIcon = (): { icon: React.ComponentProps<typeof Ionicons>['name']; color: string } => {
     if (voucher.isDigitalPrize) {
       return { icon: 'code-slash', color: '#9C27B0' };
     }

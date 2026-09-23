@@ -353,7 +353,10 @@ export const translations = {
     clearFilters: 'Effacer les filtres',
     noRafflesFound: 'Aucun tirage trouvé',
     tryAdjustingFilters: 'Essayez d\'ajuster vos filtres',
-    
+    noLocalRaffles: 'Aucun tirage dans votre région',
+    noLocalRafflesSubtext: 'Pas d\'inquiétude ! Nous avons des tirages dans d\'autres lieux. Consultez-les sur la page Tirages.',
+    viewAllRaffles: 'Voir tous les tirages',
+
     // Filter Menu
     searchFilter: 'Recherche et filtre',
     yourLocation: 'Votre emplacement',
@@ -503,7 +506,10 @@ export const translations = {
     clearFilters: 'مسح المرشحات',
     noRafflesFound: 'لم يتم العثور على سحوبات',
     tryAdjustingFilters: 'حاول تعديل المرشحات الخاصة بك',
-    
+    noLocalRaffles: 'لا توجد سحوبات في منطقتك',
+    noLocalRafflesSubtext: 'لا تقلق! لدينا سحوبات في مواقع أخرى. تحقق منها في صفحة السحوبات.',
+    viewAllRaffles: 'عرض جميع السحوبات',
+
     // Filter Menu
     searchFilter: 'البحث والتصفية',
     yourLocation: 'موقعك',
@@ -587,6 +593,23 @@ export const translations = {
     earnMoreTickets: 'احصل على المزيد من التذاكر',
     watchAdForTickets: 'شاهد إعلانًا للحصول على تذاكر',
     completeProfile: 'أكمل الملف الشخصي',
+
+    // Tickets Screen
+    yourTicketBalance: 'رصيد تذاكرك',
+    ticketsAvailable: 'تذاكر متاحة',
+    adLoading: '⏳ جارٍ تحميل إعلانك، يرجى الانتظار...',
+    howToEarnTickets: 'كيفية الحصول على التذاكر',
+    watchRewardedAds: 'شاهد إعلانات مكافأة (+1 تذكرة)',
+    referFriends: 'ادعُ صديقًا (+1 تذكرة)',
+    // First-time popup
+    earnTicketsStep: 'اكسب التذاكر',
+    watchAdsStep: 'شاهد الإعلانات',
+    enterRafflesStep: 'شارك في السحوبات',
+    winPrizesStep: 'اربح جوائز حقيقية',
+    gotIt: 'فهمت!',
+    ticketUsage: 'استخدام التذاكر',
+    ticketUsageDescription: 'استخدم تذاكرك للمشاركة في السحوبات والفوز بجوائز رائعة! تتطلب كل مشاركة عادةً من 2 إلى 5 تذاكر.',
+    watchAdPlus1: 'شاهد إعلانًا مقابل تذكرة واحدة',
     
     // Rewards
     myEntries: 'مشاركاتي',

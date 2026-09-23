@@ -26,7 +26,7 @@ const api = axios.create({
 api.interceptors.request.use(
   async (config) => {
     console.log('🔵 API REQUEST:', config.method?.toUpperCase(), config.url);
-    console.log('🔵 Full URL:', config.baseURL + config.url);
+    console.log('🔵 Full URL:', (config.baseURL ?? '') + (config.url ?? ''));
     const token = await getSecureItem('session_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;

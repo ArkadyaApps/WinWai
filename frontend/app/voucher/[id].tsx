@@ -48,7 +48,7 @@ export default function VoucherDetailScreen() {
 
   const copyVoucherCode = () => {
     if (voucher) {
-      Clipboard.setString(voucher.voucherCode);
+      Clipboard.setString(voucher.verificationCode);
       Alert.alert('Copied!', 'Voucher code copied to clipboard');
     }
   };
@@ -69,9 +69,10 @@ export default function VoucherDetailScreen() {
     );
   }
 
-  const expiryDate = new Date(voucher.expiresAt);
-  const isExpired = isPast(expiryDate);
-  const isRedeemed = voucher.isRedeemed;
+  const expiryDate = new Date(voucher.validUntil);
+  const isRedeemed = voucher.status === 'redeemed';
+  const isCancelled = voucher.status === 'cancelled';
+  const isExpired = voucher.status === 'expired' || (!isRedeemed && !isCancelled && isPast(expiryDate));
 
   return (
     <SafeAreaView style={styles.container}>
@@ -91,6 +92,11 @@ export default function VoucherDetailScreen() {
               <Ionicons name="checkmark-done-circle" size={20} color="#fff" />
               <Text style={styles.statusText}>Redeemed</Text>
             </View>
+          ) : isCancelled ? (
+            <View style={[styles.statusBadge, { backgroundColor: '#999' }]}>
+              <Ionicons name="ban" size={20} color="#fff" />
+              <Text style={styles.statusText}>Cancelled</Text>
+            </View>
           ) : isExpired ? (
             <View style={[styles.statusBadge, { backgroundColor: '#ff4444' }]}>
               <Ionicons name="close-circle" size={20} color="#fff" />
@@ -108,31 +114,30 @@ export default function VoucherDetailScreen() {
         <View style={styles.section}>
           <Text style={styles.label}>Prize</Text>
           <Text style={styles.title}>{voucher.raffleTitle}</Text>
-          <Text style={styles.subtitle}>{voucher.prizeDetails}</Text>
+          <Text style={styles.subtitle}>
+            {voucher.isDigitalPrize ? 'Digital prize' : `Value: ${voucher.prizeValue} ${voucher.currency}`}
+          </Text>
         </View>
 
         {/* Voucher Code */}
         <View style={styles.section}>
           <Text style={styles.label}>Voucher Code</Text>
           <TouchableOpacity style={styles.codeBox} onPress={copyVoucherCode}>
-            <Text style={styles.codeText}>{voucher.voucherCode}</Text>
+            <Text style={styles.codeText}>{voucher.verificationCode}</Text>
             <Ionicons name="copy-outline" size={24} color={theme.colors.primaryGold} />
           </TouchableOpacity>
-          <Text style={styles.helperText}>Tap to copy code</Text>
+          <Text style={styles.helperText}>Tap to copy code · Ref {voucher.voucherRef}</Text>
         </View>
 
         {/* Partner Info */}
         <View style={styles.section}>
           <Text style={styles.label}>Partner</Text>
           <Text style={styles.value}>{voucher.partnerName}</Text>
-          {voucher.location && (
+          {voucher.partnerAddress && (
             <View style={styles.infoRow}>
               <Ionicons name="location" size={16} color="#999" />
-              <Text style={styles.infoText}>{voucher.location}</Text>
+              <Text style={styles.infoText}>{voucher.partnerAddress}</Text>
             </View>
-          )}
-          {voucher.address && (
-            <Text style={styles.addressText}>{voucher.address}</Text>
           )}
         </View>
 
@@ -142,7 +147,7 @@ export default function VoucherDetailScreen() {
           <View style={styles.infoRow}>
             <Ionicons name="calendar" size={16} color="#999" />
             <Text style={styles.infoText}>
-              Issued: {format(new Date(voucher.issuedAt), 'MMM dd, yyyy')}
+              Issued: {format(new Date(voucher.createdAt), 'MMM dd, yyyy')}
             </Text>
           </View>
           <View style={styles.infoRow}>
@@ -160,14 +165,6 @@ export default function VoucherDetailScreen() {
             </View>
           )}
         </View>
-
-        {/* Terms */}
-        {voucher.terms && (
-          <View style={styles.section}>
-            <Text style={styles.label}>Terms & Conditions</Text>
-            <Text style={styles.termsText}>{voucher.terms}</Text>
-          </View>
-        )}
 
         {/* Instructions */}
         {!isRedeemed && !isExpired && (

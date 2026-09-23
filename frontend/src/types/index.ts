@@ -9,6 +9,8 @@ export interface User {
   dailyStreak: number;
   lastLogin?: string;
   createdAt: string;
+  usedReferralCode: boolean;
+  referredBy?: string | null;
 }
 
 export interface Partner {
