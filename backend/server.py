@@ -1209,8 +1209,11 @@ async def verify_ad_reward(reward_request: AdRewardRequest):
     }
 
 @api_router.post("/admin/make-admins")
-async def make_admins(request: dict):
+async def make_admins(request: dict, authorization: Optional[str] = Header(None)):
     """Make specified users admins"""
+    admin_user = await get_current_user(authorization=authorization)
+    if not admin_user or admin_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
     try:
         emails = request.get("emails", [])
         updated = 0
@@ -1239,8 +1242,11 @@ async def make_admins(request: dict):
         return {"success": False, "error": str(e)}
 
 @api_router.get("/admin/check-user/{email}")
-async def check_user(email: str):
+async def check_user(email: str, authorization: Optional[str] = Header(None)):
     """Check if a user exists and their role"""
+    admin_user = await get_current_user(authorization=authorization)
+    if not admin_user or admin_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
     try:
         user = await db.users.find_one({"email": email})
         if user:
@@ -1255,67 +1261,12 @@ async def check_user(email: str):
     except Exception as e:
         return {"error": str(e)}
 
-@api_router.post("/admin/make-me-admin")
-async def make_me_admin(current_user: dict = Depends(get_current_user)):
-    """Make the current logged-in user an admin"""
-    try:
-        if not current_user:
-            raise HTTPException(status_code=401, detail="Not authenticated")
-        
-        # Try to update by email first (more reliable)
-        result = await db.users.update_one(
-            {"email": current_user["email"]},
-            {"$set": {"role": "admin"}}
-        )
-        
-        # If that didn't work, try by id
-        if result.modified_count == 0:
-            result = await db.users.update_one(
-                {"id": current_user["id"]},
-                {"$set": {"role": "admin"}}
-            )
-        
-        # Verify the update
-        updated_user = await db.users.find_one({"email": current_user["email"]})
-        
-        return {
-            "success": True,
-            "message": f"User {current_user['email']} is now an admin",
-            "updated": result.modified_count > 0,
-            "current_role": updated_user.get("role") if updated_user else "not found",
-            "matched": result.matched_count,
-            "modified": result.modified_count
-        }
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
-@api_router.post("/admin/force-admin/{email}")
-async def force_admin(email: str):
-    """Emergency endpoint to force make a user admin - NO AUTH REQUIRED"""
-    try:
-        # Update by email
-        result = await db.users.update_one(
-            {"email": email},
-            {"$set": {"role": "admin"}}
-        )
-        
-        # Verify
-        user = await db.users.find_one({"email": email})
-        
-        return {
-            "success": True,
-            "email": email,
-            "matched": result.matched_count,
-            "modified": result.modified_count,
-            "current_role": user.get("role") if user else "user not found",
-            "user_id": user.get("id") if user else None
-        }
-    except Exception as e:
-        return {"success": False, "error": str(e)}
-
 @api_router.post("/admin/seed-database")
-async def seed_database():
+async def seed_database(authorization: Optional[str] = Header(None)):
     """Seed the database with mock data for testing"""
+    admin_user = await get_current_user(authorization=authorization)
+    if not admin_user or admin_user.role != "admin":
+        raise HTTPException(status_code=403, detail="Admin access required")
     try:
         # Clear existing data
         await db.raffles.delete_many({})
