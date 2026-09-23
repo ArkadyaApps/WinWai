@@ -2,7 +2,7 @@ import type { APIRoute } from "astro";
 import { eq } from "drizzle-orm";
 import { getDb } from "../../../lib/db/client";
 import { users } from "../../../db/schema";
-import { createSession, isAdminEmail } from "../../../lib/auth";
+import { createSession, isAdminEmail, isValidGoogleAudience } from "../../../lib/auth";
 import { json, handleError } from "../../../lib/respond";
 import { GoogleSignInSchema } from "../../../lib/validations/auth";
 
@@ -23,7 +23,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     // Confirm this token was actually issued for our app, not some other
     // Google OAuth client.
-    if (tokenInfo.aud !== env.GOOGLE_CLIENT_ID) {
+    if (!isValidGoogleAudience(tokenInfo.aud, env)) {
       return json({ error: "Invalid token audience" }, 401);
     }
 

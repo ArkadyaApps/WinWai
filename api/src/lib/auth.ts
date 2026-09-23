@@ -50,6 +50,22 @@ export function isAdminEmail(email: string, env: { ADMIN_EMAILS?: string }): boo
   return list.includes(email.toLowerCase());
 }
 
+/**
+ * GOOGLE_CLIENT_ID may be a single client ID or a comma-separated list -
+ * useful when it's unclear which of several OAuth clients (e.g. from
+ * different points in the app's history) Google actually issues ID tokens
+ * against, without weakening validation (all listed clients are still ones
+ * this project owns).
+ */
+export function isValidGoogleAudience(aud: string | undefined, env: { GOOGLE_CLIENT_ID?: string }): boolean {
+  if (!aud) return false;
+  const validAudiences = (env.GOOGLE_CLIENT_ID ?? "")
+    .split(",")
+    .map((id) => id.trim())
+    .filter(Boolean);
+  return validAudiences.includes(aud);
+}
+
 export async function createSession(db: Database, userId: string): Promise<{ sessionToken: string; expiresAt: Date }> {
   const sessionToken = generateSessionToken();
   const expiresAt = new Date(Date.now() + SESSION_TTL_MS);
