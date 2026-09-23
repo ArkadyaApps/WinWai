@@ -363,7 +363,7 @@ export default function AdminPartnersScreen() {
               <View style={styles.searchContainer}>
                 <Ionicons name="search" size={20} color="#999" style={{ marginRight: 8 }} />
                 <TextInput
-                  style={styles.searchInput}
+                  style={styles.placesSearchInput}
                   value={placeSearchQuery}
                   onChangeText={searchPlaces}
                   placeholder="Type partner name or address..."
@@ -505,7 +505,7 @@ const styles = StyleSheet.create({
     padding: 12,
     marginBottom: 8,
   },
-  searchInput: {
+  placesSearchInput: {
     flex: 1,
     fontSize: 14,
     color: '#000',

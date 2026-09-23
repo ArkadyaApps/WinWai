@@ -299,12 +299,12 @@ export default function ProfileScreen() {
             <Text style={styles.menuText}>{t('profile.helpCenter')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t('profile.termsConditions'), t('profile.viewTerms'))}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/terms')}>
             <Ionicons name="document-text-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t('profile.termsConditions')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
-          <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t('profile.privacyPolicy'), t('profile.viewPrivacy'))}>
+          <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/privacy')}>
             <Ionicons name="shield-checkmark-outline" size={24} color={theme.colors.onyx} />
             <Text style={styles.menuText}>{t('profile.privacyPolicy')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />

@@ -118,7 +118,7 @@ export default function TicketsScreen() {
             )}
           </TouchableOpacity>
 
-          {!adReady && (<Text style={styles.adStatusText}>{t.adsOnlyMobile}</Text>)}
+          {!adReady && (<Text style={styles.adStatusText}>{t.adLoading}</Text>)}
 
           <View style={styles.infoCard}>
             <Text style={styles.infoTitle}>{t.howToEarnTickets}</Text>
