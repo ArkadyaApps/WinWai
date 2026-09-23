@@ -22,7 +22,6 @@ module.exports = {
       permissions: [
         "android.permission.INTERNET",
         "android.permission.ACCESS_NETWORK_STATE",
-        "com.google.android.gms.permission.AD_ID",
         "android.permission.ACCESS_FINE_LOCATION",
         "android.permission.ACCESS_COARSE_LOCATION"
       ],
@@ -78,9 +77,5 @@ module.exports = {
       backendUrl: process.env.EXPO_PUBLIC_BACKEND_URL,
       googlePlacesApiKey: process.env.EXPO_PUBLIC_GOOGLE_PLACES_API_KEY
     }
-  },
-  "react-native-google-mobile-ads": {
-    "android_app_id": "ca-app-pub-3486145054830108~1319311942",
-    "ios_app_id": "ca-app-pub-3486145054830108~3969526019"
   }
 };
