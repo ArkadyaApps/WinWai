@@ -1,6 +1,6 @@
 import axios from 'axios';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import Constants from 'expo-constants';
+import { getSecureItem } from './secureStorage';
 
 // Get API URL from environment variables
 const API_URL = 
@@ -27,7 +27,7 @@ api.interceptors.request.use(
   async (config) => {
     console.log('🔵 API REQUEST:', config.method?.toUpperCase(), config.url);
     console.log('🔵 Full URL:', config.baseURL + config.url);
-    const token = await AsyncStorage.getItem('session_token');
+    const token = await getSecureItem('session_token');
     if (token) {
       config.headers.Authorization = `Bearer ${token}`;
       console.log('🔑 Token added to request');

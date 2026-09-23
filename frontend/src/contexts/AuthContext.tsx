@@ -1,8 +1,8 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import AsyncStorage from '@react-native-async-storage/async-storage';
 import { Platform } from 'react-native';
 import { useUserStore } from '../store/userStore';
 import api from '../utils/api';
+import { getSecureItem, setSecureItem, deleteSecureItem } from '../utils/secureStorage';
 
 // Conditionally import GoogleSignin only on native platforms
 let GoogleSignin: any = null;
@@ -14,7 +14,7 @@ interface AuthContextType {
   signIn: () => Promise<void>;
   signInWithEmail: (email: string, password: string) => Promise<void>;
   signUpWithEmail: (email: string, password: string, name: string) => Promise<void>;
-  forgotPassword: (email: string) => Promise<{ resetToken: string; email: string }>;
+  forgotPassword: (email: string) => Promise<void>;
   resetPassword: (email: string, resetToken: string, newPassword: string) => Promise<void>;
   changePassword: (currentPassword: string, newPassword: string) => Promise<void>;
   signOut: () => Promise<void>;
@@ -33,7 +33,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const checkExistingSession = async () => {
     try {
-      const token = await AsyncStorage.getItem('session_token');
+      const token = await getSecureItem('session_token');
       if (token) {
         const response = await api.get('/api/auth/me');
         setUser(response.data);
@@ -42,7 +42,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       }
     } catch (error) {
       console.error('Session check failed:', error);
-      await AsyncStorage.removeItem('session_token');
+      await deleteSecureItem('session_token');
       setLoading(false);
     }
   };
@@ -80,7 +80,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       const { session_token, user } = response.data;
 
       console.log('Saving session token...');
-      await AsyncStorage.setItem('session_token', session_token);
+      await setSecureItem('session_token', session_token);
       console.log('Setting user:', user.email);
       setUser(user);
       console.log('==================== NATIVE GOOGLE SIGNIN COMPLETE ====================');
@@ -104,7 +104,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await api.post('/api/auth/email/signin', { email, password });
       const { session_token, user } = response.data;
-      await AsyncStorage.setItem('session_token', session_token);
+      await setSecureItem('session_token', session_token);
       setUser(user);
     } catch (error: any) {
       console.error('Email sign in failed:', error);
@@ -116,7 +116,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     try {
       const response = await api.post('/api/auth/email/signup', { email, password, name });
       const { session_token, user } = response.data;
-      await AsyncStorage.setItem('session_token', session_token);
+      await setSecureItem('session_token', session_token);
       setUser(user);
     } catch (error: any) {
       console.error('Email sign up failed:', error);
@@ -124,13 +124,9 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     }
   };
 
-  const forgotPassword = async (email: string): Promise<{ resetToken: string; email: string }> => {
+  const forgotPassword = async (email: string): Promise<void> => {
     try {
-      const response = await api.post('/api/auth/forgot-password', { email });
-      return {
-        resetToken: response.data.resetToken,
-        email: response.data.email
-      };
+      await api.post('/api/auth/forgot-password', { email });
     } catch (error: any) {
       console.error('Forgot password failed:', error);
       throw new Error(error.response?.data?.detail || 'Failed to send reset link');
@@ -148,11 +144,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   const changePassword = async (currentPassword: string, newPassword: string) => {
     try {
-      const token = await AsyncStorage.getItem('session_token');
-      await api.post('/api/auth/change-password', 
-        { currentPassword, newPassword },
-        { headers: { Authorization: `Bearer ${token}` } }
-      );
+      await api.post('/api/auth/change-password', { currentPassword, newPassword });
     } catch (error: any) {
       console.error('Change password failed:', error);
       throw new Error(error.response?.data?.detail || 'Failed to change password');
@@ -168,7 +160,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       // Continue with local logout even if API fails
     } finally {
       // Always clear local state regardless of API success
-      await AsyncStorage.removeItem('session_token');
+      await deleteSecureItem('session_token');
       logout();
       setLoading(false);
     }

@@ -24,25 +24,23 @@ export default function ForgotPassword() {
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [success, setSuccess] = useState(false);
-  const [resetToken, setResetToken] = useState('');
 
   const handleForgotPassword = async () => {
     setError('');
-    
+
     if (!email) {
       setError('Please enter your email');
       return;
     }
-    
+
     if (!validateEmail(email)) {
       setError('Please enter a valid email address');
       return;
     }
-    
+
     setLoading(true);
     try {
-      const result = await forgotPassword(email);
-      setResetToken(result.resetToken);
+      await forgotPassword(email);
       setSuccess(true);
     } catch (error: any) {
       setError(error.message || 'Failed to send reset link. Please try again.');
@@ -52,9 +50,11 @@ export default function ForgotPassword() {
   };
 
   const handleContinueToReset = () => {
+    // Only email is prefilled - the reset code itself comes from the email
+    // we just sent, and the user pastes it in on the next screen.
     router.push({
       pathname: '/reset-password',
-      params: { email, resetToken }
+      params: { email }
     });
   };
 
@@ -118,28 +118,16 @@ export default function ForgotPassword() {
             ) : (
               <>
                 <Text style={styles.successIcon}>✅</Text>
-                <Text style={styles.title}>Reset Token Generated</Text>
+                <Text style={styles.title}>Check Your Email</Text>
                 <Text style={styles.subtitle}>
-                  Your password reset token has been generated. 
-                  {'\n\n'}
-                  <Text style={styles.note}>Note: In production, this would be sent to your email.</Text>
+                  If an account exists for {email}, we've sent a reset link to it. Open it on this device, or enter the code from that email below.
                 </Text>
-                
-                <View style={styles.tokenContainer}>
-                  <Text style={styles.tokenLabel}>Reset Token:</Text>
-                  <Text style={styles.tokenText} selectable>
-                    {resetToken}
-                  </Text>
-                  <Text style={styles.tokenNote}>
-                    Copy this token and use it on the next screen
-                  </Text>
-                </View>
 
-                <TouchableOpacity 
+                <TouchableOpacity
                   style={styles.button}
                   onPress={handleContinueToReset}
                 >
-                  <Text style={styles.buttonText}>Continue to Reset Password</Text>
+                  <Text style={styles.buttonText}>I Have My Reset Code</Text>
                 </TouchableOpacity>
 
                 <TouchableOpacity 
@@ -194,11 +182,6 @@ const styles = StyleSheet.create({
     textAlign: 'center',
     lineHeight: 24,
   },
-  note: {
-    fontSize: 14,
-    color: '#888',
-    fontStyle: 'italic',
-  },
   form: {
     width: '100%',
   },
@@ -210,34 +193,6 @@ const styles = StyleSheet.create({
     marginBottom: 12,
     borderWidth: 1,
     borderColor: '#e0e0e0',
-  },
-  tokenContainer: {
-    backgroundColor: '#fff',
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 24,
-    borderWidth: 1,
-    borderColor: '#FFD700',
-  },
-  tokenLabel: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#666',
-    marginBottom: 8,
-  },
-  tokenText: {
-    fontSize: 12,
-    color: '#000',
-    fontFamily: Platform.OS === 'ios' ? 'Courier' : 'monospace',
-    backgroundColor: '#f5f5f5',
-    padding: 12,
-    borderRadius: 8,
-    marginBottom: 8,
-  },
-  tokenNote: {
-    fontSize: 12,
-    color: '#888',
-    fontStyle: 'italic',
   },
   errorText: {
     color: '#ff4444',

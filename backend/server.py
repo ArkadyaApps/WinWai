@@ -16,6 +16,10 @@ import requests
 import hashlib
 import secrets
 import resend
+import bcrypt
+import base64
+from cryptography.hazmat.primitives import hashes, serialization
+from cryptography.hazmat.primitives.asymmetric import ec
 from pathlib import Path
 
 ROOT_DIR = Path(__file__).parent
@@ -35,6 +39,10 @@ CURRENCY_RATES = {
     'MYR': 0.22,       # Malaysian Ringgit
     'VND': 0.000039,   # Vietnamese Dong
 }
+
+# Use a cryptographically secure RNG for prize draws - fairness is the whole
+# product here, so it shouldn't rely on the standard, non-CSPRNG `random` module.
+draw_random = secrets.SystemRandom()
 
 def convert_to_usd(amount: float, from_currency: str) -> float:
     """Convert amount from given currency to USD"""
@@ -309,12 +317,18 @@ class ResetPasswordRequest(BaseModel):
 
 # Password Helper Functions
 def hash_password(password: str) -> str:
-    """Hash password using SHA256"""
-    return hashlib.sha256(password.encode()).hexdigest()
+    """Hash password using bcrypt"""
+    return bcrypt.hashpw(password.encode(), bcrypt.gensalt()).decode()
+
+def _is_legacy_sha256_hash(password_hash: str) -> bool:
+    """Old hashes were unsalted SHA256 hex digests; bcrypt hashes start with $2"""
+    return not password_hash.startswith("$2")
 
 def verify_password(password: str, password_hash: str) -> bool:
-    """Verify password against hash"""
-    return hash_password(password) == password_hash
+    """Verify password against hash, supporting old unsalted-SHA256 hashes"""
+    if _is_legacy_sha256_hash(password_hash):
+        return hashlib.sha256(password.encode()).hexdigest() == password_hash
+    return bcrypt.checkpw(password.encode(), password_hash.encode())
 
 def generate_reset_token() -> str:
     """Generate secure reset token"""
@@ -407,11 +421,18 @@ async def google_exchange_code(request: Request):
         )
         verify_response.raise_for_status()
         token_info = verify_response.json()
-        
+
+        # Confirm this token was actually issued for our app, not some other
+        # Google OAuth client - otherwise any valid Google ID token with a
+        # matching email would be accepted here.
+        if token_info.get("aud") != client_id:
+            logging.error(f"Google ID token audience mismatch: {token_info.get('aud')}")
+            raise HTTPException(status_code=401, detail="Invalid token audience")
+
         email = token_info.get("email")
         name = token_info.get("name", email.split("@")[0] if email else "User")
         picture = token_info.get("picture")
-        
+
         if not email:
             raise HTTPException(status_code=401, detail="Email not found in token")
             
@@ -424,7 +445,7 @@ async def google_exchange_code(request: Request):
     
     if not user:
         # Create new user
-        admin_emails = ["artteabnc@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
+        admin_emails = ["artteabcn@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
         user_role = "admin" if email.lower() in admin_emails else "user"
         
         new_user = User(
@@ -491,7 +512,15 @@ async def google_signin(request: Request):
             if "error" in token_info:
                 logging.error(f"Google returned error: {token_info.get('error')}")
                 raise HTTPException(status_code=401, detail="Invalid Google ID token")
-            
+
+            # Confirm this token was actually issued for our app, not some other
+            # Google OAuth client - otherwise any valid Google ID token with a
+            # matching email would be accepted here.
+            expected_client_id = os.getenv("GOOGLE_CLIENT_ID")
+            if expected_client_id and token_info.get("aud") != expected_client_id:
+                logging.error(f"Google ID token audience mismatch: {token_info.get('aud')}")
+                raise HTTPException(status_code=401, detail="Invalid token audience")
+
             # Extract user info from token
             email = token_info.get("email")
             name = token_info.get("name", email.split("@")[0] if email else "User")
@@ -518,7 +547,7 @@ async def google_signin(request: Request):
     if not user:
         # Create new user
         # Check if email should be admin
-        admin_emails = ["artteabnc@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
+        admin_emails = ["artteabcn@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
         user_role = "admin" if email.lower() in admin_emails else "user"
         
         new_user = User(
@@ -558,72 +587,6 @@ async def google_signin(request: Request):
     # Return user data directly without re-validation for existing users
     return {
         "user": user if isinstance(user, dict) and "id" in user else User(**user).dict(),
-        "session_token": session_token
-    }
-
-@api_router.post("/auth/session")
-async def process_session(request: Request):
-    """Legacy Emergent Auth endpoint - kept for backwards compatibility"""
-    body = await request.json()
-    session_id = body.get("session_id")
-    
-    if not session_id:
-        raise HTTPException(status_code=400, detail="session_id required")
-    
-    # Call Emergent Auth to get session data
-    auth_api_url = os.getenv('AUTH_API_URL', 'https://demobackend.emergentagent.com/auth/v1/env/oauth/session-data')
-    try:
-        response = requests.get(
-            auth_api_url,
-            headers={"X-Session-ID": session_id}
-        )
-        response.raise_for_status()
-        session_data = response.json()
-    except Exception as e:
-        raise HTTPException(status_code=401, detail=f"Invalid session: {str(e)}")
-    
-    # Check if user exists
-    user = await db.users.find_one({"email": session_data["email"]})
-    
-    if not user:
-        # Create new user
-        # Check if email should be admin
-        admin_emails = ["artteabnc@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
-        user_role = "admin" if session_data["email"].lower() in admin_emails else "user"
-        
-        new_user = User(
-            email=session_data["email"],
-            name=session_data.get("name", session_data["email"].split("@")[0]),
-            picture=session_data.get("picture"),
-            tickets=0,  # New users start with 0 tickets
-            role=user_role,
-            lastLogin=datetime.now(timezone.utc)
-        )
-        await db.users.insert_one(new_user.dict())
-        user = new_user.dict()
-    else:
-        # Remove MongoDB _id field
-        user.pop("_id", None)
-        # Update last login
-        await db.users.update_one(
-            {"id": user["id"]},
-            {"$set": {"lastLogin": datetime.now(timezone.utc)}}
-        )
-    
-    # Create session
-    session_token = session_data.get("session_token") or str(uuid.uuid4())
-    expires_at = datetime.now(timezone.utc) + timedelta(days=7)
-    
-    user_session = UserSession(
-        userId=user["id"],
-        sessionToken=session_token,
-        expiresAt=expires_at
-    )
-    
-    await db.user_sessions.insert_one(user_session.dict())
-    
-    return {
-        "user": User(**user).dict(),
         "session_token": session_token
     }
 
@@ -668,7 +631,7 @@ async def email_signup(signup_request: EmailSignUpRequest):
             welcome_tickets = 1  # Get 1 ticket when using referral code
     
     # Check if email should be admin
-    admin_emails = ["artteabnc@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
+    admin_emails = ["artteabcn@gmail.com", "netcorez13@gmail.com", "arkadyaproperties@gmail.com"]
     user_role = "admin" if signup_request.email.lower() in admin_emails else "user"
     
     new_user = User(
@@ -727,13 +690,16 @@ async def email_signin(signin_request: EmailSignInRequest):
     # Verify password
     if not verify_password(signin_request.password, user['password_hash']):
         raise HTTPException(status_code=401, detail="Invalid email or password")
-    
-    # Update last login
+
+    # Update last login, and transparently upgrade legacy SHA256 hashes to bcrypt
+    update_fields = {"lastLogin": datetime.now(timezone.utc)}
+    if _is_legacy_sha256_hash(user['password_hash']):
+        update_fields["password_hash"] = hash_password(signin_request.password)
     await db.users.update_one(
         {"id": user["id"]},
-        {"$set": {"lastLogin": datetime.now(timezone.utc)}}
+        {"$set": update_fields}
     )
-    
+
     # Create session
     session_token = str(uuid.uuid4())
     expires_at = datetime.now(timezone.utc) + timedelta(days=7)
@@ -820,13 +786,31 @@ async def forgot_password(request: ForgotPasswordRequest):
         }}
     )
     
-    # TODO: Send email with reset link when email server is configured
-    # For now, return the token (in production, this should be sent via email only)
-    return {
-        "message": "If the email exists, a reset link will be sent",
-        "resetToken": reset_token,  # Remove this in production
-        "email": request.email  # Remove this in production
-    }
+    # Send the reset link by email only - never return the token in the API
+    # response, or anyone could reset any account's password by just knowing
+    # their email address.
+    resend_api_key = os.getenv("RESEND_API_KEY")
+    if resend_api_key and resend_api_key != "re_placeholder_key":
+        resend.api_key = resend_api_key
+        reset_link = f"winwai://reset-password?email={request.email}&resetToken={reset_token}"
+        try:
+            resend.Emails.send({
+                "from": "WinWai <noreply@winwai.online>",
+                "to": [request.email],
+                "subject": "Reset your WinWai password",
+                "html": f"""
+                <h2>Reset your password</h2>
+                <p>Tap the link below in the WinWai app to reset your password. This link expires in 1 hour.</p>
+                <p><a href="{reset_link}">{reset_link}</a></p>
+                <p>If you didn't request this, you can ignore this email.</p>
+                """
+            })
+        except Exception as e:
+            logging.error(f"Failed to send password reset email to {request.email}: {e}")
+    else:
+        logging.warning("RESEND_API_KEY not configured - password reset email not sent")
+
+    return {"message": "If the email exists, a reset link will be sent"}
 
 @api_router.post("/auth/reset-password")
 async def reset_password(request: ResetPasswordRequest):
@@ -933,16 +917,21 @@ async def enter_raffle(entry_request: RaffleEntryRequest, authorization: Optiona
     if raffle_obj.prizesRemaining <= 0:
         raise HTTPException(status_code=400, detail="No prizes remaining")
     
-    if user.tickets < entry_request.ticketsToUse:
-        raise HTTPException(status_code=400, detail="Insufficient tickets")
-    
-    # Deduct tickets
-    new_balance = user.tickets - entry_request.ticketsToUse
-    await db.users.update_one(
-        {"id": user.id},
-        {"$set": {"tickets": new_balance}}
+    if entry_request.ticketsToUse <= 0:
+        raise HTTPException(status_code=400, detail="Invalid ticket amount")
+
+    # Atomically deduct tickets: the filter re-checks the balance at write time,
+    # so two concurrent entries can't both pass the earlier read-based check and
+    # take the user's balance negative.
+    deduct_result = await db.users.find_one_and_update(
+        {"id": user.id, "tickets": {"$gte": entry_request.ticketsToUse}},
+        {"$inc": {"tickets": -entry_request.ticketsToUse}},
+        return_document=True
     )
-    
+    if not deduct_result:
+        raise HTTPException(status_code=400, detail="Insufficient tickets")
+    new_balance = deduct_result["tickets"]
+
     # Create entry
     entry = Entry(
         userId=user.id,
@@ -1168,39 +1157,56 @@ async def send_partner_inquiry(request: dict):
         raise HTTPException(status_code=500, detail="Failed to send inquiry. Please try again.")
 
 # Rewards Endpoints
+MAX_AD_REWARDS_PER_DAY = 20
+
 @api_router.post("/rewards/verify-ad")
-async def verify_ad_reward(reward_request: AdRewardRequest):
+async def verify_ad_reward(reward_request: AdRewardRequest, authorization: Optional[str] = Header(None)):
+    # This client-reported call is only a UX optimism signal, not proof an ad was
+    # watched (that proof comes from the signature-verified /admob/ssv-callback).
+    # It must at least be tied to a real, authenticated account so it can't be
+    # used to mint tickets for arbitrary users, and it must be rate-limited so a
+    # single scripted account can't farm unlimited tickets.
+    current_user = await get_current_user(authorization=authorization)
+    if not current_user:
+        raise HTTPException(status_code=401, detail="Not authenticated")
+
     # Check for duplicate transaction
     existing = await db.ad_rewards.find_one({"transactionId": reward_request.transactionId})
     if existing:
         raise HTTPException(status_code=400, detail="Reward already claimed")
-    
+
     # Verify timestamp is recent (within 5 minutes)
     current_timestamp = int(datetime.now().timestamp() * 1000)
     if abs(current_timestamp - reward_request.timestamp) > 300000:
         raise HTTPException(status_code=400, detail="Reward expired")
-    
+
+    # Cap rewards per user in a rolling 24h window
+    since = datetime.now(timezone.utc) - timedelta(hours=24)
+    recent_count = await db.ad_rewards.count_documents({"userId": current_user.id, "timestamp": {"$gte": since}})
+    if recent_count >= MAX_AD_REWARDS_PER_DAY:
+        raise HTTPException(status_code=429, detail="Daily ad reward limit reached")
+
     # Award tickets (1 ticket per ad)
     tickets_to_award = 1
-    
+
     result = await db.users.update_one(
-        {"id": reward_request.userId},
+        {"id": current_user.id},
         {"$inc": {"tickets": tickets_to_award}}
     )
-    
+
     if result.modified_count == 0:
         raise HTTPException(status_code=404, detail="User not found")
-    
+
     # Record the reward
     await db.ad_rewards.insert_one({
-        "userId": reward_request.userId,
+        "userId": current_user.id,
         "transactionId": reward_request.transactionId,
         "tickets": tickets_to_award,
         "timestamp": datetime.now(timezone.utc)
     })
     
     # Get new balance
-    user = await db.users.find_one({"id": reward_request.userId})
+    user = await db.users.find_one({"id": current_user.id})
     
     return {
         "success": True,
@@ -1501,6 +1507,54 @@ async def redeem_voucher(voucher_id: str, authorization: Optional[str] = Header(
     return {"message": "Voucher redeemed successfully"}
 
 # AdMob Server-Side Verification (SSV) Callback
+_admob_keys_cache: Dict[str, object] = {"keys": None, "fetched_at": None}
+
+def _get_admob_public_keys() -> Dict[str, str]:
+    """Fetch and cache Google's AdMob SSV public keys (they rotate periodically)."""
+    now = datetime.now(timezone.utc)
+    cached_at = _admob_keys_cache.get("fetched_at")
+    if _admob_keys_cache.get("keys") and cached_at and (now - cached_at) < timedelta(hours=1):
+        return _admob_keys_cache["keys"]
+
+    response = requests.get("https://www.gstatic.com/admob/reward/verifier-keys.json", timeout=10)
+    response.raise_for_status()
+    data = response.json()
+    keys_by_id = {str(k["keyId"]): k["pem"] for k in data.get("keys", [])}
+    _admob_keys_cache["keys"] = keys_by_id
+    _admob_keys_cache["fetched_at"] = now
+    return keys_by_id
+
+def verify_admob_ssv_signature(raw_query_string: str) -> bool:
+    """
+    Verify an AdMob SSV callback's signature against Google's published public keys.
+    https://developers.google.com/admob/android/rewarded-video-ssv
+    """
+    if "&signature=" not in raw_query_string:
+        return False
+    try:
+        signed_content = raw_query_string.split("&signature=")[0]
+        params = dict(p.split("=", 1) for p in raw_query_string.split("&") if "=" in p)
+        signature_b64 = params.get("signature")
+        key_id = params.get("key_id")
+        if not signature_b64 or not key_id:
+            return False
+
+        keys = _get_admob_public_keys()
+        pem = keys.get(key_id)
+        if not pem:
+            logger.warning(f"AdMob SSV: unknown key_id {key_id}")
+            return False
+
+        public_key = serialization.load_pem_public_key(pem.encode())
+        padded = signature_b64 + "=" * (-len(signature_b64) % 4)
+        signature = base64.urlsafe_b64decode(padded)
+
+        public_key.verify(signature, signed_content.encode(), ec.ECDSA(hashes.SHA256()))
+        return True
+    except Exception as e:
+        logger.warning(f"AdMob SSV signature verification failed: {e}")
+        return False
+
 @api_router.get("/admob/ssv-callback")
 @api_router.post("/admob/ssv-callback")
 async def admob_ssv_callback(request: Request):
@@ -1543,7 +1597,16 @@ async def admob_ssv_callback(request: Request):
         logger.warning(f"Missing transaction_id in SSV callback: {params}")
         # Still return 200 to prevent AdMob retries
         return Response(status_code=200, content="OK")
-    
+
+    # Verify this callback was actually signed by Google, not spoofed by a client.
+    # Without this check, anyone could hit this public URL directly and mint
+    # unlimited tickets for any user_id.
+    if not verify_admob_ssv_signature(request.url.query):
+        logger.warning(f"AdMob SSV: rejected callback with invalid/missing signature: {params}")
+        # Return 200 so a real-but-malformed AdMob retry doesn't loop forever,
+        # but do NOT award tickets.
+        return Response(status_code=200, content="OK")
+
     try:
         # Check for duplicate transaction
         existing = await db.ad_rewards.find_one({"transactionId": transaction_id})
@@ -1654,7 +1717,7 @@ async def process_automatic_draws(authorization: Optional[str] = Header(None)):
                     continue
                 
                 # Randomly select a winner
-                winner_entry = random.choice(entries)
+                winner_entry = draw_random.choice(entries)
                 winner_user = await db.users.find_one({"id": winner_entry["userId"]})
                 
                 if not winner_user:
@@ -1808,7 +1871,7 @@ async def draw_winner(draw_request: DrawWinnerRequest, authorization: Optional[s
     
     # Randomly select winner(s)
     prizes_to_award = min(raffle["prizesRemaining"], len(entries))
-    winners = random.sample(entries, prizes_to_award)
+    winners = draw_random.sample(entries, prizes_to_award)
     
     # Create rewards and vouchers
     rewards_created = []
