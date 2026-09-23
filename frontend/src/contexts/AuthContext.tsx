@@ -1,14 +1,16 @@
 import React, { createContext, useContext, useEffect, useState, ReactNode } from 'react';
-import { Platform } from 'react-native';
+import * as Google from 'expo-auth-session/providers/google';
+import * as WebBrowser from 'expo-web-browser';
 import { useUserStore } from '../store/userStore';
 import api from '../utils/api';
 import { getSecureItem, setSecureItem, deleteSecureItem } from '../utils/secureStorage';
 
-// Conditionally import GoogleSignin only on native platforms
-let GoogleSignin: any = null;
-if (Platform.OS !== 'web') {
-  GoogleSignin = require('@react-native-google-signin/google-signin').GoogleSignin;
-}
+// Required so the web/native browser-based OAuth redirect can hand control
+// back to the app when it completes.
+WebBrowser.maybeCompleteAuthSession();
+
+// Must match one of the audiences the backend's /auth/google accepts.
+const GOOGLE_WEB_CLIENT_ID = '581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com';
 
 interface AuthContextType {
   signIn: () => Promise<void>;
@@ -26,6 +28,10 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const { setUser, setLoading, logout, isLoading } = useUserStore();
   const [sessionId, setSessionId] = useState<string | null>(null);
+
+  const [request, , promptAsync] = Google.useAuthRequest({
+    webClientId: GOOGLE_WEB_CLIENT_ID,
+  });
 
   useEffect(() => {
     checkExistingSession();
@@ -48,56 +54,28 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   };
 
   const signIn = async () => {
-    console.log('==================== NATIVE GOOGLE SIGNIN START ====================');
-    
-    try {
-      // Configure Google Sign-In
-      GoogleSignin.configure({
-        webClientId: '581979281149-4c8cdh17nliu2v0jsr5barm6cckojhsf.apps.googleusercontent.com',
-        offlineAccess: false,
-      });
-
-      // Check if Google Play Services is available
-      await GoogleSignin.hasPlayServices();
-      console.log('Google Play Services available');
-
-      // Sign in with native Google Sign-In UI
-      const userInfo = await GoogleSignin.signIn();
-      console.log('Native sign-in successful, user:', userInfo.data?.user.email);
-
-      // Get the ID token
-      const idToken = userInfo.data?.idToken;
-      if (!idToken) {
-        throw new Error('No ID token received from Google');
-      }
-
-      console.log('ID token received, sending to backend...');
-
-      // Send ID token to backend for verification and session creation
-      const response = await api.post('/api/auth/google', { id_token: idToken });
-      console.log('Backend response received');
-
-      const { session_token, user } = response.data;
-
-      console.log('Saving session token...');
-      await setSecureItem('session_token', session_token);
-      console.log('Setting user:', user.email);
-      setUser(user);
-      console.log('==================== NATIVE GOOGLE SIGNIN COMPLETE ====================');
-    } catch (error: any) {
-      console.error('!!! Native Google Sign in failed:', error);
-      
-      // Handle specific error codes
-      if (error.code === 'SIGN_IN_CANCELLED') {
-        console.log('User cancelled sign in');
-      } else if (error.code === 'IN_PROGRESS') {
-        console.log('Sign in already in progress');
-      } else if (error.code === 'PLAY_SERVICES_NOT_AVAILABLE') {
-        console.error('Google Play Services not available');
-      }
-      
-      throw error;
+    if (!request) {
+      throw new Error('Google sign-in is still initializing, please try again');
     }
+
+    const result = await promptAsync();
+
+    if (result.type === 'cancel' || result.type === 'dismiss') {
+      return; // user closed the sign-in prompt - not an error
+    }
+    if (result.type !== 'success') {
+      throw new Error('Google sign-in failed');
+    }
+
+    const idToken = result.params?.id_token;
+    if (!idToken) {
+      throw new Error('No ID token received from Google');
+    }
+
+    const response = await api.post('/api/auth/google', { id_token: idToken });
+    const { session_token, user } = response.data;
+    await setSecureItem('session_token', session_token);
+    setUser(user);
   };
 
   const signInWithEmail = async (email: string, password: string) => {
