@@ -1,9 +1,15 @@
 // Minimal service worker: exists only to satisfy PWA installability
 // requirements (a registered SW with a fetch handler). Deliberately does NOT
-// cache API responses or app bundles - this is a raffle app where ticket
-// balances, raffle state, and auth all need to stay live/fresh, so we always
-// go to the network and only fall back to cache if the network is down.
-const CACHE_NAME = 'winwai-shell-v1';
+// cache API responses, images, fonts, or JS bundles - this is a raffle app
+// where ticket balances, raffle state, and auth all need to stay live/fresh.
+//
+// IMPORTANT: only ever call respondWith() for the exact precached shell
+// assets. For every other request (API calls, images, fonts, JS chunks),
+// don't touch the fetch event at all - falling back to caches.match() for a
+// URL that was never cached resolves to undefined, and handing undefined to
+// respondWith() throws a NetworkError instead of just letting the request
+// through, which broke real API calls the first time this shipped.
+const CACHE_NAME = 'winwai-shell-v2';
 const SHELL_ASSETS = ['/', '/manifest.json', '/icon-192.png', '/icon-512.png'];
 
 self.addEventListener('install', (event) => {
@@ -23,9 +29,15 @@ self.addEventListener('activate', (event) => {
 });
 
 self.addEventListener('fetch', (event) => {
-  if (event.request.method !== 'GET') return;
+  const url = new URL(event.request.url);
+  const isShellAsset =
+    event.request.method === 'GET' &&
+    url.origin === self.location.origin &&
+    SHELL_ASSETS.includes(url.pathname);
+
+  if (!isShellAsset) return;
 
   event.respondWith(
-    fetch(event.request).catch(() => caches.match(event.request))
+    fetch(event.request).catch(() => caches.match(event.request).then((cached) => cached || Response.error()))
   );
 });
