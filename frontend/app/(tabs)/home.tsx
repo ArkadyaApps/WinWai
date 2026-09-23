@@ -195,17 +195,28 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.gridContainer}>
-          {gridItems.map((item) => (
-            <View key={item.key} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
-              {item.kind === 'raffle' ? (
-                <RaffleGridCard raffle={item.raffle} onPress={() => router.push(`/raffle/${item.raffle.id}`)} />
-              ) : item.kind === 'sponsor' ? (
-                <SponsorCard partner={item.partner} />
-              ) : (
+          {gridItems.map((item) =>
+            item.kind === 'ad' ? (
+              // Google's fluid in-feed format needs at least 250px of width
+              // to render at all (anything narrower gets outright rejected,
+              // "Fluid responsive ads must be at least 250px wide") - a
+              // 1/3-of-row grid cell never clears that on a phone. Full
+              // width forces a line break in the wrapping flex-wrap row, so
+              // it reads as a wide "sponsored" card between rows instead of
+              // a grid tile.
+              <View key={item.key} style={{ width: '100%', paddingHorizontal: CARD_MARGIN / 2 }}>
                 <AdCard />
-              )}
-            </View>
-          ))}
+              </View>
+            ) : (
+              <View key={item.key} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
+                {item.kind === 'raffle' ? (
+                  <RaffleGridCard raffle={item.raffle} onPress={() => router.push(`/raffle/${item.raffle.id}`)} />
+                ) : (
+                  <SponsorCard partner={item.partner} />
+                )}
+              </View>
+            )
+          )}
         </View>
 
         {raffles.length === 0 && (

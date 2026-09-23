@@ -42,12 +42,28 @@ const AdCard: React.FC = () => {
     ins.setAttribute('data-ad-slot', AD_SLOT);
     container.appendChild(ins);
 
-    try {
-      window.adsbygoogle = window.adsbygoogle || [];
-      window.adsbygoogle.push({});
-    } catch (error) {
-      console.error('AdSense in-feed push failed:', error);
-    }
+    // Google measures the container's width synchronously on push() and
+    // rejects the ad outright ("Fluid responsive ads must be at least 250px
+    // wide, availableWidth=0") if that happens before the surrounding
+    // layout has actually settled - which this component's own mount timing
+    // doesn't guarantee. Wait for a real width via rAF (capped) before
+    // pushing; the full-width row this now lives in (see home.tsx) should
+    // clear 250px well before the cap.
+    let attempts = 0;
+    const tryPush = () => {
+      attempts++;
+      if (container.offsetWidth >= 250 || attempts > 30) {
+        try {
+          window.adsbygoogle = window.adsbygoogle || [];
+          window.adsbygoogle.push({});
+        } catch (error) {
+          console.error('AdSense in-feed push failed:', error);
+        }
+        return;
+      }
+      requestAnimationFrame(tryPush);
+    };
+    requestAnimationFrame(tryPush);
   }, []);
 
   if (Platform.OS !== 'web') return null;
