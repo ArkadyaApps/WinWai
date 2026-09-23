@@ -16,19 +16,23 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const { id_token } = body.data;
 
     const verifyResponse = await fetch(`https://oauth2.googleapis.com/tokeninfo?id_token=${id_token}`);
-    if (!verifyResponse.ok) return json({ error: "Invalid Google ID token" }, 401);
+    if (!verifyResponse.ok) {
+      return json({ error: "Invalid Google ID token", debug: { step: "tokeninfo_http", status: verifyResponse.status, body: await verifyResponse.text() } }, 401);
+    }
     const tokenInfo = (await verifyResponse.json()) as Record<string, string>;
 
-    if (tokenInfo.error) return json({ error: "Invalid Google ID token" }, 401);
+    if (tokenInfo.error) {
+      return json({ error: "Invalid Google ID token", debug: { step: "tokeninfo_error", tokenInfo } }, 401);
+    }
 
     // Confirm this token was actually issued for our app, not some other
     // Google OAuth client.
     if (!isValidGoogleAudience(tokenInfo.aud, env)) {
-      return json({ error: "Invalid token audience" }, 401);
+      return json({ error: "Invalid token audience", debug: { step: "audience", aud: tokenInfo.aud, configured: env.GOOGLE_CLIENT_ID } }, 401);
     }
 
     const email = tokenInfo.email;
-    if (!email) return json({ error: "Email not found in token" }, 401);
+    if (!email) return json({ error: "Email not found in token", debug: { step: "email", tokenInfo } }, 401);
     const name = tokenInfo.name || email.split("@")[0];
     const picture = tokenInfo.picture ?? null;
 
