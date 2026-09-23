@@ -121,18 +121,19 @@ export default function HomeScreen() {
 
   // Interleave sponsor and ad cards into the raffle grid instead of grouping
   // them separately, so they get seen while browsing rather than sitting in
-  // an easily-skipped section. Each sponsor appears once (extras beyond what
-  // fits at the interval are appended at the end rather than dropped); ad
-  // cards repeat every AD_INTERVAL throughout (falling back to one guaranteed
-  // slot if the raffle list is too short to ever reach that interval), since
-  // ad inventory isn't limited the way the sponsor list is. When both would
-  // land on the same slot, the sponsor wins and the ad just waits for its
-  // next interval.
+  // an easily-skipped section. The first ad shows right after the 3rd raffle
+  // (so it's seen even without much scrolling), then repeats every
+  // AD_INTERVAL after that; a raffle list too short to even reach position 3
+  // still gets one ad appended at the end. Each sponsor appears once (extras
+  // beyond what fits at the interval are appended at the end rather than
+  // dropped). When a sponsor and an ad would land on the same slot, the
+  // sponsor wins and the ad just waits for its next interval.
   type GridItem =
     | { key: string; kind: 'raffle'; raffle: Raffle }
     | { key: string; kind: 'sponsor'; partner: Partner }
     | { key: string; kind: 'ad' };
   const SPONSOR_INTERVAL = 6;
+  const AD_FIRST_POSITION = 3;
   const AD_INTERVAL = 9;
   const gridItems: GridItem[] = useMemo(() => {
     const items: GridItem[] = [];
@@ -141,10 +142,11 @@ export default function HomeScreen() {
     raffles.forEach((raffle, i) => {
       items.push({ key: `raffle-${raffle.id}`, kind: 'raffle', raffle });
       const position = i + 1;
+      const isAdPosition = position === AD_FIRST_POSITION || (position > AD_FIRST_POSITION && (position - AD_FIRST_POSITION) % AD_INTERVAL === 0);
       if (position % SPONSOR_INTERVAL === 0 && sponsorIndex < sponsors.length) {
         items.push({ key: `sponsor-${sponsors[sponsorIndex].id}`, kind: 'sponsor', partner: sponsors[sponsorIndex] });
         sponsorIndex++;
-      } else if (position % AD_INTERVAL === 0) {
+      } else if (isAdPosition) {
         adCount++;
         items.push({ key: `ad-${adCount}`, kind: 'ad' });
       }
@@ -153,9 +155,9 @@ export default function HomeScreen() {
       items.push({ key: `sponsor-${sponsors[sponsorIndex].id}`, kind: 'sponsor', partner: sponsors[sponsorIndex] });
       sponsorIndex++;
     }
-    // A raffle list shorter than AD_INTERVAL would otherwise never show an
-    // ad card at all - guarantee at least one whenever there's any content,
-    // same as sponsors always getting shown regardless of list length.
+    // A raffle list shorter than AD_FIRST_POSITION would otherwise never
+    // show an ad card at all - guarantee at least one whenever there's any
+    // content, same as sponsors always getting shown regardless of list length.
     if (adCount === 0 && raffles.length > 0) {
       items.push({ key: 'ad-1', kind: 'ad' });
     }
