@@ -7,6 +7,7 @@ import { Raffle, Partner } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import SponsorCard from '../../src/components/SponsorCard';
+import AdCard from '../../src/components/AdCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import LanguageSelector from '../../src/components/LanguageSelector';
 import { Ionicons } from '@expo/vector-icons';
@@ -118,24 +119,32 @@ export default function HomeScreen() {
 
   const onRefresh = () => { setRefreshing(true); loadRaffles(); loadSponsors(); };
 
-  // Interleave sponsor cards into the raffle grid instead of grouping them
-  // separately, so sponsors get seen while browsing rather than sitting in
-  // an easily-skipped section. Each sponsor appears once; if there are more
-  // sponsors than fit at the chosen interval, the rest are appended at the
-  // end rather than dropped.
-  type GridItem = { key: string; kind: 'raffle'; raffle: Raffle } | { key: string; kind: 'sponsor'; partner: Partner };
+  // Interleave sponsor and ad cards into the raffle grid instead of grouping
+  // them separately, so they get seen while browsing rather than sitting in
+  // an easily-skipped section. Each sponsor appears once (extras beyond what
+  // fits at the interval are appended at the end rather than dropped); ad
+  // cards repeat every AD_INTERVAL throughout, since ad inventory isn't
+  // limited the way the sponsor list is. When both would land on the same
+  // slot, the sponsor wins and the ad just waits for its next interval.
+  type GridItem =
+    | { key: string; kind: 'raffle'; raffle: Raffle }
+    | { key: string; kind: 'sponsor'; partner: Partner }
+    | { key: string; kind: 'ad' };
   const SPONSOR_INTERVAL = 6;
+  const AD_INTERVAL = 9;
   const gridItems: GridItem[] = useMemo(() => {
-    if (sponsors.length === 0) {
-      return raffles.map((raffle) => ({ key: `raffle-${raffle.id}`, kind: 'raffle' as const, raffle }));
-    }
     const items: GridItem[] = [];
     let sponsorIndex = 0;
+    let adCount = 0;
     raffles.forEach((raffle, i) => {
       items.push({ key: `raffle-${raffle.id}`, kind: 'raffle', raffle });
-      if ((i + 1) % SPONSOR_INTERVAL === 0 && sponsorIndex < sponsors.length) {
+      const position = i + 1;
+      if (position % SPONSOR_INTERVAL === 0 && sponsorIndex < sponsors.length) {
         items.push({ key: `sponsor-${sponsors[sponsorIndex].id}`, kind: 'sponsor', partner: sponsors[sponsorIndex] });
         sponsorIndex++;
+      } else if (position % AD_INTERVAL === 0) {
+        adCount++;
+        items.push({ key: `ad-${adCount}`, kind: 'ad' });
       }
     });
     while (sponsorIndex < sponsors.length) {
@@ -180,8 +189,10 @@ export default function HomeScreen() {
             <View key={item.key} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
               {item.kind === 'raffle' ? (
                 <RaffleGridCard raffle={item.raffle} onPress={() => router.push(`/raffle/${item.raffle.id}`)} />
-              ) : (
+              ) : item.kind === 'sponsor' ? (
                 <SponsorCard partner={item.partner} />
+              ) : (
+                <AdCard />
               )}
             </View>
           ))}
