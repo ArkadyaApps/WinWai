@@ -8,6 +8,15 @@ import { Partner } from '../../src/types';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 
+export const PARTNER_CATEGORIES = [
+  { value: 'food', label: 'Food', icon: '🍽️' },
+  { value: 'hotel', label: 'Hotel', icon: '🏨' },
+  { value: 'spa', label: 'Spa', icon: '💆' },
+  { value: 'electronics', label: 'Electronics', icon: '📱' },
+  { value: 'services', label: 'Services', icon: '🛠️' },
+  { value: 'shopping', label: 'Shopping', icon: '🛍️' },
+];
+
 export default function AdminPartnersScreen() {
   const router = useRouter();
   const [partners, setPartners] = useState<Partner[]>([]);
@@ -268,7 +277,7 @@ export default function AdminPartnersScreen() {
     ]);
   };
 
-  const getCategoryIcon = (category: string) => category === 'food' ? '🍽️' : category === 'hotel' ? '🏨' : category === 'spa' ? '💆' : '📦';
+  const getCategoryIcon = (category: string) => PARTNER_CATEGORIES.find((c) => c.value === category)?.icon || '📦';
 
   if (loading && partners.length === 0) {
     return (<View style={styles.centerContainer}><ActivityIndicator size="large" color={theme.colors.primaryGold} /></View>);
@@ -332,14 +341,14 @@ export default function AdminPartnersScreen() {
               
               <Text style={styles.label}>Category *</Text>
               <View style={styles.categoryButtons}>
-                {['food', 'hotel', 'spa'].map((cat) => (
+                {PARTNER_CATEGORIES.map(({ value: cat, label, icon }) => (
                   <TouchableOpacity
                     key={cat}
-                    style={[styles.categoryBtn, formData.category === cat && styles.categoryBtnActive]}
+                    style={[styles.categoryButton, formData.category === cat && styles.categoryButtonActive]}
                     onPress={() => setFormData({ ...formData, category: cat })}
                   >
-                    <Text style={[styles.categoryBtnText, formData.category === cat && styles.categoryBtnTextActive]}>
-                      {cat === 'food' ? '🍽️ Food' : cat === 'hotel' ? '🏨 Hotel' : '💆 Spa'}
+                    <Text style={[styles.categoryButtonText, formData.category === cat && styles.categoryButtonTextActive]}>
+                      {icon} {label}
                     </Text>
                   </TouchableOpacity>
                 ))}
@@ -492,8 +501,8 @@ const styles = StyleSheet.create({
   label: { fontSize: 14, fontWeight: '600', color: theme.colors.onyx, marginBottom: 8, marginTop: 12 },
   input: { backgroundColor: '#F5F5F5', borderRadius: 8, padding: 12, fontSize: 16, color: theme.colors.onyx },
   textArea: { height: 80, textAlignVertical: 'top' },
-  categoryButtons: { flexDirection: 'row', gap: 8 },
-  categoryButton: { flex: 1, backgroundColor: '#F5F5F5', padding: 12, borderRadius: 8, alignItems: 'center' },
+  categoryButtons: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
+  categoryButton: { minWidth: '31%', backgroundColor: '#F5F5F5', padding: 12, borderRadius: 8, alignItems: 'center' },
   categoryButtonActive: { backgroundColor: theme.colors.primaryGold },
   categoryButtonText: { fontSize: 14, color: theme.colors.slate, textTransform: 'capitalize' },
   categoryButtonTextActive: { color: '#000', fontWeight: '600' },
