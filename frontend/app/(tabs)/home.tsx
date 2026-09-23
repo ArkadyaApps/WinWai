@@ -62,15 +62,26 @@ export default function HomeScreen() {
     }
   };
 
-  useEffect(() => { initialize(); }, []);
+  // Geolocation (browser permission prompt + GPS/IP lookup) can take
+  // several seconds, or hang indefinitely on web if the user ignores the
+  // permission prompt. Load raffles immediately so the screen isn't blocked
+  // on it; location/language detection run in the background and refine
+  // what's shown (via the userCity effect below) once they resolve.
+  useEffect(() => {
+    loadRaffles();
+    initializeLanguage();
+    detectLocation();
+  }, []);
 
-  const initialize = async () => { await initializeLanguage(); await detectLocation(); loadRaffles(); };
+  useEffect(() => {
+    if (userCity) loadRaffles();
+  }, [userCity]);
 
   const detectLocation = async () => {
     const location = await getUserLocation();
     if (location) {
       setUserCity(location.city);
-      const savedLang = await require('@react-native-async-storage/async-storage').default.getItem('app_language');
+      const savedLang = await AsyncStorage.getItem('app_language');
       if (!savedLang) {
         const detectedLang = getLanguageFromCountry(location.country);
         await setLanguage(detectedLang);
