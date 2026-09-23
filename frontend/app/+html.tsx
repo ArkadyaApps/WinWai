@@ -20,6 +20,16 @@ export default function Root({ children }: PropsWithChildren) {
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <link rel="icon" href="/icon-192.png" />
         <ScrollViewStyleReset />
+        {/* Connects the site to the ca-pub-3486145054830108 AdSense account
+            (also required for the Ad Placement API rewarded-ad calls in
+            RewardedAdManager.ts) - loaded once, site-wide, so every page can
+            use it and Auto ads (if enabled in the AdSense dashboard) can
+            place banner ads without extra code. */}
+        <script
+          async
+          src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3486145054830108"
+          crossOrigin="anonymous"
+        ></script>
         <script
           dangerouslySetInnerHTML={{
             __html: `

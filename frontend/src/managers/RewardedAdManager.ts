@@ -9,13 +9,13 @@ export interface RewardEvent {
   timestamp: number;
 }
 
-// Same Google Ads account number as the retired AdMob app config
-// (ca-app-pub-3486145054830108~...), reformatted as a web publisher id.
-// NOTE: this account needs to actually be approved for the Ad Placement
-// API's rewarded-ad product for this to serve real ads - unverified as of
-// writing, worth confirming in the Google AdSense/Ad Placement dashboard.
+// Confirmed AdSense publisher id for winwai.online. The adsbygoogle.js
+// script itself is loaded once, site-wide, in app/+html.tsx.
+// NOTE: the account still needs to be approved for the Ad Placement API's
+// rewarded-ad product for this to actually serve ads - confirm in the
+// Google AdSense dashboard under Ad Placement API / Games.
 const AD_CLIENT = 'ca-pub-3486145054830108';
-const AD_SCRIPT_SRC = 'https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js';
+const AD_SCRIPT_SRC = `https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=${AD_CLIENT}`;
 
 type AdBreakStatus = 'viewed' | 'dismissed' | 'ignored' | 'frequencyCapped' | 'noAdPreloaded' | 'other';
 
@@ -55,23 +55,28 @@ class RewardedAdManager {
     if (this.scriptLoadPromise) return this.scriptLoadPromise;
 
     this.scriptLoadPromise = new Promise((resolve, reject) => {
-      if (document.querySelector('script[data-ad-placement="rewarded"]')) {
-        this.scriptLoaded = true;
+      // adsbygoogle's own recommended pattern: `(window.adsbygoogle =
+      // window.adsbygoogle || []).push(...)` is a queue that works whether
+      // or not the async script has actually finished loading yet - no need
+      // to wait for a load event. app/+html.tsx already loads the script
+      // site-wide (also needed for AdSense display/Auto ads), so just make
+      // sure the queue array exists; only inject our own copy as a fallback
+      // if that site-wide tag is somehow missing.
+      window.adsbygoogle = window.adsbygoogle || [];
+      this.scriptLoaded = true;
+
+      if (document.querySelector('script[src*="adsbygoogle.js"]')) {
         resolve();
         return;
       }
+
       const script = document.createElement('script');
       script.async = true;
       script.src = AD_SCRIPT_SRC;
-      script.setAttribute('data-ad-client', AD_CLIENT);
-      script.setAttribute('data-ad-placement', 'rewarded');
-      script.onload = () => {
-        window.adsbygoogle = window.adsbygoogle || [];
-        this.scriptLoaded = true;
-        resolve();
-      };
+      script.crossOrigin = 'anonymous';
       script.onerror = () => reject(new Error('Ad Placement script failed to load'));
       document.head.appendChild(script);
+      resolve();
     });
 
     return this.scriptLoadPromise;

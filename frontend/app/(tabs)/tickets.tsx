@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, Platform } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useLanguageStore } from '../../src/store/languageStore';
 import { translations } from '../../src/utils/translations';
@@ -29,9 +29,9 @@ export default function TicketsScreen() {
       rewardedAdManager.setRewardCallback(async () => {
         console.log('Reward callback triggered');
         try { 
-          const response = await api.get('/api/users/me/tickets'); 
-          updateTickets(response.data.tickets); 
-          Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success); 
+          const response = await api.get('/api/users/me/tickets');
+          updateTickets(response.data.tickets);
+          if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
         } catch (error) { 
           console.error('Failed to refresh tickets:', error); 
         }
@@ -62,9 +62,9 @@ export default function TicketsScreen() {
     if (!user) return;
     
     setLoading(true);
-    try { 
-      await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
-      
+    try {
+      if (Platform.OS !== 'web') await Haptics.impactAsync(Haptics.ImpactFeedbackStyle.Medium);
+
       // Show the ad if ready
       if (adReady) {
         await rewardedAdManager.showRewardedAd();
