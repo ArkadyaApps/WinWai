@@ -123,9 +123,11 @@ export default function HomeScreen() {
   // them separately, so they get seen while browsing rather than sitting in
   // an easily-skipped section. Each sponsor appears once (extras beyond what
   // fits at the interval are appended at the end rather than dropped); ad
-  // cards repeat every AD_INTERVAL throughout, since ad inventory isn't
-  // limited the way the sponsor list is. When both would land on the same
-  // slot, the sponsor wins and the ad just waits for its next interval.
+  // cards repeat every AD_INTERVAL throughout (falling back to one guaranteed
+  // slot if the raffle list is too short to ever reach that interval), since
+  // ad inventory isn't limited the way the sponsor list is. When both would
+  // land on the same slot, the sponsor wins and the ad just waits for its
+  // next interval.
   type GridItem =
     | { key: string; kind: 'raffle'; raffle: Raffle }
     | { key: string; kind: 'sponsor'; partner: Partner }
@@ -150,6 +152,12 @@ export default function HomeScreen() {
     while (sponsorIndex < sponsors.length) {
       items.push({ key: `sponsor-${sponsors[sponsorIndex].id}`, kind: 'sponsor', partner: sponsors[sponsorIndex] });
       sponsorIndex++;
+    }
+    // A raffle list shorter than AD_INTERVAL would otherwise never show an
+    // ad card at all - guarantee at least one whenever there's any content,
+    // same as sponsors always getting shown regardless of list length.
+    if (adCount === 0 && raffles.length > 0) {
+      items.push({ key: 'ad-1', kind: 'ad' });
     }
     return items;
   }, [raffles, sponsors]);
