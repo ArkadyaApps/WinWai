@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+// Admin forms send "" for an empty optional email field rather than omitting
+// it - z.string().email() rejects "" (it's not a valid email), so without
+// this every create/update with a blank email field fails validation.
+const optionalEmail = z.preprocess((val) => (val === "" ? undefined : val), z.string().email().optional().nullable());
+
 export const CreateUserSchema = z.object({
   name: z.string().min(1),
   email: z.string().email(),
@@ -12,7 +17,7 @@ export type CreateUserInput = z.infer<typeof CreateUserSchema>;
 
 export const UpdateUserSchema = z.object({
   name: z.string().min(1).optional(),
-  email: z.string().email().optional(),
+  email: optionalEmail,
   phone: z.string().optional(),
   role: z.enum(["user", "admin"]).optional(),
   tickets: z.number().int().optional(),
@@ -27,7 +32,7 @@ const PartnerBaseSchema = z.object({
   category: z.string().min(1),
   sponsored: z.boolean().default(false),
   contactInfo: z.string().optional().nullable(),
-  email: z.string().email().optional().nullable(),
+  email: optionalEmail,
   whatsapp: z.string().optional().nullable(),
   line: z.string().optional().nullable(),
   address: z.string().optional().nullable(),

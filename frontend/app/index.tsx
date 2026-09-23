@@ -17,6 +17,7 @@ import { useAuth } from '../src/contexts/AuthContext';
 import { useUserStore } from '../src/store/userStore';
 import { validateEmail, validatePassword } from '../src/utils/validation';
 import { useTranslation } from '../src/i18n/useTranslation';
+import LanguageSelector from '../src/components/LanguageSelector';
 
 export default function Index() {
   const router = useRouter();
@@ -84,11 +85,14 @@ export default function Index() {
   }
 
   return (
-    <KeyboardAvoidingView 
+    <KeyboardAvoidingView
       style={styles.container}
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
-      <ScrollView 
+      <View style={styles.languageToggle}>
+        <LanguageSelector />
+      </View>
+      <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
       >
@@ -226,6 +230,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: '#FFF8E7',
+  },
+  languageToggle: {
+    position: 'absolute',
+    top: Platform.OS === 'ios' ? 50 : 16,
+    right: 16,
+    zIndex: 10,
   },
   scrollContent: {
     flexGrow: 1,
