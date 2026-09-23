@@ -1,8 +1,14 @@
+import { useEffect } from 'react';
 import { Stack } from 'expo-router';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../src/contexts/AuthContext';
+import { usePwaInstallStore } from '../src/store/pwaInstallStore';
 
 export default function RootLayout() {
+  useEffect(() => {
+    usePwaInstallStore.getState().init();
+  }, []);
+
   return (
     <SafeAreaProvider>
       <AuthProvider>

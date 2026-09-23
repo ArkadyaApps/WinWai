@@ -13,6 +13,8 @@ import api from '../../src/utils/api';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 import PartnerInquiryModal from '../../src/components/PartnerInquiryModal';
+import PwaInstallModal from '../../src/components/PwaInstallModal';
+import { usePwaInstallStore } from '../../src/store/pwaInstallStore';
 
 export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
@@ -41,6 +43,9 @@ export default function ProfileScreen() {
   const [passwordData, setPasswordData] = useState({ currentPassword: '', newPassword: '', confirmPassword: '' });
   const [referralCode, setReferralCode] = useState('');
   const [redeeming, setRedeeming] = useState(false);
+  const [installModalVisible, setInstallModalVisible] = useState(false);
+  const { deferredPrompt, isIOS, isStandalone } = usePwaInstallStore();
+  const canOfferInstall = Platform.OS === 'web' && !isStandalone && (deferredPrompt || isIOS);
 
   useEffect(() => { initializeAdminMode(); }, []);
   useEffect(() => { if (user) setFormData({ name: user.name, email: user.email, phone: user.phone || '' }); }, [user]);
@@ -309,7 +314,15 @@ export default function ProfileScreen() {
             <Text style={styles.menuText}>{t('profile.privacyPolicy')}</Text>
             <Ionicons name="chevron-forward" size={20} color="#999" />
           </TouchableOpacity>
+          {canOfferInstall && (
+            <TouchableOpacity style={styles.menuItem} onPress={() => setInstallModalVisible(true)}>
+              <Ionicons name="download-outline" size={24} color={theme.colors.onyx} />
+              <Text style={styles.menuText}>{t('pwaInstall.menuLabel')}</Text>
+              <Ionicons name="chevron-forward" size={20} color="#999" />
+            </TouchableOpacity>
+          )}
         </View>
+        <PwaInstallModal visible={installModalVisible} onClose={() => setInstallModalVisible(false)} />
 
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
           <Ionicons name="log-out-outline" size={24} color={theme.colors.danger} />

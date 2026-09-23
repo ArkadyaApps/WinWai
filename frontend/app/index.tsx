@@ -12,31 +12,62 @@ import {
   ScrollView,
   Alert,
 } from 'react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useRouter } from 'expo-router';
 import { useAuth } from '../src/contexts/AuthContext';
 import { useUserStore } from '../src/store/userStore';
 import { validateEmail, validatePassword } from '../src/utils/validation';
 import { useTranslation } from '../src/i18n/useTranslation';
 import LanguageSelector from '../src/components/LanguageSelector';
+import PwaInstallModal from '../src/components/PwaInstallModal';
+import { usePwaInstallStore } from '../src/store/pwaInstallStore';
+
+const INSTALL_PROMPT_DISMISSED_KEY = 'pwa_install_prompt_dismissed';
 
 export default function Index() {
   const router = useRouter();
   const { signIn, signInWithEmail, isLoading: authLoading } = useAuth();
   const { isAuthenticated, isLoading: userLoading } = useUserStore();
   const { t } = useTranslation();
-  
+  const { deferredPrompt, isIOS, isStandalone } = usePwaInstallStore();
+
   const [authMode, setAuthMode] = useState<'google' | 'email'>('email');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [showPassword, setShowPassword] = useState(false);
   const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
+  const [showInstallModal, setShowInstallModal] = useState(false);
 
   useEffect(() => {
     if (!userLoading && isAuthenticated) {
       router.replace('/(tabs)/home');
     }
   }, [isAuthenticated, userLoading]);
+
+  // Auto-show the install prompt once, after a short delay so it doesn't
+  // interrupt the initial page load - but never if already installed, never
+  // twice, and only when there's actually something to show (a captured
+  // beforeinstallprompt event, or iOS manual instructions).
+  useEffect(() => {
+    if (Platform.OS !== 'web' || isStandalone || (!deferredPrompt && !isIOS)) return;
+
+    let cancelled = false;
+    AsyncStorage.getItem(INSTALL_PROMPT_DISMISSED_KEY).then((dismissed) => {
+      if (!cancelled && !dismissed) {
+        const timer = setTimeout(() => setShowInstallModal(true), 2500);
+        return () => clearTimeout(timer);
+      }
+    });
+    return () => {
+      cancelled = true;
+    };
+  }, [deferredPrompt, isIOS, isStandalone]);
+
+  const handleCloseInstallModal = () => {
+    setShowInstallModal(false);
+    AsyncStorage.setItem(INSTALL_PROMPT_DISMISSED_KEY, 'true');
+  };
 
   const handleGoogleSignIn = async () => {
     try {
@@ -92,6 +123,7 @@ export default function Index() {
       <View style={styles.languageToggle}>
         <LanguageSelector />
       </View>
+      <PwaInstallModal visible={showInstallModal} onClose={handleCloseInstallModal} />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"

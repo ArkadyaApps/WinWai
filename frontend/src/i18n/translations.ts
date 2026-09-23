@@ -45,6 +45,15 @@ export const translations = {
         strong: 'Strong',
       },
     },
+    // PWA Install
+    pwaInstall: {
+      title: 'Install WinWai',
+      description: 'Add WinWai to your home screen for quick access and a smoother experience!',
+      installButton: 'Install',
+      iosInstructions: 'Tap the Share button below, then select "Add to Home Screen".',
+      notNow: 'Not Now',
+      menuLabel: 'Install App',
+    },
     // Common
     common: {
       signOut: 'Sign Out',
@@ -386,6 +395,15 @@ export const translations = {
         strong: 'แข็งแรง',
       },
     },
+    // PWA Install
+    pwaInstall: {
+      title: 'ติดตั้ง WinWai',
+      description: 'เพิ่ม WinWai ไปที่หน้าจอหลักของคุณเพื่อการเข้าถึงที่รวดเร็วและประสบการณ์ที่ลื่นไหลยิ่งขึ้น!',
+      installButton: 'ติดตั้ง',
+      iosInstructions: 'แตะปุ่มแชร์ด้านล่าง จากนั้นเลือก "เพิ่มไปยังหน้าจอโฮม"',
+      notNow: 'ไว้ทีหลัง',
+      menuLabel: 'ติดตั้งแอป',
+    },
     // Common
     common: {
       signOut: 'ออกจากระบบ',
@@ -442,6 +460,15 @@ export const translations = {
         medium: 'Moyen',
         strong: 'Fort',
       },
+    },
+    // PWA Install
+    pwaInstall: {
+      title: 'Installer WinWai',
+      description: 'Ajoutez WinWai à votre écran d\'accueil pour un accès rapide et une expérience plus fluide !',
+      installButton: 'Installer',
+      iosInstructions: 'Appuyez sur le bouton Partager ci-dessous, puis sélectionnez « Sur l\'écran d\'accueil ».',
+      notNow: 'Plus tard',
+      menuLabel: 'Installer l\'application',
     },
     // Common
     common: {
@@ -641,6 +668,15 @@ export const translations = {
         medium: 'متوسط',
         strong: 'قوي',
       },
+    },
+    // PWA Install
+    pwaInstall: {
+      title: 'تثبيت WinWai',
+      description: 'أضف WinWai إلى شاشتك الرئيسية للوصول السريع وتجربة أكثر سلاسة!',
+      installButton: 'تثبيت',
+      iosInstructions: 'اضغط على زر المشاركة أدناه، ثم اختر "إضافة إلى الشاشة الرئيسية".',
+      notNow: 'ليس الآن',
+      menuLabel: 'تثبيت التطبيق',
     },
     // Common
     common: {
