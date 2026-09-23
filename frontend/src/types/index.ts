@@ -26,6 +26,7 @@ export interface Partner {
   line?: string;
   // Location details
   address?: string;
+  location?: string;
   latitude?: number;
   longitude?: number;
   createdAt: string;

@@ -1,11 +1,12 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, Dimensions, TouchableOpacity, Modal } from 'react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { useUserStore } from '../../src/store/userStore';
 import { useLanguageStore } from '../../src/store/languageStore';
-import { Raffle } from '../../src/types';
+import { Raffle, Partner } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
+import SponsorCard from '../../src/components/SponsorCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import LanguageSelector from '../../src/components/LanguageSelector';
 import { Ionicons } from '@expo/vector-icons';
@@ -25,6 +26,7 @@ export default function HomeScreen() {
   const { language, setLanguage, initializeLanguage } = useLanguageStore();
   const router = useRouter();
   const [raffles, setRaffles] = useState<Raffle[]>([]);
+  const [sponsors, setSponsors] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
   const [userCity, setUserCity] = useState<string | null>(null);
@@ -69,6 +71,7 @@ export default function HomeScreen() {
   // what's shown (via the userCity effect below) once they resolve.
   useEffect(() => {
     loadRaffles();
+    loadSponsors();
     initializeLanguage();
     detectLocation();
   }, []);
@@ -104,7 +107,43 @@ export default function HomeScreen() {
     }
   };
 
-  const onRefresh = () => { setRefreshing(true); loadRaffles(); };
+  const loadSponsors = async () => {
+    try {
+      const response = await api.get('/api/partners', { params: { sponsored: 'true' } });
+      setSponsors(response.data);
+    } catch (error) {
+      console.error('Failed to load sponsors:', error);
+    }
+  };
+
+  const onRefresh = () => { setRefreshing(true); loadRaffles(); loadSponsors(); };
+
+  // Interleave sponsor cards into the raffle grid instead of grouping them
+  // separately, so sponsors get seen while browsing rather than sitting in
+  // an easily-skipped section. Each sponsor appears once; if there are more
+  // sponsors than fit at the chosen interval, the rest are appended at the
+  // end rather than dropped.
+  type GridItem = { key: string; kind: 'raffle'; raffle: Raffle } | { key: string; kind: 'sponsor'; partner: Partner };
+  const SPONSOR_INTERVAL = 6;
+  const gridItems: GridItem[] = useMemo(() => {
+    if (sponsors.length === 0) {
+      return raffles.map((raffle) => ({ key: `raffle-${raffle.id}`, kind: 'raffle' as const, raffle }));
+    }
+    const items: GridItem[] = [];
+    let sponsorIndex = 0;
+    raffles.forEach((raffle, i) => {
+      items.push({ key: `raffle-${raffle.id}`, kind: 'raffle', raffle });
+      if ((i + 1) % SPONSOR_INTERVAL === 0 && sponsorIndex < sponsors.length) {
+        items.push({ key: `sponsor-${sponsors[sponsorIndex].id}`, kind: 'sponsor', partner: sponsors[sponsorIndex] });
+        sponsorIndex++;
+      }
+    });
+    while (sponsorIndex < sponsors.length) {
+      items.push({ key: `sponsor-${sponsors[sponsorIndex].id}`, kind: 'sponsor', partner: sponsors[sponsorIndex] });
+      sponsorIndex++;
+    }
+    return items;
+  }, [raffles, sponsors]);
 
   if (loading) {
     return (<View style={styles.centered}><ActivityIndicator size="large" color={theme.colors.primaryGold} /></View>);
@@ -137,9 +176,13 @@ export default function HomeScreen() {
         </View>
 
         <View style={styles.gridContainer}>
-          {raffles.map((raffle) => (
-            <View key={raffle.id} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
-              <RaffleGridCard raffle={raffle} onPress={() => router.push(`/raffle/${raffle.id}`)} />
+          {gridItems.map((item) => (
+            <View key={item.key} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
+              {item.kind === 'raffle' ? (
+                <RaffleGridCard raffle={item.raffle} onPress={() => router.push(`/raffle/${item.raffle.id}`)} />
+              ) : (
+                <SponsorCard partner={item.partner} />
+              )}
             </View>
           ))}
         </View>
