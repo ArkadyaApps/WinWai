@@ -2,7 +2,8 @@ import { z } from "zod";
 
 export const RaffleEntrySchema = z.object({
   raffleId: z.string().min(1),
-  ticketsToUse: z.number().int().positive().default(10),
+  // No amount here on purpose: the server charges the raffle's own ticketCost
+  // (any client-sent ticketsToUse is stripped by the parser and ignored).
 });
 export type RaffleEntryInput = z.infer<typeof RaffleEntrySchema>;
 

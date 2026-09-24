@@ -12,9 +12,9 @@ export const POST: APIRoute = async ({ request, locals }) => {
 
     const parsed = RaffleEntrySchema.safeParse(await request.json());
     if (!parsed.success) return json({ error: parsed.error.issues[0].message }, 400);
-    const { raffleId, ticketsToUse } = parsed.data;
+    const { raffleId } = parsed.data;
 
-    const result = await enterRaffle(db, user.id, raffleId, ticketsToUse);
+    const result = await enterRaffle(db, user.id, raffleId);
     return json({ message: "Entered successfully", ...result });
   } catch (e) {
     return handleError(e);

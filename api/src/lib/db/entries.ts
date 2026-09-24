@@ -10,6 +10,8 @@ export interface EnterRaffleResult {
   /** True only for the entry that pushed the current round over its ticket goal. */
   goalReached: boolean;
   scheduledDrawAt: Date | null;
+  /** What this entry cost: always the raffle's ticketCost. */
+  ticketsSpent: number;
 }
 
 /**
@@ -23,13 +25,17 @@ export async function enterRaffle(
   db: Database,
   userId: string,
   raffleId: string,
-  ticketsToUse: number,
   now: Date = new Date()
 ): Promise<EnterRaffleResult> {
   const raffle = await db.query.raffles.findFirst({ where: eq(raffles.id, raffleId) });
   if (!raffle) throw new HttpError(404, "Raffle not found");
   if (!raffle.active) throw new HttpError(400, "Raffle is not active");
   if (raffle.prizesRemaining <= 0) throw new HttpError(400, "No prizes remaining");
+
+  // The price of an entry is set by the raffle, not the caller: a client-sent
+  // amount would let anyone enter a 10-ticket raffle for 1 ticket (and skew
+  // the round's ticket goal).
+  const ticketsToUse = raffle.ticketCost;
 
   // One prize per user per raffle: a past winner can never win again, so don't
   // let them spend tickets on entries that can't pay off.
@@ -79,6 +85,7 @@ export async function enterRaffle(
     const goalReached = crossed.length > 0;
     return {
       newBalance: deducted[0].tickets,
+      ticketsSpent: ticketsToUse,
       entryId,
       goalReached,
       scheduledDrawAt: goalReached ? getScheduledDrawAt(now, raffle.prizeValueUsd) : scheduled,
