@@ -6,7 +6,6 @@ import * as ImagePicker from 'expo-image-picker';
 import { Picker } from '@react-native-picker/picker';
 import api from '../../src/utils/api';
 import { Raffle, Partner } from '../../src/types';
-import DateTimePicker from '@react-native-community/datetimepicker';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 
@@ -28,7 +27,7 @@ export default function AdminRafflesScreen() {
   const [uploadingCodes, setUploadingCodes] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: '', description: '', image: '', category: 'food', partnerId: '', location: '', address: '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, drawDate: new Date(), validityMonths: 3, active: true, language: 'en', allowedCountries: ['TH'], currency: 'THB',
+    title: '', description: '', image: '', category: 'food', partnerId: '', location: '', address: '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, validityMonths: 3, active: true, language: 'en', allowedCountries: ['TH'], currency: 'THB',
   });
   const [partnerSearch, setPartnerSearch] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -51,8 +50,6 @@ export default function AdminRafflesScreen() {
   const DIGITAL_CATEGORIES = ['gift-cards', 'electronics', 'voucher'];
   const isDigitalPrize = DIGITAL_CATEGORIES.includes(formData.category);
 
-  const [showDatePicker, setShowDatePicker] = useState(false);
-  const minDate = useMemo(() => new Date(Date.now() + 60 * 60 * 1000), []); // +1 hour
 
   const filteredPartners = useMemo(() => {
     if (!partnerSearch) return partners;
@@ -87,7 +84,6 @@ export default function AdminRafflesScreen() {
       ticketCost: 10, 
       prizeValue: 0, 
       gamePrice: 0, 
-      drawDate: new Date(Date.now() + 7 * 24 * 60 * 60 * 1000), 
       validityMonths: 3, 
       active: true, 
       language: 'en', 
@@ -101,10 +97,10 @@ export default function AdminRafflesScreen() {
     setModalVisible(true); 
   };
 
-  const openEditModal = (raffle: Raffle) => { setEditingRaffle(raffle); setFormData({ title: raffle.title, description: raffle.description, image: raffle.image || '', category: raffle.category, partnerId: raffle.partnerId, location: raffle.location || '', address: raffle.address || '', prizesAvailable: raffle.prizesAvailable, ticketCost: raffle.ticketCost, prizeValue: raffle.prizeValue || 0, gamePrice: raffle.gamePrice || 0, drawDate: new Date(raffle.drawDate), validityMonths: raffle.validityMonths || 3, active: raffle.active, language: (raffle as any).language || 'en', allowedCountries: (raffle as any).allowedCountries || ['TH'], currency: (raffle as any).currency || 'THB' }); setPartnerSearch(''); setModalVisible(true); };
+  const openEditModal = (raffle: Raffle) => { setEditingRaffle(raffle); setFormData({ title: raffle.title, description: raffle.description, image: raffle.image || '', category: raffle.category, partnerId: raffle.partnerId, location: raffle.location || '', address: raffle.address || '', prizesAvailable: raffle.prizesAvailable, ticketCost: raffle.ticketCost, prizeValue: raffle.prizeValue || 0, gamePrice: raffle.gamePrice || 0, validityMonths: raffle.validityMonths || 3, active: raffle.active, language: (raffle as any).language || 'en', allowedCountries: (raffle as any).allowedCountries || ['TH'], currency: (raffle as any).currency || 'THB' }); setPartnerSearch(''); setModalVisible(true); };
 
   const handleSave = async () => {
-    if (!formData.title || !formData.description || !formData.partnerId || !formData.drawDate) { Alert.alert('Error', 'Please fill in all required fields'); return; }
+    if (!formData.title || !formData.description || !formData.partnerId) { Alert.alert('Error', 'Please fill in all required fields'); return; }
     if (!formData.image && !selectedImage) { Alert.alert('Error', 'Please upload an image'); return; }
     
     // Validate secret codes for digital prizes
@@ -122,17 +118,15 @@ export default function AdminRafflesScreen() {
       }
     }
 
-    const now = new Date(); if (formData.drawDate instanceof Date && formData.drawDate <= now) { Alert.alert('Invalid Date', 'Draw date/time must be in the future.'); return; }
+    if (!Number.isInteger(formData.gamePrice) || formData.gamePrice < 1) { Alert.alert('Error', 'Ticket goal must be a whole number of at least 1'); return; }
     try {
       setSaving(true);
-      const drawDateISO = formData.drawDate instanceof Date ? formData.drawDate.toISOString() : String(formData.drawDate);
-      
       // For digital prizes, set prizesAvailable to number of valid codes
       const validSecretCodes = secretCodes.filter(c => c.trim());
       const finalPrizesAvailable = isDigitalPrize ? validSecretCodes.length : formData.prizesAvailable;
       
       if (editingRaffle) {
-        const payload: Raffle = { id: editingRaffle.id, title: formData.title, description: formData.description, image: formData.image || undefined, category: formData.category, partnerId: formData.partnerId, partnerName: partners.find(p => p.id === formData.partnerId)?.name, prizesAvailable: finalPrizesAvailable, prizesRemaining: editingRaffle.prizesRemaining, ticketCost: formData.ticketCost, prizeValue: formData.prizeValue, gamePrice: formData.gamePrice, drawDate: drawDateISO, validityMonths: formData.validityMonths, active: formData.active, totalEntries: editingRaffle.totalEntries, createdAt: editingRaffle.createdAt };
+        const payload: Partial<Raffle> = { title: formData.title, description: formData.description, image: formData.image || undefined, category: formData.category, partnerId: formData.partnerId, partnerName: partners.find(p => p.id === formData.partnerId)?.name, prizesAvailable: finalPrizesAvailable, ticketCost: formData.ticketCost, prizeValue: formData.prizeValue, gamePrice: formData.gamePrice, validityMonths: formData.validityMonths, active: formData.active };
         await api.put(`/api/admin/raffles/${editingRaffle.id}`, payload); Alert.alert('Success', 'Raffle updated');
       } else {
         const payload: any = { 
@@ -149,7 +143,6 @@ export default function AdminRafflesScreen() {
           ticketCost: formData.ticketCost, 
           prizeValue: formData.prizeValue, 
           gamePrice: formData.gamePrice, 
-          drawDate: drawDateISO, 
           validityMonths: formData.validityMonths, 
           active: formData.active,
           language: formData.language,
@@ -239,12 +232,6 @@ export default function AdminRafflesScreen() {
     }
   };
   const formatDate = (date: Date) => date.toLocaleString();
-  // Formats a Date as the local (not UTC) "YYYY-MM-DDTHH:mm" value an
-  // <input type="datetime-local"> expects.
-  const toDatetimeLocalValue = (date: Date) => {
-    const pad = (n: number) => String(n).padStart(2, '0');
-    return `${date.getFullYear()}-${pad(date.getMonth() + 1)}-${pad(date.getDate())}T${pad(date.getHours())}:${pad(date.getMinutes())}`;
-  };
 
   // Google Places Search Handler
   const searchPlaces = async (query: string) => {
@@ -387,7 +374,7 @@ export default function AdminRafflesScreen() {
               <View style={styles.raffleStats}>
                 <View style={styles.statItem}><Text style={styles.statLabel}>Prizes</Text><Text style={styles.statValue}>{raffle.prizesRemaining}/{raffle.prizesAvailable}</Text></View>
                 <View style={styles.statItem}><Text style={styles.statLabel}>Entries</Text><Text style={styles.statValue}>{raffle.totalEntries}</Text></View>
-                <View style={styles.statItem}><Text style={styles.statLabel}>Draw Date</Text><Text style={styles.statValue}>{formatDate(new Date(raffle.drawDate))}</Text></View>
+                <View style={styles.statItem}><Text style={styles.statLabel}>{raffle.scheduledDrawAt ? 'Draws' : `Round ${raffle.currentRound ?? 1}`}</Text><Text style={styles.statValue}>{raffle.scheduledDrawAt ? formatDate(new Date(raffle.scheduledDrawAt)) : `${raffle.roundTickets ?? 0}/${raffle.gamePrice} tickets`}</Text></View>
               </View>
               <View style={styles.actionButtons}>
                 <TouchableOpacity style={styles.uploadCodeButton} onPress={() => openSecretCodeModal(raffle)}>
@@ -658,45 +645,13 @@ export default function AdminRafflesScreen() {
               <TextInput style={styles.input} value={String(formData.prizeValue)} onChangeText={(text) => setFormData({ ...formData, prizeValue: parseFloat(text) || 0 })} placeholder="e.g., 5000" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.helperText}>Total value of the prize in {formData.currency} (Auto-converted to USD in database)</Text>
               
-              <Text style={styles.label}>Game Price (฿) *</Text>
-              <TextInput style={styles.input} value={String(formData.gamePrice)} onChangeText={(text) => setFormData({ ...formData, gamePrice: parseFloat(text) || 0 })} placeholder="e.g., 100" placeholderTextColor="#999" keyboardType="numeric" />
-              <Text style={styles.helperText}>Cost per ticket/game in Thai Baht</Text>
+              <Text style={styles.label}>Ticket goal per round *</Text>
+              <TextInput style={styles.input} value={formData.gamePrice ? String(formData.gamePrice) : ''} onChangeText={(text) => setFormData({ ...formData, gamePrice: parseInt(text, 10) || 0 })} placeholder="e.g., 200" placeholderTextColor="#999" keyboardType="numeric" />
+              <Text style={styles.helperText}>Tickets to collect in a round. Once reached, that round's winner is drawn 1 day (prize up to $15), 3 days (up to $25) or 7 days (above) later. Every prize is its own round; tickets above the goal carry over to the next round.</Text>
               
               <Text style={styles.label}>Prize Validity (months) *</Text>
               <TextInput style={styles.input} value={String(formData.validityMonths)} onChangeText={(text) => setFormData({ ...formData, validityMonths: parseInt(text) || 3 })} placeholder="3" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.helperText}>How long the prize is valid after winning (default: 3 months)</Text>
-              <Text style={styles.label}>Draw Date *</Text>
-              {Platform.OS === 'web' ? (
-                // @react-native-community/datetimepicker has no web implementation
-                // (it renders null with just a console.warn there), so the
-                // TouchableOpacity + native picker below is silently inert on
-                // web. Use a real HTML date input instead.
-                React.createElement('input', {
-                  type: 'datetime-local',
-                  value: toDatetimeLocalValue(formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate)),
-                  min: toDatetimeLocalValue(minDate),
-                  onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
-                    const selectedDate = new Date(e.target.value);
-                    if (isNaN(selectedDate.getTime())) return;
-                    if (selectedDate > new Date()) {
-                      setFormData({ ...formData, drawDate: selectedDate });
-                    } else {
-                      Alert.alert('Invalid Date', 'Please choose a future date/time.');
-                    }
-                  },
-                  style: { ...styles.input, fontSize: 16, color: theme.colors.onyx, fontFamily: 'inherit', border: '1px solid #ddd' },
-                })
-              ) : (
-                <>
-                  <TouchableOpacity style={styles.input} onPress={() => setShowDatePicker(true)}>
-                    <Text style={{ color: theme.colors.onyx, fontSize: 16 }}>{formatDate(formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate))}</Text>
-                  </TouchableOpacity>
-                  {showDatePicker && (
-                    <DateTimePicker value={formData.drawDate instanceof Date ? formData.drawDate : new Date(formData.drawDate)} mode="datetime" minimumDate={minDate} display={Platform.OS === 'ios' ? 'inline' : 'default'} onChange={(_, selectedDate) => { setShowDatePicker(false); if (selectedDate) { if (selectedDate > new Date()) { setFormData({ ...formData, drawDate: selectedDate }); } else { Alert.alert('Invalid Date', 'Please choose a future date/time.'); } } }} />
-                  )}
-                </>
-              )}
-              <Text style={styles.helperText}>Must be at least 1 hour in the future.</Text>
               <TouchableOpacity style={styles.saveButton} onPress={handleSave} disabled={saving}>{saving ? (<ActivityIndicator color="#fff" />) : (<Text style={styles.saveButtonText}>{editingRaffle ? 'Update Raffle' : 'Create Raffle'}</Text>)}</TouchableOpacity>
             </ScrollView>
           </View>

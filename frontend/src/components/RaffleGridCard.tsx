@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, Pressable, Platform, Linking, TouchableOpacity } from 'react-native';
 import { Raffle } from '../types';
-import { format } from 'date-fns';
+import RaffleRoundStatus from './RaffleRoundStatus';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
 
@@ -89,12 +89,7 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
           </View>
         </View>
         
-        <View style={styles.dateRow}>
-          <Ionicons name="calendar-outline" size={11} color="#95A5A6" />
-          <Text style={styles.drawDate}>
-            {format(new Date(raffle.drawDate), 'MMM dd, yyyy')}
-          </Text>
-        </View>
+        <RaffleRoundStatus raffle={raffle} variant="compact" />
       </View>
     </Pressable>
   );
@@ -221,16 +216,6 @@ const styles = StyleSheet.create({
     fontSize: 12,
     fontWeight: '800',
     color: '#FFB800',
-  },
-  dateRow: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 4,
-  },
-  drawDate: {
-    fontSize: 10,
-    color: '#95A5A6',
-    fontWeight: '600',
   },
 });
 

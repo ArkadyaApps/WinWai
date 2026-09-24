@@ -48,12 +48,20 @@ export interface Raffle {
   prizesRemaining: number;
   ticketCost: number;
   prizeValue: number;
+  // Tickets that must be collected in a round before its draw is scheduled.
   gamePrice: number;
-  drawDate: string;
+  /** Deprecated: no longer meaningful, use scheduledDrawAt. */
+  drawDate?: string;
   validityMonths: number;
   active: boolean;
   totalEntries: number;
   createdAt: string;
+  // Derived by the API (see api/src/lib/raffleHelpers.ts withRoundInfo).
+  currentRound?: number;
+  roundTickets?: number;
+  /** null until the current round's ticket goal is reached. */
+  scheduledDrawAt?: string | null;
+  drawDelayMs?: number;
 }
 
 export interface Voucher {

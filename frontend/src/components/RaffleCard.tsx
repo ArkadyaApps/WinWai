@@ -1,7 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable } from 'react-native';
 import { Raffle } from '../types';
-import { format } from 'date-fns';
+import RaffleRoundStatus from './RaffleRoundStatus';
 
 interface RaffleCardProps {
   raffle: Raffle;
@@ -48,12 +48,7 @@ const RaffleCard: React.FC<RaffleCardProps> = ({ raffle, onPress }) => {
             <Text style={styles.ticketCost}>{raffle.ticketCost} tickets</Text>
           </View>
           
-          <View style={styles.infoRow}>
-            <Text style={styles.infoLabel}>Draw Date:</Text>
-            <Text style={styles.infoValue}>
-              {format(new Date(raffle.drawDate), 'MMM dd, yyyy')}
-            </Text>
-          </View>
+          <RaffleRoundStatus raffle={raffle} variant="compact" />
         </View>
       </View>
     </Pressable>

@@ -19,6 +19,8 @@ import api from '../../src/utils/api';
 import { Raffle, Partner } from '../../src/types';
 import { useUserStore } from '../../src/store/userStore';
 import { useTranslation } from '../../src/i18n/useTranslation';
+import RaffleRoundStatus from '../../src/components/RaffleRoundStatus';
+import RaffleWinnersList from '../../src/components/RaffleWinnersList';
 
 export default function RaffleDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -139,7 +141,7 @@ export default function RaffleDetailScreen() {
               Alert.alert(t('raffleDetail.success'), t('raffleDetail.enteredRaffle'));
               loadRaffle(); // Reload to get updated entry count
             } catch (error: any) {
-              Alert.alert(t('common.error'), error.response?.data?.detail || t('raffleDetail.failedToEnter'));
+              Alert.alert(t('common.error'), error.response?.data?.error || error.response?.data?.detail || t('raffleDetail.failedToEnter'));
             } finally {
               setEntering(false);
             }
@@ -178,6 +180,9 @@ export default function RaffleDetailScreen() {
   }
 
   const gradientColors = getCategoryGradient(raffle.category);
+  // Draw time exists only once the current round's ticket goal has been reached.
+  const scheduledDraw = raffle.scheduledDrawAt ? new Date(raffle.scheduledDrawAt) : null;
+  const entriesClosed = scheduledDraw !== null && scheduledDraw.getTime() <= Date.now();
 
   return (
     <View style={styles.container}>
@@ -246,11 +251,14 @@ export default function RaffleDetailScreen() {
             <View style={styles.statItem}>
               <Ionicons name="calendar" size={20} color="#A8E6CF" />
               <View>
-                <Text style={styles.statValue}>{format(new Date(raffle.drawDate), 'MMM dd')}</Text>
+                <Text style={styles.statValue}>{scheduledDraw ? format(scheduledDraw, 'MMM dd') : '-'}</Text>
                 <Text style={styles.statLabel}>{t('raffleDetail.drawDate')}</Text>
               </View>
             </View>
           </View>
+
+          {/* Round progress, countdown, and winners so far */}
+          <RaffleRoundStatus raffle={raffle} />
 
           {/* Description */}
           <View style={styles.section}>
@@ -370,7 +378,7 @@ export default function RaffleDetailScreen() {
                 <Ionicons name="calendar-outline" size={20} color="#7F8C8D" />
                 <Text style={styles.detailLabel}>{t('raffleDetail.drawDate')}:</Text>
                 <Text style={styles.detailValue}>
-                  {format(new Date(raffle.drawDate), 'MMMM dd, yyyy')}
+                  {scheduledDraw ? format(scheduledDraw, 'MMMM dd, yyyy HH:mm') : raffle.prizesRemaining <= 0 || !raffle.active ? t('raffleRound.allAwarded') : t('raffleRound.drawTBDShort')}
                 </Text>
               </View>
               <View style={styles.detailRow}>
@@ -381,10 +389,12 @@ export default function RaffleDetailScreen() {
               <View style={styles.detailRow}>
                 <Ionicons name="trophy-outline" size={20} color="#7F8C8D" />
                 <Text style={styles.detailLabel}>{t('raffleDetail.prizesLeft')}:</Text>
-                <Text style={styles.detailValue}>{raffle.prizesAvailable}</Text>
+                <Text style={styles.detailValue}>{raffle.prizesRemaining}</Text>
               </View>
             </View>
           </View>
+
+          <RaffleWinnersList raffleId={raffle.id} refreshKey={raffle.prizesRemaining} />
 
           <View style={{ height: 120 }} />
         </View>
@@ -403,7 +413,7 @@ export default function RaffleDetailScreen() {
         <TouchableOpacity
           style={[styles.enterButton, entering && styles.enterButtonDisabled]}
           onPress={handleEnter}
-          disabled={entering || !raffle.active || raffle.prizesRemaining <= 0}
+          disabled={entering || !raffle.active || raffle.prizesRemaining <= 0 || entriesClosed}
         >
           <LinearGradient
             colors={['#FFD700', '#FFC200']}
