@@ -1,6 +1,5 @@
 import React, { useEffect, useMemo, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, Dimensions, TouchableOpacity, Modal } from 'react-native';
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import { View, Text, StyleSheet, ScrollView, RefreshControl, ActivityIndicator, Dimensions, TouchableOpacity } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useLanguageStore } from '../../src/store/languageStore';
 import { Raffle, Partner } from '../../src/types';
@@ -12,9 +11,8 @@ import AdCard from '../../src/components/AdCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import LanguageSelector from '../../src/components/LanguageSelector';
 import { Ionicons } from '@expo/vector-icons';
-import { getUserLocation } from '../../src/utils/locationService';
 import { useRouter } from 'expo-router';
-import { translations, getLanguageFromCountry } from '../../src/utils/translations';
+import { translations } from '../../src/utils/translations';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 
@@ -25,69 +23,21 @@ const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1
 
 export default function HomeScreen() {
   const { user } = useUserStore();
-  const { language, setLanguage, initializeLanguage } = useLanguageStore();
+  const { language } = useLanguageStore();
   const router = useRouter();
   const [raffles, setRaffles] = useState<Raffle[]>([]);
   const [sponsors, setSponsors] = useState<Partner[]>([]);
   const [loading, setLoading] = useState(true);
   const [refreshing, setRefreshing] = useState(false);
-  const [showWelcomePopup, setShowWelcomePopup] = useState(false);
 
   const t = translations[language];
 
-  // Check if this is the first time user visits after sign-in
-  useEffect(() => {
-    checkFirstTimeUser();
-  }, [user]);
-
-  const checkFirstTimeUser = async () => {
-    if (!user) return;
-    
-    try {
-      const hasSeenWelcome = await AsyncStorage.getItem('has_seen_welcome');
-      if (!hasSeenWelcome) {
-        // Show popup after a short delay for better UX
-        setTimeout(() => {
-          setShowWelcomePopup(true);
-        }, 500);
-      }
-    } catch (error) {
-      console.error('Error checking first time user:', error);
-    }
-  };
-
-  const handleCloseWelcomePopup = async () => {
-    try {
-      await AsyncStorage.setItem('has_seen_welcome', 'true');
-      setShowWelcomePopup(false);
-    } catch (error) {
-      console.error('Error saving welcome popup state:', error);
-    }
-  };
-
-  // Geolocation (browser permission prompt + GPS/IP lookup) can take
-  // several seconds, or hang indefinitely on web if the user ignores the
-  // permission prompt. Load raffles immediately so the screen isn't blocked
-  // on it; location detection runs in the background purely to pick a
-  // default language - Home shows every raffle regardless of location (the
-  // Raffles tab is where per-location filtering lives).
+  // Raffles and sponsors load immediately; the app language is initialized at
+  // startup in the root layout (default Thai, detected from the visitor's IP).
   useEffect(() => {
     loadRaffles();
     loadSponsors();
-    initializeLanguage();
-    detectLocation();
   }, []);
-
-  const detectLocation = async () => {
-    const location = await getUserLocation();
-    if (location) {
-      const savedLang = await AsyncStorage.getItem('app_language');
-      if (!savedLang) {
-        const detectedLang = getLanguageFromCountry(location.country);
-        await setLanguage(detectedLang);
-      }
-    }
-  };
 
   const loadRaffles = async () => {
     try {
@@ -228,52 +178,6 @@ export default function HomeScreen() {
         <View style={{ height: 100 }} />
       </ScrollView>
       <BannerAdComponent position="bottom" />
-      
-      {/* First-Time Welcome Popup */}
-      <Modal
-        visible={showWelcomePopup}
-        transparent={true}
-        animationType="fade"
-        onRequestClose={handleCloseWelcomePopup}
-      >
-        <View style={styles.modalOverlay}>
-          <View style={styles.welcomePopup}>
-            <View style={styles.welcomeHeader}>
-              <Ionicons name="information-circle" size={50} color={theme.colors.primaryGold} />
-              <Text style={styles.welcomeTitle}>{t.howItWorks}</Text>
-            </View>
-            
-            <View style={styles.welcomeSteps}>
-              <View style={styles.welcomeStep}>
-                <Text style={styles.stepIcon}>🎫</Text>
-                <Text style={styles.stepText}>{t.earnTicketsStep}</Text>
-              </View>
-              <Text style={styles.stepArrow}>→</Text>
-              
-              <View style={styles.welcomeStep}>
-                <Text style={styles.stepIcon}>🎥</Text>
-                <Text style={styles.stepText}>{t.watchAdsStep}</Text>
-              </View>
-              <Text style={styles.stepArrow}>→</Text>
-              
-              <View style={styles.welcomeStep}>
-                <Text style={styles.stepIcon}>🎰</Text>
-                <Text style={styles.stepText}>{t.enterRafflesStep}</Text>
-              </View>
-              <Text style={styles.stepArrow}>→</Text>
-              
-              <View style={styles.welcomeStep}>
-                <Text style={styles.stepIcon}>🎁</Text>
-                <Text style={styles.stepText}>{t.winPrizesStep}</Text>
-              </View>
-            </View>
-            
-            <TouchableOpacity style={styles.welcomeButton} onPress={handleCloseWelcomePopup}>
-              <Text style={styles.welcomeButtonText}>{t.gotIt}</Text>
-            </TouchableOpacity>
-          </View>
-        </View>
-      </Modal>
     </View>
   );
 }
@@ -296,15 +200,4 @@ const styles = StyleSheet.create({
   emptySubtext: { fontSize: 15, color: '#666', marginBottom: 24, textAlign: 'center', lineHeight: 22 },
   viewAllButton: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.colors.primaryGold, paddingVertical: 14, paddingHorizontal: 28, borderRadius: 25, gap: 8, marginTop: 8 },
   viewAllButtonText: { fontSize: 16, fontWeight: '700', color: '#fff' },
-  modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.6)', justifyContent: 'center', alignItems: 'center', padding: 20 },
-  welcomePopup: { backgroundColor: '#fff', borderRadius: 20, padding: 24, width: '100%', maxWidth: 400, shadowColor: '#000', shadowOffset: { width: 0, height: 4 }, shadowOpacity: 0.3, shadowRadius: 8, elevation: 8 },
-  welcomeHeader: { alignItems: 'center', marginBottom: 24 },
-  welcomeTitle: { fontSize: 24, fontWeight: 'bold', color: theme.colors.onyx, marginTop: 12 },
-  welcomeSteps: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', flexWrap: 'wrap', marginBottom: 24, gap: 8 },
-  welcomeStep: { alignItems: 'center', padding: 12, backgroundColor: '#F8F9FA', borderRadius: 12, minWidth: 70 },
-  stepIcon: { fontSize: 32, marginBottom: 8 },
-  stepText: { fontSize: 12, fontWeight: '600', color: theme.colors.onyx, textAlign: 'center' },
-  stepArrow: { fontSize: 20, color: theme.colors.primaryGold, marginHorizontal: 4 },
-  welcomeButton: { backgroundColor: theme.colors.primaryGold, padding: 16, borderRadius: 12, alignItems: 'center' },
-  welcomeButtonText: { fontSize: 18, fontWeight: 'bold', color: '#fff' },
 });

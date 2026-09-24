@@ -10,6 +10,18 @@ export interface LocationData {
   lon: number;
 }
 
+// Country from the visitor's IP only - no permission prompt, so it is safe to
+// run at app start (used for the default language). null on any failure.
+export const detectCountryCode = async (): Promise<string | null> => {
+  try {
+    const response = await axios.get('https://ipapi.co/json/', { timeout: 4000 });
+    const code = response.data?.country_code;
+    return typeof code === 'string' && code.length === 2 ? code.toUpperCase() : null;
+  } catch {
+    return null;
+  }
+};
+
 // Try GPS location first, fall back to IP geolocation
 export const getUserLocation = async (): Promise<LocationData | null> => {
   try {

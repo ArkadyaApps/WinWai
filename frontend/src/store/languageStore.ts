@@ -1,8 +1,13 @@
 import { create } from 'zustand';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { getUserLocation } from '../utils/locationService';
+import { detectCountryCode } from '../utils/locationService';
+import { getLanguageFromCountry } from '../utils/translations';
 
 type Language = 'en' | 'th' | 'fr' | 'ar';
+
+// WinWai is a Thailand-first product: Thai unless we positively detect
+// something else (or the user picks a language themselves).
+const DEFAULT_LANGUAGE: Language = 'th';
 
 interface LanguageState {
   language: Language;
@@ -11,68 +16,41 @@ interface LanguageState {
   initializeLanguage: () => Promise<void>;
 }
 
-// Map country codes to languages
-const getLanguageFromCountryCode = (countryCode: string): Language => {
-  const languageMap: { [key: string]: Language } = {
-    'TH': 'th', // Thailand -> Thai
-    'FR': 'fr', // France -> French
-    'BE': 'fr', // Belgium -> French (can be refined)
-    'CH': 'fr', // Switzerland -> French (can be refined)
-    'CA': 'fr', // Canada -> French (can be refined for Quebec)
-    'MA': 'ar', // Morocco -> Arabic
-    'DZ': 'ar', // Algeria -> Arabic
-    'EG': 'ar', // Egypt -> Arabic
-    'SA': 'ar', // Saudi Arabia -> Arabic
-    'AE': 'ar', // UAE -> Arabic
-  };
-  
-  return languageMap[countryCode] || 'en'; // Default to English
-};
-
 export const useLanguageStore = create<LanguageState>((set) => ({
-  language: 'en',
+  language: DEFAULT_LANGUAGE,
   isLanguageDetected: false,
   setLanguage: async (language) => {
     await AsyncStorage.setItem('app_language', language);
     await AsyncStorage.setItem('language_manually_set', 'true');
     set({ language });
   },
+  // Called once at app start (root layout), so the landing page is already in
+  // the right language before anyone signs in.
   initializeLanguage: async () => {
     try {
-      // First check if user has manually set a language preference
+      // An explicit choice always wins over detection.
       const manuallySet = await AsyncStorage.getItem('language_manually_set');
-      const saved = await AsyncStorage.getItem('app_language');
-      
+      const saved = (await AsyncStorage.getItem('app_language')) as Language | null;
       if (manuallySet === 'true' && saved) {
-        // User has manually set language, use their preference
-        set({ language: saved as Language, isLanguageDetected: true });
+        set({ language: saved, isLanguageDetected: true });
         return;
       }
-      
-      // Try to detect language from geolocation
-      try {
-        const location = await getUserLocation();
-        if (location && location.countryCode) {
-          const detectedLanguage = getLanguageFromCountryCode(location.countryCode);
 
-          // Save detected language
-          await AsyncStorage.setItem('app_language', detectedLanguage);
-          set({ language: detectedLanguage, isLanguageDetected: true });
-          return;
-        }
-      } catch (geoError) {
-        console.error('Geolocation-based language detection failed:', geoError);
+      // Country from the visitor's IP: no permission prompt (GPS would ask on
+      // first paint) and enough for a default language. If it fails or times
+      // out we stay on Thai (or the last auto-detected language).
+      const countryCode = await detectCountryCode();
+      if (countryCode) {
+        const detected = getLanguageFromCountry(countryCode);
+        await AsyncStorage.setItem('app_language', detected);
+        set({ language: detected, isLanguageDetected: true });
+        return;
       }
-      
-      // Fallback: Use saved language or default to English
-      if (saved) {
-        set({ language: saved as Language, isLanguageDetected: true });
-      } else {
-        set({ language: 'en', isLanguageDetected: true });
-      }
+
+      set({ language: saved ?? DEFAULT_LANGUAGE, isLanguageDetected: true });
     } catch (error) {
       console.error('Failed to initialize language:', error);
-      set({ language: 'en', isLanguageDetected: true });
+      set({ language: DEFAULT_LANGUAGE, isLanguageDetected: true });
     }
   },
 }));

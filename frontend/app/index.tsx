@@ -20,9 +20,11 @@ import { validateEmail, validatePassword } from '../src/utils/validation';
 import { useTranslation } from '../src/i18n/useTranslation';
 import LanguageSelector from '../src/components/LanguageSelector';
 import PwaInstallModal from '../src/components/PwaInstallModal';
-import { usePwaInstallStore } from '../src/store/pwaInstallStore';
 import { SIGNUP_BONUS_ENDS_AT } from '../src/constants/promo';
 
+// One combined first-visit popup (how WinWai works + install offer). Either key
+// being set means it was already shown/dismissed.
+const WELCOME_SEEN_KEY = 'has_seen_welcome';
 const INSTALL_PROMPT_DISMISSED_KEY = 'pwa_install_prompt_dismissed';
 
 export default function Index() {
@@ -30,7 +32,6 @@ export default function Index() {
   const { signIn, signInWithEmail, isLoading: authLoading } = useAuth();
   const { isAuthenticated, isLoading: userLoading } = useUserStore();
   const { t } = useTranslation();
-  const { deferredPrompt, isIOS, isStandalone } = usePwaInstallStore();
 
   const [authMode, setAuthMode] = useState<'google' | 'email'>('email');
   const [email, setEmail] = useState('');
@@ -46,27 +47,24 @@ export default function Index() {
     }
   }, [isAuthenticated, userLoading]);
 
-  // Auto-show the install prompt once, after a short delay so it doesn't
-  // interrupt the initial page load - but never if already installed, never
-  // twice, and only when there's actually something to show (a captured
-  // beforeinstallprompt event, or iOS manual instructions).
+  // First landing visit: show the combined popup once, after a short delay so it
+  // doesn't interrupt the initial load. The install offer inside it appears only
+  // when the browser actually allows installing (or on iOS, as manual steps).
   useEffect(() => {
-    if (Platform.OS !== 'web' || isStandalone || (!deferredPrompt && !isIOS)) return;
-
     let cancelled = false;
-    AsyncStorage.getItem(INSTALL_PROMPT_DISMISSED_KEY).then((dismissed) => {
-      if (!cancelled && !dismissed) {
-        const timer = setTimeout(() => setShowInstallModal(true), 2500);
-        return () => clearTimeout(timer);
-      }
+    let timer: ReturnType<typeof setTimeout> | undefined;
+    Promise.all([AsyncStorage.getItem(WELCOME_SEEN_KEY), AsyncStorage.getItem(INSTALL_PROMPT_DISMISSED_KEY)]).then(([seen, dismissed]) => {
+      if (!cancelled && !seen && !dismissed) timer = setTimeout(() => setShowInstallModal(true), 1200);
     });
     return () => {
       cancelled = true;
+      if (timer) clearTimeout(timer);
     };
-  }, [deferredPrompt, isIOS, isStandalone]);
+  }, []);
 
   const handleCloseInstallModal = () => {
     setShowInstallModal(false);
+    AsyncStorage.setItem(WELCOME_SEEN_KEY, 'true');
     AsyncStorage.setItem(INSTALL_PROMPT_DISMISSED_KEY, 'true');
   };
 
@@ -124,7 +122,7 @@ export default function Index() {
       <View style={styles.languageToggle}>
         <LanguageSelector />
       </View>
-      <PwaInstallModal visible={showInstallModal} onClose={handleCloseInstallModal} />
+      <PwaInstallModal visible={showInstallModal} onClose={handleCloseInstallModal} withHelper />
       <ScrollView
         contentContainerStyle={styles.scrollContent}
         keyboardShouldPersistTaps="handled"
