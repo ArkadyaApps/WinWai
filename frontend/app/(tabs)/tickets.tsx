@@ -19,16 +19,11 @@ export default function TicketsScreen() {
   const [adReady, setAdReady] = useState(false);
   const [loading, setLoading] = useState(false);
 
-  console.log('==================== TICKETS SCREEN MOUNTED ====================');
-  console.log('User:', user?.email);
-  
   useEffect(() => {
-    console.log('==================== TICKETS USEEFFECT START ====================');
     if (user) {
       // Set up reward callback
       rewardedAdManager.setRewardCallback(async () => {
-        console.log('Reward callback triggered');
-        try { 
+        try {
           const response = await api.get('/api/users/me/tickets');
           updateTickets(response.data.tickets);
           if (Platform.OS !== 'web') Haptics.notificationAsync(Haptics.NotificationFeedbackType.Success);
@@ -38,7 +33,6 @@ export default function TicketsScreen() {
       });
       
       // Auto-load the first ad when component mounts
-      console.log('Auto-loading rewarded ad for user:', user.id);
       rewardedAdManager.loadRewardedAd(user.id);
     }
     
@@ -51,8 +45,7 @@ export default function TicketsScreen() {
         setAdReady(false);
       }
     }, 1000);
-    
-    console.log('==================== TICKETS USEEFFECT END ====================');
+
     return () => {
       clearInterval(interval);
     };
@@ -70,7 +63,6 @@ export default function TicketsScreen() {
         await rewardedAdManager.showRewardedAd();
       } else {
         // If ad not ready yet, try loading and waiting
-        console.log('Ad not ready, loading now...');
         await rewardedAdManager.loadRewardedAd(user.id);
         // Wait for ad to load (max 3 seconds)
         let attempts = 0;
@@ -80,8 +72,6 @@ export default function TicketsScreen() {
         }
         if (rewardedAdManager.isRewardedAdReady()) {
           await rewardedAdManager.showRewardedAd();
-        } else {
-          console.log('Ad failed to load in time');
         }
       }
     }

@@ -54,8 +54,7 @@ export const useLanguageStore = create<LanguageState>((set) => ({
         const location = await getUserLocation();
         if (location && location.countryCode) {
           const detectedLanguage = getLanguageFromCountryCode(location.countryCode);
-          console.log(`Detected country: ${location.country} (${location.countryCode}), setting language to: ${detectedLanguage}`);
-          
+
           // Save detected language
           await AsyncStorage.setItem('app_language', detectedLanguage);
           set({ language: detectedLanguage, isLanguageDetected: true });

@@ -25,14 +25,6 @@ export default function ProfileScreen() {
   const router = useRouter();
 
   const isAdmin = user?.role === 'admin';
-  
-  // Debug logging
-  console.log('==================== PROFILE DEBUG ====================');
-  console.log('User object:', JSON.stringify(user, null, 2));
-  console.log('user?.role:', user?.role);
-  console.log('isAdmin calculation:', isAdmin);
-  console.log('Admin panel will show:', isAdmin ? 'YES' : 'NO');
-  console.log('======================================================');
 
   const [editModalVisible, setEditModalVisible] = useState(false);
   const [languageModalVisible, setLanguageModalVisible] = useState(false);

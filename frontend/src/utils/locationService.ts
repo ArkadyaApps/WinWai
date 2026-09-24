@@ -40,7 +40,7 @@ export const getUserLocation = async (): Promise<LocationData | null> => {
           };
         }
       } catch (gpsError) {
-        console.log('GPS location failed, falling back to IP:', gpsError);
+        // fall back to IP geolocation
       }
     }
     

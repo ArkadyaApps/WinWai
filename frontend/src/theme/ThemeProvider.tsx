@@ -20,14 +20,13 @@ export const ThemeProvider = ({ children }: { children: ReactNode }) => {
           fontMap['Prompt-SemiBold'] = require('../assets/fonts/Prompt-SemiBold.ttf');
           fontMap['Prompt-Bold'] = require('../assets/fonts/Prompt-Bold.ttf');
         } catch (requireError) {
-          console.log('Font files not found, using system fonts');
           setFontsReady(true);
           return;
         }
 
         await Font.loadAsync(fontMap);
       } catch (e) {
-        console.log('Font load error (fallback to system):', e);
+        // fallback to system fonts
       } finally {
         setFontsReady(true);
       }
