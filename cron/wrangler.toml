@@ -1,0 +1,16 @@
+# Scheduled Worker: Cloudflare Pages Functions have no cron triggers, so the
+# recurring draw job is its own tiny Worker bound to the same D1 database.
+# Deploy/run through the api package's wrangler (see api/package.json):
+#   yarn --cwd api cron:deploy      # wrangler deploy --config ../cron/wrangler.toml
+#   yarn --cwd api cron:dev         # local, use --test-scheduled to fire it
+name = "winwai-cron"
+main = "src/index.ts"
+compatibility_date = "2024-09-23"
+
+[triggers]
+crons = ["*/15 * * * *"]
+
+[[d1_databases]]
+binding = "DB"
+database_name = "winwai"
+database_id = "08ab5fb0-687b-4dad-bdaa-5395bc21ce8a"
