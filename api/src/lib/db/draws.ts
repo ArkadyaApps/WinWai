@@ -25,6 +25,25 @@ export interface DueDrawsSummary {
 
 const DAY_MS = 24 * 60 * 60 * 1000;
 
+export interface WinnerNotification {
+  to: string;
+  name: string;
+  raffleTitle: string;
+  partnerName: string;
+  validUntil: Date;
+  voucherRef: string;
+  lang: string;
+}
+
+export interface DrawOptions {
+  /**
+   * Called after a winner has been recorded. Best-effort: return true if the
+   * winner was actually notified (the winners row is then marked notified);
+   * throwing or returning false never undoes the draw.
+   */
+  onWinner?: (winner: WinnerNotification) => Promise<boolean>;
+}
+
 /**
  * Draws ONE round (one prize) for a raffle.
  *
@@ -36,7 +55,7 @@ const DAY_MS = 24 * 60 * 60 * 1000;
  * one goal's worth of tickets (surplus carries over), and if the carried-over
  * surplus already meets the next goal the next round's clock starts now.
  */
-export async function drawRound(db: Database, raffle: RaffleRow, now: Date = new Date()): Promise<DrawResult> {
+export async function drawRound(db: Database, raffle: RaffleRow, now: Date = new Date(), options: DrawOptions = {}): Promise<DrawResult> {
   const skip = (reason: string): DrawResult => ({ status: "skipped", raffleId: raffle.id, title: raffle.title, reason });
   if (raffle.prizesRemaining <= 0) return skip("no_prizes_remaining");
 
@@ -95,7 +114,9 @@ export async function drawRound(db: Database, raffle: RaffleRow, now: Date = new
   if (claimed.length === 0) return skip("already_drawn_by_another_run");
 
   const voucherId = crypto.randomUUID();
+  const winnerRowId = crypto.randomUUID();
   const voucherRef = generateVoucherReference();
+  const validUntil = new Date(now.getTime() + raffle.validityMonths * 30 * DAY_MS);
   try {
     await db.batch([
       db.insert(vouchers).values({
@@ -113,14 +134,14 @@ export async function drawRound(db: Database, raffle: RaffleRow, now: Date = new
         isDigitalPrize: raffle.isDigitalPrize,
         secretCode,
         verificationCode: generateVerificationCode(),
-        validUntil: new Date(now.getTime() + raffle.validityMonths * 30 * DAY_MS),
+        validUntil,
         partnerEmail: partner?.email ?? null,
         partnerWhatsapp: partner?.whatsapp ?? null,
         partnerLine: partner?.line ?? null,
         partnerAddress: partner?.address ?? null,
       }),
       db.insert(winners).values({
-        id: crypto.randomUUID(),
+        id: winnerRowId,
         userId: winnerUser.id,
         raffleId: raffle.id,
         entryId: winnerEntry.id,
@@ -146,6 +167,23 @@ export async function drawRound(db: Database, raffle: RaffleRow, now: Date = new
     throw e;
   }
 
+  if (options.onWinner && winnerUser.email) {
+    try {
+      const notified = await options.onWinner({
+        to: winnerUser.email,
+        name: winnerUser.name || "",
+        raffleTitle: raffle.title,
+        partnerName: raffle.partnerName ?? "WinWai",
+        validUntil,
+        voucherRef,
+        lang: raffle.language,
+      });
+      if (notified) await db.update(winners).set({ notified: true }).where(eq(winners.id, winnerRowId));
+    } catch (e) {
+      console.error("Winner notification failed (draw kept):", e);
+    }
+  }
+
   return {
     status: "drawn",
     raffleId: raffle.id,
@@ -158,17 +196,17 @@ export async function drawRound(db: Database, raffle: RaffleRow, now: Date = new
 }
 
 /** Admin override: draw the raffle's current round right now, due or not. */
-export async function drawRaffleNow(db: Database, raffleId: string, now: Date = new Date()): Promise<DrawResult | null> {
+export async function drawRaffleNow(db: Database, raffleId: string, now: Date = new Date(), options: DrawOptions = {}): Promise<DrawResult | null> {
   const raffle = await db.query.raffles.findFirst({ where: eq(raffles.id, raffleId) });
   if (!raffle) return null;
-  return drawRound(db, raffle, now);
+  return drawRound(db, raffle, now, options);
 }
 
 /**
  * Draws every round that is due: goal reached and the tier delay elapsed.
  * Used by both the admin API route and the scheduled Worker (cron).
  */
-export async function runDueDraws(db: Database, now: Date = new Date()): Promise<DueDrawsSummary> {
+export async function runDueDraws(db: Database, now: Date = new Date(), options: DrawOptions = {}): Promise<DueDrawsSummary> {
   const summary: DueDrawsSummary = { drawn: [], skipped: [], errors: [] };
 
   const candidates = await db
@@ -184,7 +222,7 @@ export async function runDueDraws(db: Database, now: Date = new Date()): Promise
       // restarts at `now`, so in practice this draws once per due raffle.
       for (let i = 0; current && i < start.prizesAvailable; i++) {
         if (current.prizesRemaining <= 0 || !isRoundDue(current.thresholdReachedAt, current.prizeValueUsd, now)) break;
-        const result = await drawRound(db, current, now);
+        const result = await drawRound(db, current, now, options);
         if (result.status === "skipped") {
           summary.skipped.push(result);
           break;

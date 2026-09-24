@@ -2,6 +2,7 @@ import type { APIRoute } from "astro";
 import { getDb } from "../../../lib/db/client";
 import { drawRaffleNow } from "../../../lib/db/draws";
 import { requireAdmin } from "../../../lib/auth";
+import { createWinnerNotifier } from "../../../lib/resend";
 import { json, handleError } from "../../../lib/respond";
 import { DrawWinnerSchema } from "../../../lib/validations/raffle";
 
@@ -15,7 +16,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const parsed = DrawWinnerSchema.safeParse(await request.json());
     if (!parsed.success) return json({ error: "raffleId required" }, 400);
 
-    const result = await drawRaffleNow(db, parsed.data.raffleId);
+    const result = await drawRaffleNow(db, parsed.data.raffleId, new Date(), { onWinner: createWinnerNotifier(locals.runtime.env) });
     if (!result) return json({ error: "Raffle not found" }, 404);
     if (result.status === "skipped") return json({ error: `Nothing drawn: ${result.reason}`, result }, 400);
 
