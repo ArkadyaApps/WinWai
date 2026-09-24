@@ -60,19 +60,20 @@ const RaffleBaseSchema = z.object({
   prizeValue: z.number().nonnegative().default(0),
   prizeValueUsd: z.number().nonnegative().default(0),
   currency: z.string().default("THB"),
-  gamePrice: z.number().nonnegative().default(0),
-  drawDate: z.coerce.date(),
-  minimumDrawDate: z.coerce.date().optional().nullable(),
+  // Tickets that must be collected in a round before its draw is scheduled.
+  gamePrice: z.number().int().min(1),
   validityMonths: z.number().int().positive().default(3),
   active: z.boolean().default(true),
-  drawStatus: z.enum(["pending", "eligible", "drawn", "cancelled", "extended"]).default("pending"),
+  drawStatus: z.enum(["pending", "eligible", "drawn", "cancelled"]).default("pending"),
   isDigitalPrize: z.boolean().default(false),
   secretCodes: z.array(z.string()).default([]),
   language: z.enum(["en", "th", "fr", "ar"]).default("en"),
   allowedCountries: z.array(z.string()).default(["TH"]),
 });
 export const CreateRaffleSchema = RaffleBaseSchema;
-export const UpdateRaffleSchema = RaffleBaseSchema.partial();
+// prizesRemaining and drawStatus are system-managed (draws change them); the
+// admin route derives prizesRemaining from prizesAvailable instead.
+export const UpdateRaffleSchema = RaffleBaseSchema.omit({ prizesRemaining: true, drawStatus: true }).partial();
 export type CreateRaffleInput = z.infer<typeof CreateRaffleSchema>;
 export type UpdateRaffleInput = z.infer<typeof UpdateRaffleSchema>;
 

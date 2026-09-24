@@ -18,15 +18,82 @@ const drawRandom = {
   },
 };
 
-export function getExtensionPeriodMs(prizeValueUsd: number): number {
-  const DAY_MS = 24 * 60 * 60 * 1000;
+const DAY_MS = 24 * 60 * 60 * 1000;
+
+/** Delay between a round's ticket goal being reached and its draw, by prize USD value. */
+export function getDrawDelayMs(prizeValueUsd: number): number {
   if (prizeValueUsd <= 15) return 1 * DAY_MS;
   if (prizeValueUsd <= 25) return 3 * DAY_MS;
   return 7 * DAY_MS;
 }
 
-export function calculateMinimumDrawDate(prizeValueUsd: number, createdAt: Date): Date {
-  return new Date(createdAt.getTime() + getExtensionPeriodMs(prizeValueUsd));
+/** When the current round is due to be drawn, or null while its goal is still unmet. */
+export function getScheduledDrawAt(thresholdReachedAt: Date | null | undefined, prizeValueUsd: number): Date | null {
+  if (!thresholdReachedAt) return null;
+  return new Date(thresholdReachedAt.getTime() + getDrawDelayMs(prizeValueUsd));
+}
+
+export function isRoundDue(thresholdReachedAt: Date | null | undefined, prizeValueUsd: number, now: Date): boolean {
+  const scheduled = getScheduledDrawAt(thresholdReachedAt, prizeValueUsd);
+  return scheduled !== null && now.getTime() >= scheduled.getTime();
+}
+
+/** Tickets collected in the current round (surplus from earlier rounds already excluded). */
+export function getRoundTickets(totalTicketsCollected: number, roundStartTickets: number): number {
+  return Math.max(0, totalTicketsCollected - roundStartTickets);
+}
+
+export function hasReachedGoal(totalTicketsCollected: number, roundStartTickets: number, goal: number): boolean {
+  return totalTicketsCollected - roundStartTickets >= goal;
+}
+
+/** 1-based round number: each round awards one prize. */
+export function getCurrentRound(prizesAvailable: number, prizesRemaining: number): number {
+  return Math.min(Math.max(prizesAvailable, 1), Math.max(prizesAvailable - prizesRemaining + 1, 1));
+}
+
+/**
+ * Where the next round's ticket count starts after a draw: the goal is
+ * consumed and any surplus carries over. Capped at the total so a draw forced
+ * before the goal was met can't leave a negative round.
+ */
+export function nextRoundStartTickets(roundStartTickets: number, goal: number, totalTicketsCollected: number): number {
+  return Math.min(roundStartTickets + goal, totalTicketsCollected);
+}
+
+interface RaffleRoundFields {
+  prizesAvailable: number;
+  prizesRemaining: number;
+  prizeValueUsd: number;
+  totalTicketsCollected: number;
+  roundStartTickets: number;
+  thresholdReachedAt: Date | null;
+}
+
+/** Derived, API-facing round info so clients never re-implement the tier rules. */
+export function withRoundInfo<T extends RaffleRoundFields>(raffle: T) {
+  return {
+    ...raffle,
+    currentRound: getCurrentRound(raffle.prizesAvailable, raffle.prizesRemaining),
+    roundTickets: getRoundTickets(raffle.totalTicketsCollected, raffle.roundStartTickets),
+    scheduledDrawAt: getScheduledDrawAt(raffle.thresholdReachedAt, raffle.prizeValueUsd),
+    drawDelayMs: getDrawDelayMs(raffle.prizeValueUsd),
+  };
+}
+
+/**
+ * Stable, non-reversible label for a public winners list. Derived from the
+ * voucher reference (random, never shown publicly alongside a name) so it
+ * can't be traced back to a user, but is consistent between requests.
+ */
+export async function anonymousWinnerId(voucherRef: string, raffleId: string): Promise<string> {
+  const data = new TextEncoder().encode(`${raffleId}:${voucherRef}`);
+  const digest = await crypto.subtle.digest("SHA-256", data);
+  return [...new Uint8Array(digest)]
+    .slice(0, 3)
+    .map((b) => b.toString(16).padStart(2, "0"))
+    .join("")
+    .toUpperCase();
 }
 
 // Approximate conversion rates to USD, matching the original backend.

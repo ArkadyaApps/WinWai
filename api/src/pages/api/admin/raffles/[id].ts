@@ -1,11 +1,12 @@
 import type { APIRoute } from "astro";
-import { eq } from "drizzle-orm";
+import { eq, sql } from "drizzle-orm";
 import { getDb } from "../../../../lib/db/client";
 import { raffles } from "../../../../db/schema";
 import { requireAdmin } from "../../../../lib/auth";
 import { json, handleError } from "../../../../lib/respond";
 import { UpdateRaffleSchema } from "../../../../lib/validations/admin";
-import { convertToUsd } from "../../../../lib/raffleHelpers";
+import { convertToUsd, withRoundInfo } from "../../../../lib/raffleHelpers";
+import { stampThresholdIfReached } from "../../../../lib/db/raffles";
 
 export const PUT: APIRoute = async ({ request, params, locals }) => {
   try {
@@ -21,10 +22,34 @@ export const PUT: APIRoute = async ({ request, params, locals }) => {
       data.prizeValueUsd = convertToUsd(data.prizeValue, data.currency);
     }
 
-    const result = await db.update(raffles).set(data).where(eq(raffles.id, raffleId)).returning();
+    // Changing the prize count moves prizesRemaining by the same amount (relative
+    // SQL, so a draw landing at the same moment isn't overwritten). Prizes
+    // already awarded can't be "un-awarded" by lowering the total.
+    let prizesRemainingDelta = 0;
+    if (data.prizesAvailable !== undefined) {
+      const existing = await db.query.raffles.findFirst({ where: eq(raffles.id, raffleId) });
+      if (!existing) return json({ error: "Raffle not found" }, 404);
+      const awarded = existing.prizesAvailable - existing.prizesRemaining;
+      if (data.prizesAvailable < awarded) {
+        return json({ error: `Prizes available can't be lower than the ${awarded} already awarded` }, 400);
+      }
+      prizesRemainingDelta = data.prizesAvailable - existing.prizesAvailable;
+    }
+
+    const result = await db
+      .update(raffles)
+      .set({ ...data, ...(prizesRemainingDelta !== 0 ? { prizesRemaining: sql`${raffles.prizesRemaining} + ${prizesRemainingDelta}` } : {}) })
+      .where(eq(raffles.id, raffleId))
+      .returning();
     if (result.length === 0) return json({ error: "Raffle not found" }, 404);
 
-    return json(result[0]);
+    // Lowering the ticket goal can make an in-progress round qualify immediately.
+    if (data.gamePrice !== undefined && (await stampThresholdIfReached(db, raffleId))) {
+      const refreshed = await db.query.raffles.findFirst({ where: eq(raffles.id, raffleId) });
+      if (refreshed) return json(withRoundInfo(refreshed));
+    }
+
+    return json(withRoundInfo(result[0]));
   } catch (e) {
     return handleError(e);
   }
