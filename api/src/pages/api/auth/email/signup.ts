@@ -5,6 +5,7 @@ import { users } from "../../../../db/schema";
 import { createSession, hashPassword, isAdminEmail } from "../../../../lib/auth";
 import { json, handleError } from "../../../../lib/respond";
 import { EmailSignUpSchema } from "../../../../lib/validations/auth";
+import { getSignupBonusTickets } from "../../../../lib/promo";
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -18,13 +19,14 @@ export const POST: APIRoute = async ({ request, locals }) => {
     const existing = await db.query.users.findFirst({ where: eq(users.email, email) });
     if (existing) return json({ error: "Email already registered" }, 400);
 
-    let welcomeTickets = 0;
+    // Launch promo (see lib/promo.ts) plus 1 more for signing up with a valid referral code.
+    let welcomeTickets = getSignupBonusTickets();
     let referrerId: string | null = null;
     if (referralCode) {
       const referrer = await db.query.users.findFirst({ where: like(users.id, `${referralCode}%`) });
       if (referrer) {
         referrerId = referrer.id;
-        welcomeTickets = 1;
+        welcomeTickets += 1;
       }
     }
 

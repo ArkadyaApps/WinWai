@@ -5,6 +5,7 @@ import { users } from "../../../db/schema";
 import { createSession, isAdminEmail, isValidGoogleAudience } from "../../../lib/auth";
 import { json, handleError } from "../../../lib/respond";
 import { GoogleSignInSchema } from "../../../lib/validations/auth";
+import { getSignupBonusTickets } from "../../../lib/promo";
 
 export const POST: APIRoute = async ({ request, locals }) => {
   try {
@@ -41,7 +42,7 @@ export const POST: APIRoute = async ({ request, locals }) => {
         email,
         name,
         picture,
-        tickets: 0, // new users start with 0, unlike the 50-ticket schema default for seed/admin-created accounts
+        tickets: getSignupBonusTickets(), // 0 once the launch promo (lib/promo.ts) has ended; NOT the 50-ticket schema default, which is only for seeded/admin-created rows
         role,
         lastLogin: new Date(),
       };
