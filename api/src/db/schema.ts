@@ -78,14 +78,25 @@ export const raffles = sqliteTable(
     prizeValueUsd: real("prize_value_usd").notNull().default(0),
     currency: text("currency").notNull().default("THB"),
     gamePrice: real("game_price").notNull().default(0),
+    // DEPRECATED: no longer read or written by draw logic. drawDate is set to
+    // createdAt on insert (column stays NOT NULL to avoid a table rebuild);
+    // the real schedule is thresholdReachedAt + tier delay (see raffleHelpers).
     drawDate: integer("draw_date", { mode: "timestamp_ms" }).notNull(),
-    minimumDrawDate: integer("minimum_draw_date", { mode: "timestamp_ms" }),
-    lastExtensionDate: integer("last_extension_date", { mode: "timestamp_ms" }),
+    minimumDrawDate: integer("minimum_draw_date", { mode: "timestamp_ms" }), // DEPRECATED
+    lastExtensionDate: integer("last_extension_date", { mode: "timestamp_ms" }), // DEPRECATED
+    // Round-based draws: gamePrice tickets must be collected within a round;
+    // the entry that crosses it stamps thresholdReachedAt (once per round) and
+    // the round's draw is due a tier delay (1/3/7 days by prize USD value)
+    // later. roundStartTickets is totalTicketsCollected at the start of the
+    // current round (surplus carries over), so round progress =
+    // totalTicketsCollected - roundStartTickets.
+    thresholdReachedAt: integer("threshold_reached_at", { mode: "timestamp_ms" }),
+    roundStartTickets: integer("round_start_tickets").notNull().default(0),
     validityMonths: integer("validity_months").notNull().default(3),
     active: integer("active", { mode: "boolean" }).notNull().default(true),
     totalEntries: integer("total_entries").notNull().default(0),
     totalTicketsCollected: integer("total_tickets_collected").notNull().default(0),
-    drawStatus: text("draw_status").notNull().default("pending"), // pending | eligible | drawn | cancelled
+    drawStatus: text("draw_status").notNull().default("pending"), // pending (goal not met) | eligible (goal met, clock running) | drawn (all prizes awarded) | cancelled
     isDigitalPrize: integer("is_digital_prize", { mode: "boolean" }).notNull().default(false),
     // D1/SQLite has no native array type - stored as JSON text, typed via Drizzle's json mode.
     secretCodes: text("secret_codes", { mode: "json" }).$type<string[]>().notNull().default([]),
@@ -156,6 +167,7 @@ export const winners = sqliteTable(
     raffleId: text("raffle_id").notNull().references(() => raffles.id),
     entryId: text("entry_id").notNull().references(() => entries.id),
     voucherId: text("voucher_id").notNull().references(() => vouchers.id),
+    round: integer("round").notNull().default(1),
     drawDate: integer("draw_date", { mode: "timestamp_ms" }).notNull(),
     notified: integer("notified", { mode: "boolean" }).notNull().default(false),
     createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull().default(nowMs),
@@ -165,6 +177,8 @@ export const winners = sqliteTable(
   })
 );
 
+// DEPRECATED: legacy claim record. Nothing reads it (the Rewards tab is
+// backed by vouchers/winners); the old manual draw route was its only writer.
 export const rewards = sqliteTable(
   "rewards",
   {
