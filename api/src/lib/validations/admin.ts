@@ -1,5 +1,10 @@
 import { z } from "zod";
 
+// Images are stored inline as base64 data URIs and returned in list responses,
+// so keep them small (the admin app resizes/compresses before upload; ~0.4M
+// characters is roughly 300 KB of image).
+const MAX_IMAGE_CHARS = 400_000;
+
 // Admin forms send "" for an empty optional email field rather than omitting
 // it - z.string().email() rejects "" (it's not a valid email), so without
 // this every create/update with a blank email field fails validation.
@@ -27,8 +32,8 @@ export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
 const PartnerBaseSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
-  logo: z.string().optional().nullable(),
-  photo: z.string().optional().nullable(),
+  logo: z.string().max(MAX_IMAGE_CHARS, "Image is too large - please choose a smaller one").optional().nullable(),
+  photo: z.string().max(MAX_IMAGE_CHARS, "Image is too large - please choose a smaller one").optional().nullable(),
   category: z.string().min(1),
   sponsored: z.boolean().default(false),
   contactInfo: z.string().optional().nullable(),
@@ -48,7 +53,7 @@ export type UpdatePartnerInput = z.infer<typeof UpdatePartnerSchema>;
 const RaffleBaseSchema = z.object({
   title: z.string().min(1),
   description: z.string().min(1),
-  image: z.string().optional().nullable(),
+  image: z.string().max(MAX_IMAGE_CHARS, "Image is too large - please choose a smaller one").optional().nullable(),
   category: z.string().min(1),
   partnerId: z.string().min(1),
   partnerName: z.string().optional().nullable(),

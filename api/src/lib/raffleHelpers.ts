@@ -82,6 +82,21 @@ export function withRoundInfo<T extends RaffleRoundFields>(raffle: T) {
 }
 
 /**
+ * Partial email for the public winners banner: "somchai@gmail.com" ->
+ * "so***@g***.com". Masked on the server so a full address never leaves the API.
+ */
+export function maskEmail(email: string): string {
+  const at = email.indexOf("@");
+  if (at < 1) return "***";
+  const local = email.slice(0, at);
+  const domain = email.slice(at + 1);
+  const dot = domain.lastIndexOf(".");
+  const host = dot > 0 ? domain.slice(0, dot) : domain;
+  const tld = dot > 0 ? domain.slice(dot) : "";
+  return `${local.slice(0, local.length > 3 ? 2 : 1)}***@${host.slice(0, 1)}***${tld}`;
+}
+
+/**
  * Stable, non-reversible label for a public winners list. Derived from the
  * voucher reference (random, never shown publicly alongside a name) so it
  * can't be traced back to a user, but is consistent between requests.
