@@ -7,6 +7,11 @@ name = "winwai-cron"
 main = "src/index.ts"
 compatibility_date = "2024-09-23"
 
+# Keeps console.log output from each run (drawn/skipped/errors) viewable in
+# the dashboard under Workers -> winwai-cron -> Logs.
+[observability]
+enabled = true
+
 [triggers]
 crons = ["*/15 * * * *"]
 
