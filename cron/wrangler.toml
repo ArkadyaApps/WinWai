@@ -15,6 +15,11 @@ enabled = true
 [triggers]
 crons = ["*/15 * * * *"]
 
+# Public origin used for the link in winner emails. The email API key is a
+# secret: add RESEND_API_KEY in the dashboard (Settings -> Variables and Secrets).
+[vars]
+APP_URL = "https://winwai.online"
+
 [[d1_databases]]
 binding = "DB"
 database_name = "winwai"
