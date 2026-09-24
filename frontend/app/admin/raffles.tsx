@@ -8,6 +8,7 @@ import api from '../../src/utils/api';
 import { Raffle, Partner } from '../../src/types';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
+import { compressImageDataUri } from '../../src/utils/imageCompress';
 
 export default function AdminRafflesScreen() {
   const router = useRouter();
@@ -322,7 +323,7 @@ export default function AdminRafflesScreen() {
       });
       
       if (!result.canceled && result.assets[0]) {
-        const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+        const base64Image = await compressImageDataUri(`data:image/jpeg;base64,${result.assets[0].base64}`);
         setSelectedImage(base64Image);
         setFormData({ ...formData, image: base64Image });
       }

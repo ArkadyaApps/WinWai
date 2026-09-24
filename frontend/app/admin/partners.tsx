@@ -7,6 +7,7 @@ import api from '../../src/utils/api';
 import { Partner } from '../../src/types';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
+import { compressImageDataUri } from '../../src/utils/imageCompress';
 
 export const PARTNER_CATEGORIES = [
   { value: 'food', label: 'Food', icon: '🍽️' },
@@ -72,7 +73,7 @@ export default function AdminPartnersScreen() {
       });
       
       if (!result.canceled && result.assets[0]) {
-        const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+        const base64Image = await compressImageDataUri(`data:image/jpeg;base64,${result.assets[0].base64}`);
         setSelectedImage(base64Image);
         setFormData({ ...formData, photo: base64Image });
       }
@@ -99,7 +100,7 @@ export default function AdminPartnersScreen() {
       });
       
       if (!result.canceled && result.assets[0]) {
-        const base64Image = `data:image/jpeg;base64,${result.assets[0].base64}`;
+        const base64Image = await compressImageDataUri(`data:image/jpeg;base64,${result.assets[0].base64}`);
         setSelectedImage(base64Image);
         setFormData({ ...formData, photo: base64Image });
       }

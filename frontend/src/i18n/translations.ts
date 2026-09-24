@@ -2,6 +2,7 @@ export const translations = {
   en: {
     // Landing page
     landing: {
+      freeTicketPromo: 'Sign up before 31 December 2026 and get 1 free ticket!',
       title: 'Win Amazing Prizes in Thailand!',
       features: {
         raffles: 'Free Raffles',
@@ -118,6 +119,8 @@ export const translations = {
       addEditRemovePartners: 'Add, edit, remove partners',
       manageUsers: 'Manage Users',
       viewManageUsers: 'View and manage all users',
+      redeemVouchers: 'Redeem Vouchers',
+      redeemVouchersSubtitle: 'Look up and redeem winner vouchers',
       manageRaffles: 'Manage Raffles',
       createEditDrawWinners: 'Create, edit, draw winners',
       account: 'Account',
@@ -206,7 +209,15 @@ export const translations = {
       lineNotInstalled: 'LINE is not installed',
       couldNotOpenEmail: 'Could not open email',
     },
+    winnersTicker: {
+      won: '{email} won {raffle}',
+    },
     raffleRound: {
+      rulesTitle: 'How the draw works',
+      rulesGoal: 'Each prize is its own round. Once the round\'s ticket goal is reached, the winner is drawn {time} later.',
+      rulesOdds: 'Every entry is one equal chance to win, whoever makes it and whenever it is made. Each entry costs {cost} tickets; more entries mean more chances.',
+      rulesOnePrize: 'One prize per person in each raffle: once you win, you cannot win it again.',
+      rulesRandom: 'The winner is picked at random by WinWai and the result is final.',
       round: 'Round {current} of {total}',
       ticketsProgress: '{current} of {goal} tickets',
       goalReached: 'Goal reached!',
@@ -282,6 +293,8 @@ export const translations = {
       addEditRemovePartners: 'เพิ่ม แก้ไข ลบพาร์ทเนอร์',
       manageUsers: 'จัดการผู้ใช้',
       viewManageUsers: 'ดูและจัดการผู้ใช้ทั้งหมด',
+      redeemVouchers: 'ใช้บัตรรางวัล',
+      redeemVouchersSubtitle: 'ค้นหาและใช้บัตรรางวัลของผู้โชคดี',
       manageRaffles: 'จัดการการจับรางวัล',
       createEditDrawWinners: 'สร้าง แก้ไข จับรางวัล',
       account: 'บัญชี',
@@ -370,7 +383,15 @@ export const translations = {
       lineNotInstalled: 'ไม่ได้ติดตั้ง LINE',
       couldNotOpenEmail: 'ไม่สามารถเปิดอีเมลได้',
     },
+    winnersTicker: {
+      won: '{email} ได้รับรางวัล {raffle}',
+    },
     raffleRound: {
+      rulesTitle: 'วิธีจับรางวัล',
+      rulesGoal: 'แต่ละรางวัลคือหนึ่งรอบ เมื่อครบเป้าหมายตั๋วของรอบนั้น ระบบจะจับรางวัลหลังจากนั้น {time}',
+      rulesOdds: 'ทุกการเข้าร่วมมีโอกาสชนะเท่ากัน ไม่ว่าใครหรือเมื่อไรก็ตาม การเข้าร่วมแต่ละครั้งใช้ {cost} ตั๋ว ยิ่งเข้าร่วมมากยิ่งมีโอกาสมาก',
+      rulesOnePrize: 'ผู้ใช้หนึ่งคนชนะได้หนึ่งรางวัลต่อการจับรางวัลหนึ่งรายการ เมื่อชนะแล้วจะไม่ชนะรายการเดิมซ้ำอีก',
+      rulesRandom: 'ผู้ชนะถูกสุ่มโดย WinWai และผลการจับรางวัลถือเป็นที่สิ้นสุด',
       round: 'รอบที่ {current} จาก {total}',
       ticketsProgress: '{current} จาก {goal} ตั๋ว',
       goalReached: 'ครบเป้าหมายแล้ว!',
@@ -392,6 +413,7 @@ export const translations = {
     },
     // Landing page
     landing: {
+      freeTicketPromo: 'สมัครก่อนวันที่ 31 ธันวาคม 2569 รับฟรี 1 ตั๋ว!',
       title: 'ชนะรางวัลสุดพิเศษในประเทศไทย!',
       features: {
         raffles: 'ลุ้นรางวัลฟรี',
@@ -458,6 +480,7 @@ export const translations = {
   fr: {
     // Landing page
     landing: {
+      freeTicketPromo: 'Inscrivez-vous avant le 31 décembre 2026 et recevez 1 billet offert !',
       title: 'Gagnez des prix incroyables en Thaïlande!',
       features: {
         raffles: 'Tombolas gratuites',
@@ -574,6 +597,8 @@ export const translations = {
       addEditRemovePartners: 'Ajouter, modifier, supprimer des partenaires',
       manageUsers: 'Gérer les utilisateurs',
       viewManageUsers: 'Voir et gérer tous les utilisateurs',
+      redeemVouchers: 'Valider les bons',
+      redeemVouchersSubtitle: 'Rechercher et valider les bons des gagnants',
       manageRaffles: 'Gérer les tombolas',
       createEditDrawWinners: 'Créer, modifier, tirer les gagnants',
       account: 'Compte',
@@ -662,7 +687,15 @@ export const translations = {
       lineNotInstalled: 'LINE n\'est pas installé',
       couldNotOpenEmail: 'Impossible d\'ouvrir l\'e-mail',
     },
+    winnersTicker: {
+      won: '{email} a gagné {raffle}',
+    },
     raffleRound: {
+      rulesTitle: 'Comment se déroule le tirage',
+      rulesGoal: 'Chaque prix est une manche distincte. Une fois l\'objectif de billets de la manche atteint, le gagnant est tiré {time} plus tard.',
+      rulesOdds: 'Chaque participation donne une chance égale de gagner, quel que soit le participant ou le moment. Chaque participation coûte {cost} billets ; plus de participations, plus de chances.',
+      rulesOnePrize: 'Un seul prix par personne et par tirage : une fois gagnant, vous ne pouvez plus gagner ce tirage.',
+      rulesRandom: 'Le gagnant est choisi au hasard par WinWai et le résultat est définitif.',
       round: 'Manche {current} sur {total}',
       ticketsProgress: '{current} billets sur {goal}',
       goalReached: 'Objectif atteint !',
@@ -686,6 +719,7 @@ export const translations = {
   ar: {
     // Landing page
     landing: {
+      freeTicketPromo: 'سجّل قبل 31 ديسمبر 2026 واحصل على تذكرة مجانية!',
       title: 'اربح جوائز مذهلة في تايلاند!',
       features: {
         raffles: 'سحوبات مجانية',
@@ -802,6 +836,8 @@ export const translations = {
       addEditRemovePartners: 'إضافة وتعديل وإزالة الشركاء',
       manageUsers: 'إدارة المستخدمين',
       viewManageUsers: 'عرض وإدارة جميع المستخدمين',
+      redeemVouchers: 'استرداد القسائم',
+      redeemVouchersSubtitle: 'البحث عن قسائم الفائزين واستردادها',
       manageRaffles: 'إدارة السحوبات',
       createEditDrawWinners: 'إنشاء وتعديل وسحب الفائزين',
       account: 'الحساب',
@@ -890,7 +926,15 @@ export const translations = {
       lineNotInstalled: 'LINE غير مثبت',
       couldNotOpenEmail: 'تعذر فتح البريد الإلكتروني',
     },
+    winnersTicker: {
+      won: 'فاز {email} بـ {raffle}',
+    },
     raffleRound: {
+      rulesTitle: 'كيف يتم السحب',
+      rulesGoal: 'كل جائزة تمثّل جولة مستقلة. عند بلوغ هدف التذاكر في الجولة، يُسحب الفائز بعد {time}.',
+      rulesOdds: 'كل مشاركة تمنح فرصة متساوية للفوز أيًا كان صاحبها ومتى تمت. تكلفة كل مشاركة {cost} تذاكر؛ كلما زادت مشاركاتك زادت فرصك.',
+      rulesOnePrize: 'جائزة واحدة لكل شخص في كل سحب: بمجرد فوزك لا يمكنك الفوز به مرة أخرى.',
+      rulesRandom: 'يختار WinWai الفائز عشوائيًا والنتيجة نهائية.',
       round: 'الجولة {current} من {total}',
       ticketsProgress: '{current} من {goal} تذكرة',
       goalReached: 'تم بلوغ الهدف!',

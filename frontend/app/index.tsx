@@ -21,6 +21,7 @@ import { useTranslation } from '../src/i18n/useTranslation';
 import LanguageSelector from '../src/components/LanguageSelector';
 import PwaInstallModal from '../src/components/PwaInstallModal';
 import { usePwaInstallStore } from '../src/store/pwaInstallStore';
+import { SIGNUP_BONUS_ENDS_AT } from '../src/constants/promo';
 
 const INSTALL_PROMPT_DISMISSED_KEY = 'pwa_install_prompt_dismissed';
 
@@ -151,6 +152,12 @@ export default function Index() {
               <Text style={styles.featureText}>{t('landing.features.rewards')}</Text>
             </View>
           </View>
+
+          {Date.now() < SIGNUP_BONUS_ENDS_AT.getTime() && (
+            <View style={styles.promoBanner}>
+              <Text style={styles.promoText}>{'🎁 '}{t('landing.freeTicketPromo')}</Text>
+            </View>
+          )}
 
           {/* Auth Mode Toggle */}
           <View style={styles.authToggle}>
@@ -406,6 +413,22 @@ const styles = StyleSheet.create({
   linkSeparator: {
     color: '#999',
     fontSize: 14,
+  },
+  promoBanner: {
+    backgroundColor: '#FFF3C4',
+    borderWidth: 1,
+    borderColor: '#FFD700',
+    borderRadius: 16,
+    paddingVertical: 10,
+    paddingHorizontal: 16,
+    marginBottom: 20,
+    maxWidth: 350,
+  },
+  promoText: {
+    fontSize: 14,
+    fontWeight: '700',
+    color: '#7A5C00',
+    textAlign: 'center',
   },
   disclaimer: {
     marginTop: 24,

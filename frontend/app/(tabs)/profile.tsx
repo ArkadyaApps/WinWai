@@ -218,6 +218,13 @@ export default function ProfileScreen() {
                 <Ionicons name="chevron-forward" size={20} color="#fff" />
               </LinearGradient>
             </TouchableOpacity>
+            <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/vouchers' as any)}>
+              <LinearGradient colors={["#FFD700", "#FFC200"]} style={styles.adminMenuGradient}>
+                <Ionicons name="ticket" size={24} color="#fff" />
+                <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t('profile.redeemVouchers')}</Text><Text style={styles.adminMenuSubtitle}>{t('profile.redeemVouchersSubtitle')}</Text></View>
+                <Ionicons name="chevron-forward" size={20} color="#fff" />
+              </LinearGradient>
+            </TouchableOpacity>
           </View>
         )}
 

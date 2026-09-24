@@ -7,6 +7,7 @@ import { Raffle, Partner } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
 import SponsorCard from '../../src/components/SponsorCard';
+import WinnersTicker from '../../src/components/WinnersTicker';
 import AdCard from '../../src/components/AdCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import LanguageSelector from '../../src/components/LanguageSelector';
@@ -176,6 +177,8 @@ export default function HomeScreen() {
           </View>
         )}
       />
+
+      <WinnersTicker />
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />} showsVerticalScrollIndicator={false}>
         <View style={styles.resultsHeader}>

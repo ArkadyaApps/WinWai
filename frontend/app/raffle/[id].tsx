@@ -135,7 +135,6 @@ export default function RaffleDetailScreen() {
             try {
               const response = await api.post('/api/raffles/enter', {
                 raffleId: raffle.id,
-                ticketsToUse: raffle.ticketCost,
               });
               updateTickets(response.data.newBalance);
               Alert.alert(t('raffleDetail.success'), t('raffleDetail.enteredRaffle'));
@@ -391,6 +390,24 @@ export default function RaffleDetailScreen() {
                 <Text style={styles.detailLabel}>{t('raffleDetail.prizesLeft')}:</Text>
                 <Text style={styles.detailValue}>{raffle.prizesRemaining}</Text>
               </View>
+            </View>
+          </View>
+
+          {/* How the draw works, including the odds rule */}
+          <View style={styles.section}>
+            <Text style={styles.sectionTitle}>{t('raffleRound.rulesTitle')}</Text>
+            <View style={styles.detailsCard}>
+              {[
+                t('raffleRound.rulesGoal').replace('{time}', `${Math.round((raffle.drawDelayMs ?? 86400000) / 86400000)}${t('raffleRound.unitDay')}`),
+                t('raffleRound.rulesOdds').replace('{cost}', String(raffle.ticketCost)),
+                t('raffleRound.rulesOnePrize'),
+                t('raffleRound.rulesRandom'),
+              ].map((line, i) => (
+                <View key={i} style={styles.detailRow}>
+                  <Ionicons name="checkmark-circle-outline" size={20} color="#4ECDC4" />
+                  <Text style={{ flex: 1, fontSize: 13, color: '#2C3E50', lineHeight: 19 }}>{line}</Text>
+                </View>
+              ))}
             </View>
           </View>
 
