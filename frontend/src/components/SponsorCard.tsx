@@ -48,7 +48,7 @@ const SponsorCard: React.FC<SponsorCardProps> = ({ partner }) => {
         <View style={styles.content}>
           <Text style={styles.name} numberOfLines={2}>{partner.name}</Text>
           <Text style={styles.category} numberOfLines={1}>{partner.category}</Text>
-          {!!partner.description && <Text style={styles.description} numberOfLines={4}>{partner.description}</Text>}
+          {!!partner.description && <Text style={styles.description} numberOfLines={2}>{partner.description}</Text>}
         </View>
       </Pressable>
 

@@ -46,7 +46,9 @@ const AdCard: React.FC = () => {
     ins.className = 'adsbygoogle';
     ins.style.display = 'block';
     ins.style.width = '100%';
-    ins.style.minHeight = '160px';
+    // No min-height here: an unfilled slot must collapse to nothing (a reserved
+    // 160px showed up as a huge blank row). Google sizes a filled fluid ad itself,
+    // and FILLED_STYLE gives the card its minimum once it really has an ad.
     ins.setAttribute('data-ad-format', 'fluid');
     ins.setAttribute('data-ad-layout-key', AD_LAYOUT_KEY);
     ins.setAttribute('data-ad-client', AD_CLIENT);
@@ -61,10 +63,16 @@ const AdCard: React.FC = () => {
     const applyStatus = () => {
       if (ins.getAttribute('data-ad-status') === 'filled') {
         Object.assign(container.style, FILLED_STYLE);
+        container.style.height = '';
       } else {
         Object.keys(FILLED_STYLE).forEach((key) => {
           (container.style as any)[key] = '';
         });
+        // Google sizes even an unfilled fluid slot (a ~300px blank block), so
+        // collapse it until the slot really has an ad. Width is kept, because
+        // the ad script measures it.
+        container.style.height = '0px';
+        container.style.overflow = 'hidden';
       }
     };
     const observer = new MutationObserver(applyStatus);
