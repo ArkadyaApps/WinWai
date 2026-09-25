@@ -4,6 +4,7 @@ import { Raffle } from '../types';
 import RaffleRoundStatus from './RaffleRoundStatus';
 import { Ionicons } from '@expo/vector-icons';
 import { LinearGradient } from 'expo-linear-gradient';
+import { useLocalizedRaffle } from '../utils/localizeRaffle';
 
 interface RaffleGridCardProps {
   raffle: Raffle;
@@ -30,6 +31,7 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
   };
 
   const gradientColors = getCategoryGradient(raffle.category);
+  const { title } = useLocalizedRaffle(raffle);
 
   return (
     <Pressable 
@@ -71,7 +73,7 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
       
       {/* Content */}
       <View style={styles.content}>
-        <Text style={styles.title} numberOfLines={2}>{raffle.title}</Text>
+        <Text style={styles.title} numberOfLines={2}>{title}</Text>
         
         <View style={styles.infoContainer}>
           {/* Prize Count */}

@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { RAFFLE_LANGUAGES } from "../translate";
 
 // Images are stored inline as base64 data URIs and returned in list responses,
 // so keep them small (the admin app resizes/compresses before upload; ~0.4M
@@ -79,6 +80,10 @@ const RaffleBaseSchema = z.object({
   isDigitalPrize: z.boolean().default(false),
   secretCodes: z.array(z.string()).default([]),
   language: z.enum(["en", "th", "fr", "ar"]).default("en"),
+  // Per-language title/description shown to viewers of that language.
+  translations: z
+    .record(z.enum(RAFFLE_LANGUAGES), z.object({ title: z.string().min(1).max(200), description: z.string().min(1).max(2000) }))
+    .default({}),
   allowedCountries: z.array(z.string()).default(["TH"]),
 });
 export const CreateRaffleSchema = RaffleBaseSchema;

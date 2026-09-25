@@ -9,6 +9,7 @@ declare namespace App {
 
 interface Env {
   DB: D1Database;
+  AI?: import("./lib/translate").TranslationAi; // Workers AI binding (wrangler.toml [ai])
   RESEND_API_KEY: string;
   GOOGLE_CLIENT_ID: string;
   GOOGLE_CLIENT_SECRET: string;

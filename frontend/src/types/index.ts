@@ -65,6 +65,10 @@ export interface Raffle {
   /** Listed but not playable until this moment (ISO). null/absent = open. */
   startsAt?: string | null;
   isComingSoon?: boolean;
+  /** Content language of title/description (en | th | fr | ar). */
+  language?: string;
+  /** Optional per-language title/description; the app shows the viewer's language when present. */
+  translations?: Partial<Record<'en' | 'th' | 'fr' | 'ar', { title: string; description: string }>>;
 }
 
 export interface Voucher {

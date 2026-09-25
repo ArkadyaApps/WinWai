@@ -22,6 +22,8 @@ import { useTranslation } from '../../src/i18n/useTranslation';
 import RaffleRoundStatus from '../../src/components/RaffleRoundStatus';
 import RaffleWinnersList from '../../src/components/RaffleWinnersList';
 import { ScreenFade } from '../../src/components/FadeInView';
+import { useLanguageStore } from '../../src/store/languageStore';
+import { localizeRaffle } from '../../src/utils/localizeRaffle';
 
 export default function RaffleDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -29,6 +31,7 @@ export default function RaffleDetailScreen() {
   const { t } = useTranslation();
   const { user, updateTickets } = useUserStore();
   const [raffle, setRaffle] = useState<Raffle | null>(null);
+  const displayLanguage = useLanguageStore((s) => s.language);
   const [partner, setPartner] = useState<Partner | null>(null);
   const [loading, setLoading] = useState(true);
   const [entering, setEntering] = useState(false);
@@ -181,6 +184,7 @@ export default function RaffleDetailScreen() {
   }
 
   const gradientColors = getCategoryGradient(raffle.category);
+  const localized = localizeRaffle(raffle, displayLanguage);
   // Draw time exists only once the current round's ticket goal has been reached.
   const scheduledDraw = raffle.scheduledDrawAt ? new Date(raffle.scheduledDrawAt) : null;
   const comingSoon = !!raffle.startsAt && new Date(raffle.startsAt).getTime() > Date.now();
@@ -226,7 +230,7 @@ export default function RaffleDetailScreen() {
         {/* Content */}
         <View style={styles.content}>
           {/* Title */}
-          <Text style={styles.title}>{raffle.title}</Text>
+          <Text style={styles.title}>{localized.title}</Text>
 
           {/* Stats Row */}
           <View style={styles.statsRow}>
@@ -265,7 +269,7 @@ export default function RaffleDetailScreen() {
           {/* Description */}
           <View style={styles.section}>
             <Text style={styles.sectionTitle}>{t('raffleDetail.aboutThisPrize')}</Text>
-            <Text style={styles.description}>{raffle.description}</Text>
+            <Text style={styles.description}>{localized.description}</Text>
           </View>
 
           {/* Partner Info */}

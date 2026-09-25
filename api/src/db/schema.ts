@@ -1,5 +1,6 @@
 import { sql } from "drizzle-orm";
 import { integer, real, sqliteTable, text, index } from "drizzle-orm/sqlite-core";
+import type { RaffleTextTranslations } from "../lib/translate";
 
 const nowMs = sql`(unixepoch() * 1000)`;
 
@@ -105,6 +106,9 @@ export const raffles = sqliteTable(
     secretCodes: text("secret_codes", { mode: "json" }).$type<string[]>().notNull().default([]),
     usedSecretCodes: text("used_secret_codes", { mode: "json" }).$type<string[]>().notNull().default([]),
     language: text("language").notNull().default("en"), // en | th | fr | ar
+    // Optional per-language title/description ({ th: { title, description }, ... }) so the
+    // app can show a raffle in the viewer's language; falls back to title/description.
+    translations: text("translations", { mode: "json" }).$type<RaffleTextTranslations>().notNull().default({}),
     allowedCountries: text("allowed_countries", { mode: "json" }).$type<string[]>().notNull().default(["TH"]),
     createdAt: integer("created_at", { mode: "timestamp_ms" }).notNull().default(nowMs),
     drawnAt: integer("drawn_at", { mode: "timestamp_ms" }),

@@ -1,0 +1,1 @@
+ALTER TABLE `raffles` ADD `translations` text DEFAULT '{}' NOT NULL;

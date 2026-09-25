@@ -6,3 +6,7 @@ pages_build_output_dir = "dist"
 binding = "DB"
 database_name = "winwai"
 database_id = "08ab5fb0-687b-4dad-bdaa-5395bc21ce8a"
+
+# Workers AI: used by the admin "Auto-translate" button for raffle texts.
+[ai]
+binding = "AI"

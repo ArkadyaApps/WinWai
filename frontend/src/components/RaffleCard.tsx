@@ -2,6 +2,7 @@ import React from 'react';
 import { View, Text, StyleSheet, Image, TouchableOpacity, Pressable } from 'react-native';
 import { Raffle } from '../types';
 import RaffleRoundStatus from './RaffleRoundStatus';
+import { useLocalizedRaffle } from '../utils/localizeRaffle';
 
 interface RaffleCardProps {
   raffle: Raffle;
@@ -9,6 +10,7 @@ interface RaffleCardProps {
 }
 
 const RaffleCard: React.FC<RaffleCardProps> = ({ raffle, onPress }) => {
+  const { title, description } = useLocalizedRaffle(raffle);
   const getCategoryColor = (category: string) => {
     switch (category) {
       case 'food': return '#FF6B6B';
@@ -34,8 +36,8 @@ const RaffleCard: React.FC<RaffleCardProps> = ({ raffle, onPress }) => {
           <Text style={styles.categoryText}>{raffle.category.toUpperCase()}</Text>
         </View>
         
-        <Text style={styles.title} numberOfLines={2}>{raffle.title}</Text>
-        <Text style={styles.description} numberOfLines={2}>{raffle.description}</Text>
+        <Text style={styles.title} numberOfLines={2}>{title}</Text>
+        <Text style={styles.description} numberOfLines={2}>{description}</Text>
         
         <View style={styles.footer}>
           <View style={styles.infoRow}>

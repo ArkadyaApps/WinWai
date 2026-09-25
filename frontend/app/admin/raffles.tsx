@@ -20,6 +20,11 @@ export default function AdminRafflesScreen() {
   const [modalVisible, setModalVisible] = useState(false);
   const [editingRaffle, setEditingRaffle] = useState<Raffle | null>(null);
   const [saving, setSaving] = useState(false);
+  // Per-language title/description shown to viewers of that language (source language excluded).
+  type LangText = { title: string; description: string };
+  const LANG_OPTIONS = [{ code: 'en', name: 'English' }, { code: 'th', name: 'ภาษาไทย' }, { code: 'fr', name: 'Français' }, { code: 'ar', name: 'العربية' }] as const;
+  const [translations, setTranslations] = useState<Record<string, LangText>>({});
+  const [translating, setTranslating] = useState(false);
   
   // Secret code upload modal
   const [secretCodeModalVisible, setSecretCodeModalVisible] = useState(false);
@@ -95,11 +100,12 @@ export default function AdminRafflesScreen() {
     setPartnerSearch(''); 
     setSelectedImage(null);
     setSecretCodes(['']);
+    setTranslations({});
     setUsePartnerLocation(true); // Reset to use partner location by default
     setModalVisible(true); 
   };
 
-  const openEditModal = (raffle: Raffle) => { setEditingRaffle(raffle); setFormData({ title: raffle.title, description: raffle.description, image: raffle.image || '', category: raffle.category, partnerId: raffle.partnerId, location: raffle.location || '', address: raffle.address || '', prizesAvailable: raffle.prizesAvailable, ticketCost: raffle.ticketCost, prizeValue: raffle.prizeValue || 0, gamePrice: raffle.gamePrice || 0, validityMonths: raffle.validityMonths || 3, active: raffle.active, startsAt: toBangkokInput(raffle.startsAt), language: (raffle as any).language || 'en', allowedCountries: (raffle as any).allowedCountries || ['TH'], currency: (raffle as any).currency || 'THB' }); setPartnerSearch(''); setModalVisible(true); };
+  const openEditModal = (raffle: Raffle) => { setEditingRaffle(raffle); setTranslations((raffle.translations as Record<string, LangText>) || {}); setFormData({ title: raffle.title, description: raffle.description, image: raffle.image || '', category: raffle.category, partnerId: raffle.partnerId, location: raffle.location || '', address: raffle.address || '', prizesAvailable: raffle.prizesAvailable, ticketCost: raffle.ticketCost, prizeValue: raffle.prizeValue || 0, gamePrice: raffle.gamePrice || 0, validityMonths: raffle.validityMonths || 3, active: raffle.active, startsAt: toBangkokInput(raffle.startsAt), language: (raffle as any).language || 'en', allowedCountries: (raffle as any).allowedCountries || ['TH'], currency: (raffle as any).currency || 'THB' }); setPartnerSearch(''); setModalVisible(true); };
 
   const handleSave = async () => {
     if (!formData.title || !formData.description || !formData.partnerId) { Alert.alert('Error', 'Please fill in all required fields'); return; }
@@ -130,7 +136,7 @@ export default function AdminRafflesScreen() {
       const finalPrizesAvailable = isDigitalPrize ? validSecretCodes.length : formData.prizesAvailable;
       
       if (editingRaffle) {
-        const payload: Partial<Raffle> = { title: formData.title, description: formData.description, image: formData.image || undefined, category: formData.category, partnerId: formData.partnerId, partnerName: partners.find(p => p.id === formData.partnerId)?.name, prizesAvailable: finalPrizesAvailable, ticketCost: formData.ticketCost, prizeValue: formData.prizeValue, gamePrice: formData.gamePrice, validityMonths: formData.validityMonths, active: formData.active, startsAt: parsedStartsAt };
+        const payload: Partial<Raffle> = { title: formData.title, description: formData.description, image: formData.image || undefined, category: formData.category, partnerId: formData.partnerId, partnerName: partners.find(p => p.id === formData.partnerId)?.name, prizesAvailable: finalPrizesAvailable, ticketCost: formData.ticketCost, prizeValue: formData.prizeValue, gamePrice: formData.gamePrice, validityMonths: formData.validityMonths, active: formData.active, startsAt: parsedStartsAt, language: formData.language, translations: cleanTranslations() };
         await api.put(`/api/admin/raffles/${editingRaffle.id}`, payload); Alert.alert('Success', 'Raffle updated');
       } else {
         const payload: any = { 
@@ -150,6 +156,7 @@ export default function AdminRafflesScreen() {
           validityMonths: formData.validityMonths, 
           active: formData.active,
           startsAt: parsedStartsAt,
+          translations: cleanTranslations(),
           language: formData.language,
           allowedCountries: formData.allowedCountries,
           currency: formData.currency
@@ -237,6 +244,29 @@ export default function AdminRafflesScreen() {
     }
   };
   const formatDate = (date: Date) => date.toLocaleString();
+  // Drops the source language and blank entries so only real translations are saved.
+  const cleanTranslations = (): Record<string, LangText> => {
+    const out: Record<string, LangText> = {};
+    for (const [code, value] of Object.entries(translations)) {
+      if (code === formData.language) continue;
+      if (value?.title?.trim() && value?.description?.trim()) out[code] = { title: value.title.trim(), description: value.description.trim() };
+    }
+    return out;
+  };
+  const handleAutoTranslate = async () => {
+    if (!formData.title.trim() || !formData.description.trim()) { Alert.alert('Error', 'Fill in the title and description first'); return; }
+    setTranslating(true);
+    try {
+      const res = await api.post('/api/admin/raffles/translate', { title: formData.title, description: formData.description, sourceLanguage: formData.language });
+      setTranslations((prev) => ({ ...prev, ...res.data.translations }));
+      const failed: string[] = res.data.failed || [];
+      Alert.alert(failed.length ? 'Partly translated' : 'Translated', failed.length ? `Could not translate: ${failed.join(', ')}. Review the rest below.` : 'Review the translations below, edit anything you like, then save.');
+    } catch (e: any) {
+      Alert.alert('Error', e?.response?.data?.error || 'Translation failed');
+    } finally {
+      setTranslating(false);
+    }
+  };
   // Start date is typed in Thailand time: "YYYY-MM-DD" or "YYYY-MM-DD HH:mm".
   // Empty -> null (playable immediately); unparseable -> undefined.
   const parseBangkokInput = (value: string): string | null | undefined => {
@@ -433,6 +463,18 @@ export default function AdminRafflesScreen() {
                   </TouchableOpacity>
                 ))}
               </View>
+              <Text style={styles.label}>Translations (shown to viewers in their language)</Text>
+              <TouchableOpacity style={styles.categoryButton} onPress={handleAutoTranslate} disabled={translating}>
+                {translating ? <ActivityIndicator color="#000" /> : <Text style={styles.categoryButtonText}>Auto-translate from {LANG_OPTIONS.find((l) => l.code === formData.language)?.name}</Text>}
+              </TouchableOpacity>
+              <Text style={styles.helperText}>Fills the other languages with Cloudflare AI. Review and edit them; a language left empty falls back to the text above.</Text>
+              {LANG_OPTIONS.filter((l) => l.code !== formData.language).map((l) => (
+                <View key={l.code}>
+                  <Text style={styles.label}>{l.name}</Text>
+                  <TextInput style={styles.input} value={translations[l.code]?.title || ''} onChangeText={(text) => setTranslations({ ...translations, [l.code]: { title: text, description: translations[l.code]?.description || '' } })} placeholder="Title" placeholderTextColor="#999" />
+                  <TextInput style={[styles.input, styles.textArea]} value={translations[l.code]?.description || ''} onChangeText={(text) => setTranslations({ ...translations, [l.code]: { title: translations[l.code]?.title || '', description: text } })} placeholder="Description" placeholderTextColor="#999" multiline numberOfLines={3} />
+                </View>
+              ))}
               <Text style={styles.label}>Allowed Countries * (User Geolocation)</Text>
               <View style={styles.countryGrid}>
                 {[
