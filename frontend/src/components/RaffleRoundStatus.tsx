@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Animated, Easing, Platform } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import { format } from 'date-fns';
 import { Raffle } from '../types';
 import { useTranslation } from '../i18n/useTranslation';
 
@@ -52,7 +53,9 @@ const RaffleRoundStatus: React.FC<RaffleRoundStatusProps> = ({ raffle, variant =
   const goal = raffle.gamePrice > 0 ? raffle.gamePrice : 1;
   const roundTickets = raffle.roundTickets ?? 0;
   const scheduledMs = raffle.scheduledDrawAt ? new Date(raffle.scheduledDrawAt).getTime() : null;
-  const now = useNow(scheduledMs);
+  const startsMs = raffle.startsAt ? new Date(raffle.startsAt).getTime() : null;
+  const now = useNow(startsMs !== null && startsMs > Date.now() ? startsMs : scheduledMs);
+  const comingSoon = startsMs !== null && startsMs > now;
   const remaining = scheduledMs === null ? null : scheduledMs - now;
   const finished = !raffle.active || raffle.prizesRemaining <= 0;
   const goalMet = scheduledMs !== null;
@@ -87,6 +90,30 @@ const RaffleRoundStatus: React.FC<RaffleRoundStatusProps> = ({ raffle, variant =
     return compact ? null : (
       <View style={styles.card}>
         <Text style={styles.finishedText}>{t('raffleRound.allAwarded')}</Text>
+      </View>
+    );
+  }
+
+  if (comingSoon && startsMs !== null) {
+    const soonUnits: Units = { d: t('raffleRound.unitDay'), h: t('raffleRound.unitHour'), m: t('raffleRound.unitMinute'), s: t('raffleRound.unitSecond') };
+    if (compact) {
+      return (
+        <View style={styles.compactRow}>
+          <Ionicons name="hourglass-outline" size={11} color="#E67E22" />
+          <Text style={[styles.compactText, styles.soonText]} numberOfLines={1}>{t('raffleRound.comingSoon')}</Text>
+        </View>
+      );
+    }
+    return (
+      <View style={styles.card}>
+        <View style={styles.headerRow}>
+          <View style={styles.soonBadge}>
+            <Ionicons name="hourglass-outline" size={14} color="#E67E22" />
+            <Text style={styles.soonBadgeText}>{t('raffleRound.comingSoon')}</Text>
+          </View>
+          <Text style={styles.progressText}>{t('raffleRound.startsIn').replace('{time}', formatRemaining(startsMs - now, soonUnits))}</Text>
+        </View>
+        <Text style={styles.note}>{t('raffleRound.startsOn').replace('{date}', format(new Date(startsMs), 'dd MMM yyyy, HH:mm'))}</Text>
       </View>
     );
   }
@@ -195,6 +222,9 @@ const styles = StyleSheet.create({
   countdownText: { fontSize: 13, fontWeight: '800', color: '#2C3E50' },
   countdownTextHot: { color: '#fff' },
   note: { fontSize: 12, color: '#95A5A6', marginTop: 8, lineHeight: 17 },
+  soonBadge: { flexDirection: 'row', alignItems: 'center', gap: 4, backgroundColor: '#FEF5E7', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
+  soonBadgeText: { fontSize: 12, fontWeight: '800', color: '#E67E22' },
+  soonText: { color: '#E67E22' },
   finishedText: { fontSize: 14, fontWeight: '700', color: '#7F8C8D', textAlign: 'center' },
   compact: { gap: 5, marginTop: 2 },
   compactRow: { flexDirection: 'row', alignItems: 'center', gap: 4 },

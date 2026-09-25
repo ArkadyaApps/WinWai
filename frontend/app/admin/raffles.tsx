@@ -28,7 +28,7 @@ export default function AdminRafflesScreen() {
   const [uploadingCodes, setUploadingCodes] = useState(false);
 
   const [formData, setFormData] = useState({
-    title: '', description: '', image: '', category: 'food', partnerId: '', location: '', address: '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, validityMonths: 3, active: true, language: 'en', allowedCountries: ['TH'], currency: 'THB',
+    title: '', description: '', image: '', category: 'food', partnerId: '', location: '', address: '', prizesAvailable: 1, ticketCost: 10, prizeValue: 0, gamePrice: 0, validityMonths: 3, active: true, startsAt: '', language: 'en', allowedCountries: ['TH'], currency: 'THB',
   });
   const [partnerSearch, setPartnerSearch] = useState('');
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
@@ -87,6 +87,7 @@ export default function AdminRafflesScreen() {
       gamePrice: 0, 
       validityMonths: 3, 
       active: true, 
+      startsAt: '', 
       language: 'en', 
       allowedCountries: ['TH'], 
       currency: 'THB' 
@@ -98,7 +99,7 @@ export default function AdminRafflesScreen() {
     setModalVisible(true); 
   };
 
-  const openEditModal = (raffle: Raffle) => { setEditingRaffle(raffle); setFormData({ title: raffle.title, description: raffle.description, image: raffle.image || '', category: raffle.category, partnerId: raffle.partnerId, location: raffle.location || '', address: raffle.address || '', prizesAvailable: raffle.prizesAvailable, ticketCost: raffle.ticketCost, prizeValue: raffle.prizeValue || 0, gamePrice: raffle.gamePrice || 0, validityMonths: raffle.validityMonths || 3, active: raffle.active, language: (raffle as any).language || 'en', allowedCountries: (raffle as any).allowedCountries || ['TH'], currency: (raffle as any).currency || 'THB' }); setPartnerSearch(''); setModalVisible(true); };
+  const openEditModal = (raffle: Raffle) => { setEditingRaffle(raffle); setFormData({ title: raffle.title, description: raffle.description, image: raffle.image || '', category: raffle.category, partnerId: raffle.partnerId, location: raffle.location || '', address: raffle.address || '', prizesAvailable: raffle.prizesAvailable, ticketCost: raffle.ticketCost, prizeValue: raffle.prizeValue || 0, gamePrice: raffle.gamePrice || 0, validityMonths: raffle.validityMonths || 3, active: raffle.active, startsAt: toBangkokInput(raffle.startsAt), language: (raffle as any).language || 'en', allowedCountries: (raffle as any).allowedCountries || ['TH'], currency: (raffle as any).currency || 'THB' }); setPartnerSearch(''); setModalVisible(true); };
 
   const handleSave = async () => {
     if (!formData.title || !formData.description || !formData.partnerId) { Alert.alert('Error', 'Please fill in all required fields'); return; }
@@ -120,6 +121,8 @@ export default function AdminRafflesScreen() {
     }
 
     if (!Number.isInteger(formData.gamePrice) || formData.gamePrice < 1) { Alert.alert('Error', 'Ticket goal must be a whole number of at least 1'); return; }
+    const parsedStartsAt = parseBangkokInput(formData.startsAt);
+    if (parsedStartsAt === undefined) { Alert.alert('Error', 'Start date must look like 2026-10-01 or 2026-10-01 09:00 (Thailand time), or be left empty'); return; }
     try {
       setSaving(true);
       // For digital prizes, set prizesAvailable to number of valid codes
@@ -127,7 +130,7 @@ export default function AdminRafflesScreen() {
       const finalPrizesAvailable = isDigitalPrize ? validSecretCodes.length : formData.prizesAvailable;
       
       if (editingRaffle) {
-        const payload: Partial<Raffle> = { title: formData.title, description: formData.description, image: formData.image || undefined, category: formData.category, partnerId: formData.partnerId, partnerName: partners.find(p => p.id === formData.partnerId)?.name, prizesAvailable: finalPrizesAvailable, ticketCost: formData.ticketCost, prizeValue: formData.prizeValue, gamePrice: formData.gamePrice, validityMonths: formData.validityMonths, active: formData.active };
+        const payload: Partial<Raffle> = { title: formData.title, description: formData.description, image: formData.image || undefined, category: formData.category, partnerId: formData.partnerId, partnerName: partners.find(p => p.id === formData.partnerId)?.name, prizesAvailable: finalPrizesAvailable, ticketCost: formData.ticketCost, prizeValue: formData.prizeValue, gamePrice: formData.gamePrice, validityMonths: formData.validityMonths, active: formData.active, startsAt: parsedStartsAt };
         await api.put(`/api/admin/raffles/${editingRaffle.id}`, payload); Alert.alert('Success', 'Raffle updated');
       } else {
         const payload: any = { 
@@ -146,6 +149,7 @@ export default function AdminRafflesScreen() {
           gamePrice: formData.gamePrice, 
           validityMonths: formData.validityMonths, 
           active: formData.active,
+          startsAt: parsedStartsAt,
           language: formData.language,
           allowedCountries: formData.allowedCountries,
           currency: formData.currency
@@ -233,6 +237,21 @@ export default function AdminRafflesScreen() {
     }
   };
   const formatDate = (date: Date) => date.toLocaleString();
+  // Start date is typed in Thailand time: "YYYY-MM-DD" or "YYYY-MM-DD HH:mm".
+  // Empty -> null (playable immediately); unparseable -> undefined.
+  const parseBangkokInput = (value: string): string | null | undefined => {
+    const v = (value || '').trim();
+    if (!v) return null;
+    const m = /^(\d{4}-\d{2}-\d{2})(?:[ T](\d{2}:\d{2}))?$/.exec(v);
+    if (!m) return undefined;
+    const d = new Date(`${m[1]}T${m[2] || '00:00'}:00+07:00`);
+    return Number.isNaN(d.getTime()) ? undefined : d.toISOString();
+  };
+  const toBangkokInput = (iso?: string | null): string => {
+    if (!iso) return '';
+    const d = new Date(new Date(iso).getTime() + 7 * 3600 * 1000);
+    return d.toISOString().slice(0, 16).replace('T', ' ');
+  };
 
   // Google Places Search Handler
   const searchPlaces = async (query: string) => {
@@ -370,7 +389,7 @@ export default function AdminRafflesScreen() {
                   <Text style={styles.rafflePartner}>{raffle.partnerName}</Text>
                   {raffle.location ? (<Text style={styles.raffleLocation}>📍 {raffle.location}</Text>) : null}
                 </View>
-                {raffle.active ? (<View style={styles.activeBadge}><Text style={styles.activeText}>ACTIVE</Text></View>) : (<View style={styles.inactiveBadge}><Text style={styles.inactiveText}>CLOSED</Text></View>)}
+                {raffle.active && raffle.isComingSoon ? (<View style={styles.inactiveBadge}><Text style={styles.inactiveText}>COMING SOON</Text></View>) : raffle.active ? (<View style={styles.activeBadge}><Text style={styles.activeText}>ACTIVE</Text></View>) : (<View style={styles.inactiveBadge}><Text style={styles.inactiveText}>CLOSED</Text></View>)}
               </View>
               <View style={styles.raffleStats}>
                 <View style={styles.statItem}><Text style={styles.statLabel}>Prizes</Text><Text style={styles.statValue}>{raffle.prizesRemaining}/{raffle.prizesAvailable}</Text></View>
@@ -650,6 +669,10 @@ export default function AdminRafflesScreen() {
               <TextInput style={styles.input} value={formData.gamePrice ? String(formData.gamePrice) : ''} onChangeText={(text) => setFormData({ ...formData, gamePrice: parseInt(text, 10) || 0 })} placeholder="e.g., 200" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.helperText}>Tickets to collect in a round. Once reached, that round's winner is drawn 1 day (prize up to $15), 3 days (up to $25) or 7 days (above) later. Every prize is its own round; tickets above the goal carry over to the next round.</Text>
               
+              <Text style={styles.label}>Start date (Coming soon until then)</Text>
+              <TextInput style={styles.input} value={formData.startsAt} onChangeText={(text) => setFormData({ ...formData, startsAt: text })} placeholder="e.g., 2026-10-15 or 2026-10-15 09:00" placeholderTextColor="#999" autoCapitalize="none" />
+              <Text style={styles.helperText}>Thailand time. Until this moment the raffle is shown as "Coming soon" and cannot be entered. Leave empty to open it right away.</Text>
+
               <Text style={styles.label}>Prize Validity (months) *</Text>
               <TextInput style={styles.input} value={String(formData.validityMonths)} onChangeText={(text) => setFormData({ ...formData, validityMonths: parseInt(text) || 3 })} placeholder="3" placeholderTextColor="#999" keyboardType="numeric" />
               <Text style={styles.helperText}>How long the prize is valid after winning (default: 3 months)</Text>

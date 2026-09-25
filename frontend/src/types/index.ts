@@ -62,6 +62,9 @@ export interface Raffle {
   /** null until the current round's ticket goal is reached. */
   scheduledDrawAt?: string | null;
   drawDelayMs?: number;
+  /** Listed but not playable until this moment (ISO). null/absent = open. */
+  startsAt?: string | null;
+  isComingSoon?: boolean;
 }
 
 export interface Voucher {

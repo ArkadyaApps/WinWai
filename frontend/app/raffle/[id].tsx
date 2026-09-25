@@ -117,6 +117,7 @@ export default function RaffleDetailScreen() {
     }
 
     if (!raffle) return;
+    if (raffle.startsAt && new Date(raffle.startsAt).getTime() > Date.now()) return;
 
     if (user.tickets < raffle.ticketCost) {
       Alert.alert(t('raffleDetail.insufficientTickets'), t('raffleDetail.needTickets').replace('{cost}', raffle.ticketCost.toString()).replace('{balance}', user.tickets.toString()));
@@ -181,6 +182,7 @@ export default function RaffleDetailScreen() {
   const gradientColors = getCategoryGradient(raffle.category);
   // Draw time exists only once the current round's ticket goal has been reached.
   const scheduledDraw = raffle.scheduledDrawAt ? new Date(raffle.scheduledDrawAt) : null;
+  const comingSoon = !!raffle.startsAt && new Date(raffle.startsAt).getTime() > Date.now();
   const entriesClosed = scheduledDraw !== null && scheduledDraw.getTime() <= Date.now();
 
   return (
@@ -428,9 +430,9 @@ export default function RaffleDetailScreen() {
         </View>
 
         <TouchableOpacity
-          style={[styles.enterButton, entering && styles.enterButtonDisabled]}
+          style={[styles.enterButton, (entering || comingSoon) && styles.enterButtonDisabled]}
           onPress={handleEnter}
-          disabled={entering || !raffle.active || raffle.prizesRemaining <= 0 || entriesClosed}
+          disabled={entering || !raffle.active || raffle.prizesRemaining <= 0 || entriesClosed || comingSoon}
         >
           <LinearGradient
             colors={['#FFD700', '#FFC200']}
@@ -442,8 +444,8 @@ export default function RaffleDetailScreen() {
               <ActivityIndicator color="#000" />
             ) : (
               <>
-                <Text style={styles.enterText}>{t('raffleDetail.enterRaffle')}</Text>
-                <Ionicons name="arrow-forward" size={20} color="#000" />
+                <Text style={styles.enterText}>{comingSoon ? t('raffleRound.comingSoon') : t('raffleDetail.enterRaffle')}</Text>
+                {!comingSoon && <Ionicons name="arrow-forward" size={20} color="#000" />}
               </>
             )}
           </LinearGradient>

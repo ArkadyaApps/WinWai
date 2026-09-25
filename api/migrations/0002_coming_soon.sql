@@ -1,0 +1,1 @@
+ALTER TABLE `raffles` ADD `starts_at` integer;

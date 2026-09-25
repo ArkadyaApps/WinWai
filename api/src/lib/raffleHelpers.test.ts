@@ -6,6 +6,7 @@ import {
   getRoundTickets,
   getScheduledDrawAt,
   hasReachedGoal,
+  isComingSoon,
   isRoundDue,
   nextRoundStartTickets,
   withRoundInfo,
@@ -188,5 +189,18 @@ describe("anonymousWinnerId", () => {
   it("does not embed the voucher reference", async () => {
     const id = await anonymousWinnerId("WW-2026-12345", "raffle-1");
     expect(id).not.toContain("12345");
+  });
+});
+
+describe("isComingSoon", () => {
+  const now = new Date("2026-10-01T00:00:00Z");
+  it("is false without a start date", () => {
+    expect(isComingSoon(null, now)).toBe(false);
+    expect(isComingSoon(undefined, now)).toBe(false);
+  });
+  it("is true until the start moment, false from it on", () => {
+    expect(isComingSoon(new Date("2026-10-01T00:00:01Z"), now)).toBe(true);
+    expect(isComingSoon(new Date("2026-10-01T00:00:00Z"), now)).toBe(false);
+    expect(isComingSoon(new Date("2026-09-30T00:00:00Z"), now)).toBe(false);
   });
 });

@@ -94,6 +94,9 @@ export const raffles = sqliteTable(
     roundStartTickets: integer("round_start_tickets").notNull().default(0),
     validityMonths: integer("validity_months").notNull().default(3),
     active: integer("active", { mode: "boolean" }).notNull().default(true),
+    // "Coming soon": until this moment the raffle is listed but can't be entered.
+    // NULL = open immediately.
+    startsAt: integer("starts_at", { mode: "timestamp_ms" }),
     totalEntries: integer("total_entries").notNull().default(0),
     totalTicketsCollected: integer("total_tickets_collected").notNull().default(0),
     drawStatus: text("draw_status").notNull().default("pending"), // pending (goal not met) | eligible (goal met, clock running) | drawn (all prizes awarded) | cancelled

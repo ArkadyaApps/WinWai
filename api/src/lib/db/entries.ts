@@ -1,7 +1,7 @@
 import { and, eq, gte, isNull, sql } from "drizzle-orm";
 import { entries, raffles, users, winners } from "../../db/schema";
 import { HttpError } from "../auth";
-import { getScheduledDrawAt } from "../raffleHelpers";
+import { getScheduledDrawAt, isComingSoon } from "../raffleHelpers";
 import type { Database } from "./client";
 
 export interface EnterRaffleResult {
@@ -30,6 +30,7 @@ export async function enterRaffle(
   const raffle = await db.query.raffles.findFirst({ where: eq(raffles.id, raffleId) });
   if (!raffle) throw new HttpError(404, "Raffle not found");
   if (!raffle.active) throw new HttpError(400, "Raffle is not active");
+  if (isComingSoon(raffle.startsAt, now)) throw new HttpError(400, "This raffle hasn't started yet");
   if (raffle.prizesRemaining <= 0) throw new HttpError(400, "No prizes remaining");
 
   // The price of an entry is set by the raffle, not the caller: a client-sent

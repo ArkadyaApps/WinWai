@@ -29,6 +29,10 @@ export const UpdateUserSchema = z.object({
 });
 export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
 
+// Admin forms send "" for a cleared date; omitted (undefined) must stay
+// untouched on partial updates, null clears it.
+const optionalDate = z.preprocess((val) => (val === "" ? null : val), z.coerce.date().nullable().optional());
+
 const PartnerBaseSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
@@ -69,6 +73,8 @@ const RaffleBaseSchema = z.object({
   gamePrice: z.number().int().min(1),
   validityMonths: z.number().int().positive().default(3),
   active: z.boolean().default(true),
+  // Coming soon until this date/time (ISO string); empty = playable right away.
+  startsAt: optionalDate,
   drawStatus: z.enum(["pending", "eligible", "drawn", "cancelled"]).default("pending"),
   isDigitalPrize: z.boolean().default(false),
   secretCodes: z.array(z.string()).default([]),

@@ -214,6 +214,9 @@ export const translations = {
     },
     raffleRound: {
       rulesTitle: 'How the draw works',
+      comingSoon: 'Coming soon',
+      startsOn: 'Opens {date}',
+      startsIn: 'Starts in {time}',
       rulesGoal: 'Each prize is its own round. Once the round\'s ticket goal is reached, the winner is drawn {time} later.',
       rulesOdds: 'Every entry is one equal chance to win, whoever makes it and whenever it is made. Each entry costs {cost} tickets; more entries mean more chances.',
       rulesOnePrize: 'One prize per person in each raffle: once you win, you cannot win it again.',
@@ -388,6 +391,9 @@ export const translations = {
     },
     raffleRound: {
       rulesTitle: 'วิธีจับรางวัล',
+      comingSoon: 'เร็วๆ นี้',
+      startsOn: 'เปิดวันที่ {date}',
+      startsIn: 'เริ่มใน {time}',
       rulesGoal: 'แต่ละรางวัลคือหนึ่งรอบ เมื่อครบเป้าหมายตั๋วของรอบนั้น ระบบจะจับรางวัลหลังจากนั้น {time}',
       rulesOdds: 'ทุกการเข้าร่วมมีโอกาสชนะเท่ากัน ไม่ว่าใครหรือเมื่อไรก็ตาม การเข้าร่วมแต่ละครั้งใช้ {cost} ตั๋ว ยิ่งเข้าร่วมมากยิ่งมีโอกาสมาก',
       rulesOnePrize: 'ผู้ใช้หนึ่งคนชนะได้หนึ่งรางวัลต่อการจับรางวัลหนึ่งรายการ เมื่อชนะแล้วจะไม่ชนะรายการเดิมซ้ำอีก',
@@ -692,6 +698,9 @@ export const translations = {
     },
     raffleRound: {
       rulesTitle: 'Comment se déroule le tirage',
+      comingSoon: 'Bientôt disponible',
+      startsOn: 'Ouverture le {date}',
+      startsIn: 'Début dans {time}',
       rulesGoal: 'Chaque prix est une manche distincte. Une fois l\'objectif de billets de la manche atteint, le gagnant est tiré {time} plus tard.',
       rulesOdds: 'Chaque participation donne une chance égale de gagner, quel que soit le participant ou le moment. Chaque participation coûte {cost} billets ; plus de participations, plus de chances.',
       rulesOnePrize: 'Un seul prix par personne et par tirage : une fois gagnant, vous ne pouvez plus gagner ce tirage.',
@@ -931,6 +940,9 @@ export const translations = {
     },
     raffleRound: {
       rulesTitle: 'كيف يتم السحب',
+      comingSoon: 'قريباً',
+      startsOn: 'يبدأ في {date}',
+      startsIn: 'يبدأ خلال {time}',
       rulesGoal: 'كل جائزة تمثّل جولة مستقلة. عند بلوغ هدف التذاكر في الجولة، يُسحب الفائز بعد {time}.',
       rulesOdds: 'كل مشاركة تمنح فرصة متساوية للفوز أيًا كان صاحبها ومتى تمت. تكلفة كل مشاركة {cost} تذاكر؛ كلما زادت مشاركاتك زادت فرصك.',
       rulesOnePrize: 'جائزة واحدة لكل شخص في كل سحب: بمجرد فوزك لا يمكنك الفوز به مرة أخرى.',

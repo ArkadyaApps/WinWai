@@ -61,6 +61,11 @@ export function nextRoundStartTickets(roundStartTickets: number, goal: number, t
   return Math.min(roundStartTickets + goal, totalTicketsCollected);
 }
 
+/** A raffle whose start date is still in the future: visible, but not playable yet. */
+export function isComingSoon(startsAt: Date | null | undefined, now: Date = new Date()): boolean {
+  return !!startsAt && startsAt.getTime() > now.getTime();
+}
+
 interface RaffleRoundFields {
   prizesAvailable: number;
   prizesRemaining: number;
@@ -68,6 +73,7 @@ interface RaffleRoundFields {
   totalTicketsCollected: number;
   roundStartTickets: number;
   thresholdReachedAt: Date | null;
+  startsAt?: Date | null;
 }
 
 /** Derived, API-facing round info so clients never re-implement the tier rules. */
@@ -78,6 +84,7 @@ export function withRoundInfo<T extends RaffleRoundFields>(raffle: T) {
     roundTickets: getRoundTickets(raffle.totalTicketsCollected, raffle.roundStartTickets),
     scheduledDrawAt: getScheduledDrawAt(raffle.thresholdReachedAt, raffle.prizeValueUsd),
     drawDelayMs: getDrawDelayMs(raffle.prizeValueUsd),
+    isComingSoon: isComingSoon(raffle.startsAt),
   };
 }
 
