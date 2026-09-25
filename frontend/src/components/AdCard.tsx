@@ -17,7 +17,7 @@ const AD_LAYOUT_KEY = '-6t+ed+2i-1n-4w';
 const FILLED_STYLE: Partial<CSSStyleDeclaration> = {
   backgroundColor: '#FFFFFF',
   borderRadius: '20px',
-  marginBottom: '16px',
+  marginBottom: '12px',
   overflow: 'hidden',
   minHeight: '160px',
   boxShadow: '0 6px 20px rgba(0,0,0,0.08)',

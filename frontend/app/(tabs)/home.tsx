@@ -99,12 +99,12 @@ export default function HomeScreen() {
             item.kind === 'ad' ? (
               // Google's fluid in-feed format needs at least 250px of width to
               // render, so the ad takes a full row between grid rows.
-              <FadeInView key={item.key} delay={Math.min(index * 60, 400)} style={{ width: '100%', paddingHorizontal: CARD_MARGIN / 2, marginBottom: 16 }}>
+              <FadeInView key={item.key} delay={Math.min(index * 60, 400)} style={{ width: '100%', paddingHorizontal: CARD_MARGIN / 2 }}>
                 <AdCard />
               </FadeInView>
             ) : (
               // Cards in a row stretch to the tallest one (each card fills its wrapper).
-              <FadeInView key={item.key} delay={Math.min(index * 60, 400)} style={{ width: cardWidth, marginHorizontal: CARD_MARGIN / 2, marginBottom: 16 }}>
+              <FadeInView key={item.key} delay={Math.min(index * 60, 400)} style={{ width: cardWidth, marginHorizontal: CARD_MARGIN / 2, marginBottom: 12 }}>
                 {item.kind === 'raffle' ? (
                   <RaffleGridCard raffle={item.raffle} onPress={() => router.push(`/raffle/${item.raffle.id}`)} />
                 ) : (

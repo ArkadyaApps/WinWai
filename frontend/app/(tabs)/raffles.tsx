@@ -98,7 +98,7 @@ export default function RafflesScreen() {
           <View style={styles.resultsHeader}><Text style={styles.resultsText}>{raffles.length} {raffles.length === 1 ? t('raffles.raffle') : t('raffles.rafflesPlural')} {t('raffles.available')}</Text></View>
           <View style={[styles.gridContainer, { width: containerWidth }]}>
             {raffles.map((raffle, index) => (
-              <FadeInView key={raffle.id} delay={Math.min(index * 60, 400)} style={{ width: cardWidth, marginHorizontal: CARD_MARGIN / 2, marginBottom: 16 }}>
+              <FadeInView key={raffle.id} delay={Math.min(index * 60, 400)} style={{ width: cardWidth, marginHorizontal: CARD_MARGIN / 2, marginBottom: 12 }}>
                 <RaffleGridCard raffle={raffle} onPress={() => router.push(`/raffle/${raffle.id}`)} />
               </FadeInView>
             ))}
