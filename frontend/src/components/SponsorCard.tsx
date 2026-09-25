@@ -48,6 +48,7 @@ const SponsorCard: React.FC<SponsorCardProps> = ({ partner }) => {
         <View style={styles.content}>
           <Text style={styles.name} numberOfLines={2}>{partner.name}</Text>
           <Text style={styles.category} numberOfLines={1}>{partner.category}</Text>
+          {!!partner.description && <Text style={styles.description} numberOfLines={4}>{partner.description}</Text>}
         </View>
       </Pressable>
 
@@ -113,9 +114,10 @@ const styles = StyleSheet.create({
   logoPlaceholder: { width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' },
   sponsoredBadge: { position: 'absolute', top: 10, right: 10, backgroundColor: '#FFD700', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   sponsoredBadgeText: { color: '#000', fontSize: 9, fontWeight: '800', letterSpacing: 0.6 },
-  content: { padding: 12, flex: 1, justifyContent: 'center' },
+  content: { padding: 12, flex: 1 },
   name: { fontSize: 13, fontWeight: '700', color: '#2C3E50', marginBottom: 4, lineHeight: 17 },
   category: { fontSize: 11, color: '#95A5A6', fontWeight: '600', textTransform: 'capitalize' },
+  description: { fontSize: 11, color: '#7F8C8D', lineHeight: 15, marginTop: 6 },
 
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0,0,0,0.5)', justifyContent: 'center', alignItems: 'center', padding: 20 },
   modalContent: { backgroundColor: '#fff', borderRadius: 20, width: '100%', maxWidth: 380, padding: 24, alignItems: 'center' },
