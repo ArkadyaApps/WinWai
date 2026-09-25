@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator, Dimensions } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, RefreshControl, ActivityIndicator } from 'react-native';
+import { ScreenFade, FadeInView } from '../../src/components/FadeInView';
+import { useGrid, CARD_MARGIN } from '../../src/hooks/useGrid';
 import { Raffle } from '../../src/types';
 import api from '../../src/utils/api';
 import RaffleGridCard from '../../src/components/RaffleGridCard';
@@ -12,9 +14,6 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../../src/i18n/useTranslation';
 
-const { width } = Dimensions.get('window');
-const CARD_MARGIN = 8;
-const CARD_WIDTH = (width - (CARD_MARGIN * 4)) / 3;
 const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
 
 const categories = [
@@ -66,8 +65,10 @@ export default function RafflesScreen() {
 
   const onRefresh = () => { setRefreshing(true); loadRaffles(); };
 
+  const { cardWidth, containerWidth } = useGrid();
+
   return (
-    <View style={styles.container}>
+    <ScreenFade style={styles.container}>
       <AppHeader variant="mint" logoUri={LOGO_URI} showDivider />
 
       {/* Category Filter */}
@@ -95,11 +96,11 @@ export default function RafflesScreen() {
       ) : (
         <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />} showsVerticalScrollIndicator={false}>
           <View style={styles.resultsHeader}><Text style={styles.resultsText}>{raffles.length} {raffles.length === 1 ? t('raffles.raffle') : t('raffles.rafflesPlural')} {t('raffles.available')}</Text></View>
-          <View style={styles.gridContainer}>
-            {raffles.map((raffle) => (
-              <View key={raffle.id} style={{ width: CARD_WIDTH, marginHorizontal: CARD_MARGIN / 2 }}>
+          <View style={[styles.gridContainer, { width: containerWidth }]}>
+            {raffles.map((raffle, index) => (
+              <FadeInView key={raffle.id} delay={Math.min(index * 60, 400)} style={{ width: cardWidth, marginHorizontal: CARD_MARGIN / 2, marginBottom: 16 }}>
                 <RaffleGridCard raffle={raffle} onPress={() => router.push(`/raffle/${raffle.id}`)} />
-              </View>
+              </FadeInView>
             ))}
           </View>
           {raffles.length === 0 && (
@@ -129,7 +130,7 @@ export default function RafflesScreen() {
       />
 
       <BannerAdComponent position="bottom" />
-    </View>
+    </ScreenFade>
   );
 }
 
@@ -155,7 +156,7 @@ const styles = StyleSheet.create({
   scrollContent: { paddingBottom: 80 },
   resultsHeader: { paddingHorizontal: 20, paddingVertical: 16 },
   resultsText: { fontSize: 16, fontWeight: '700', color: theme.colors.onyx },
-  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: CARD_MARGIN / 2 },
+  gridContainer: { flexDirection: 'row', flexWrap: 'wrap', paddingHorizontal: CARD_MARGIN / 2, alignSelf: 'center' },
   emptyState: { padding: 48, alignItems: 'center' },
   emptyIcon: { fontSize: 72, marginBottom: 16 },
   emptyText: { fontSize: 18, fontWeight: '700', color: theme.colors.onyx, marginBottom: 8 },

@@ -9,6 +9,7 @@ import BannerAdComponent from '../../src/components/BannerAd';
 import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 import * as Haptics from 'expo-haptics';
+import { ScreenFade } from '../../src/components/FadeInView';
 
 const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
 
@@ -80,7 +81,7 @@ export default function TicketsScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScreenFade style={styles.container}>
       <AppHeader variant="emerald" logoUri={LOGO_URI} showDivider />
       <ScrollView contentContainerStyle={styles.content}>
         <View style={styles.balanceCard}>
@@ -123,7 +124,7 @@ export default function TicketsScreen() {
         <View style={styles.usageSection}><Text style={styles.sectionTitle}>{t.ticketUsage}</Text><Text style={styles.usageText}>{t.ticketUsageDescription}</Text></View>
       </ScrollView>
       <BannerAdComponent position="bottom" />
-    </View>
+    </ScreenFade>
   );
 }
 

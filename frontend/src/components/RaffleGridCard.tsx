@@ -99,7 +99,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#ffffff',
     borderRadius: 20,
-    marginBottom: 16,
+    flex: 1,
     overflow: 'hidden',
     ...Platform.select({
       ios: {
@@ -169,7 +169,9 @@ const styles = StyleSheet.create({
     letterSpacing: 0.8,
   },
   content: {
-    padding: 14,
+    padding: 12,
+    flex: 1,
+    justifyContent: 'space-between',
   },
   title: {
     fontSize: 13,
@@ -187,12 +189,12 @@ const styles = StyleSheet.create({
   infoRow: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 6,
+    gap: 4,
   },
   iconBadge: {
-    width: 24,
-    height: 24,
-    borderRadius: 12,
+    width: 22,
+    height: 22,
+    borderRadius: 11,
     justifyContent: 'center',
     alignItems: 'center',
   },
@@ -204,10 +206,10 @@ const styles = StyleSheet.create({
   ticketBadge: {
     flexDirection: 'row',
     alignItems: 'center',
-    gap: 4,
+    gap: 3,
     backgroundColor: '#FFF9E6',
-    paddingHorizontal: 10,
-    paddingVertical: 5,
+    paddingHorizontal: 8,
+    paddingVertical: 4,
     borderRadius: 12,
     borderWidth: 1,
     borderColor: '#FFE6A0',

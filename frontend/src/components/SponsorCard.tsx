@@ -97,7 +97,7 @@ const styles = StyleSheet.create({
   card: {
     backgroundColor: '#FFFBEF',
     borderRadius: 20,
-    marginBottom: 16,
+    flex: 1,
     overflow: 'hidden',
     borderWidth: 1,
     borderColor: '#FFE9A8',
@@ -113,7 +113,7 @@ const styles = StyleSheet.create({
   logoPlaceholder: { width: '100%', height: '100%', justifyContent: 'center', alignItems: 'center' },
   sponsoredBadge: { position: 'absolute', top: 10, right: 10, backgroundColor: '#FFD700', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 12 },
   sponsoredBadgeText: { color: '#000', fontSize: 9, fontWeight: '800', letterSpacing: 0.6 },
-  content: { padding: 14 },
+  content: { padding: 12, flex: 1, justifyContent: 'center' },
   name: { fontSize: 13, fontWeight: '700', color: '#2C3E50', marginBottom: 4, lineHeight: 17 },
   category: { fontSize: 11, color: '#95A5A6', fontWeight: '600', textTransform: 'capitalize' },
 

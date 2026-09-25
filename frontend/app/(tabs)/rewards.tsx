@@ -9,6 +9,7 @@ import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 import { isPast } from 'date-fns';
 import { useTranslation } from '../../src/i18n/useTranslation';
+import { ScreenFade } from '../../src/components/FadeInView';
 
 const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
 
@@ -70,7 +71,7 @@ export default function RewardsScreen() {
   }
 
   return (
-    <View style={styles.container}>
+    <ScreenFade style={styles.container}>
       <AppHeader variant="gold" logoUri={LOGO_URI} showDivider />
 
       {/* Filter Tabs */}
@@ -139,7 +140,7 @@ export default function RewardsScreen() {
         )}
       </ScrollView>
       <BannerAdComponent position="bottom" />
-    </View>
+    </ScreenFade>
   );
 }
 

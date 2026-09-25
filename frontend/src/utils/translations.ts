@@ -129,7 +129,7 @@ export const translations = {
     winPrizesStep: 'Win Real Prizes',
     gotIt: 'Got It!',
     ticketUsage: 'Ticket Usage',
-    ticketUsageDescription: 'Use your tickets to enter raffles and win amazing prizes! Each raffle entry typically costs 2 to 5 tickets.',
+    ticketUsageDescription: 'Use your tickets to enter raffles and win prizes! Each raffle shows its own entry cost, and every entry is one equal chance to win.',
     watchAdPlus1: 'Watch Ad for 1 Ticket',
     
     // Profile Screen
@@ -300,7 +300,7 @@ export const translations = {
     winPrizesStep: 'ชนะรางวัลจริง',
     gotIt: 'เข้าใจแล้ว!',
     ticketUsage: 'การใช้ตั๋ว',
-    ticketUsageDescription: 'ใช้ตั๋วของคุณเพื่อเข้าร่วมการจับรางวัลและชนะรางวัลที่น่าตื่นตาตื่นใจ! การเข้าร่วมแต่ละครั้งมักใช้ 2 ถึง 5 ตั๋ว',
+    ticketUsageDescription: 'ใช้ตั๋วของคุณเพื่อเข้าร่วมจับรางวัลและลุ้นรับของรางวัล! แต่ละรางวัลจะแสดงจำนวนตั๋วที่ใช้เข้าร่วม และทุกครั้งที่เข้าร่วมมีโอกาสชนะเท่ากัน',
     watchAdPlus1: 'ดูโฆษณารับ 1 ตั๋ว',
     
     // Profile Screen
@@ -419,15 +419,15 @@ export const translations = {
     earnTicketsInstantly: 'Gagnez +10 billets instantanément',
     adLoading: '⏳ Chargement de votre publicité, veuillez patienter...',
     howToEarnTickets: 'Comment gagner des billets',
-    watchRewardedAds: 'Regarder des publicités (+10 billets)',
-    referFriends: 'Parrainer un ami (+2 billets)',
+    watchRewardedAds: 'Regarder des publicités (+1 billet)',
+    referFriends: 'Parrainer un ami (+1 billet)',
     earnTicketsStep: 'Gagner des billets',
     watchAdsStep: 'Regarder des publicités',
     enterRafflesStep: 'Participer aux tirages',
     winPrizesStep: 'Gagner de vrais prix',
     gotIt: 'Compris !',
     ticketUsage: 'Utilisation des billets',
-    ticketUsageDescription: 'Utilisez vos billets pour participer aux tirages et gagner des prix incroyables! Chaque participation coûte généralement 2 à 5 billets.',
+    ticketUsageDescription: 'Utilisez vos billets pour participer aux tirages et gagner des prix ! Chaque tirage indique son propre coût de participation, et chaque participation offre une chance égale de gagner.',
     watchAdPlus1: 'Regarder une pub pour 1 billet',
     
     // Profile Screen
@@ -608,7 +608,7 @@ export const translations = {
     winPrizesStep: 'اربح جوائز حقيقية',
     gotIt: 'فهمت!',
     ticketUsage: 'استخدام التذاكر',
-    ticketUsageDescription: 'استخدم تذاكرك للمشاركة في السحوبات والفوز بجوائز رائعة! تتطلب كل مشاركة عادةً من 2 إلى 5 تذاكر.',
+    ticketUsageDescription: 'استخدم تذاكرك للمشاركة في السحوبات والفوز بالجوائز! يعرض كل سحب تكلفة المشاركة الخاصة به، وكل مشاركة تمنح فرصة متساوية للفوز.',
     watchAdPlus1: 'شاهد إعلانًا مقابل تذكرة واحدة',
     
     // Rewards

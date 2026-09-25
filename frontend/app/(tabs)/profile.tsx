@@ -15,6 +15,7 @@ import { theme } from '../../src/theme/tokens';
 import PartnerInquiryModal from '../../src/components/PartnerInquiryModal';
 import PwaInstallModal from '../../src/components/PwaInstallModal';
 import { usePwaInstallStore } from '../../src/store/pwaInstallStore';
+import { ScreenFade } from '../../src/components/FadeInView';
 
 export default function ProfileScreen() {
   const { user, setUser } = useUserStore();
@@ -130,7 +131,7 @@ export default function ProfileScreen() {
   };
 
   return (
-    <View style={styles.container}>
+    <ScreenFade style={styles.container}>
       <AppHeader variant="gold" logoUri="https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png" showDivider />
       <ScrollView contentContainerStyle={styles.content}>
         {/* Profile Header */}
@@ -432,7 +433,7 @@ export default function ProfileScreen() {
 
       <BannerAdComponent position="bottom" />
       <PartnerInquiryModal visible={partnerInquiryVisible} onClose={() => setPartnerInquiryVisible(false)} />
-    </View>
+    </ScreenFade>
   );
 }
 

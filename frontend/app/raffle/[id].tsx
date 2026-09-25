@@ -21,6 +21,7 @@ import { useUserStore } from '../../src/store/userStore';
 import { useTranslation } from '../../src/i18n/useTranslation';
 import RaffleRoundStatus from '../../src/components/RaffleRoundStatus';
 import RaffleWinnersList from '../../src/components/RaffleWinnersList';
+import { ScreenFade } from '../../src/components/FadeInView';
 
 export default function RaffleDetailScreen() {
   const { id } = useLocalSearchParams();
@@ -186,7 +187,7 @@ export default function RaffleDetailScreen() {
   const entriesClosed = scheduledDraw !== null && scheduledDraw.getTime() <= Date.now();
 
   return (
-    <View style={styles.container}>
+    <ScreenFade style={styles.container}>
       <ScrollView style={styles.scrollView} showsVerticalScrollIndicator={false}>
         {/* Hero Image */}
         <View style={styles.heroContainer}>
@@ -451,7 +452,7 @@ export default function RaffleDetailScreen() {
           </LinearGradient>
         </TouchableOpacity>
       </View>
-    </View>
+    </ScreenFade>
   );
 }
 
