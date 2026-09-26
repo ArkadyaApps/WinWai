@@ -1,6 +1,7 @@
 import React from 'react';
 import { View, Text, StyleSheet, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import WwIcon from './ui/WwIcon';
 import { Voucher } from '../types';
 import { theme } from '../theme/tokens';
 import { format, isPast } from 'date-fns';
@@ -64,7 +65,7 @@ export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
         <Text style={styles.codeLabel}>Voucher Reference</Text>
         <View style={styles.codeBox}>
           <Text style={styles.codeText}>{voucher.voucherRef}</Text>
-          <Ionicons name="copy-outline" size={20} color={theme.colors.primaryGold} />
+          <WwIcon name="copy" size={20} color="#E0A800" strokeWidth={1.6} />
         </View>
         <View style={styles.prizeValueRow}>
           <Text style={styles.prizeLabel}>Prize Value:</Text>
@@ -75,7 +76,7 @@ export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
       {/* Footer */}
       <View style={styles.footer}>
         <View style={styles.footerItem}>
-          <Ionicons name="calendar-outline" size={14} color="#999" />
+          <WwIcon name="calendar" size={15} color="#8A96A1" strokeWidth={1.6} />
           <Text style={styles.footerText}>
             {isRedeemed 
               ? `Redeemed ${voucher.redeemedAt ? format(new Date(voucher.redeemedAt), 'MMM dd, yyyy') : 'Recently'}`
@@ -85,7 +86,7 @@ export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
         </View>
         {voucher.isDigitalPrize && (
           <View style={styles.footerItem}>
-            <Ionicons name="code-slash" size={14} color="#9C27B0" />
+            <WwIcon name="code" size={15} color="#9C27B0" strokeWidth={1.6} />
             <Text style={[styles.footerText, { color: '#9C27B0' }]}>Digital Prize</Text>
           </View>
         )}
@@ -94,7 +95,7 @@ export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
       {/* View Details Button */}
       <View style={styles.viewDetailsContainer}>
         <Text style={styles.viewDetails}>View Details</Text>
-        <Ionicons name="chevron-forward" size={16} color={theme.colors.primaryGold} />
+        <WwIcon name="chevron" size={16} color="#E0A800" strokeWidth={1.8} />
       </View>
     </TouchableOpacity>
   );
@@ -103,12 +104,14 @@ export default function VoucherCard({ voucher, onPress }: VoucherCardProps) {
 const styles = StyleSheet.create({
   card: {
     backgroundColor: '#fff',
-    borderRadius: 16,
-    padding: 16,
-    marginBottom: 12,
+    borderRadius: 26,
+    padding: 18,
+    marginBottom: 14,
+    borderWidth: 1,
+    borderColor: 'rgba(44,62,80,0.06)',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
-    shadowOpacity: 0.1,
+    shadowOpacity: 0.08,
     shadowRadius: 8,
     elevation: 3,
   },

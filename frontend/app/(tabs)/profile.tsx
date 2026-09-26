@@ -7,6 +7,10 @@ import { useTranslation } from '../../src/i18n/useTranslation';
 import { useAuth } from '../../src/contexts/AuthContext';
 import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
+import WwIcon from '../../src/components/ui/WwIcon';
+import AnimatedNumber from '../../src/components/ui/AnimatedNumber';
+import { GlyphField } from '../../src/components/landing/AuroraBackground';
+import { FONT_DISPLAY } from '../../src/theme/fonts';
 import BannerAdComponent from '../../src/components/BannerAd';
 import { LinearGradient } from 'expo-linear-gradient';
 import api from '../../src/utils/api';
@@ -136,18 +140,19 @@ export default function ProfileScreen() {
       <ScrollView contentContainerStyle={styles.content}>
         {/* Profile Header */}
         <View style={styles.profileHeader}>
+          <GlyphField color="#FFC200" rise={210} />
           {user?.picture ? (
             <Image source={{ uri: user.picture }} style={styles.avatar} />
           ) : (
             <View style={styles.avatarPlaceholder}>
-              <Ionicons name="person" size={48} color={theme.colors.primaryGold} />
+              <WwIcon name="user" size={48} color={theme.colors.primaryGold} strokeWidth={1.5} />
             </View>
           )}
           <Text style={styles.name}>{user?.name || 'Guest'}</Text>
           <Text style={styles.email}>{user?.email || ''}</Text>
           {isAdmin && (
             <View style={styles.adminBadge}>
-              <Ionicons name="shield-checkmark" size={16} color="#fff" />
+              <WwIcon name="shield" size={16} color="#fff" strokeWidth={1.5} />
               <Text style={styles.adminText}>ADMIN</Text>
             </View>
           )}
@@ -155,13 +160,13 @@ export default function ProfileScreen() {
 
         {/* Stats Card */}
         <View style={styles.statsCard}>
-          <View style={styles.statItem}><Text style={styles.statValue}>{user?.tickets || 0}</Text><Text style={styles.statLabel}>{t('profile.tickets')}</Text></View>
+          <View style={styles.statItem}><WwIcon name="ticket" size={22} color="#E0A800" strokeWidth={1.6} /><AnimatedNumber value={user?.tickets || 0} style={styles.statValue} /><Text style={styles.statLabel}>{t('profile.tickets')}</Text></View>
           <View style={styles.statDivider} />
-          <View style={styles.statItem}><Text style={styles.statValue}>{user?.dailyStreak || 0}</Text><Text style={styles.statLabel}>{t('profile.dayStreak')}</Text></View>
+          <View style={styles.statItem}><WwIcon name="sparkle" size={22} color="#FF8A60" strokeWidth={1.6} /><AnimatedNumber value={user?.dailyStreak || 0} style={styles.statValue} /><Text style={styles.statLabel}>{t('profile.dayStreak')}</Text></View>
         </View>
 
         <TouchableOpacity style={styles.editProfileButton} onPress={handleEditProfile}>
-          <Ionicons name="create-outline" size={20} color="#fff" />
+          <WwIcon name="edit" size={20} color="#fff" strokeWidth={1.5} />
           <Text style={styles.editProfileText}>{t('profile.editProfile')}</Text>
         </TouchableOpacity>
 
@@ -172,7 +177,7 @@ export default function ProfileScreen() {
             onPress={() => handleAdminToggle(!adminMode)}
           >
             <View style={styles.adminToggleContent}>
-              <Ionicons name="shield-checkmark" size={24} color={theme.colors.primaryGold} />
+              <WwIcon name="shield" size={24} color={theme.colors.primaryGold} strokeWidth={1.5} />
               <View style={styles.adminToggleText}>
                 <Text style={styles.adminToggleTitle}>{t('profile.adminMode')}</Text>
                 <Text style={styles.adminToggleSubtitle}>
@@ -193,37 +198,37 @@ export default function ProfileScreen() {
         {isAdmin && adminMode && (
           <View style={styles.section}>
             <View style={styles.sectionHeader}>
-              <Ionicons name="shield-checkmark" size={24} color={theme.colors.primaryGold} />
+              <WwIcon name="shield" size={24} color={theme.colors.primaryGold} strokeWidth={1.5} />
               <Text style={styles.sectionTitle}>{t('profile.adminPanel')}</Text>
             </View>
 
             
             <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/partners')}>
               <LinearGradient colors={["#FF6B6B", "#FF8E53"]} style={styles.adminMenuGradient}>
-                <Ionicons name="business" size={24} color="#fff" />
+                <WwIcon name="store" size={24} color="#fff" strokeWidth={1.5} />
                 <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t('profile.managePartners')}</Text><Text style={styles.adminMenuSubtitle}>{t('profile.addEditRemovePartners')}</Text></View>
-                <Ionicons name="chevron-forward" size={20} color="#fff" />
+                <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/users')}>
               <LinearGradient colors={["#4ECDC4", "#44A08D"]} style={styles.adminMenuGradient}>
-                <Ionicons name="people" size={24} color="#fff" />
+                <WwIcon name="users" size={24} color="#fff" strokeWidth={1.5} />
                 <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t('profile.manageUsers')}</Text><Text style={styles.adminMenuSubtitle}>{t('profile.viewManageUsers')}</Text></View>
-                <Ionicons name="chevron-forward" size={20} color="#fff" />
+                <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/raffles')}>
               <LinearGradient colors={["#A8E6CF", "#88D8B0"]} style={styles.adminMenuGradient}>
-                <Ionicons name="gift" size={24} color="#fff" />
+                <WwIcon name="gift" size={24} color="#fff" strokeWidth={1.5} />
                 <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t('profile.manageRaffles')}</Text><Text style={styles.adminMenuSubtitle}>{t('profile.createEditDrawWinners')}</Text></View>
-                <Ionicons name="chevron-forward" size={20} color="#fff" />
+                <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
               </LinearGradient>
             </TouchableOpacity>
             <TouchableOpacity style={styles.adminMenuItem} onPress={() => router.push('/admin/vouchers' as any)}>
               <LinearGradient colors={["#FFD700", "#FFC200"]} style={styles.adminMenuGradient}>
-                <Ionicons name="ticket" size={24} color="#fff" />
+                <WwIcon name="ticket" size={24} color="#fff" strokeWidth={1.5} />
                 <View style={styles.adminMenuText}><Text style={styles.adminMenuTitle}>{t('profile.redeemVouchers')}</Text><Text style={styles.adminMenuSubtitle}>{t('profile.redeemVouchersSubtitle')}</Text></View>
-                <Ionicons name="chevron-forward" size={20} color="#fff" />
+                <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
               </LinearGradient>
             </TouchableOpacity>
           </View>
@@ -234,33 +239,33 @@ export default function ProfileScreen() {
           <Text style={styles.sectionTitleGray}>{t('profile.account')}</Text>
           {hasPassword && (
             <TouchableOpacity style={styles.menuItem} onPress={() => setChangePasswordModalVisible(true)}>
-              <Ionicons name="lock-closed-outline" size={24} color={theme.colors.onyx} />
+              <View style={styles.menuIcon}><WwIcon name="lock" size={22} color={theme.colors.onyx} strokeWidth={1.5} /></View>
               <Text style={styles.menuText}>{t('auth.changePassword')}</Text>
-              <Ionicons name="chevron-forward" size={20} color="#999" />
+              <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
             </TouchableOpacity>
           )}
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/referral')}>
-            <Ionicons name="gift-outline" size={24} color={theme.colors.primaryGold} />
+            <View style={styles.menuIcon}><WwIcon name="gift" size={22} color={theme.colors.primaryGold} strokeWidth={1.5} /></View>
             <Text style={styles.menuText}>{t('profile.inviteFriends')}</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => setPartnerInquiryVisible(true)}>
-            <Ionicons name="business-outline" size={24} color={theme.colors.emeraldA} />
+            <View style={styles.menuIcon}><WwIcon name="store" size={22} color={theme.colors.emeraldA} strokeWidth={1.5} /></View>
             <Text style={styles.menuText}>{t('partner.becomePartner')}</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t('profile.notifications'), 'Notification settings coming soon!')}>
-            <Ionicons name="notifications-outline" size={24} color={theme.colors.onyx} />
+            <View style={styles.menuIcon}><WwIcon name="bell" size={22} color={theme.colors.onyx} strokeWidth={1.5} /></View>
             <Text style={styles.menuText}>{t('profile.notifications')}</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => setLanguageModalVisible(true)}>
-            <Ionicons name="language-outline" size={24} color={theme.colors.onyx} />
+            <View style={styles.menuIcon}><WwIcon name="globe" size={22} color={theme.colors.onyx} strokeWidth={1.5} /></View>
             <View style={{ flex: 1, flexDirection: 'row', alignItems: 'center' }}>
               <Text style={styles.menuText}>{t('profile.language')}</Text>
               <Text style={styles.currentLanguage}>{getLanguageFlag(language)} {getLanguageName(language)}</Text>
             </View>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
           </TouchableOpacity>
         </View>
 
@@ -300,32 +305,32 @@ export default function ProfileScreen() {
         <View style={styles.section}>
           <Text style={styles.sectionTitleGray}>{t('profile.support')}</Text>
           <TouchableOpacity style={styles.menuItem} onPress={() => Alert.alert(t('profile.helpCenter'), t('profile.needHelp'))}>
-            <Ionicons name="help-circle-outline" size={24} color={theme.colors.onyx} />
+            <View style={styles.menuIcon}><WwIcon name="help" size={22} color={theme.colors.onyx} strokeWidth={1.5} /></View>
             <Text style={styles.menuText}>{t('profile.helpCenter')}</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/terms')}>
-            <Ionicons name="document-text-outline" size={24} color={theme.colors.onyx} />
+            <View style={styles.menuIcon}><WwIcon name="doc" size={22} color={theme.colors.onyx} strokeWidth={1.5} /></View>
             <Text style={styles.menuText}>{t('profile.termsConditions')}</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
           </TouchableOpacity>
           <TouchableOpacity style={styles.menuItem} onPress={() => router.push('/privacy')}>
-            <Ionicons name="shield-checkmark-outline" size={24} color={theme.colors.onyx} />
+            <View style={styles.menuIcon}><WwIcon name="shield" size={22} color={theme.colors.onyx} strokeWidth={1.5} /></View>
             <Text style={styles.menuText}>{t('profile.privacyPolicy')}</Text>
-            <Ionicons name="chevron-forward" size={20} color="#999" />
+            <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
           </TouchableOpacity>
           {canOfferInstall && (
             <TouchableOpacity style={styles.menuItem} onPress={() => setInstallModalVisible(true)}>
-              <Ionicons name="download-outline" size={24} color={theme.colors.onyx} />
+              <View style={styles.menuIcon}><WwIcon name="download" size={22} color={theme.colors.onyx} strokeWidth={1.5} /></View>
               <Text style={styles.menuText}>{t('pwaInstall.menuLabel')}</Text>
-              <Ionicons name="chevron-forward" size={20} color="#999" />
+              <WwIcon name="chevron" size={20} color="#B0B8C0" strokeWidth={1.5} />
             </TouchableOpacity>
           )}
         </View>
         <PwaInstallModal visible={installModalVisible} onClose={() => setInstallModalVisible(false)} />
 
         <TouchableOpacity style={styles.signOutButton} onPress={handleSignOut}>
-          <Ionicons name="log-out-outline" size={24} color={theme.colors.danger} />
+          <WwIcon name="logout" size={24} color={theme.colors.danger} strokeWidth={1.5} />
           <Text style={styles.signOutText}>{t('common.signOut')}</Text>
         </TouchableOpacity>
 
@@ -337,7 +342,7 @@ export default function ProfileScreen() {
       <Modal visible={editModalVisible} animationType="slide" transparent onRequestClose={() => setEditModalVisible(false)}>
         <KeyboardAvoidingView behavior={Platform.OS === 'ios' ? 'padding' : 'height'} style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t('profile.editProfile')}</Text><TouchableOpacity onPress={() => setEditModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
+            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t('profile.editProfile')}</Text><TouchableOpacity onPress={() => setEditModalVisible(false)}><WwIcon name="close" size={28} color="#000" strokeWidth={1.5} /></TouchableOpacity></View>
             <ScrollView style={styles.formContainer}>
               <Text style={styles.label}>{t('profile.name')} *</Text>
               <TextInput style={styles.input} value={formData.name} onChangeText={(text) => setFormData({ ...formData, name: text })} placeholder={t('profile.yourName')} placeholderTextColor="#999" />
@@ -355,27 +360,27 @@ export default function ProfileScreen() {
       <Modal visible={languageModalVisible} animationType="slide" transparent onRequestClose={() => setLanguageModalVisible(false)}>
         <View style={styles.modalOverlay}>
           <View style={styles.modalContent}>
-            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t('profile.selectLanguage')}</Text><TouchableOpacity onPress={() => setLanguageModalVisible(false)}><Ionicons name="close" size={28} color="#000" /></TouchableOpacity></View>
+            <View style={styles.modalHeader}><Text style={styles.modalTitle}>{t('profile.selectLanguage')}</Text><TouchableOpacity onPress={() => setLanguageModalVisible(false)}><WwIcon name="close" size={28} color="#000" strokeWidth={1.5} /></TouchableOpacity></View>
             <View style={styles.languageList}>
               <TouchableOpacity style={[styles.languageOption, language === 'en' && styles.languageOptionActive]} onPress={() => handleLanguageSelect('en')}>
                 <Text style={styles.languageFlag}>🇺🇸</Text>
                 <Text style={styles.languageText}>English</Text>
-                {language === 'en' && <Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />}
+                {language === 'en' && <WwIcon name="checkCircle" size={24} color="#4ECDC4" strokeWidth={1.5} />}
               </TouchableOpacity>
               <TouchableOpacity style={[styles.languageOption, language === 'th' && styles.languageOptionActive]} onPress={() => handleLanguageSelect('th')}>
                 <Text style={styles.languageFlag}>🇹🇭</Text>
                 <Text style={styles.languageText}>ภาษาไทย (Thai)</Text>
-                {language === 'th' && <Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />}
+                {language === 'th' && <WwIcon name="checkCircle" size={24} color="#4ECDC4" strokeWidth={1.5} />}
               </TouchableOpacity>
               <TouchableOpacity style={[styles.languageOption, language === 'fr' && styles.languageOptionActive]} onPress={() => handleLanguageSelect('fr')}>
                 <Text style={styles.languageFlag}>🇫🇷</Text>
                 <Text style={styles.languageText}>Français (French)</Text>
-                {language === 'fr' && <Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />}
+                {language === 'fr' && <WwIcon name="checkCircle" size={24} color="#4ECDC4" strokeWidth={1.5} />}
               </TouchableOpacity>
               <TouchableOpacity style={[styles.languageOption, language === 'ar' && styles.languageOptionActive]} onPress={() => handleLanguageSelect('ar')}>
                 <Text style={styles.languageFlag}>🇲🇦</Text>
                 <Text style={styles.languageText}>العربية (Arabic)</Text>
-                {language === 'ar' && <Ionicons name="checkmark-circle" size={24} color="#4ECDC4" />}
+                {language === 'ar' && <WwIcon name="checkCircle" size={24} color="#4ECDC4" strokeWidth={1.5} />}
               </TouchableOpacity>
             </View>
           </View>
@@ -389,7 +394,7 @@ export default function ProfileScreen() {
             <View style={styles.modalHeader}>
               <Text style={styles.modalTitle}>{t('auth.changePassword')}</Text>
               <TouchableOpacity onPress={() => { setChangePasswordModalVisible(false); setPasswordData({ currentPassword: '', newPassword: '', confirmPassword: '' }); }}>
-                <Ionicons name="close" size={28} color="#000" />
+                <WwIcon name="close" size={28} color="#000" strokeWidth={1.5} />
               </TouchableOpacity>
             </View>
             <ScrollView style={styles.formContainer}>
@@ -440,16 +445,16 @@ export default function ProfileScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.cloud },
   content: { paddingBottom: 80 },
-  profileHeader: { padding: 32, paddingTop: 24, alignItems: 'center', backgroundColor: '#fff', marginHorizontal: 16, marginTop: 16, borderRadius: 16, ...Platform.select({ ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.08, shadowRadius: 8 }, android: { elevation: 4 } }) },
-  avatar: { width: 100, height: 100, borderRadius: 50, marginBottom: 16, borderWidth: 4, borderColor: theme.colors.primaryGold },
+  profileHeader: { padding: 28, paddingTop: 26, alignItems: 'center', backgroundColor: '#fff', marginHorizontal: 16, marginTop: 16, borderRadius: 30, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(44,62,80,0.06)', ...Platform.select({ web: { boxShadow: '0 22px 44px -28px rgba(31,45,58,0.35)' } as any, default: { elevation: 3 } }) },
+  avatar: { width: 104, height: 104, borderRadius: 52, marginBottom: 16, borderWidth: 4, borderColor: theme.colors.primaryGold },
   avatarPlaceholder: { width: 100, height: 100, borderRadius: 50, backgroundColor: theme.colors.cloud, borderWidth: 4, borderColor: theme.colors.primaryGold, justifyContent: 'center', alignItems: 'center', marginBottom: 16 },
-  name: { fontSize: 24, fontWeight: '700', color: theme.colors.onyx, marginBottom: 4 },
+  name: { fontFamily: FONT_DISPLAY, fontSize: 24, fontWeight: '800', color: theme.colors.onyx, marginBottom: 4, letterSpacing: -0.4 },
   email: { fontSize: 14, color: theme.colors.slate },
   adminBadge: { flexDirection: 'row', alignItems: 'center', backgroundColor: theme.colors.primaryGold, paddingHorizontal: 16, paddingVertical: 6, borderRadius: 20, marginTop: 12, gap: 6 },
   adminText: { fontSize: 12, fontWeight: '700', color: '#000' },
-  statsCard: { flexDirection: 'row', backgroundColor: '#ffffff', marginHorizontal: 16, marginTop: -32, marginBottom: 16, padding: 20, borderRadius: 12, ...Platform.select({ ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 2 }, shadowOpacity: 0.1, shadowRadius: 4 }, android: { elevation: 3 } }) },
+  statsCard: { flexDirection: 'row', backgroundColor: '#ffffff', marginHorizontal: 16, marginTop: 14, marginBottom: 16, padding: 20, borderRadius: 26, borderWidth: 1, borderColor: 'rgba(44,62,80,0.06)', ...Platform.select({ web: { boxShadow: '0 22px 44px -28px rgba(31,45,58,0.35)' } as any, default: { elevation: 3 } }) },
   statItem: { flex: 1, alignItems: 'center' },
-  statValue: { fontSize: 32, fontWeight: '700', color: theme.colors.onyx },
+  statValue: { fontFamily: FONT_DISPLAY, fontSize: 34, lineHeight: 40, fontWeight: '800', color: theme.colors.onyx },
   statLabel: { fontSize: 14, color: theme.colors.slate, marginTop: 4 },
   statDivider: { width: 1, backgroundColor: theme.colors.line },
   editProfileButton: {
@@ -457,11 +462,11 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     gap: 8,
-    backgroundColor: '#4ECDC4',
+    backgroundColor: '#1F2D3A',
     marginHorizontal: 16,
     marginBottom: 20,
     padding: 14,
-    borderRadius: 12,
+    borderRadius: 999,
     ...Platform.select({
       ios: {
         shadowColor: '#4ECDC4',
@@ -502,7 +507,7 @@ const styles = StyleSheet.create({
       },
     }),
   },
-  section: { backgroundColor: '#ffffff', marginBottom: 16, marginHorizontal: 16, borderRadius: 12, overflow: 'hidden', ...Platform.select({ ios: { shadowColor: '#000', shadowOffset: { width: 0, height: 1 }, shadowOpacity: 0.05, shadowRadius: 4 }, android: { elevation: 2 } }) },
+  section: { backgroundColor: '#ffffff', marginBottom: 16, marginHorizontal: 16, borderRadius: 26, overflow: 'hidden', borderWidth: 1, borderColor: 'rgba(44,62,80,0.06)', ...Platform.select({ web: { boxShadow: '0 22px 44px -28px rgba(31,45,58,0.35)' } as any, default: { elevation: 3 } }) },
   sectionHeader: { flexDirection: 'row', alignItems: 'center', padding: 16, paddingBottom: 12, gap: 8 },
   sectionTitle: { fontSize: 18, fontWeight: '700', color: theme.colors.onyx },
   sectionTitleGray: { fontSize: 13, fontWeight: '700', color: '#999', textTransform: 'uppercase', paddingHorizontal: 16, paddingTop: 16, paddingBottom: 8 },
@@ -560,10 +565,11 @@ const styles = StyleSheet.create({
   adminMenuText: { flex: 1 },
   adminMenuTitle: { fontSize: 16, fontWeight: '700', color: '#ffffff', marginBottom: 2 },
   adminMenuSubtitle: { fontSize: 12, color: 'rgba(255, 255, 255, 0.8)' },
-  menuItem: { flexDirection: 'row', alignItems: 'center', padding: 16, borderBottomWidth: 1, borderBottomColor: '#f0f0f0', gap: 12 },
-  menuText: { flex: 1, fontSize: 16, color: theme.colors.onyx },
-  signOutButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#ffffff', marginHorizontal: 16, padding: 16, borderRadius: 12, marginBottom: 16, borderWidth: 2, borderColor: theme.colors.danger },
-  signOutText: { fontSize: 16, fontWeight: '600', color: theme.colors.danger },
+  menuItem: { flexDirection: 'row', alignItems: 'center', paddingVertical: 12, paddingHorizontal: 16, borderBottomWidth: 1, borderBottomColor: 'rgba(44,62,80,0.06)', gap: 14 },
+  menuIcon: { width: 40, height: 40, borderRadius: 20, backgroundColor: '#F6F7F8', alignItems: 'center', justifyContent: 'center' },
+  menuText: { flex: 1, fontFamily: FONT_DISPLAY, fontSize: 15.5, fontWeight: '600', color: theme.colors.onyx },
+  signOutButton: { flexDirection: 'row', alignItems: 'center', justifyContent: 'center', gap: 8, backgroundColor: '#FDECEC', marginHorizontal: 16, padding: 15, borderRadius: 999, marginBottom: 16 },
+  signOutText: { fontFamily: FONT_DISPLAY, fontSize: 16, fontWeight: '800', color: theme.colors.danger },
   version: { textAlign: 'center', fontSize: 12, color: '#999', marginBottom: 16 },
   modalOverlay: { flex: 1, backgroundColor: 'rgba(0, 0, 0, 0.5)', justifyContent: 'flex-end' },
   modalContent: { backgroundColor: '#fff', borderTopLeftRadius: 24, borderTopRightRadius: 24, maxHeight: '80%', paddingBottom: Platform.OS === 'ios' ? 40 : 20 },

@@ -1,6 +1,7 @@
 import React, { useEffect } from 'react';
 import { Tabs, useRouter } from 'expo-router';
 import WwIcon from '../../src/components/ui/WwIcon';
+import FloatingTabBar from '../../src/components/FloatingTabBar';
 import { View, ActivityIndicator } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useLanguageStore } from '../../src/store/languageStore';
@@ -32,6 +33,7 @@ export default function TabLayout() {
 
   return (
     <Tabs
+      tabBar={(props) => <FloatingTabBar {...props} />}
       screenOptions={{
         headerShown: false,
         tabBarActiveTintColor: '#FFD700',

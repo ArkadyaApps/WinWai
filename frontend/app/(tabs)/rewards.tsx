@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl } from 'react-native';
+import { View, Text, StyleSheet, ScrollView, TouchableOpacity, ActivityIndicator, RefreshControl, Platform } from 'react-native';
 import { useRouter } from 'expo-router';
 import { Voucher } from '../../src/types';
 import api from '../../src/utils/api';
@@ -10,6 +10,10 @@ import { theme } from '../../src/theme/tokens';
 import { isPast } from 'date-fns';
 import { useTranslation } from '../../src/i18n/useTranslation';
 import { ScreenFade } from '../../src/components/FadeInView';
+import WwIcon from '../../src/components/ui/WwIcon';
+import Bob from '../../src/components/ui/Bob';
+import Reveal from '../../src/components/landing/Reveal';
+import { FONT_DISPLAY } from '../../src/theme/fonts';
 
 const LOGO_URI = '/logo.png';
 
@@ -44,7 +48,7 @@ export default function RewardsScreen() {
   const loadVouchers = async () => {
     try { 
       const response = await api.get('/api/users/me/vouchers'); 
-      setVouchers(response.data); 
+      setVouchers(Array.isArray(response.data) ? response.data : []); 
     }
     catch (error) { 
       console.error('Failed to load vouchers:', error); 
@@ -118,7 +122,9 @@ export default function RewardsScreen() {
       >
         {filteredVouchers.length === 0 ? (
           <View style={styles.emptyState}>
-            <Text style={styles.emptyIcon}>🎟️</Text>
+            <Bob style={styles.emptyDisc}>
+              <WwIcon name="trophy" size={44} color="#7A5C00" strokeWidth={1.3} />
+            </Bob>
             <Text style={styles.emptyTitle}>
               {filter === 'all' ? t('rewards.noVouchersYet') : 
                filter === 'active' ? t('rewards.noActiveVouchers') :
@@ -130,12 +136,10 @@ export default function RewardsScreen() {
             </Text>
           </View>
         ) : (
-          filteredVouchers.map((voucher) => (
-            <VoucherCard 
-              key={voucher.id} 
-              voucher={voucher} 
-              onPress={() => handleVoucherPress(voucher)}
-            />
+          filteredVouchers.map((voucher, i) => (
+            <Reveal key={voucher.id} delay={Math.min(i * 80, 400)}>
+              <VoucherCard voucher={voucher} onPress={() => handleVoucherPress(voucher)} />
+            </Reveal>
           ))
         )}
       </ScrollView>
@@ -147,36 +151,21 @@ export default function RewardsScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.cloud },
   centered: { flex: 1, justifyContent: 'center', alignItems: 'center' },
-  filterContainer: {
-    backgroundColor: '#fff',
-    borderBottomWidth: 1,
-    borderBottomColor: '#f0f0f0',
-  },
+  filterContainer: { backgroundColor: theme.colors.cloud, paddingTop: 6 },
   filterScroll: {
     paddingHorizontal: 16,
     paddingVertical: 12,
     gap: 8,
   },
-  filterTab: {
-    paddingHorizontal: 16,
-    paddingVertical: 8,
-    borderRadius: 20,
-    backgroundColor: '#f5f5f5',
-  },
-  filterTabActive: {
-    backgroundColor: theme.colors.primaryGold,
-  },
-  filterText: {
-    fontSize: 14,
-    fontWeight: '600',
-    color: '#666',
-  },
+  filterTab: { paddingHorizontal: 16, paddingVertical: 9, borderRadius: 999, backgroundColor: '#fff', borderWidth: 1, borderColor: 'rgba(44,62,80,0.08)' },
+  filterTabActive: { backgroundColor: '#FFD700', borderColor: '#FFD700', ...Platform.select({ web: { boxShadow: '0 12px 22px -12px rgba(224,168,0,0.9)' } as any, default: {} }) },
+  filterText: { fontFamily: FONT_DISPLAY, fontSize: 14, fontWeight: '700', color: '#5D6D7E' },
   filterTextActive: {
     color: '#000',
   },
   content: { padding: 16, paddingBottom: 80 },
   emptyState: { flex: 1, alignItems: 'center', justifyContent: 'center', paddingVertical: 64 },
-  emptyIcon: { fontSize: 72, marginBottom: 16 },
-  emptyTitle: { fontSize: 20, fontWeight: '700', color: theme.colors.onyx, marginBottom: 8 },
+  emptyDisc: { width: 96, height: 96, borderRadius: 48, backgroundColor: '#FFF3C4', alignItems: 'center', justifyContent: 'center', marginBottom: 20 },
+  emptyTitle: { fontFamily: FONT_DISPLAY, fontSize: 20, fontWeight: '800', color: theme.colors.onyx, marginBottom: 8 },
   emptyText: { fontSize: 14, color: '#95A5A6', textAlign: 'center' },
 });
