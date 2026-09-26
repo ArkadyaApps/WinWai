@@ -26,6 +26,8 @@ export interface Partner {
   email?: string;
   whatsapp?: string;
   line?: string;
+  /** Absolute http(s) URL, shown as a button in the sponsor popup. */
+  website?: string | null;
   // Location details
   address?: string;
   location?: string;

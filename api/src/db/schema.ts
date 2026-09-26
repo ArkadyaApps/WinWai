@@ -53,6 +53,7 @@ export const partners = sqliteTable("partners", {
   email: text("email"),
   whatsapp: text("whatsapp"),
   line: text("line"),
+  website: text("website"), // absolute http(s) URL shown as a button in the sponsor popup
   address: text("address"),
   location: text("location"),
   latitude: real("latitude"),

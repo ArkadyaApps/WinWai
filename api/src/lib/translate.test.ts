@@ -1,5 +1,5 @@
 import { describe, expect, it } from "vitest";
-import { TranslationAi, translateRaffleTexts } from "./translate";
+import { type TranslationAi, translateRaffleTexts } from "./translate";
 
 const fakeAi = (fail: string[] = []): TranslationAi => ({
   async run(_model, { text, source_lang, target_lang }) {

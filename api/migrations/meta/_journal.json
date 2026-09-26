@@ -29,6 +29,13 @@
       "when": 1790324268020,
       "tag": "0003_raffle_translations",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "6",
+      "when": 1790459556834,
+      "tag": "0004_partner_website",
+      "breakpoints": true
     }
   ]
 }

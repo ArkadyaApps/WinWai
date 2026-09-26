@@ -40,6 +40,7 @@ export default function AdminPartnersScreen() {
     email: '',
     whatsapp: '',
     line: '',
+    website: '',
     address: '',
     location: '',
     latitude: '',
@@ -217,6 +218,7 @@ export default function AdminPartnersScreen() {
         email: partner.email || '',
         whatsapp: partner.whatsapp || '',
         line: partner.line || '',
+        website: partner.website || '',
         address: partner.address || '',
         location: partner.location || '',
         latitude: partner.latitude?.toString() || '',
@@ -236,6 +238,7 @@ export default function AdminPartnersScreen() {
         email: '',
         whatsapp: '',
         line: '',
+        website: '',
         address: '',
         location: '',
         latitude: '',
@@ -371,6 +374,10 @@ export default function AdminPartnersScreen() {
               <Text style={styles.label}>LINE ID</Text>
               <TextInput style={styles.input} value={formData.line} onChangeText={(text) => setFormData({ ...formData, line: text })} placeholder="@partnerline" placeholderTextColor="#999" autoCapitalize="none" />
               
+              <Text style={styles.label}>Website</Text>
+              <TextInput style={styles.input} value={formData.website} onChangeText={(text) => setFormData({ ...formData, website: text })} placeholder="www.partner.com" placeholderTextColor="#999" keyboardType="url" autoCapitalize="none" autoCorrect={false} />
+              <Text style={styles.helperText}>Shown as a button in the sponsor popup. "partner.com" is fine; https:// is added automatically.</Text>
+
               <Text style={[styles.label, { marginTop: 20, fontSize: 16, color: theme.colors.primaryGold }]}>📍 Location Details</Text>
               
               {/* Google Places Search */}
@@ -500,6 +507,7 @@ const styles = StyleSheet.create({
   modalTitle: { fontSize: 20, fontWeight: '700', color: theme.colors.onyx },
   formContainer: { padding: 20 },
   label: { fontSize: 14, fontWeight: '600', color: theme.colors.onyx, marginBottom: 8, marginTop: 12 },
+  helperText: { fontSize: 12, color: '#999', marginTop: 4, marginBottom: 8, lineHeight: 17 },
   input: { backgroundColor: '#F5F5F5', borderRadius: 8, padding: 12, fontSize: 16, color: theme.colors.onyx },
   textArea: { height: 80, textAlignVertical: 'top' },
   categoryButtons: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },

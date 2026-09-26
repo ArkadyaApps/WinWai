@@ -34,6 +34,28 @@ export type UpdateUserInput = z.infer<typeof UpdateUserSchema>;
 // untouched on partial updates, null clears it.
 const optionalDate = z.preprocess((val) => (val === "" ? null : val), z.coerce.date().nullable().optional());
 
+// "example.com" or "https://example.com/menu" -> an absolute http(s) URL; "" clears it.
+// Anything else (javascript:, data:, ...) fails validation, so the value is safe to open.
+export function normalizeWebsite(val: unknown): unknown {
+  if (typeof val !== "string") return val;
+  const v = val.trim();
+  if (v === "") return null;
+  if (/^https?:\/\//i.test(v)) return v;
+  // An explicit non-web scheme (ftp://, javascript:, data:, ...) is left as typed so validation rejects it.
+  if (/^[a-z][a-z0-9+.-]*:\/\//i.test(v) || /^(javascript|data|vbscript|file|blob|mailto|tel):/i.test(v)) return v;
+  return `https://${v}`;
+}
+const optionalWebsite = z.preprocess(
+  normalizeWebsite,
+  z
+    .string()
+    .max(300)
+    .url("Website must be a valid address")
+    .refine((u) => /^https?:\/\//i.test(u), "Website must start with http:// or https://")
+    .optional()
+    .nullable()
+);
+
 const PartnerBaseSchema = z.object({
   name: z.string().min(1),
   description: z.string().min(1),
@@ -45,6 +67,7 @@ const PartnerBaseSchema = z.object({
   email: optionalEmail,
   whatsapp: z.string().optional().nullable(),
   line: z.string().optional().nullable(),
+  website: optionalWebsite,
   address: z.string().optional().nullable(),
   location: z.string().optional().nullable(),
   latitude: z.number().optional().nullable(),

@@ -89,6 +89,14 @@ export const translations = {
       back: 'Back',
     },
     // Referral
+    sponsor: {
+      badge: 'Sponsor',
+      website: 'Visit website',
+      whatsapp: 'WhatsApp',
+      line: 'LINE',
+      email: 'Email',
+      directions: 'Directions',
+    },
     referral: {
       inviteGetTickets: 'Invite Friends, Get Tickets!',
       referralSubtitle: 'Share your referral code and both you and your friend get 1 free ticket when they sign up!',
@@ -266,6 +274,14 @@ export const translations = {
   },
   th: {
     // Referral
+    sponsor: {
+      badge: 'สปอนเซอร์',
+      website: 'เยี่ยมชมเว็บไซต์',
+      whatsapp: 'WhatsApp',
+      line: 'LINE',
+      email: 'อีเมล',
+      directions: 'นำทาง',
+    },
     referral: {
       inviteGetTickets: 'เชิญเพื่อน รับตั๋ว!',
       referralSubtitle: 'แชร์รหัสแนะนำและทั้งคุณและเพื่อนจะได้รับ 1 ตั๋วฟรีเมื่อสมัครสมาชิก!',
@@ -619,6 +635,14 @@ export const translations = {
       back: 'Retour',
     },
     // Referral
+    sponsor: {
+      badge: 'Sponsor',
+      website: 'Visiter le site',
+      whatsapp: 'WhatsApp',
+      line: 'LINE',
+      email: 'E-mail',
+      directions: 'Itinéraire',
+    },
     referral: {
       inviteGetTickets: 'Invitez des amis, obtenez des billets!',
       referralSubtitle: 'Partagez votre code et vous et votre ami recevez 1 billet gratuit!',
@@ -884,6 +908,14 @@ export const translations = {
       back: 'رجوع',
     },
     // Referral
+    sponsor: {
+      badge: 'راعٍ',
+      website: 'زيارة الموقع',
+      whatsapp: 'واتساب',
+      line: 'LINE',
+      email: 'البريد',
+      directions: 'الاتجاهات',
+    },
     referral: {
       inviteGetTickets: 'ادعُ الأصدقاء، احصل على تذاكر!',
       referralSubtitle: 'شارك رمزك وستحصل أنت وصديقك على تذكرة مجانية واحدة!',
