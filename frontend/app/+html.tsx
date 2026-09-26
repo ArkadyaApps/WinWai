@@ -19,6 +19,13 @@ export default function Root({ children }: PropsWithChildren) {
         <link rel="manifest" href="/manifest.json" />
         <link rel="apple-touch-icon" href="/icon-192.png" />
         <link rel="icon" href="/icon-192.png" />
+        {/* Landing typography: Plus Jakarta Sans (Latin) + Noto Sans Thai / Arabic. */}
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossOrigin="anonymous" />
+        <link
+          rel="stylesheet"
+          href="https://fonts.googleapis.com/css2?family=Noto+Sans+Arabic:wght@500;700;800&family=Noto+Sans+Thai:wght@500;700;800&family=Plus+Jakarta+Sans:wght@500;700;800&display=swap"
+        />
         <ScrollViewStyleReset />
         {/* Connects the site to the ca-pub-3486145054830108 AdSense account
             (also required for the Ad Placement API rewarded-ad calls in

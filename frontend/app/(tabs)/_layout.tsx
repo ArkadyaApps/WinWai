@@ -1,6 +1,6 @@
 import React, { useEffect } from 'react';
 import { Tabs, useRouter } from 'expo-router';
-import { Ionicons } from '@expo/vector-icons';
+import WwIcon from '../../src/components/ui/WwIcon';
 import { View, ActivityIndicator } from 'react-native';
 import { useUserStore } from '../../src/store/userStore';
 import { useLanguageStore } from '../../src/store/languageStore';
@@ -55,7 +55,7 @@ export default function TabLayout() {
         options={{
           title: t.home,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="home" size={size} color={color} />
+            <WwIcon name="home" size={size + 2} color={color} strokeWidth={1.5} />
           ),
         }}
       />
@@ -64,7 +64,7 @@ export default function TabLayout() {
         options={{
           title: t.raffles,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="gift" size={size} color={color} />
+            <WwIcon name="gift" size={size + 2} color={color} strokeWidth={1.5} />
           ),
         }}
       />
@@ -73,7 +73,7 @@ export default function TabLayout() {
         options={{
           title: t.tickets,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="ticket" size={size} color={color} />
+            <WwIcon name="ticket" size={size + 2} color={color} strokeWidth={1.5} />
           ),
         }}
       />
@@ -82,7 +82,7 @@ export default function TabLayout() {
         options={{
           title: t.myRewards,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="trophy" size={size} color={color} />
+            <WwIcon name="trophy" size={size + 2} color={color} strokeWidth={1.5} />
           ),
         }}
       />
@@ -91,7 +91,7 @@ export default function TabLayout() {
         options={{
           title: t.profile,
           tabBarIcon: ({ color, size }) => (
-            <Ionicons name="person" size={size} color={color} />
+            <WwIcon name="user" size={size + 2} color={color} strokeWidth={1.5} />
           ),
         }}
       />

@@ -3,6 +3,29 @@ export const translations = {
     // Landing page
     landing: {
       freeTicketPromo: 'Sign up before 31 December 2026 and get 1 free ticket!',
+      what: {
+        eyebrow: 'What is WinWai',
+        title: 'Free raffles with local businesses',
+        body: 'WinWai connects you with the shops, cafés and hotels around you. Watch a short ad, collect tickets and enter raffles for real prizes. Playing costs nothing.',
+        steps: {
+          earn: { title: 'Earn tickets', body: 'Watch a short ad or invite a friend. Every ticket is free.' },
+          choose: { title: 'Pick a prize', body: 'Browse raffles from local businesses: meals, stays, services.' },
+          enter: { title: 'Enter the raffle', body: 'Use your tickets. Every entry has exactly the same chance.' },
+          win: { title: 'Win and redeem', body: 'Winners get a voucher to use in the shop. Simple as that.' },
+        },
+      },
+      partners: {
+        eyebrow: 'For businesses',
+        title: 'Bring new customers through your door',
+        subtitle: 'Offer a prize, get seen by people nearby and welcome the winners in person.',
+        items: {
+        visibility: { title: 'Be seen', body: 'Your business and prize are featured to everyone browsing WinWai.' },
+        footfall: { title: 'Real visits', body: 'Winners come to you to redeem their voucher: new customers, in person.' },
+        prize: { title: 'You choose the prize', body: 'A meal, a night, a service: you decide what you offer and how many.' },
+        managed: { title: 'We handle the rest', body: 'Draws, winner selection and voucher checks are managed for you, with a redeem code to prevent misuse.' },
+        },
+        cta: 'Become a partner',
+      },
       title: 'Win Amazing Prizes in Thailand!',
       features: {
         raffles: 'Free Raffles',
@@ -420,6 +443,29 @@ export const translations = {
     // Landing page
     landing: {
       freeTicketPromo: 'สมัครก่อนวันที่ 31 ธันวาคม 2569 รับฟรี 1 ตั๋ว!',
+      what: {
+        eyebrow: 'WinWai คืออะไร',
+        title: 'ลุ้นรางวัลฟรีจากธุรกิจใกล้ตัว',
+        body: 'WinWai เชื่อมคุณกับร้านค้า คาเฟ่ และโรงแรมรอบตัว ดูโฆษณาสั้นๆ สะสมตั๋ว แล้วลุ้นรางวัลจริง เล่นได้ฟรี ไม่มีค่าใช้จ่าย',
+        steps: {
+          earn: { title: 'รับตั๋ว', body: 'ดูโฆษณาสั้นๆ หรือชวนเพื่อน ตั๋วทุกใบฟรี' },
+          choose: { title: 'เลือกรางวัล', body: 'ดูรางวัลจากธุรกิจในท้องถิ่น ทั้งอาหาร ที่พัก และบริการ' },
+          enter: { title: 'ร่วมลุ้นรางวัล', body: 'ใช้ตั๋วของคุณ ทุกการเข้าร่วมมีโอกาสเท่ากันทุกประการ' },
+          win: { title: 'ชนะและรับสิทธิ์', body: 'ผู้ชนะจะได้รับบัตรกำนัลไปใช้ที่ร้าน ง่ายๆ เท่านี้เอง' },
+        },
+      },
+      partners: {
+        eyebrow: 'สำหรับธุรกิจ',
+        title: 'พาลูกค้าใหม่มาถึงหน้าร้านคุณ',
+        subtitle: 'มอบรางวัล ให้คนใกล้ๆ เห็นธุรกิจของคุณ และต้อนรับผู้ชนะที่ร้านด้วยตัวเอง',
+        items: {
+        visibility: { title: 'ให้คนเห็นคุณ', body: 'ธุรกิจและรางวัลของคุณจะแสดงให้ทุกคนที่เปิดดู WinWai เห็น' },
+        footfall: { title: 'ลูกค้าเดินเข้าร้านจริง', body: 'ผู้ชนะมาที่ร้านเพื่อใช้บัตรกำนัล เป็นลูกค้าใหม่ที่มาด้วยตัวเอง' },
+        prize: { title: 'คุณเลือกรางวัลเอง', body: 'อาหาร ที่พัก บริการ คุณกำหนดเองว่าจะให้อะไรและกี่รางวัล' },
+        managed: { title: 'เราจัดการที่เหลือให้', body: 'การจับรางวัล การสุ่มผู้ชนะ และการตรวจบัตรกำนัลเราดูแลให้ พร้อมรหัสยืนยันป้องกันการใช้ผิด' },
+        },
+        cta: 'เป็นพาร์ทเนอร์',
+      },
       title: 'ชนะรางวัลสุดพิเศษในประเทศไทย!',
       features: {
         raffles: 'ลุ้นรางวัลฟรี',
@@ -487,6 +533,29 @@ export const translations = {
     // Landing page
     landing: {
       freeTicketPromo: 'Inscrivez-vous avant le 31 décembre 2026 et recevez 1 billet offert !',
+      what: {
+        eyebrow: 'Qu\'est-ce que WinWai ?',
+        title: 'Des tombolas gratuites avec les commerces locaux',
+        body: 'WinWai vous relie aux boutiques, cafés et hôtels autour de vous. Regardez une courte publicité, gagnez des tickets et participez à des tombolas pour de vrais lots. Jouer ne coûte rien.',
+        steps: {
+          earn: { title: 'Gagnez des tickets', body: 'Regardez une courte publicité ou invitez un ami. Chaque ticket est gratuit.' },
+          choose: { title: 'Choisissez un lot', body: 'Parcourez les tombolas des commerces locaux : repas, séjours, services.' },
+          enter: { title: 'Participez', body: 'Utilisez vos tickets. Chaque participation a exactement la même chance.' },
+          win: { title: 'Gagnez et profitez', body: 'Les gagnants reçoivent un bon à utiliser en boutique. Aussi simple que ça.' },
+        },
+      },
+      partners: {
+        eyebrow: 'Pour les commerces',
+        title: 'Faites entrer de nouveaux clients chez vous',
+        subtitle: 'Offrez un lot, faites-vous connaître des gens autour de vous et accueillez les gagnants en personne.',
+        items: {
+        visibility: { title: 'Soyez vu', body: 'Votre commerce et votre lot sont présentés à tous ceux qui parcourent WinWai.' },
+        footfall: { title: 'De vraies visites', body: 'Les gagnants viennent chez vous utiliser leur bon : de nouveaux clients, en personne.' },
+        prize: { title: 'Vous choisissez le lot', body: 'Un repas, une nuit, un service : vous décidez de ce que vous offrez et en quelle quantité.' },
+        managed: { title: 'On s\'occupe du reste', body: 'Tirages, choix des gagnants et vérification des bons sont gérés pour vous, avec un code de validation contre les abus.' },
+        },
+        cta: 'Devenir partenaire',
+      },
       title: 'Gagnez des prix incroyables en Thaïlande!',
       features: {
         raffles: 'Tombolas gratuites',
@@ -729,6 +798,29 @@ export const translations = {
     // Landing page
     landing: {
       freeTicketPromo: 'سجّل قبل 31 ديسمبر 2026 واحصل على تذكرة مجانية!',
+      what: {
+        eyebrow: 'ما هو WinWai؟',
+        title: 'سحوبات مجانية مع الأعمال المحلية',
+        body: 'يربطك WinWai بالمتاجر والمقاهي والفنادق من حولك. شاهد إعلاناً قصيراً، اجمع التذاكر وشارك في سحوبات على جوائز حقيقية. اللعب مجاني تماماً.',
+        steps: {
+          earn: { title: 'اجمع التذاكر', body: 'شاهد إعلاناً قصيراً أو ادعُ صديقاً. كل تذكرة مجانية.' },
+          choose: { title: 'اختر جائزة', body: 'تصفح سحوبات الأعمال المحلية: وجبات وإقامات وخدمات.' },
+          enter: { title: 'شارك في السحب', body: 'استخدم تذاكرك. لكل مشاركة الفرصة نفسها تماماً.' },
+          win: { title: 'اربح واستلم', body: 'يحصل الفائزون على قسيمة تُستخدم في المتجر. بهذه البساطة.' },
+        },
+      },
+      partners: {
+        eyebrow: 'للأعمال التجارية',
+        title: 'اجلب عملاء جدداً إلى متجرك',
+        subtitle: 'قدّم جائزة، ودع الناس القريبين يرونك، واستقبل الفائزين شخصياً.',
+        items: {
+        visibility: { title: 'كن ظاهراً', body: 'يظهر نشاطك وجائزتك لكل من يتصفح WinWai.' },
+        footfall: { title: 'زيارات حقيقية', body: 'يأتي الفائزون إليك لاستخدام قسائمهم: عملاء جدد حضورياً.' },
+        prize: { title: 'أنت تختار الجائزة', body: 'وجبة أو ليلة أو خدمة: أنت تقرر ما تقدمه وكم عدده.' },
+        managed: { title: 'نتولى الباقي', body: 'نتولى السحب واختيار الفائزين والتحقق من القسائم، مع رمز تفعيل لمنع إساءة الاستخدام.' },
+        },
+        cta: 'كن شريكاً',
+      },
       title: 'اربح جوائز مذهلة في تايلاند!',
       features: {
         raffles: 'سحوبات مجانية',

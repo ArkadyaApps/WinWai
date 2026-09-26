@@ -5,6 +5,7 @@ import { usePwaInstallStore } from '../store/pwaInstallStore';
 import { useLanguageStore } from '../store/languageStore';
 import { useTranslation } from '../i18n/useTranslation';
 import { translations } from '../utils/translations';
+import WwIcon, { WwIconName } from './ui/WwIcon';
 
 interface PwaInstallModalProps {
   visible: boolean;
@@ -19,12 +20,12 @@ interface PwaInstallModalProps {
 
 const ICON_URI = '/icon-192.png';
 
-const STEPS = [
-  { icon: '\u{1F3AB}', key: 'earnTicketsStep' },
-  { icon: '\u{1F3A5}', key: 'watchAdsStep' },
-  { icon: '\u{1F3B0}', key: 'enterRafflesStep' },
-  { icon: '\u{1F381}', key: 'winPrizesStep' },
-] as const;
+const STEPS: { icon: WwIconName; key: 'earnTicketsStep' | 'watchAdsStep' | 'enterRafflesStep' | 'winPrizesStep' }[] = [
+  { icon: 'ticket', key: 'earnTicketsStep' },
+  { icon: 'play', key: 'watchAdsStep' },
+  { icon: 'gift', key: 'enterRafflesStep' },
+  { icon: 'trophy', key: 'winPrizesStep' },
+];
 
 const PwaInstallModal: React.FC<PwaInstallModalProps> = ({ visible, onClose, withHelper = false }) => {
   const { t } = useTranslation();
@@ -85,7 +86,7 @@ const PwaInstallModal: React.FC<PwaInstallModalProps> = ({ visible, onClose, wit
               <View style={styles.steps}>
                 {STEPS.map((step, i) => (
                   <View key={step.key} style={styles.step}>
-                    <Text style={styles.stepIcon}>{step.icon}</Text>
+                    <View style={styles.stepIcon}><WwIcon name={step.icon} size={28} color="#1F2D3A" strokeWidth={1.4} /></View>
                     <Text style={styles.stepText}>{`${i + 1}. ${tr[step.key]}`}</Text>
                   </View>
                 ))}
@@ -176,7 +177,7 @@ const styles = StyleSheet.create({
     paddingHorizontal: 8,
     alignItems: 'center',
   },
-  stepIcon: { fontSize: 28, marginBottom: 6 },
+  stepIcon: { marginBottom: 8 },
   stepText: { fontSize: 12, fontWeight: '700', color: '#2C3E50', textAlign: 'center' },
   divider: { height: 1, backgroundColor: '#eee', alignSelf: 'stretch', marginVertical: 16 },
   installHeader: { flexDirection: 'row', alignItems: 'center', gap: 12, alignSelf: 'stretch', marginBottom: 14 },
