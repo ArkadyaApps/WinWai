@@ -5,6 +5,7 @@ import { SafeAreaProvider } from 'react-native-safe-area-context';
 import { AuthProvider } from '../src/contexts/AuthContext';
 import { usePwaInstallStore } from '../src/store/pwaInstallStore';
 import { useLanguageStore } from '../src/store/languageStore';
+import AlertHost from '../src/components/AlertHost';
 
 export default function RootLayout() {
   const language = useLanguageStore((state) => state.language);
@@ -31,6 +32,7 @@ export default function RootLayout() {
           <Stack.Screen name="(tabs)" />
           <Stack.Screen name="admin" />
         </Stack>
+        <AlertHost />
       </AuthProvider>
     </SafeAreaProvider>
   );

@@ -11,6 +11,9 @@ import AdCard from '../../src/components/AdCard';
 import BannerAdComponent from '../../src/components/BannerAd';
 import LanguageSelector from '../../src/components/LanguageSelector';
 import { Ionicons } from '@expo/vector-icons';
+import WwIcon from '../../src/components/ui/WwIcon';
+import AnimatedNumber from '../../src/components/ui/AnimatedNumber';
+import TicketStrip from '../../src/components/TicketStrip';
 import { useRouter } from 'expo-router';
 import { translations } from '../../src/utils/translations';
 import AppHeader from '../../src/components/AppHeader';
@@ -79,8 +82,8 @@ export default function HomeScreen() {
         right={(
           <View style={{ flexDirection: 'row', alignItems: 'center', gap: 8 }}>
             <TouchableOpacity onPress={() => router.push('/(tabs)/tickets')} style={styles.ticketBadge}>
-              <Ionicons name="ticket" size={18} color={theme.colors.primaryGold} />
-              <Text style={styles.ticketText}>{user?.tickets || 0}</Text>
+              <WwIcon name="ticket" size={20} color="#E0A800" strokeWidth={1.7} />
+              <AnimatedNumber value={user?.tickets || 0} style={styles.ticketText} />
             </TouchableOpacity>
             <LanguageSelector />
           </View>
@@ -90,8 +93,13 @@ export default function HomeScreen() {
       <WinnersTicker />
 
       <ScrollView style={styles.scrollView} contentContainerStyle={styles.scrollContent} refreshControl={<RefreshControl refreshing={refreshing} onRefresh={onRefresh} colors={[theme.colors.primaryGold]} />} showsVerticalScrollIndicator={false}>
+        <TicketStrip tickets={user?.tickets || 0} balanceLabel={t.yourTicketBalance} earnLabel="+1" accessibilityLabel={t.watchAdPlus1} />
+
         <View style={styles.resultsHeader}>
-          <Text style={styles.resultsCount}>{raffles.length} {t.raffles}</Text>
+          <View style={styles.resultsTitleRow}>
+            <View style={styles.liveDot} />
+            <Text style={styles.resultsCount}>{raffles.length} {t.raffles}</Text>
+          </View>
         </View>
 
         <View style={[styles.gridContainer, { width: containerWidth }]}>
@@ -117,7 +125,7 @@ export default function HomeScreen() {
 
         {raffles.length === 0 && (
           <View style={styles.emptyState}>
-            <Ionicons name="gift-outline" size={80} color={theme.colors.primaryGold} />
+            <WwIcon name="gift" size={84} color={theme.colors.primaryGold} strokeWidth={1} />
             <Text style={styles.emptyText}>{t.noLocalRaffles}</Text>
             <Text style={styles.emptySubtext}>{t.noLocalRafflesSubtext}</Text>
             <TouchableOpacity 
@@ -146,6 +154,8 @@ const styles = StyleSheet.create({
   ticketText: { fontSize: 14, fontWeight: '800', color: '#000' },
   filterButton: { backgroundColor: '#fff', width: 36, height: 36, borderRadius: 18, justifyContent: 'center', alignItems: 'center' },
   resultsHeader: { flexDirection: 'row', justifyContent: 'space-between', alignItems: 'center', paddingHorizontal: 20, paddingVertical: 16 },
+  resultsTitleRow: { flexDirection: 'row', alignItems: 'center', gap: 10 },
+  liveDot: { width: 9, height: 9, borderRadius: 5, backgroundColor: '#22C55E' },
   resultsCount: { fontSize: 20, fontWeight: '800', color: theme.colors.onyx },
   clearButton: { paddingHorizontal: 12, paddingVertical: 6, backgroundColor: '#FFE6E6', borderRadius: 12 },
   clearText: { fontSize: 12, fontWeight: '700', color: '#FF6B6B' },

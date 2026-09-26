@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
 import { View, Text, StyleSheet, Animated, Easing, Platform } from 'react-native';
-import { Ionicons } from '@expo/vector-icons';
+import WwIcon from './ui/WwIcon';
 import { format } from 'date-fns';
 import { Raffle } from '../types';
 import { useTranslation } from '../i18n/useTranslation';
@@ -99,7 +99,7 @@ const RaffleRoundStatus: React.FC<RaffleRoundStatusProps> = ({ raffle, variant =
     if (compact) {
       return (
         <View style={styles.compactRow}>
-          <Ionicons name="hourglass-outline" size={11} color="#E67E22" />
+          <WwIcon name="clock" size={13} color="#E67E22" strokeWidth={1.8} />
           <Text style={[styles.compactText, styles.soonText]} numberOfLines={1}>{t('raffleRound.comingSoon')}</Text>
         </View>
       );
@@ -108,7 +108,7 @@ const RaffleRoundStatus: React.FC<RaffleRoundStatusProps> = ({ raffle, variant =
       <View style={styles.card}>
         <View style={styles.headerRow}>
           <View style={styles.soonBadge}>
-            <Ionicons name="hourglass-outline" size={14} color="#E67E22" />
+            <WwIcon name="clock" size={16} color="#E67E22" strokeWidth={1.7} />
             <Text style={styles.soonBadgeText}>{t('raffleRound.comingSoon')}</Text>
           </View>
           <Text style={styles.progressText}>{t('raffleRound.startsIn').replace('{time}', formatRemaining(startsMs - now, soonUnits))}</Text>
@@ -150,7 +150,7 @@ const RaffleRoundStatus: React.FC<RaffleRoundStatusProps> = ({ raffle, variant =
       <View style={styles.compact}>
         {bar}
         <View style={styles.compactRow}>
-          <Ionicons name={goalMet ? 'time-outline' : 'ticket-outline'} size={11} color={goalMet ? '#0F8B6D' : '#95A5A6'} />
+          <WwIcon name={goalMet ? 'clock' : 'ticket'} size={13} color={goalMet ? '#0F8B6D' : '#95A5A6'} strokeWidth={1.8} />
           <Animated.Text
             style={[styles.compactText, goalMet && styles.compactTextDone, lastHour && { transform: [{ scale: pulse }] }]}
             numberOfLines={1}
@@ -178,7 +178,7 @@ const RaffleRoundStatus: React.FC<RaffleRoundStatusProps> = ({ raffle, variant =
         {roundLabel ? <Text style={styles.roundLabel}>{roundLabel}</Text> : <View />}
         {goalMet ? (
           <View style={styles.goalBadge}>
-            <Ionicons name="checkmark-circle" size={14} color="#0F8B6D" />
+            <WwIcon name="check" size={15} color="#0F8B6D" strokeWidth={2} />
             <Text style={styles.goalBadgeText}>{t('raffleRound.goalReached')}</Text>
           </View>
         ) : null}
@@ -190,7 +190,7 @@ const RaffleRoundStatus: React.FC<RaffleRoundStatusProps> = ({ raffle, variant =
         <Text style={styles.progressText}>{progressText}</Text>
         {countdownText ? (
           <Animated.View style={[styles.countdown, lastHour && styles.countdownHot, { transform: [{ scale: pulse }] }]}>
-            <Ionicons name="time-outline" size={14} color={lastHour ? '#fff' : '#2C3E50'} />
+            <WwIcon name="clock" size={16} color={lastHour ? '#fff' : '#2C3E50'} strokeWidth={1.7} />
             <Text style={[styles.countdownText, lastHour && styles.countdownTextHot]}>{countdownText}</Text>
           </Animated.View>
         ) : null}

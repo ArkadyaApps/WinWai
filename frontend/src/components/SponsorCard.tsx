@@ -1,6 +1,8 @@
 import React, { useState } from 'react';
 import { View, Text, StyleSheet, Image, Pressable, Platform, Linking, Modal, TouchableOpacity } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
+import WwIcon from './ui/WwIcon';
+import PressScale from './ui/PressScale';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Partner } from '../types';
 
@@ -32,13 +34,13 @@ const SponsorCard: React.FC<SponsorCardProps> = ({ partner }) => {
 
   return (
     <>
-      <Pressable style={({ pressed }) => [styles.card, pressed && styles.cardPressed]} onPress={() => setShowModal(true)}>
+      <PressScale style={styles.card} onPress={() => setShowModal(true)}>
         <View style={styles.logoContainer}>
           {image ? (
             <Image source={{ uri: image }} style={styles.logo} resizeMode="contain" />
           ) : (
             <LinearGradient colors={['#FFD700', '#FFC200']} style={styles.logoPlaceholder}>
-              <Ionicons name="storefront" size={32} color="#fff" />
+              <WwIcon name="store" size={36} color="#fff" strokeWidth={1.3} />
             </LinearGradient>
           )}
           <View style={styles.sponsoredBadge}>
@@ -50,7 +52,7 @@ const SponsorCard: React.FC<SponsorCardProps> = ({ partner }) => {
           <Text style={styles.category} numberOfLines={1}>{partner.category}</Text>
           {!!partner.description && <Text style={styles.description} numberOfLines={2}>{partner.description}</Text>}
         </View>
-      </Pressable>
+      </PressScale>
 
       <Modal visible={showModal} transparent animationType="fade" onRequestClose={() => setShowModal(false)}>
         <Pressable style={styles.modalOverlay} onPress={() => setShowModal(false)}>
@@ -63,7 +65,7 @@ const SponsorCard: React.FC<SponsorCardProps> = ({ partner }) => {
               <Image source={{ uri: image }} style={styles.modalLogo} resizeMode="contain" />
             ) : (
               <LinearGradient colors={['#FFD700', '#FFC200']} style={styles.modalLogoPlaceholder}>
-                <Ionicons name="storefront" size={40} color="#fff" />
+                <WwIcon name="store" size={44} color="#fff" strokeWidth={1.3} />
               </LinearGradient>
             )}
 

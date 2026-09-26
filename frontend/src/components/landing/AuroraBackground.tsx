@@ -46,10 +46,11 @@ interface FloaterProps {
   duration: number;
   delay: number;
   spin: number;
+  rise?: number;
 }
 
 // One small glyph that drifts upward, turning slowly, then fades and restarts.
-const Floater: React.FC<FloaterProps> = ({ icon, color, left, size, duration, delay, spin }) => {
+export const Floater: React.FC<FloaterProps> = ({ icon, color, left, size, duration, delay, spin, rise = 420 }) => {
   const t = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     const loop = Animated.loop(Animated.timing(t, { toValue: 1, duration, delay, easing: Easing.linear, useNativeDriver: Platform.OS !== 'web' }));
@@ -62,9 +63,9 @@ const Floater: React.FC<FloaterProps> = ({ icon, color, left, size, duration, de
         position: 'absolute',
         left: left as any,
         bottom: -30,
-        opacity: t.interpolate({ inputRange: [0, 0.15, 0.8, 1], outputRange: [0, 0.75, 0.6, 0] }),
+        opacity: t.interpolate({ inputRange: [0, 0.15, 0.8, 1], outputRange: [0, 0.95, 0.8, 0] }),
         transform: [
-          { translateY: t.interpolate({ inputRange: [0, 1], outputRange: [0, -420] }) },
+          { translateY: t.interpolate({ inputRange: [0, 1], outputRange: [0, -rise] }) },
           { rotate: t.interpolate({ inputRange: [0, 1], outputRange: ['0deg', `${spin}deg`] }) },
         ],
       }}
@@ -73,6 +74,17 @@ const Floater: React.FC<FloaterProps> = ({ icon, color, left, size, duration, de
     </Animated.View>
   );
 };
+
+/** A few drifting glyphs for compact areas such as the app header. */
+export const GlyphField: React.FC<{ color?: string; rise?: number }> = ({ color = '#FFFFFF', rise = 150 }) => (
+  <View style={styles.fill} pointerEvents="none">
+    <Floater icon="ticket" color={color} left="6%" size={26} duration={7000} delay={0} spin={-20} rise={rise} />
+    <Floater icon="sparkle" color={color} left="26%" size={16} duration={8500} delay={1800} spin={80} rise={rise} />
+    <Floater icon="gift" color={color} left="70%" size={24} duration={7600} delay={900} spin={16} rise={rise} />
+    <Floater icon="sparkle" color={color} left="84%" size={14} duration={9000} delay={3200} spin={-80} rise={rise} />
+    <Floater icon="trophy" color={color} left="92%" size={24} duration={8000} delay={2400} spin={-14} rise={rise} />
+  </View>
+);
 
 const AuroraBackground: React.FC = () => (
   <View style={styles.fill} pointerEvents="none">

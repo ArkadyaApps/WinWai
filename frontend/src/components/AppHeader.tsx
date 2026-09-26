@@ -1,8 +1,9 @@
-import React from 'react';
-import { View, Text, StyleSheet, TouchableOpacity, Platform, Image } from 'react-native';
+import React, { useEffect, useRef } from 'react';
+import { View, Text, StyleSheet, TouchableOpacity, Platform, Image, Animated, Easing } from 'react-native';
 import { LinearGradient } from 'expo-linear-gradient';
 import { Ionicons } from '@expo/vector-icons';
 import { theme } from '../theme/tokens';
+import { GlyphField } from './landing/AuroraBackground';
 
 interface Props {
   title?: string;
@@ -27,20 +28,35 @@ export default function AppHeader({
   const defaultPattern = 'https://images.unsplash.com/photo-1545873692-64145c8c42ed?q=85&w=1200&auto=format&fit=crop';
   const defaultLogo = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
   const isLight = variant === 'gold';
+  // The logo "breathes" very slightly so the header never feels static.
+  const breathe = useRef(new Animated.Value(0)).current;
+  useEffect(() => {
+    const loop = Animated.loop(
+      Animated.sequence([
+        Animated.timing(breathe, { toValue: 1, duration: 2600, easing: Easing.inOut(Easing.sin), useNativeDriver: Platform.OS !== 'web' }),
+        Animated.timing(breathe, { toValue: 0, duration: 2600, easing: Easing.inOut(Easing.sin), useNativeDriver: Platform.OS !== 'web' }),
+      ])
+    );
+    loop.start();
+    return () => loop.stop();
+  }, []);
   const dividerColor = isLight ? 'rgba(0,0,0,0.08)' : 'rgba(255,255,255,0.14)';
 
   return (
     <LinearGradient colors={colors as any} style={styles.header}>
       {/* Subtle pattern overlay */}
       <Image source={{ uri: patternUri || defaultPattern }} style={styles.pattern} resizeMode="cover" />
+      <GlyphField color="#FFFFFF" rise={170} />
 
       {/* Logo centered at top */}
       <View style={styles.logoContainer}>
-        <Image
-          source={{ uri: logoUri || defaultLogo }}
-          style={styles.logo}
-          resizeMode="contain"
-        />
+        <Animated.View style={{ transform: [{ scale: breathe.interpolate({ inputRange: [0, 1], outputRange: [1, 1.035] }) }] }}>
+          <Image
+            source={{ uri: logoUri || defaultLogo }}
+            style={styles.logo}
+            resizeMode="contain"
+          />
+        </Animated.View>
       </View>
 
       {/* Controls row at bottom */}

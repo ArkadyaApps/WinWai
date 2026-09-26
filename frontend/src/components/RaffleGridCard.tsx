@@ -1,8 +1,9 @@
 import React from 'react';
-import { View, Text, StyleSheet, Image, Pressable, Platform, Linking, TouchableOpacity } from 'react-native';
+import { View, Text, StyleSheet, Image, Platform } from 'react-native';
 import { Raffle } from '../types';
 import RaffleRoundStatus from './RaffleRoundStatus';
-import { Ionicons } from '@expo/vector-icons';
+import WwIcon, { WwIconName } from './ui/WwIcon';
+import PressScale from './ui/PressScale';
 import { LinearGradient } from 'expo-linear-gradient';
 import { useLocalizedRaffle } from '../utils/localizeRaffle';
 
@@ -21,11 +22,11 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
     }
   };
 
-  const getCategoryIcon = (category: string) => {
+  const getCategoryIcon = (category: string): WwIconName => {
     switch (category) {
-      case 'food': return 'restaurant';
-      case 'hotel': return 'bed';
-      case 'spa': return 'fitness';
+      case 'food': return 'store';
+      case 'hotel': return 'home';
+      case 'spa': return 'sparkle';
       default: return 'gift';
     }
   };
@@ -34,13 +35,7 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
   const { title } = useLocalizedRaffle(raffle);
 
   return (
-    <Pressable 
-      style={({ pressed }) => [
-        styles.card,
-        pressed && styles.cardPressed
-      ]}
-      onPress={onPress}
-    >
+    <PressScale style={styles.card} onPress={onPress}>
       {/* Image Container with Gradient Overlay */}
       <View style={styles.imageContainer}>
         {raffle.image ? (
@@ -56,7 +51,7 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
             colors={gradientColors}
             style={styles.imagePlaceholder}
           >
-            <Ionicons name={getCategoryIcon(raffle.category) as any} size={45} color="#fff" />
+            <WwIcon name={getCategoryIcon(raffle.category)} size={46} color="#fff" strokeWidth={1.2} />
           </LinearGradient>
         )}
         
@@ -79,21 +74,21 @@ const RaffleGridCard: React.FC<RaffleGridCardProps> = ({ raffle, onPress }) => {
           {/* Prize Count */}
           <View style={styles.infoRow}>
             <View style={[styles.iconBadge, { backgroundColor: '#FFF0F0' }]}>
-              <Ionicons name="gift" size={12} color="#FF6B6B" />
+              <WwIcon name="gift" size={14} color="#FF6B6B" strokeWidth={1.7} />
             </View>
             <Text style={styles.infoText}>{raffle.prizesRemaining}</Text>
           </View>
           
           {/* Ticket Cost */}
           <View style={styles.ticketBadge}>
-            <Ionicons name="ticket" size={12} color="#FFB800" />
+            <WwIcon name="ticket" size={14} color="#E0A800" strokeWidth={1.7} />
             <Text style={styles.ticketText}>{raffle.ticketCost}</Text>
           </View>
         </View>
         
         <RaffleRoundStatus raffle={raffle} variant="compact" />
       </View>
-    </Pressable>
+    </PressScale>
   );
 };
 

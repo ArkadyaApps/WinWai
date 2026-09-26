@@ -10,6 +10,11 @@ import AppHeader from '../../src/components/AppHeader';
 import { theme } from '../../src/theme/tokens';
 import * as Haptics from 'expo-haptics';
 import { ScreenFade } from '../../src/components/FadeInView';
+import { LinearGradient } from 'expo-linear-gradient';
+import WwIcon from '../../src/components/ui/WwIcon';
+import AnimatedNumber from '../../src/components/ui/AnimatedNumber';
+import { GlyphField } from '../../src/components/landing/AuroraBackground';
+import Reveal from '../../src/components/landing/Reveal';
 
 const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
 
@@ -84,14 +89,21 @@ export default function TicketsScreen() {
     <ScreenFade style={styles.container}>
       <AppHeader variant="emerald" logoUri={LOGO_URI} showDivider />
       <ScrollView contentContainerStyle={styles.content}>
-        <View style={styles.balanceCard}>
-          <Text style={styles.balanceLabel}>{t.yourTicketBalance}</Text>
-          <View style={styles.balanceRow}>
-            <Text style={styles.balanceIcon}>🎟️</Text>
-            <Text style={styles.balanceAmount}>{user?.tickets || 0}</Text>
+        <Reveal style={styles.balanceWrap}>
+          <View style={styles.balanceShell}>
+            <LinearGradient colors={['#FFE680', '#FFC200']} start={{ x: 0, y: 0 }} end={{ x: 1, y: 1 }} style={styles.balanceCard}>
+              <GlyphField color="#FFFFFF" rise={170} />
+              <Text style={styles.balanceLabel}>{t.yourTicketBalance}</Text>
+              <View style={styles.balanceRow}>
+                <View style={styles.balanceIconDisc}>
+                  <WwIcon name="ticket" size={34} color="#7A5C00" strokeWidth={1.4} />
+                </View>
+                <AnimatedNumber value={user?.tickets || 0} style={styles.balanceAmount} />
+              </View>
+              <Text style={styles.balanceSubtext}>{t.ticketsAvailable}</Text>
+            </LinearGradient>
           </View>
-          <Text style={styles.balanceSubtext}>{t.ticketsAvailable}</Text>
-        </View>
+        </Reveal>
 
         <View style={styles.earnSection}>
           <Text style={styles.sectionTitle}>{t.earnMoreTickets}</Text>
@@ -100,7 +112,7 @@ export default function TicketsScreen() {
               <View style={styles.playButtonContent}><ActivityIndicator color="#ffffff" size="large" /><Text style={styles.playButtonTextLoading}>Loading ad...</Text></View>
             ) : (
               <View style={styles.playButtonContent}>
-                <View style={styles.playIconContainer}><Text style={styles.playIcon}>▶</Text></View>
+                <View style={styles.playIconContainer}><WwIcon name="play" size={30} color="#FFFFFF" strokeWidth={1.5} /></View>
                 <View style={styles.playButtonTextContainer}>
                   <Text style={styles.playButtonTitle}>{t.watchAdPlus1 || 'Watch Ad for 1 Ticket'}</Text>
                   <Text style={styles.playButtonSubtitle}>{adReady ? 'Ad ready! Tap to watch' : 'Loading ad...'}</Text>
@@ -113,9 +125,9 @@ export default function TicketsScreen() {
 
           <View style={styles.infoCard}>
             <Text style={styles.infoTitle}>{t.howToEarnTickets}</Text>
-            <View style={styles.infoItem}><Text style={styles.infoBullet}>🎥</Text><Text style={styles.infoText}>{t.watchRewardedAds}</Text></View>
+            <View style={styles.infoItem}><WwIcon name="play" size={20} color="#2C3E50" strokeWidth={1.5} /><Text style={styles.infoText}>{t.watchRewardedAds}</Text></View>
             <TouchableOpacity style={styles.infoItem} onPress={() => require('expo-router').router.push('/referral')}>
-              <Text style={styles.infoBullet}>👥</Text>
+              <WwIcon name="users" size={20} color="#2C3E50" strokeWidth={1.5} />
               <Text style={[styles.infoText, styles.infoTextLink]}>{t.referFriends}</Text>
             </TouchableOpacity>
           </View>
@@ -131,10 +143,12 @@ export default function TicketsScreen() {
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: theme.colors.cloud },
   content: { padding: 16, paddingBottom: 80 },
-  balanceCard: { backgroundColor: theme.colors.primaryGold, padding: 32, borderRadius: 16, alignItems: 'center', marginBottom: 24 },
+  balanceWrap: { marginBottom: 24 },
+  balanceShell: { padding: 5, borderRadius: 32, backgroundColor: 'rgba(255,255,255,0.6)', borderWidth: 1, borderColor: 'rgba(44,62,80,0.07)' },
+  balanceCard: { padding: 30, borderRadius: 27, alignItems: 'center', overflow: 'hidden', ...Platform.select({ web: { boxShadow: '0 28px 50px -26px rgba(224,168,0,0.9)' } as any, default: {} }) },
+  balanceIconDisc: { width: 64, height: 64, borderRadius: 32, backgroundColor: 'rgba(255,255,255,0.55)', alignItems: 'center', justifyContent: 'center' },
   balanceLabel: { fontSize: 16, color: '#000', fontWeight: '600', marginBottom: 12 },
   balanceRow: { flexDirection: 'row', alignItems: 'center', gap: 12, marginBottom: 8 },
-  balanceIcon: { fontSize: 48 },
   balanceAmount: { fontSize: 64, fontWeight: '800', color: '#000' },
   balanceSubtext: { fontSize: 14, color: '#666' },
   earnSection: { marginBottom: 24 },
