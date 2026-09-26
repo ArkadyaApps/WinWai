@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import Head from 'expo-router/head';
 import {
   View,
   Text,
@@ -72,133 +73,139 @@ export default function SignUp() {
   };
 
   return (
-    <SafeAreaView style={styles.container}>
-      <KeyboardAvoidingView 
-        style={styles.keyboardView}
-        behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
-      >
-        <ScrollView 
-          contentContainerStyle={styles.scrollContent}
-          keyboardShouldPersistTaps="handled"
+    <>
+      <Head>
+        <title>Create your free WinWai account | สมัครสมาชิก WinWai</title>
+        <link rel="canonical" href="https://winwai.online/signup" />
+      </Head>
+      <SafeAreaView style={styles.container}>
+        <KeyboardAvoidingView 
+          style={styles.keyboardView}
+          behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
         >
-          <View style={styles.content}>
-            <Text style={styles.title}>Create Account</Text>
-            <Text style={styles.subtitle}>Join WinWai and start winning prizes!</Text>
+          <ScrollView 
+            contentContainerStyle={styles.scrollContent}
+            keyboardShouldPersistTaps="handled"
+          >
+            <View style={styles.content}>
+              <Text style={styles.title}>Create Account</Text>
+              <Text style={styles.subtitle}>Join WinWai and start winning prizes!</Text>
             
-            <View style={styles.form}>
-              <TextInput
-                style={styles.input}
-                placeholder="Full Name"
-                placeholderTextColor="#999"
-                value={name}
-                onChangeText={(text) => {
-                  setName(text);
-                  setError('');
-                }}
-                autoCapitalize="words"
-              />
-              
-              <TextInput
-                style={styles.input}
-                placeholder="Email"
-                placeholderTextColor="#999"
-                value={email}
-                onChangeText={(text) => {
-                  setEmail(text);
-                  setError('');
-                }}
-                autoCapitalize="none"
-                keyboardType="email-address"
-                autoCorrect={false}
-              />
-              
-              <View style={styles.passwordContainer}>
+              <View style={styles.form}>
                 <TextInput
-                  style={styles.passwordInput}
-                  placeholder="Password"
+                  style={styles.input}
+                  placeholder="Full Name"
                   placeholderTextColor="#999"
-                  value={password}
+                  value={name}
                   onChangeText={(text) => {
-                    setPassword(text);
+                    setName(text);
                     setError('');
                   }}
-                  secureTextEntry={!showPassword}
-                  autoCapitalize="none"
+                  autoCapitalize="words"
                 />
-                <TouchableOpacity 
-                  style={styles.eyeButton}
-                  onPress={() => setShowPassword(!showPassword)}
-                >
-                  <Text style={styles.eyeIcon}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
-                </TouchableOpacity>
-              </View>
-
-              {password.length > 0 && (
-                <View style={styles.strengthIndicator}>
-                  <View style={[styles.strengthBar, { backgroundColor: passwordStrength.color, width: `${password.length >= 12 ? 100 : password.length >= 8 ? 66 : 33}%` }]} />
-                  <Text style={[styles.strengthText, { color: passwordStrength.color }]}>
-                    {passwordStrength.label}
-                  </Text>
+              
+                <TextInput
+                  style={styles.input}
+                  placeholder="Email"
+                  placeholderTextColor="#999"
+                  value={email}
+                  onChangeText={(text) => {
+                    setEmail(text);
+                    setError('');
+                  }}
+                  autoCapitalize="none"
+                  keyboardType="email-address"
+                  autoCorrect={false}
+                />
+              
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Password"
+                    placeholderTextColor="#999"
+                    value={password}
+                    onChangeText={(text) => {
+                      setPassword(text);
+                      setError('');
+                    }}
+                    secureTextEntry={!showPassword}
+                    autoCapitalize="none"
+                  />
+                  <TouchableOpacity 
+                    style={styles.eyeButton}
+                    onPress={() => setShowPassword(!showPassword)}
+                  >
+                    <Text style={styles.eyeIcon}>{showPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                  </TouchableOpacity>
                 </View>
-              )}
+
+                {password.length > 0 && (
+                  <View style={styles.strengthIndicator}>
+                    <View style={[styles.strengthBar, { backgroundColor: passwordStrength.color, width: `${password.length >= 12 ? 100 : password.length >= 8 ? 66 : 33}%` }]} />
+                    <Text style={[styles.strengthText, { color: passwordStrength.color }]}>
+                      {passwordStrength.label}
+                    </Text>
+                  </View>
+                )}
               
-              <View style={styles.passwordContainer}>
-                <TextInput
-                  style={styles.passwordInput}
-                  placeholder="Confirm Password"
-                  placeholderTextColor="#999"
-                  value={confirmPassword}
-                  onChangeText={(text) => {
-                    setConfirmPassword(text);
-                    setError('');
-                  }}
-                  secureTextEntry={!showConfirmPassword}
-                  autoCapitalize="none"
-                />
+                <View style={styles.passwordContainer}>
+                  <TextInput
+                    style={styles.passwordInput}
+                    placeholder="Confirm Password"
+                    placeholderTextColor="#999"
+                    value={confirmPassword}
+                    onChangeText={(text) => {
+                      setConfirmPassword(text);
+                      setError('');
+                    }}
+                    secureTextEntry={!showConfirmPassword}
+                    autoCapitalize="none"
+                  />
+                  <TouchableOpacity 
+                    style={styles.eyeButton}
+                    onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  >
+                    <Text style={styles.eyeIcon}>{showConfirmPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                  </TouchableOpacity>
+                </View>
+
+                {error ? <Text style={styles.errorText}>{error}</Text> : null}
+              
                 <TouchableOpacity 
-                  style={styles.eyeButton}
-                  onPress={() => setShowConfirmPassword(!showConfirmPassword)}
+                  style={styles.button}
+                  onPress={handleSignUp}
+                  disabled={loading}
                 >
-                  <Text style={styles.eyeIcon}>{showConfirmPassword ? '👁️' : '👁️‍🗨️'}</Text>
+                  {loading ? (
+                    <ActivityIndicator color="#000" />
+                  ) : (
+                    <Text style={styles.buttonText}>Create Account</Text>
+                  )}
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={styles.linkButton}
+                  onPress={() => router.back()}
+                >
+                  <Text style={styles.linkText}>
+                    Already have an account? <Text style={styles.linkTextBold}>Sign In</Text>
+                  </Text>
+                </TouchableOpacity>
+
+                <TouchableOpacity 
+                  style={styles.termsButton}
+                  onPress={() => router.push('/terms')}
+                >
+                  <Text style={styles.termsText}>
+                    By signing up, you agree to our Terms & Conditions
+                  </Text>
                 </TouchableOpacity>
               </View>
-
-              {error ? <Text style={styles.errorText}>{error}</Text> : null}
-              
-              <TouchableOpacity 
-                style={styles.button}
-                onPress={handleSignUp}
-                disabled={loading}
-              >
-                {loading ? (
-                  <ActivityIndicator color="#000" />
-                ) : (
-                  <Text style={styles.buttonText}>Create Account</Text>
-                )}
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.linkButton}
-                onPress={() => router.back()}
-              >
-                <Text style={styles.linkText}>
-                  Already have an account? <Text style={styles.linkTextBold}>Sign In</Text>
-                </Text>
-              </TouchableOpacity>
-
-              <TouchableOpacity 
-                style={styles.termsButton}
-                onPress={() => router.push('/terms')}
-              >
-                <Text style={styles.termsText}>
-                  By signing up, you agree to our Terms & Conditions
-                </Text>
-              </TouchableOpacity>
             </View>
-          </View>
-        </ScrollView>
-      </KeyboardAvoidingView>
-    </SafeAreaView>
+          </ScrollView>
+        </KeyboardAvoidingView>
+      </SafeAreaView>
+    </>
   );
 }
 

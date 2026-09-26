@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import Head from 'expo-router/head';
 import {
   View,
   Text,
@@ -35,7 +36,7 @@ import { FONT_DISPLAY } from '../src/theme/fonts';
 const WELCOME_SEEN_KEY = 'has_seen_welcome';
 const INSTALL_PROMPT_DISMISSED_KEY = 'pwa_install_prompt_dismissed';
 
-const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
+const LOGO_URI = '/logo.png';
 
 const FEATURES: { icon: 'gift' | 'ticket' | 'trophy'; key: 'raffles' | 'tickets' | 'rewards' }[] = [
   { icon: 'gift', key: 'raffles' },
@@ -136,140 +137,152 @@ export default function Index() {
 
   if (userLoading) {
     return (
-      <View style={[styles.container, styles.centered]}>
-        <ActivityIndicator size="large" color="#FFD700" />
-      </View>
+      <>
+        <Head>
+          <title>WinWai - Free raffles with local businesses in Thailand | ลุ้นรางวัลฟรี</title>
+          <link rel="canonical" href="https://winwai.online/" />
+        </Head>
+        <View style={[styles.container, styles.centered]}>
+          <ActivityIndicator size="large" color="#FFD700" />
+        </View>
+      </>
     );
   }
 
   return (
-    <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
-      <PwaInstallModal visible={showInstallModal} onClose={handleCloseInstallModal} withHelper />
-      <PartnerInquiryModal visible={showPartnerModal} onClose={() => setShowPartnerModal(false)} />
+    <>
+      <Head>
+        <title>WinWai - Free raffles with local businesses in Thailand | ลุ้นรางวัลฟรี</title>
+        <link rel="canonical" href="https://winwai.online/" />
+      </Head>
+      <KeyboardAvoidingView style={styles.container} behavior={Platform.OS === 'ios' ? 'padding' : 'height'}>
+        <PwaInstallModal visible={showInstallModal} onClose={handleCloseInstallModal} withHelper />
+        <PartnerInquiryModal visible={showPartnerModal} onClose={() => setShowPartnerModal(false)} />
 
-      <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
-        {/* ---------- Hero ---------- */}
-        <View style={styles.hero}>
-          <AuroraBackground />
-          <View style={styles.languageToggle}>
-            <LanguageSelector />
-          </View>
-
-          <Animated.View
-            style={{ opacity: logoIn, transform: [{ scale: logoIn.interpolate({ inputRange: [0, 1], outputRange: [0.86, 1] }) }, { translateY: logoIn.interpolate({ inputRange: [0, 1], outputRange: [-24, 0] }) }] }}
-          >
-            <Image source={{ uri: LOGO_URI }} style={styles.logo} resizeMode="contain" />
-          </Animated.View>
-
-          <Animated.View style={{ opacity: taglineIn, transform: [{ translateY: taglineIn.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }], alignItems: 'center' }}>
-            <Text style={styles.headline}>{t('landing.title')}</Text>
-
-            <View style={styles.features}>
-              {FEATURES.map((f) => (
-                <View key={f.key} style={styles.featureChip}>
-                  <WwIcon name={f.icon} size={18} color="#1F2D3A" strokeWidth={1.5} />
-                  <Text style={styles.featureText}>{t(`landing.features.${f.key}`)}</Text>
-                </View>
-              ))}
+        <ScrollView contentContainerStyle={styles.scrollContent} keyboardShouldPersistTaps="handled" showsVerticalScrollIndicator={false}>
+          {/* ---------- Hero ---------- */}
+          <View style={styles.hero}>
+            <AuroraBackground />
+            <View style={styles.languageToggle}>
+              <LanguageSelector />
             </View>
 
-            {Date.now() < SIGNUP_BONUS_ENDS_AT.getTime() && (
-              <View style={styles.promoBanner}>
-                <WwIcon name="sparkle" size={18} color="#7A5C00" strokeWidth={1.5} />
-                <Text style={styles.promoText}>{t('landing.freeTicketPromo')}</Text>
+            <Animated.View
+              style={{ opacity: logoIn, transform: [{ scale: logoIn.interpolate({ inputRange: [0, 1], outputRange: [0.86, 1] }) }, { translateY: logoIn.interpolate({ inputRange: [0, 1], outputRange: [-24, 0] }) }] }}
+            >
+              <Image source={{ uri: LOGO_URI }} style={styles.logo} resizeMode="contain" />
+            </Animated.View>
+
+            <Animated.View style={{ opacity: taglineIn, transform: [{ translateY: taglineIn.interpolate({ inputRange: [0, 1], outputRange: [16, 0] }) }], alignItems: 'center' }}>
+              <Text style={styles.headline}>{t('landing.title')}</Text>
+
+              <View style={styles.features}>
+                {FEATURES.map((f) => (
+                  <View key={f.key} style={styles.featureChip}>
+                    <WwIcon name={f.icon} size={18} color="#1F2D3A" strokeWidth={1.5} />
+                    <Text style={styles.featureText}>{t(`landing.features.${f.key}`)}</Text>
+                  </View>
+                ))}
               </View>
-            )}
-          </Animated.View>
-        </View>
 
-        <View style={styles.body}>
-          {/* ---------- What is WinWai ---------- */}
-          <Reveal style={styles.block}>
-            <WhatIsWinWai />
-          </Reveal>
-
-          {/* ---------- Sign in ---------- */}
-          <Reveal style={styles.block}>
-            <View style={styles.shell}>
-              <View style={styles.core}>
-                <View style={styles.authToggle}>
-                  {(['email', 'google'] as const).map((mode) => (
-                    <TouchableOpacity key={mode} style={[styles.toggleButton, authMode === mode && styles.toggleButtonActive]} onPress={() => setAuthMode(mode)}>
-                      <Text style={[styles.toggleText, authMode === mode && styles.toggleTextActive]}>{t(mode === 'email' ? 'landing.emailTab' : 'landing.googleTab')}</Text>
-                    </TouchableOpacity>
-                  ))}
+              {Date.now() < SIGNUP_BONUS_ENDS_AT.getTime() && (
+                <View style={styles.promoBanner}>
+                  <WwIcon name="sparkle" size={18} color="#7A5C00" strokeWidth={1.5} />
+                  <Text style={styles.promoText}>{t('landing.freeTicketPromo')}</Text>
                 </View>
+              )}
+            </Animated.View>
+          </View>
 
-                {authMode === 'email' ? (
-                  <View style={styles.formContainer}>
-                    <TextInput
-                      style={styles.input}
-                      placeholder={t('landing.email')}
-                      placeholderTextColor="#9AA5AF"
-                      value={email}
-                      onChangeText={(text) => {
-                        setEmail(text);
-                        setError('');
-                      }}
-                      autoCapitalize="none"
-                      keyboardType="email-address"
-                      autoCorrect={false}
-                    />
+          <View style={styles.body}>
+            {/* ---------- What is WinWai ---------- */}
+            <Reveal style={styles.block}>
+              <WhatIsWinWai />
+            </Reveal>
 
-                    <View style={styles.passwordContainer}>
+            {/* ---------- Sign in ---------- */}
+            <Reveal style={styles.block}>
+              <View style={styles.shell}>
+                <View style={styles.core}>
+                  <View style={styles.authToggle}>
+                    {(['email', 'google'] as const).map((mode) => (
+                      <TouchableOpacity key={mode} style={[styles.toggleButton, authMode === mode && styles.toggleButtonActive]} onPress={() => setAuthMode(mode)}>
+                        <Text style={[styles.toggleText, authMode === mode && styles.toggleTextActive]}>{t(mode === 'email' ? 'landing.emailTab' : 'landing.googleTab')}</Text>
+                      </TouchableOpacity>
+                    ))}
+                  </View>
+
+                  {authMode === 'email' ? (
+                    <View style={styles.formContainer}>
                       <TextInput
-                        style={styles.passwordInput}
-                        placeholder={t('landing.password')}
+                        style={styles.input}
+                        placeholder={t('landing.email')}
                         placeholderTextColor="#9AA5AF"
-                        value={password}
+                        value={email}
                         onChangeText={(text) => {
-                          setPassword(text);
+                          setEmail(text);
                           setError('');
                         }}
-                        secureTextEntry={!showPassword}
                         autoCapitalize="none"
+                        keyboardType="email-address"
+                        autoCorrect={false}
                       />
-                      <TouchableOpacity style={styles.eyeButton} onPress={() => setShowPassword(!showPassword)} accessibilityLabel="Toggle password visibility">
-                        <WwIcon name={showPassword ? 'eyeOff' : 'eye'} size={20} color="#5D6D7E" strokeWidth={1.5} />
+
+                      <View style={styles.passwordContainer}>
+                        <TextInput
+                          style={styles.passwordInput}
+                          placeholder={t('landing.password')}
+                          placeholderTextColor="#9AA5AF"
+                          value={password}
+                          onChangeText={(text) => {
+                            setPassword(text);
+                            setError('');
+                          }}
+                          secureTextEntry={!showPassword}
+                          autoCapitalize="none"
+                        />
+                        <TouchableOpacity style={styles.eyeButton} onPress={() => setShowPassword(!showPassword)} accessibilityLabel="Toggle password visibility">
+                          <WwIcon name={showPassword ? 'eyeOff' : 'eye'} size={20} color="#5D6D7E" strokeWidth={1.5} />
+                        </TouchableOpacity>
+                      </View>
+
+                      {error ? <Text style={styles.errorText}>{error}</Text> : null}
+
+                      <TouchableOpacity style={styles.button} onPress={handleEmailSignIn} disabled={loading} activeOpacity={0.9}>
+                        {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>{t('landing.signIn')}</Text>}
+                      </TouchableOpacity>
+
+                      <View style={styles.linkContainer}>
+                        <TouchableOpacity onPress={() => router.push('/signup')}>
+                          <Text style={styles.link}>{t('landing.createAccount')}</Text>
+                        </TouchableOpacity>
+                        <Text style={styles.linkSeparator}>•</Text>
+                        <TouchableOpacity onPress={() => router.push('/forgot-password')}>
+                          <Text style={styles.link}>{t('landing.forgotPassword')}</Text>
+                        </TouchableOpacity>
+                      </View>
+                    </View>
+                  ) : (
+                    <View style={styles.formContainer}>
+                      <TouchableOpacity style={styles.button} onPress={handleGoogleSignIn} disabled={authLoading} activeOpacity={0.9}>
+                        {authLoading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>{t('landing.signInWithGoogle')}</Text>}
                       </TouchableOpacity>
                     </View>
-
-                    {error ? <Text style={styles.errorText}>{error}</Text> : null}
-
-                    <TouchableOpacity style={styles.button} onPress={handleEmailSignIn} disabled={loading} activeOpacity={0.9}>
-                      {loading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>{t('landing.signIn')}</Text>}
-                    </TouchableOpacity>
-
-                    <View style={styles.linkContainer}>
-                      <TouchableOpacity onPress={() => router.push('/signup')}>
-                        <Text style={styles.link}>{t('landing.createAccount')}</Text>
-                      </TouchableOpacity>
-                      <Text style={styles.linkSeparator}>•</Text>
-                      <TouchableOpacity onPress={() => router.push('/forgot-password')}>
-                        <Text style={styles.link}>{t('landing.forgotPassword')}</Text>
-                      </TouchableOpacity>
-                    </View>
-                  </View>
-                ) : (
-                  <View style={styles.formContainer}>
-                    <TouchableOpacity style={styles.button} onPress={handleGoogleSignIn} disabled={authLoading} activeOpacity={0.9}>
-                      {authLoading ? <ActivityIndicator color="#000" /> : <Text style={styles.buttonText}>{t('landing.signInWithGoogle')}</Text>}
-                    </TouchableOpacity>
-                  </View>
-                )}
+                  )}
+                </View>
               </View>
+            </Reveal>
+
+            {/* ---------- For businesses ---------- */}
+            <View style={styles.block}>
+              <PartnerAdvantages onBecomePartner={() => setShowPartnerModal(true)} />
             </View>
-          </Reveal>
 
-          {/* ---------- For businesses ---------- */}
-          <View style={styles.block}>
-            <PartnerAdvantages onBecomePartner={() => setShowPartnerModal(true)} />
+            <Text style={styles.disclaimer}>{t('landing.disclaimer')}</Text>
           </View>
-
-          <Text style={styles.disclaimer}>{t('landing.disclaimer')}</Text>
-        </View>
-      </ScrollView>
-    </KeyboardAvoidingView>
+        </ScrollView>
+      </KeyboardAvoidingView>
+    </>
   );
 }
 

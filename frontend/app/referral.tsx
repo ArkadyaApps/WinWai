@@ -6,7 +6,7 @@ import AppHeader from '../src/components/AppHeader';
 import { theme } from '../src/theme/tokens';
 import { useTranslation } from '../src/i18n/useTranslation';
 
-const LOGO_URI = 'https://customer-assets.emergentagent.com/job_prize-raffle-2/artifacts/3cr2n9os_icon.png';
+const LOGO_URI = '/icon-192.png';
 
 export default function ReferralScreen() {
   const { user } = useUserStore();

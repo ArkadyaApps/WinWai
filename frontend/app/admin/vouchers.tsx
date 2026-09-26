@@ -81,7 +81,7 @@ export default function AdminVouchersScreen() {
     <View style={styles.container}>
       <AppHeader
         variant="gold"
-        logoUri="https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png"
+        logoUri="/logo.png"
         onBack={() => router.back()}
         showDivider
       />

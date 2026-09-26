@@ -16,7 +16,7 @@ import AnimatedNumber from '../../src/components/ui/AnimatedNumber';
 import { GlyphField } from '../../src/components/landing/AuroraBackground';
 import Reveal from '../../src/components/landing/Reveal';
 
-const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
+const LOGO_URI = '/logo.png';
 
 export default function TicketsScreen() {
   const { user, updateTickets } = useUserStore();

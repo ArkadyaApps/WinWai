@@ -25,8 +25,7 @@ export default function AppHeader({
   showDivider = false,
 }: Props) {
   const colors = theme.gradients[variant];
-  const defaultPattern = 'https://images.unsplash.com/photo-1545873692-64145c8c42ed?q=85&w=1200&auto=format&fit=crop';
-  const defaultLogo = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
+  const defaultLogo = '/logo.png';
   const isLight = variant === 'gold';
   // The logo "breathes" very slightly so the header never feels static.
   const breathe = useRef(new Animated.Value(0)).current;
@@ -45,7 +44,7 @@ export default function AppHeader({
   return (
     <LinearGradient colors={colors as any} style={styles.header}>
       {/* Subtle pattern overlay */}
-      <Image source={{ uri: patternUri || defaultPattern }} style={styles.pattern} resizeMode="cover" />
+      {patternUri ? <Image source={{ uri: patternUri }} style={styles.pattern} resizeMode="cover" /> : null}
       <GlyphField color="#FFFFFF" rise={170} />
 
       {/* Logo centered at top */}

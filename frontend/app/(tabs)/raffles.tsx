@@ -14,7 +14,7 @@ import { useRouter } from 'expo-router';
 import { Ionicons } from '@expo/vector-icons';
 import { useTranslation } from '../../src/i18n/useTranslation';
 
-const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
+const LOGO_URI = '/logo.png';
 
 const categories = [
   { id: 'all', name: 'All', emoji: '🎉' },

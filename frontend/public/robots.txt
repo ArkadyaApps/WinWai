@@ -1,0 +1,37 @@
+# WinWai - https://winwai.online
+# Public pages may be crawled and cited, including by AI assistants and search engines.
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /reset-password
+Disallow: /forgot-password
+Disallow: /voucher/
+Disallow: /referral
+
+# AI / LLM crawlers are welcome to read the public pages and the summary files.
+User-agent: GPTBot
+Allow: /
+
+User-agent: ChatGPT-User
+Allow: /
+
+User-agent: OAI-SearchBot
+Allow: /
+
+User-agent: ClaudeBot
+Allow: /
+
+User-agent: Claude-User
+Allow: /
+
+User-agent: Claude-SearchBot
+Allow: /
+
+User-agent: PerplexityBot
+Allow: /
+
+User-agent: Google-Extended
+Allow: /
+
+Sitemap: https://winwai.online/sitemap.xml

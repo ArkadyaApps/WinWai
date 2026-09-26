@@ -22,7 +22,7 @@ import { ScreenFade, FadeInView } from '../../src/components/FadeInView';
 import { useGrid, CARD_MARGIN } from '../../src/hooks/useGrid';
 import { buildFeed } from '../../src/utils/feed';
 
-const LOGO_URI = 'https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png';
+const LOGO_URI = '/logo.png';
 
 export default function HomeScreen() {
   const { user } = useUserStore();

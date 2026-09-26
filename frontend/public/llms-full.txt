@@ -1,0 +1,55 @@
+# WinWai - detailed guide
+
+WinWai (https://winwai.online) is a free raffle app for Thailand that links people with local businesses. It runs in the browser and can be installed on a phone's home screen (progressive web app). It is offered in Thai (default), English, French and Arabic, and opens in the phone's language when supported.
+
+Operator: Arkadya App. Contact: contact@winwai.online. Website: https://winwai.online
+
+## What WinWai is (and is not)
+- It is a way for local shops, cafés, restaurants, hotels and service providers to give away prizes and reach nearby customers, and for people to win those prizes for free.
+- Participation is free. There is nothing to buy and no payment of any kind is needed to enter.
+- Prizes are vouchers or digital codes offered by the businesses themselves (partners). They have no cash value.
+
+## How it works for users
+1. Earn tickets: watch a short ad, invite a friend, or use a promotion. Every new account created before 31 December 2026 receives 1 free ticket (one per person).
+2. Pick a raffle: each raffle shows its prize, how many prizes there are, how many tickets one entry costs, and a progress bar toward its ticket goal.
+3. Enter: entering uses the tickets shown on that raffle.
+4. Win and redeem: winners receive a voucher in the app and use it at the business with a voucher reference and verification code.
+
+## Draw rules
+- Every prize is drawn in its own round. A round has a ticket goal; every entry counts toward it.
+- When the goal is reached the draw is scheduled after a waiting period based on prize value: 1 day (up to USD 15), 3 days (up to USD 25), 7 days (above). A countdown is shown. Entries close at the scheduled draw time.
+- The winner is picked at random, automatically, from the entries in the pool. Each entry has an equal chance; entering earlier gives no advantage; more entries mean more chances.
+- Tickets above a round's goal carry over to the next round, and entries stay in the pool for later rounds of the same raffle unless the person has already won it.
+- One prize per person per raffle. Results are final.
+- If a draw is due but nobody has entered, no winner is selected and the waiting period restarts when new entries arrive.
+
+## Prizes and privacy of winners
+- Vouchers are valid for the period stated on the raffle (three months unless stated otherwise) and can be used once. Digital prizes (for example a mobile top-up or subscription card) are delivered as a code in the app.
+- Public winner displays never reveal identities: a scrolling banner shows a partially masked email address, the raffle and the date; winners lists show anonymous identifiers.
+
+## For businesses (partners)
+Why offer a prize on WinWai:
+- Be seen: your business and prize are featured to everyone browsing the app.
+- Real visits: winners come to you to redeem their voucher, bringing new customers in person.
+- You choose the prize: a meal, a night, a service or a digital card; you decide what you offer and how many.
+- Managed for you: draws, winner selection and voucher checks are handled, with a redemption code to prevent misuse.
+How to join: use the "Become a partner" button in the "For businesses" section of https://winwai.online/ (or Profile > Become a Partner inside the app) and send your business name, the prize you would like to offer and your contact details. The team follows up directly.
+
+## Where
+WinWai is starting around Khanom, Nakhon Si Thammarat, Thailand, and is designed for local businesses across Thailand. Some raffles indicate the countries or areas they are aimed at; because prizes are collected in person at the business, this is a practical guide.
+
+## Frequently asked questions
+- Is WinWai really free? Yes. No purchase is required. Tickets come from watching ads, referrals and promotions.
+- How old do I have to be? 18 or older.
+- Can I win more than once? You can win different raffles, but only one prize per person in each raffle.
+- Is the draw fair? Winners are chosen at random by the app; every entry has the same chance.
+- What happens after I win? You get a voucher in the app and use it at the business with your reference and verification code before it expires.
+- Can I exchange a prize for money? No. Prizes have no cash value.
+- Which languages are supported? Thai, English, French and Arabic.
+
+## Links
+- Home: https://winwai.online/
+- Sign up: https://winwai.online/signup
+- Terms of Service: https://winwai.online/terms
+- Privacy Policy: https://winwai.online/privacy
+- Short summary for AI: https://winwai.online/llms.txt

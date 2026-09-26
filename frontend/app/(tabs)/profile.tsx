@@ -132,7 +132,7 @@ export default function ProfileScreen() {
 
   return (
     <ScreenFade style={styles.container}>
-      <AppHeader variant="gold" logoUri="https://customer-assets.emergentagent.com/job_raffle-rewards-1/artifacts/tsv1bcjh_logo.png" showDivider />
+      <AppHeader variant="gold" logoUri="/logo.png" showDivider />
       <ScrollView contentContainerStyle={styles.content}>
         {/* Profile Header */}
         <View style={styles.profileHeader}>

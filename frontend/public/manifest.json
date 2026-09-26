@@ -1,13 +1,22 @@
 {
   "name": "WinWai",
   "short_name": "WinWai",
-  "description": "Enter raffles, earn tickets, win real prizes.",
+  "id": "/",
+  "lang": "th",
+  "dir": "auto",
+  "categories": ["lifestyle", "entertainment", "shopping"],
+  "description": "Free raffles with local businesses in Thailand: earn tickets, enter raffles, win real prizes.",
   "start_url": "/",
   "scope": "/",
   "display": "standalone",
   "orientation": "portrait",
   "background_color": "#FFF8E7",
   "theme_color": "#FFD700",
+  "shortcuts": [
+    { "name": "Raffles", "short_name": "Raffles", "url": "/raffles", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "My Tickets", "short_name": "Tickets", "url": "/tickets", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] },
+    { "name": "My Rewards", "short_name": "Rewards", "url": "/rewards", "icons": [{ "src": "/icon-192.png", "sizes": "192x192" }] }
+  ],
   "icons": [
     {
       "src": "/icon-192.png",

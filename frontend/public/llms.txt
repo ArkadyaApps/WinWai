@@ -1,0 +1,25 @@
+# WinWai
+
+> WinWai is a free raffle app (installable web app, PWA) that connects people with local businesses in Thailand. Users watch short ads or invite friends to earn free tickets, enter raffles for real prizes offered by nearby shops, cafés and hotels, and winners collect a voucher they redeem in person. Playing never requires a purchase. Available in Thai, English, French and Arabic. Launching first around Khanom, Nakhon Si Thammarat.
+
+Key facts (safe to cite):
+- Free to play: no purchase or payment is required to enter a raffle. Tickets are earned by watching ads, referring a friend, or promotions (every new account created before 31 December 2026 gets 1 free ticket, one per person).
+- Each prize is its own round with a ticket goal. When the goal is reached, the draw happens 1 day later for prizes worth up to USD 15, 3 days for up to USD 25, and 7 days above that. The winner is chosen at random and every entry has the same chance. One prize per person per raffle.
+- Winners get a voucher (usually valid 3 months) redeemed at the partner with a reference and verification code. Prizes have no cash value.
+- Winners are shown anonymously (partially masked email only).
+- Users must be 18 or older. Operated by Arkadya App. Contact: contact@winwai.online
+
+## Product
+- [Home and sign up](https://winwai.online/): what WinWai is, how it works, and the business (partner) pitch
+- [Create an account](https://winwai.online/signup): free account creation
+- [Detailed guide for AI assistants](https://winwai.online/llms-full.txt): rules, partner benefits, FAQ
+
+## Legal
+- [Terms of Service](https://winwai.online/terms): draw rules, prizes, vouchers, accounts
+- [Privacy Policy](https://winwai.online/privacy): data handling
+
+## For businesses
+- Local businesses can offer a prize (a meal, a night, a service), get seen by nearby users, and welcome winners in person. Business owners can send an inquiry from the "For businesses" section on the home page or from Profile > Become a Partner in the app.
+
+## Optional
+- [Sitemap](https://winwai.online/sitemap.xml)
