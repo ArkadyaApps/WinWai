@@ -59,7 +59,7 @@ export default function Root({ children }: PropsWithChildren) {
         <meta property="og:image:type" content="image/png" />
         <meta property="og:image:width" content="1200" />
         <meta property="og:image:height" content="630" />
-        <meta property="og:image:alt" content="WinWai - win real prizes from local businesses in Thailand" />
+        <meta property="og:image:alt" content="WinWai - ลุ้นรางวัลจริงจากร้านค้าใกล้ตัว สแกน QR เพื่อเริ่มเลย" />
         <meta property="og:url" content="https://winwai.online/" />
         <meta property="og:locale" content="th_TH" />
         <meta property="og:locale:alternate" content="en_US" />
@@ -69,7 +69,7 @@ export default function Root({ children }: PropsWithChildren) {
         <meta name="twitter:title" content="WinWai - Free raffles with local businesses in Thailand" />
         <meta name="twitter:description" content="WinWai: free raffles with local businesses in Thailand. Earn tickets, enter raffles and win real prizes - meals, stays, services. ลุ้นรางวัลฟรี ไม่ต้องซื้อ" />
         <meta name="twitter:image" content="https://winwai.online/og-image.png" />
-        <meta name="twitter:image:alt" content="WinWai - win real prizes from local businesses in Thailand" />
+        <meta name="twitter:image:alt" content="WinWai - ลุ้นรางวัลจริงจากร้านค้าใกล้ตัว สแกน QR เพื่อเริ่มเลย" />
         <link rel="alternate" type="text/plain" href="/llms.txt" title="WinWai summary for AI assistants" />
         <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON_LD }} />
         <meta name="mobile-web-app-capable" content="yes" />
